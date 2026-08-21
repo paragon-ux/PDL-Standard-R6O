@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 _CANONICAL_PATH = Path(__file__).resolve().parents[1] / "contracts" / "canonical_review_messages.json"
+ACTION_MAPPING_VERSION = "r6o-review-msg-1"
 
 
 def _canonical() -> dict[str, Any]:

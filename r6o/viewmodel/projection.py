@@ -1,16 +1,13 @@
 from __future__ import annotations
 
-"""FocusProjection construction (pure; no LLM calls, no domain mutation)."""
+"""Pure FocusProjection construction from normalized Model Port snapshots."""
 
-import uuid
+import hashlib
+import json
 from typing import Any
 
-from r6o.model_binding.base import ArtifactSnapshot, ModelRevision, ModelPort
-from r6o.viewmodel.actions import project_actions
-
-_REVIEW_STAGES = {"PROMPT_REVIEW", "PLAN_REVIEW", "WAITING_INPUT"}
-_WORKING_STAGES = {"PROMPT_REQUIRED", "PLAN_REQUIRED", "EXECUTION_READY", "OUTCOME_UNCERTAIN"}
-_TERMINAL_STAGES = {"CLOSED_SUCCESS", "CLOSED_CANCELLED"}
+from r6o.viewmodel.actions import ACTION_MAPPING_VERSION, project_actions
+from r6o.viewmodel.model_port import ArtifactSnapshot, ModelPort, ModelStateSnapshot
 
 _FOCUS_KIND = {
     "PROMPT_REVIEW": "PROMPT_REVIEW",
@@ -23,59 +20,48 @@ _FOCUS_KIND = {
 
 
 def _artifact_dict(snapshot: ArtifactSnapshot | None) -> dict[str, Any] | None:
-    if snapshot is None:
-        return None
-    return {
-        "artifact_ref": snapshot.artifact_ref,
-        "artifact_revision": snapshot.artifact_revision,
-        "artifact_kind": snapshot.artifact_kind,
-        "title": snapshot.title,
-        "media_type": snapshot.media_type,
-        "body": snapshot.body,
-        "capabilities": dict(snapshot.capabilities),
+    return snapshot.to_dict() if snapshot else None
+
+
+def _fingerprint(state: ModelStateSnapshot, artifact: ArtifactSnapshot | None, actions: list[dict[str, Any]]) -> str:
+    material = {
+        "schema_version": "r6o-focus-projection-1",
+        "action_mapping_version": ACTION_MAPPING_VERSION,
+        "model_revision": state.model_revision,
+        "artifact_ref": artifact.artifact_ref if artifact else None,
+        "artifact_revision": artifact.artifact_revision if artifact else None,
+        "actions": actions,
     }
+    canonical = json.dumps(material, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return "projection-" + hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
-def build_focus_projection(revision: ModelRevision, artifact: ArtifactSnapshot | None) -> dict[str, Any]:
-    stage = revision.stage
-    if stage in _REVIEW_STAGES:
-        interaction_state = "REVIEW_REQUIRED"
-    elif stage in _WORKING_STAGES:
-        interaction_state = "WORKING"
-    elif stage in _TERMINAL_STAGES:
-        interaction_state = "TERMINAL"
-    else:
-        interaction_state = "INACTIVE"
+def build_focus_projection(
+    state: ModelStateSnapshot,
+    artifact: ArtifactSnapshot | None,
+) -> dict[str, Any]:
+    actions = project_actions(state.stage)
     return {
         "schema_version": "r6o-focus-projection-1",
-        "session_id": revision.session_id,
-        "workspace_id": revision.controller_state.get("instance_id"),
-        "model_revision": revision.revision,
-        "projection_id": uuid.uuid4().hex,
-        "interaction_state": interaction_state,
-        "stage": stage,
-        "focus_kind": _FOCUS_KIND.get(stage),
+        "session_id": state.session_id,
+        "workspace_id": state.workspace_id,
+        "model_revision": state.model_revision,
+        "projection_id": _fingerprint(state, artifact, actions),
+        "interaction_state": state.interaction_state,
+        "stage": state.stage,
+        "focus_kind": _FOCUS_KIND.get(state.stage),
         "artifact": _artifact_dict(artifact),
-        "actions": project_actions(stage),
-        "lifecycle": {
-            "review_required": stage in _REVIEW_STAGES,
-            "terminal": stage in _TERMINAL_STAGES,
-            "close_allowed": stage in _REVIEW_STAGES or stage in _TERMINAL_STAGES,
-            "handoff_ready": stage in {"EXECUTION_READY", "CLOSED_SUCCESS"},
-        },
+        "actions": actions,
+        "lifecycle": state.lifecycle.to_dict(),
     }
-
-
-def current_artifact_ref(stage: str) -> str | None:
-    if stage == "PROMPT_REVIEW":
-        return "prompt:current"
-    if stage == "PLAN_REVIEW":
-        return "plan:current"
-    return None
 
 
 def build_focus_projection_from_port(port: ModelPort, session_id: str) -> dict[str, Any]:
-    revision = port.read_state(session_id)
-    ref = current_artifact_ref(revision.stage)
-    artifact = port.read_artifact(session_id, ref) if ref else None
-    return build_focus_projection(revision, artifact)
+    state = port.read_state(session_id)
+    subject = state.review_subject
+    artifact = (
+        port.read_artifact(session_id, subject.artifact_ref, subject.artifact_revision)
+        if subject
+        else None
+    )
+    return build_focus_projection(state, artifact)

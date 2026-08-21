@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pdl.local/r6o/model_state_snapshot.schema.json",
+  "title": "ModelStateSnapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["session_id", "workspace_id", "model_revision", "stage", "interaction_state", "review_subject", "lifecycle"],
+  "properties": {
+    "session_id": {"type": "string", "minLength": 1},
+    "workspace_id": {"type": ["string", "null"]},
+    "model_revision": {"type": "string", "minLength": 1},
+    "stage": {"type": "string", "minLength": 1},
+    "interaction_state": {"enum": ["INACTIVE", "REVIEW_REQUIRED", "WORKING", "TERMINAL"]},
+    "review_subject": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["artifact_ref", "artifact_revision", "artifact_kind", "title"],
+          "properties": {
+            "artifact_ref": {"type": "string", "minLength": 1},
+            "artifact_revision": {"type": "string", "minLength": 1},
+            "artifact_kind": {"type": "string", "minLength": 1},
+            "title": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["review_required", "terminal", "close_allowed", "handoff_ready", "terminal_disposition", "result_body"],
+      "properties": {
+        "review_required": {"type": "boolean"},
+        "terminal": {"type": "boolean"},
+        "close_allowed": {"type": "boolean"},
+        "handoff_ready": {"type": "boolean"},
+        "terminal_disposition": {"type": ["string", "null"]},
+        "result_body": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

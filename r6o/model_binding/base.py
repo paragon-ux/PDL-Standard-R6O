@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-"""Language-neutral R6O Model Port types shared by bindings and the ViewModel.
+"""Language-neutral R6O Model Port types.
 
-No concrete runtime, filesystem, or View imports live here.
+Concrete runtime, controller, filesystem, and View types do not cross this
+boundary.  Bindings translate their authoritative state into these snapshots.
 """
 
-import hashlib
-import json
 from dataclasses import dataclass, field
 from typing import Any, Protocol
 
@@ -14,7 +13,7 @@ MODEL_PORT_VERSION = "r6o-model-port-1"
 
 
 class StaleProjectionError(RuntimeError):
-    """Command referenced an obsolete model revision; no domain mutation occurred."""
+    """A command referenced obsolete authoritative state; nothing was mutated."""
 
 
 @dataclass(frozen=True)
@@ -33,39 +32,122 @@ class ArtifactSnapshot:
             "artifact_revision": self.artifact_revision,
             "artifact_kind": self.artifact_kind,
             "title": self.title,
-            "media_type": self.media_type,
             "body": self.body,
+            "media_type": self.media_type,
             "capabilities": dict(self.capabilities),
         }
 
 
 @dataclass(frozen=True)
-class ModelRevision:
-    session_id: str
-    revision: str
-    stage: str
-    controller_state: dict[str, Any]
+class ReviewSubject:
+    artifact_ref: str
+    artifact_revision: str
+    artifact_kind: str
+    title: str
 
-    @classmethod
-    def from_controller_state(cls, session_id: str, state: dict[str, Any]) -> "ModelRevision":
-        canonical = json.dumps(state, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-        token = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
-        return cls(
-            session_id=session_id,
-            revision=token,
-            stage=str(state.get("stage", "UNKNOWN")),
-            controller_state=state,
-        )
+    def to_dict(self) -> dict[str, str]:
+        return {
+            "artifact_ref": self.artifact_ref,
+            "artifact_revision": self.artifact_revision,
+            "artifact_kind": self.artifact_kind,
+            "title": self.title,
+        }
 
 
 @dataclass(frozen=True)
-class SessionInvocation:
-    schema_version: str = "r6o-session-invocation-1"
-    request_id: str = ""
+class LifecycleSnapshot:
+    review_required: bool
+    terminal: bool
+    close_allowed: bool
+    handoff_ready: bool
+    terminal_disposition: str | None = None
+    result_body: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "review_required": self.review_required,
+            "terminal": self.terminal,
+            "close_allowed": self.close_allowed,
+            "handoff_ready": self.handoff_ready,
+            "terminal_disposition": self.terminal_disposition,
+            "result_body": self.result_body,
+        }
+
+
+@dataclass(frozen=True)
+class ModelStateSnapshot:
+    session_id: str
+    workspace_id: str | None
+    model_revision: str
+    stage: str
+    interaction_state: str
+    review_subject: ReviewSubject | None
+    lifecycle: LifecycleSnapshot
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "session_id": self.session_id,
+            "workspace_id": self.workspace_id,
+            "model_revision": self.model_revision,
+            "stage": self.stage,
+            "interaction_state": self.interaction_state,
+            "review_subject": self.review_subject.to_dict() if self.review_subject else None,
+            "lifecycle": self.lifecycle.to_dict(),
+        }
+
+
+@dataclass(frozen=True)
+class HostInvocation:
+    """Host-owned presentation choice; never sent through the Model Port."""
+
+    request_id: str
+    presentation: str = "AUTO"
+    schema_version: str = "r6o-host-invocation-1"
+
+    def __post_init__(self) -> None:
+        if not self.request_id.strip():
+            raise ValueError("request_id must be non-empty")
+        if self.presentation not in {"AUTO", "TUI", "SIDECAR"}:
+            raise ValueError(f"unsupported presentation: {self.presentation}")
+
+
+@dataclass(frozen=True)
+class ModelSessionRequest:
+    """Exactly one NEW or RESUME request for an authoritative Model session."""
+
+    request_id: str
     task_text: str | None = None
     resume_session_id: str | None = None
-    presentation: str = "AUTO"
     worker_profile: str | None = None
+    schema_version: str = "r6o-model-session-request-1"
+
+    def __post_init__(self) -> None:
+        if not self.request_id.strip():
+            raise ValueError("request_id must be non-empty")
+        task = self.task_text.strip() if isinstance(self.task_text, str) else ""
+        resume = self.resume_session_id.strip() if isinstance(self.resume_session_id, str) else ""
+        if bool(task) == bool(resume):
+            raise ValueError("exactly one of task_text or resume_session_id is required")
+        if self.task_text is not None and not task:
+            raise ValueError("task_text must be non-empty")
+        if self.resume_session_id is not None and not resume:
+            raise ValueError("resume_session_id must be non-empty")
+
+    @property
+    def mode(self) -> str:
+        return "NEW" if self.task_text is not None else "RESUME"
+
+
+@dataclass(frozen=True)
+class HandoffReceipt:
+    handoff_ref: str
+    handoff_id: str
+    digest: str
+    durable: bool
+
+
+class HandoffStore(Protocol):
+    def persist(self, envelope: dict[str, Any]) -> HandoffReceipt: ...
 
 
 class ModelPort(Protocol):
@@ -73,14 +155,22 @@ class ModelPort(Protocol):
 
     port_version: str = MODEL_PORT_VERSION
 
-    def start_or_resume(self, invocation: SessionInvocation) -> ModelRevision: ...
+    def start_or_resume(self, request: ModelSessionRequest) -> ModelStateSnapshot: ...
 
-    def read_state(self, session_id: str) -> ModelRevision: ...
+    def read_state(self, session_id: str) -> ModelStateSnapshot: ...
 
-    def read_artifact(self, session_id: str, artifact_ref: str, expected_revision: str | None = None) -> ArtifactSnapshot: ...
+    def read_artifact(
+        self,
+        session_id: str,
+        artifact_ref: str,
+        expected_revision: str | None = None,
+    ) -> ArtifactSnapshot: ...
 
-    def submit_user_message(self, session_id: str, text: str, expected_revision: str | None) -> ModelRevision: ...
+    def submit_user_message(
+        self,
+        session_id: str,
+        text: str,
+        expected_revision: str | None,
+    ) -> ModelStateSnapshot: ...
 
-    def finalize(self, session_id: str) -> dict[str, Any]: ...
-
-    def wait_for_revision(self, session_id: str, after_revision: str | None = None) -> ModelRevision: ...
+    def finalize(self, session_id: str) -> ModelStateSnapshot: ...

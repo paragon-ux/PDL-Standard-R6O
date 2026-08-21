@@ -123,7 +123,9 @@
         "review_required",
         "terminal",
         "close_allowed",
-        "handoff_ready"
+        "handoff_ready",
+        "terminal_disposition",
+        "result_body"
       ],
       "properties": {
         "review_required": {
@@ -137,6 +139,12 @@
         },
         "handoff_ready": {
           "type": "boolean"
+        },
+        "terminal_disposition": {
+          "type": ["string", "null"]
+        },
+        "result_body": {
+          "type": ["string", "null"]
         }
       }
     }
