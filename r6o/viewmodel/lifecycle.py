@@ -1,80 +1,122 @@
 from __future__ import annotations
 
-"""Mechanical lifecycle projections: CloseResult and HandoffEnvelope.
+"""Pure lifecycle compilation and persistence-before-observation coordination."""
 
-Deterministic compilers over authoritative controller state. No LLM call.
-"""
-
+import hashlib
 import json
-import tempfile
-import uuid
-from pathlib import Path
 from typing import Any
 
-from r6o.model_binding.base import ArtifactSnapshot
+from r6o.viewmodel.model_port import (
+    ArtifactSnapshot,
+    HandoffReceipt,
+    HandoffStore,
+    ModelStateSnapshot,
+)
+
+_RESUMABLE_CLOSE_STAGES = {"PROMPT_REVIEW", "PLAN_REVIEW", "WAITING_INPUT"}
 
 
-def _disposition(stage: str) -> str:
-    if stage in {"EXECUTION_READY", "CLOSED_SUCCESS"}:
+def _hash_identity(prefix: str, value: Any) -> str:
+    canonical = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return f"{prefix}-" + hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def derive_disposition(state: ModelStateSnapshot) -> str:
+    if state.stage == "CLOSED_SUCCESS":
         return "HOST_HANDOFF"
-    if stage == "CLOSED_CANCELLED":
+    if state.stage == "CLOSED_CANCELLED":
         return "CANCELLED"
-    return "PDLT_RESUME"
+    if state.stage in _RESUMABLE_CLOSE_STAGES:
+        return "PDLT_RESUME"
+    raise ValueError(f"stage {state.stage!r} is not an authorized close synchronization point")
 
 
-def build_close_result(terminal_state: dict[str, Any], *, result_id: str | None = None, handoff_ref: str | None = None) -> dict[str, Any]:
-    stage = str(terminal_state.get("stage", "UNKNOWN"))
+def build_handoff_envelope(
+    state: ModelStateSnapshot,
+    artifacts: list[ArtifactSnapshot],
+) -> dict[str, Any]:
+    if derive_disposition(state) != "HOST_HANDOFF" or not state.lifecycle.handoff_ready:
+        raise ValueError("handoff requires authorized CLOSED_SUCCESS state")
+    semantics = {
+        "session_id": state.session_id,
+        "workspace_id": state.workspace_id,
+        "source_model_revision": state.model_revision,
+        "disposition": "HOST_HANDOFF",
+        "artifacts": [
+            {
+                "artifact_ref": item.artifact_ref,
+                "artifact_revision": item.artifact_revision,
+                "artifact_kind": item.artifact_kind,
+                "body": item.body,
+            }
+            for item in artifacts
+        ],
+        "execution_request": (
+            {"result_body": state.lifecycle.result_body}
+            if state.lifecycle.result_body is not None
+            else None
+        ),
+        "created_at": None,
+    }
+    return {
+        "schema_version": "r6o-handoff-envelope-1",
+        "handoff_id": _hash_identity("handoff", semantics),
+        **semantics,
+    }
+
+
+def build_close_result(
+    state: ModelStateSnapshot,
+    *,
+    receipt: HandoffReceipt | None = None,
+) -> dict[str, Any]:
+    disposition = derive_disposition(state)
+    if disposition == "HOST_HANDOFF":
+        try:
+            digest_is_valid = len(receipt.digest) == 64 and int(receipt.digest, 16) >= 0 if receipt else False
+        except ValueError:
+            digest_is_valid = False
+        if (
+            receipt is None
+            or not receipt.durable
+            or not receipt.handoff_ref
+            or not receipt.handoff_id
+            or not digest_is_valid
+        ):
+            raise ValueError("HOST_HANDOFF requires a valid durable HandoffReceipt")
+        handoff_ref: str | None = receipt.handoff_ref
+        handoff_identity: str | None = receipt.handoff_id
+    else:
+        if receipt is not None:
+            raise ValueError(f"{disposition} must not include a handoff receipt")
+        handoff_ref = None
+        handoff_identity = None
+    identity = {
+        "disposition": disposition,
+        "model_revision": state.model_revision,
+        "handoff_id": handoff_identity,
+    }
     return {
         "schema_version": "r6o-close-result-1",
-        "session_id": terminal_state.get("instance_id") or "session",
-        "result_id": result_id or f"close-{uuid.uuid4().hex[:12]}",
-        "disposition": _disposition(stage),
-        "model_revision": terminal_state.get("revision") or "authoritative",
+        "session_id": state.session_id,
+        "result_id": _hash_identity("close", identity),
+        "disposition": disposition,
+        "model_revision": state.model_revision,
         "handoff_ref": handoff_ref,
         "reason_code": None,
     }
 
 
-def build_handoff_envelope(terminal_state: dict[str, Any], artifacts: list[ArtifactSnapshot], *, handoff_id: str | None = None) -> dict[str, Any]:
-    disposition = _disposition(str(terminal_state.get("stage", "UNKNOWN")))
+def coordinate_close(
+    state: ModelStateSnapshot,
+    artifacts: list[ArtifactSnapshot],
+    store: HandoffStore,
+) -> dict[str, Any]:
+    disposition = derive_disposition(state)
     if disposition != "HOST_HANDOFF":
-        raise ValueError(f"handoff requires HOST_HANDOFF disposition, got {disposition}")
-    execution_request: dict[str, Any] | None = None
-    result_body = terminal_state.get("result") or terminal_state.get("execution_result")
-    if result_body is not None:
-        execution_request = {"result_body": result_body}
-    elif terminal_state.get("stage") == "EXECUTION_READY":
-        execution_request = {"state": "EXECUTION_READY"}
-    return {
-        "schema_version": "r6o-handoff-envelope-1",
-        "handoff_id": handoff_id or f"handoff-{uuid.uuid4().hex[:12]}",
-        "session_id": terminal_state.get("instance_id") or "session",
-        "workspace_id": terminal_state.get("workspace_id"),
-        "source_model_revision": terminal_state.get("revision") or "authoritative",
-        "disposition": "HOST_HANDOFF",
-        "artifacts": [
-            {
-                "artifact_ref": a.artifact_ref,
-                "artifact_revision": a.artifact_revision,
-                "artifact_kind": a.artifact_kind,
-                "body": a.body,
-            }
-            for a in artifacts
-        ],
-        "execution_request": execution_request,
-        "created_at": None,
-    }
-
-
-def write_handoff(path: Path, envelope: dict[str, Any]) -> str:
-    """Persist a handoff durably before CloseResult(HOST_HANDOFF) is emitted."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp = tempfile.mkstemp(prefix=path.name + ".", suffix=".tmp", dir=path.parent)
-    try:
-        with open(fd, "w", encoding="utf-8") as handle:
-            json.dump(envelope, handle, ensure_ascii=False, indent=2)
-        Path(tmp).replace(path)
-    finally:
-        if Path(tmp).exists():
-            Path(tmp).unlink(missing_ok=True)
-    return str(path)
+        return build_close_result(state)
+    envelope = build_handoff_envelope(state, artifacts)
+    receipt = store.persist(envelope)
+    if receipt.handoff_id != envelope["handoff_id"]:
+        raise ValueError("HandoffStore receipt identity does not match persisted envelope")
+    return build_close_result(state, receipt=receipt)

@@ -3,6 +3,8 @@
 from r6o.model_binding.base import (
     MODEL_PORT_VERSION,
     ArtifactSnapshot,
+    HandoffReceipt,
+    HandoffStore,
     LifecycleSnapshot,
     ModelPort,
     ModelStateSnapshot,
@@ -13,6 +15,8 @@ from r6o.model_binding.base import (
 __all__ = [
     "MODEL_PORT_VERSION",
     "ArtifactSnapshot",
+    "HandoffReceipt",
+    "HandoffStore",
     "LifecycleSnapshot",
     "ModelPort",
     "ModelStateSnapshot",

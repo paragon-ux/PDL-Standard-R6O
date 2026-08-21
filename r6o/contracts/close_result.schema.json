@@ -47,5 +47,12 @@
         "null"
       ]
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"disposition": {"const": "HOST_HANDOFF"}}, "required": ["disposition"]},
+      "then": {"required": ["handoff_ref"], "properties": {"handoff_ref": {"type": "string", "minLength": 1}}},
+      "else": {"required": ["handoff_ref"], "properties": {"handoff_ref": {"type": "null"}}}
+    }
+  ]
 }
