@@ -1,8 +1,8 @@
 {
   "schema_version": "r6o-1-parity-1",
   "stage": "R6O-1",
-  "candidate_commit": "b77d390c02d311360a9e836cf8307fc2d12d3775",
-  "candidate_tree": "9fd94668bc50ec413175b768c23ca0a17e6e796c",
+  "candidate_commit": "5da375e81e0d0d194d79eadd7cf1ad8c269b066a",
+  "candidate_tree": "1ea0fecf1abaaa30ab82085cff03ca14c94fa6b7",
   "g06": {
     "status": "PASS",
     "test": "test_g06_structured_actions_match_direct_r6s",
@@ -33,3 +33,4 @@
     "reason": "The current R6S binding remains filesystem-backed; R6O-1 proves ViewModel contract independence only."
   }
 }
+

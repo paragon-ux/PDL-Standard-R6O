@@ -1,6 +1,6 @@
 # R6O-1 Stage Report
 
-Qualified code snapshot `b77d390c02d311360a9e836cf8307fc2d12d3775` (tree `9fd94668bc50ec413175b768c23ca0a17e6e796c`) has no P1/P2 architecture blockers. Its evidence status is **NOT_READY_LOCAL_ORACLE_INVENTORY_DEVIATION** because an early pre-isolation diagnostic changed ignored files in the local oracle and the turn-start physical bytes cannot be restored exactly.
+Qualified code snapshot `5da375e81e0d0d194d79eadd7cf1ad8c269b066a` (tree `1ea0fecf1abaaa30ab82085cff03ca14c94fa6b7`) has no P1/P2 architecture blockers. H1 evidence status: **READY_FOR_H1_WITH_FINDING** — the finding is the historical local ignored-file/oracle inventory deviation (an early pre-isolation diagnostic modified the ignored `mlflow.db` in the local frozen R6S checkout; tracked R6S commit/tree remained exact; the repaired verifier/loader prevents recurrence).
 
 Repository: `paragon-ux/PDL-Standard-R6O`, branch `codex/r6o-1-viewmodel`, PR #1, published at `https://github.com/paragon-ux/PDL-Standard-R6O`.
 
@@ -12,7 +12,7 @@ Frozen Model oracle: commit `60d982f3328b45a351879d67dc4bb525172b65fd`, tree `b7
 - Baseline pytest: PASS, 9 tests.
 - R6O pytest: PASS, 87 tests.
 - Portable R6O verifier: PASS.
-- GitHub Actions: PASS on push run `32532890215` and PR run `32532893501`; Ubuntu and Windows jobs passed every gate.
+- GitHub Actions: PASS on push run `32533205409` and PR run `32533208629`; Ubuntu and Windows jobs passed every gate.
 - Final repaired baseline inventory: PASS, 741 files and aggregate SHA-256 `426A1E402C90CED18CE1394F6F5F58280C5A6400DE95CFB2BC8AC39DB03D1FBB` before and after.
 
 The verifier runs baseline and R6O gates against an isolated Git clone. A pre-isolation diagnostic run created ignored MLflow artifacts in the local oracle; no tracked file or baseline Git tree changed. Every final repaired verifier run produced no further physical oracle delta, but that does not erase the earlier ignored-file deviation.
@@ -55,3 +55,12 @@ The independent review-agent reviewed the entire repaired diff and iterated thro
 The evidence names the exact code snapshot qualified by local verification and GitHub CI. The subsequent evidence-only amend necessarily has a different commit/tree because a Git commit or tree cannot contain its own cryptographic identifier without an impossible self-reference.
 
 `EXECUTION_READY` is explicitly not a close synchronization point. Only `CLOSED_SUCCESS` can become `HOST_HANDOFF`, after durable persistence; `CLOSED_CANCELLED` becomes `CANCELLED`; review/wait states become `PDLT_RESUME`.
+
+## H1 Closeout
+
+- Qualified code commit: `5da375e81e0d0d194d79eadd7cf1ad8c269b066a` (tree `1ea0fecf1abaaa30ab82085cff03ca14c94fa6b7`)
+- Successful PR qualification run: `32533208629` (push run `32533205409`; Ubuntu and Windows)
+- H1 status: `READY_FOR_H1_WITH_FINDING`
+- Finding: historical local ignored-file/oracle inventory deviation (`mlflow.db` modified by an early pre-isolation diagnostic); tracked R6S commit/tree remained exact; current verifier/loader prevents recurrence.
+- Recommended human disposition: `USER_ACCEPT_WITH_FINDING` (does not block R6O-2 once recorded).
+- This stage report is an evidence-only closeout; the qualified implementation head is unchanged.

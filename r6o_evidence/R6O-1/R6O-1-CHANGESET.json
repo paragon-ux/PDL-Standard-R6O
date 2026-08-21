@@ -2,8 +2,8 @@
   "schema_version": "r6o-changeset-1",
   "stage": "R6O-1",
   "base_commit": "f41eddcb625174b5dfd9af14ed707f5bf9cc387a",
-  "candidate_commit": "b77d390c02d311360a9e836cf8307fc2d12d3775",
-  "candidate_tree": "9fd94668bc50ec413175b768c23ca0a17e6e796c",
+  "candidate_commit": "5da375e81e0d0d194d79eadd7cf1ad8c269b066a",
+  "candidate_tree": "1ea0fecf1abaaa30ab82085cff03ca14c94fa6b7",
   "work_repository": {
     "repository": "paragon-ux/PDL-Standard-R6O",
     "remote_url": "https://github.com/paragon-ux/PDL-Standard-R6O",
@@ -14,7 +14,7 @@
   "repair_commits": [
     {"commit": "e40c18f", "subject": "fix(r6o1): normalize Model Port and revision contracts"},
     {"commit": "c7f972a", "subject": "fix(r6o1): harden runtime binding and lifecycle persistence"},
-    {"commit": "b77d390", "subject": "test(r6o1): close review findings and add qualification CI"}
+    {"commit": "5da375e", "subject": "test(r6o1): close review findings and add qualification CI"}
   ],
   "changed_surfaces": [
     {"paths": ["r6o/contracts/*.schema.json"], "change_kind": "CONTRACT_REPAIR", "summary": "Normalized Model Port outputs, split invocation, conditional command/close results."},
@@ -33,5 +33,13 @@
     "final_repaired_verification_physical_inventory_unchanged": true,
     "final_inventory_count": 741,
     "final_inventory_sha256": "426A1E402C90CED18CE1394F6F5F58280C5A6400DE95CFB2BC8AC39DB03D1FBB"
+  }
+,
+  "evidence_closeout": {
+    "qualified_code_commit": "5da375e81e0d0d194d79eadd7cf1ad8c269b066a",
+    "qualified_code_tree": "1ea0fecf1abaaa30ab82085cff03ca14c94fa6b7",
+    "pr_qualification_run": 32533208629,
+    "change_kind": "EVIDENCE_ONLY",
+    "note": "Evidence-only closeout per H1 review; no implementation code changed in this commit."
   }
 }

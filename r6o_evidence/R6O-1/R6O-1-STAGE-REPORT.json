@@ -1,8 +1,8 @@
 {
   "schema_version": "r6o-stage-report-1",
   "stage": "R6O-1",
-  "candidate_commit": "b77d390c02d311360a9e836cf8307fc2d12d3775",
-  "candidate_tree": "9fd94668bc50ec413175b768c23ca0a17e6e796c",
+  "candidate_commit": "5da375e81e0d0d194d79eadd7cf1ad8c269b066a",
+  "candidate_tree": "1ea0fecf1abaaa30ab82085cff03ca14c94fa6b7",
   "baseline_commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
   "baseline_tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
   "work_repository": {
@@ -16,7 +16,7 @@
     "baseline_pytest": "PASS (9 passed)",
     "r6o_pytest": "PASS (87 passed)",
     "r6o_verifier": "PASS",
-    "github_ci": "PASS (push 32532890215 and PR 32532893501; Ubuntu and Windows)",
+    "github_ci": "PASS (push 32533205409 and PR 32533208629; Ubuntu and Windows)",
     "final_baseline_physical_inventory": "PASS (741 files, identical before/after repaired verifier)"
   },
   "parity": {
@@ -72,5 +72,13 @@
   "remaining_blocking_findings": [
     "The local oracle physical inventory was altered by a pre-repair diagnostic run before isolation was installed; tracked commit/tree stayed exact and all final isolated verifications were inventory-stable, but the turn-start ignored-file inventory cannot be restored byte-for-byte."
   ],
-  "candidate_status": "NOT_READY_LOCAL_ORACLE_INVENTORY_DEVIATION"
+  "h1_finding": {
+    "qualified_code_commit": "5da375e81e0d0d194d79eadd7cf1ad8c269b066a",
+    "qualified_code_tree": "1ea0fecf1abaaa30ab82085cff03ca14c94fa6b7",
+    "pr_qualification_run": 32533208629,
+    "description": "Historical local ignored-file/oracle inventory deviation: an early pre-isolation diagnostic modified the ignored mlflow.db in the local frozen R6S checkout. Tracked R6S commit/tree remained exact (60d982f/b7689fbe). The repaired verifier/loader prevents recurrence via isolated clone, bytecode suppression, and physical inventory checks.",
+    "disposition_recommendation": "USER_ACCEPT_WITH_FINDING"
+  },
+  "candidate_status": "READY_FOR_H1_WITH_FINDING"
 }
+
