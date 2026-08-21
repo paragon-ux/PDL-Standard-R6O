@@ -1,0 +1,44 @@
+{
+  "schema_version": "r6o-test-results-1",
+  "stage": "R6O-1",
+  "candidate_commit": "c5882eae54fae9be584d2a092af02ae36190014a",
+  "observed_at_local": "2026-08-21",
+  "results": [
+    {
+      "id": "R6O1_CONFORMANCE",
+      "command": "python -m pytest r6o\\tests -q",
+      "cwd": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O",
+      "exit_code": 0,
+      "status": "PASS",
+      "detail": "33 passed in 5.06s",
+      "coverage": [
+        "contract schema validity and samples",
+        "input envelope tightening",
+        "canonical review messages",
+        "projection purity/reconstructability",
+        "dynamic action sets",
+        "stale/unknown fail-closed",
+        "artifact provider substitution (local + non-path)",
+        "G06/A02 ViewModel vs direct runtime parity",
+        "lifecycle close/handoff determinism and ordering",
+        "boundary scans (no runtime/controller/view imports, no path properties)"
+      ]
+    },
+    {
+      "id": "BASELINE_VERIFIER",
+      "command": "python scripts\\verify_repl_baseline.py",
+      "cwd": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness",
+      "exit_code": 0,
+      "status": "PASS",
+      "detail": "REPL BASELINE VERIFICATION PASS; fresh G06 lifecycle + resume CLOSED_SUCCESS"
+    },
+    {
+      "id": "BASELINE_PYTEST",
+      "command": "python -m pytest tests -q",
+      "cwd": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness",
+      "exit_code": 0,
+      "status": "PASS",
+      "detail": "9 passed in 67.43s"
+    }
+  ]
+}

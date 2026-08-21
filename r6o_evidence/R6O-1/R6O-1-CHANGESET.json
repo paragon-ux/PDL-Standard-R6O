@@ -1,0 +1,36 @@
+{
+  "schema_version": "r6o-changeset-1",
+  "stage": "R6O-1",
+  "base_commit": null,
+  "candidate_commit": "c5882eae54fae9be584d2a092af02ae36190014a",
+  "work_repository": {
+    "repository": "PDL-Standard-R6O",
+    "path": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O",
+    "remote_status": "NOT_LIVE_NOT_PUBLISHED"
+  },
+  "files": [
+    {"path": "r6o/contracts/model_port.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-MVVM-002"], "why_required_now": "Versioned Model Port contract r6o-model-port-1"},
+    {"path": "r6o/contracts/viewmodel_command_result.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-VM-007"], "why_required_now": "Mechanical STALE_PROJECTION/error result contract"},
+    {"path": "r6o/contracts/canonical_review_messages.json", "change_kind": "NEW", "requirement_ids": ["R6O-VM-005", "R6O-PAR-001"], "why_required_now": "Versioned canonical review messages for structured actions"},
+    {"path": "r6o/contracts/input_envelope.schema.json", "change_kind": "MODIFIED", "requirement_ids": ["R6O-VM-007"], "why_required_now": "Text sources require text; structured actions require action/projection identity"},
+    {"path": "r6o/contracts/focus_projection.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-VM-001", "R6O-VM-002", "R6O-VM-003"], "why_required_now": "Language-neutral FocusProjection contract"},
+    {"path": "r6o/contracts/presentation_action.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-VM-004"], "why_required_now": "Dynamic action contract"},
+    {"path": "r6o/contracts/session_invocation.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-MVVM-002"], "why_required_now": "Invocation envelope"},
+    {"path": "r6o/contracts/close_result.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-HND-001"], "why_required_now": "CloseResult lifecycle contract"},
+    {"path": "r6o/contracts/handoff_envelope.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-HND-001", "R6O-HND-002"], "why_required_now": "HandoffEnvelope contract"},
+    {"path": "r6o/model_binding/base.py", "change_kind": "NEW", "requirement_ids": ["R6O-MVVM-001", "R6O-MVVM-002"], "why_required_now": "Port types, opaque artifact snapshots, revisions, stale error"},
+    {"path": "r6o/model_binding/local_runtime.py", "change_kind": "NEW", "requirement_ids": ["R6O-MOD-001", "R6O-MOD-003"], "why_required_now": "Current MVVM Model binding over frozen PDLtHost"},
+    {"path": "r6o/model_binding/memory_model.py", "change_kind": "NEW", "requirement_ids": ["R6O-MOD-004", "R6O-MOD-005", "R6O-PAR-006"], "why_required_now": "Non-path provider proof"},
+    {"path": "r6o/viewmodel/projection.py", "change_kind": "NEW", "requirement_ids": ["R6O-VM-001", "R6O-VM-002", "R6O-VM-003"], "why_required_now": "FocusProjection builder"},
+    {"path": "r6o/viewmodel/actions.py", "change_kind": "NEW", "requirement_ids": ["R6O-VM-004", "R6O-VM-005"], "why_required_now": "Dynamic action projection with canonical text"},
+    {"path": "r6o/viewmodel/dispatcher.py", "change_kind": "NEW", "requirement_ids": ["R6O-VM-005", "R6O-VM-007", "R6O-PAR-001"], "why_required_now": "Structured/free-response dispatch, stale fail-closed"},
+    {"path": "r6o/viewmodel/lifecycle.py", "change_kind": "NEW", "requirement_ids": ["R6O-HND-001", "R6O-HND-002"], "why_required_now": "CloseResult and HandoffEnvelope mechanical compilers"},
+    {"path": "r6o/viewmodel/model_port.py", "change_kind": "NEW", "requirement_ids": ["R6O-MVVM-002"], "why_required_now": "ViewModel dependency boundary"},
+    {"path": "r6o/tests/*.py", "change_kind": "NEW", "requirement_ids": ["R6O-PAR-001", "R6O-PAR-002", "R6O-PAR-006", "R6O-VM-001", "R6O-VM-002", "R6O-VM-003", "R6O-VM-004", "R6O-VM-005", "R6O-VM-007", "R6O-MOD-005", "R6O-HND-001", "R6O-HND-002"], "why_required_now": "R6O-1 conformance suite"},
+    {"path": "scripts/verify_r6o1.py", "change_kind": "NEW", "requirement_ids": ["R6O-PAR-001"], "why_required_now": "Stage verifier"}
+  ],
+  "notes": [
+    "No frozen baseline files changed.",
+    "Work repository is local-only; no remote is inferred."
+  ]
+}

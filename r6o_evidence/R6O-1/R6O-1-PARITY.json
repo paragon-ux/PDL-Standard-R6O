@@ -1,0 +1,29 @@
+{
+  "schema_version": "r6o-1-parity-1",
+  "stage": "R6O-1",
+  "candidate_commit": "c5882eae54fae9be584d2a092af02ae36190014a",
+  "g06": {
+    "status": "PASS",
+    "operation_sequence": ["activation", "confirm_prompt_action", "confirm_plan_action"],
+    "final_stage": "CLOSED_SUCCESS",
+    "prompt_body": "Explain the difference between optimistic locking and pessimistic locking for an audience of senior developers.",
+    "plan_body": "IDENTIFY the target audience as senior developers\nINTRODUCE the subject of concurrency control\nDEFINE optimistic locking\nDEFINE pessimistic locking\nCOMPARE the two approaches\nSUMMARIZE the differences",
+    "viewmodel_equals_direct_runtime": true
+  },
+  "a02": {
+    "status": "PASS",
+    "operation_sequence": ["activation", "host_composer_free_text"],
+    "final_stage": "PROMPT_REVIEW",
+    "prompt_body": "COMPARE Kafka and RabbitMQ for event delivery, intended for data engineers.",
+    "viewmodel_equals_direct_runtime": true
+  },
+  "structured_action_equivalence": {
+    "status": "PASS",
+    "confirm_prompt": "Yes, that is what I mean.",
+    "confirm_plan": "Confirm the plan and execute.",
+    "note": "Action dispatch == same canonical ordinary text through the same semantic review path; free-response focus actions carry no placeholder canonical text."
+  },
+  "projection_parity": {"status": "PASS"},
+  "artifact_provider_substitution": {"status": "PASS"},
+  "labels": ["PARITY_PRESERVED_PRE_HANDOFF"]
+}

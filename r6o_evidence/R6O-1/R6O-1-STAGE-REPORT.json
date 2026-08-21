@@ -1,0 +1,86 @@
+{
+  "schema_version": "r6o-stage-report-1",
+  "stage": "R6O-1",
+  "candidate_commit": "c5882eae54fae9be584d2a092af02ae36190014a",
+  "candidate_tree": null,
+  "baseline_commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+  "baseline_tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+  "work_repository": {
+    "repository": "PDL-Standard-R6O",
+    "path": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O",
+    "remote_status": "NOT_LIVE_NOT_PUBLISHED",
+    "remote_url": null
+  },
+  "entry_preconditions": {
+    "h0_user_accept": true,
+    "r6o1_authorized": true,
+    "work_repo_bound": true,
+    "baseline_identity_verified": true
+  },
+  "changed_files": [
+    "README.md",
+    "WORK-REPOSITORY-BINDING.json",
+    ".gitignore",
+    "r6o/__init__.py",
+    "r6o/contracts_validation.py",
+    "r6o/contracts/model_port.schema.json",
+    "r6o/contracts/viewmodel_command_result.schema.json",
+    "r6o/contracts/canonical_review_messages.json",
+    "r6o/contracts/input_envelope.schema.json",
+    "r6o/contracts/focus_projection.schema.json",
+    "r6o/contracts/presentation_action.schema.json",
+    "r6o/contracts/session_invocation.schema.json",
+    "r6o/contracts/close_result.schema.json",
+    "r6o/contracts/handoff_envelope.schema.json",
+    "r6o/model_binding/__init__.py",
+    "r6o/model_binding/base.py",
+    "r6o/model_binding/local_runtime.py",
+    "r6o/model_binding/memory_model.py",
+    "r6o/viewmodel/__init__.py",
+    "r6o/viewmodel/model_port.py",
+    "r6o/viewmodel/projection.py",
+    "r6o/viewmodel/actions.py",
+    "r6o/viewmodel/dispatcher.py",
+    "r6o/viewmodel/lifecycle.py",
+    "r6o/tests/conftest.py",
+    "r6o/tests/test_contracts.py",
+    "r6o/tests/test_projection.py",
+    "r6o/tests/test_actions.py",
+    "r6o/tests/test_stale.py",
+    "r6o/tests/test_artifact_providers.py",
+    "r6o/tests/test_parity_g06_a02.py",
+    "r6o/tests/test_lifecycle.py",
+    "r6o/tests/test_boundaries.py",
+    "scripts/verify_r6o1.py"
+  ],
+  "requirements_claimed": [
+    "R6O-MVVM-001", "R6O-MVVM-002", "R6O-MVVM-003",
+    "R6O-MOD-001", "R6O-MOD-003", "R6O-MOD-004", "R6O-MOD-005",
+    "R6O-VM-001", "R6O-VM-002", "R6O-VM-003", "R6O-VM-004", "R6O-VM-005", "R6O-VM-007",
+    "R6O-HND-001", "R6O-HND-002",
+    "R6O-PAR-001", "R6O-PAR-002", "R6O-PAR-006",
+    "R6O-ISO-001", "R6O-ISO-002"
+  ],
+  "tests": [
+    {"id": "BASELINE_VERIFIER", "command": "python scripts\\verify_repl_baseline.py", "status": "PASS", "exit_code": 0},
+    {"id": "BASELINE_PYTEST", "command": "python -m pytest tests -q", "status": "PASS", "exit_code": 0, "detail": "9 passed"},
+    {"id": "R6O1_PYTEST", "command": "python -m pytest r6o\\tests -q", "status": "PASS", "exit_code": 0, "detail": "33 passed"}
+  ],
+  "parity": {
+    "G06": "PASS",
+    "A02": "PASS",
+    "structured_action_equivalence": "PASS",
+    "projection_purity": "PASS",
+    "artifact_provider_substitution": "PASS"
+  },
+  "live_paths": {
+    "current_model_binding": "PDLtHost via LocalRuntimeModelBinding (frozen R6S repo, read-only)",
+    "non_path_provider": "InMemoryModel + InMemoryArtifactProvider"
+  },
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "Local package directory does not yet contain the r2 correction files; corrected artifacts were created in the work repository per the human's authoritative correction summary.",
+    "HandoffEnvelope is compiled for CLOSED_SUCCESS/EXECUTION_READY; R6O-3 will integrate host invocation and on-close delivery."
+  ],
+  "candidate_status": "READY_FOR_H1"
+}
