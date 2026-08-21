@@ -1,0 +1,19 @@
+{
+  "schema_version": "r6o-work-repository-binding-1",
+  "repository": "PDL-Standard-R6O",
+  "path": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O",
+  "remote_status": "NOT_LIVE_NOT_PUBLISHED",
+  "remote_url": null,
+  "starting_commit": null,
+  "binding_date": "2026-08-21",
+  "human_authorized": true,
+  "baseline_oracle": {
+    "repository": "paragon-ux/PDL-Standard-REPL-Harness",
+    "path": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness",
+    "commit_sha": "60d982f3328b45a351879d67dc4bb525172b65fd",
+    "tree_sha": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+    "role": "READ_ONLY_CURRENT_MVVM_MODEL_BINDING_ORACLE",
+    "mutable": false,
+    "patch_required_stop": "Any need to patch the frozen baseline is a STOP condition for R6O-1."
+  }
+}

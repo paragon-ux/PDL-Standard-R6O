@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pdl.local/r6o/model_port.schema.json",
+  "title": "ModelPortContract",
+  "description": "Logical MVVM Model Port contract r6o-model-port-1. Bindings implement these operations language-natively; wire shapes are illustrative.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["port_version", "operations", "stale_error"],
+  "properties": {
+    "port_version": {"const": "r6o-model-port-1"},
+    "operations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start_or_resume", "read_state", "read_artifact", "submit_user_message", "finalize", "wait_for_revision"],
+      "properties": {
+        "start_or_resume": {
+          "type": "object",
+          "required": ["input", "output"],
+          "properties": {
+            "input": {"$ref": "session_invocation.schema.json"},
+            "output": {"description": "ModelRevision: session_id, revision, stage, controller_state"}
+          }
+        },
+        "read_state": {
+          "type": "object",
+          "required": ["input", "output"],
+          "properties": {
+            "input": {"description": "session_id (string)"},
+            "output": {"description": "ModelRevision: session_id, revision, stage, controller_state"}
+          }
+        },
+        "read_artifact": {
+          "type": "object",
+          "required": ["input", "output"],
+          "properties": {
+            "input": {"description": "session_id, opaque artifact_ref, optional expected_revision"},
+            "output": {"description": "ArtifactSnapshot: artifact_ref, artifact_revision, artifact_kind, title, body, media_type, capabilities"}
+          }
+        },
+        "submit_user_message": {
+          "type": "object",
+          "required": ["input", "output"],
+          "properties": {
+            "input": {"description": "session_id, ordinary user text, optional expected_revision"},
+            "output": {"description": "resulting ModelRevision after authoritative semantic processing"}
+          }
+        },
+        "finalize": {
+          "type": "object",
+          "required": ["input", "output"],
+          "properties": {
+            "input": {"description": "session_id"},
+            "output": {"description": "authoritative terminal controller state (dict)"}
+          }
+        },
+        "wait_for_revision": {
+          "type": "object",
+          "required": ["input", "output"],
+          "properties": {
+            "input": {"description": "session_id, optional after_revision"},
+            "output": {"description": "current ModelRevision"}
+          }
+        }
+      }
+    },
+    "stale_error": {
+      "type": "object",
+      "required": ["class", "code"],
+      "properties": {
+        "class": {"const": "STALE_PROJECTION"},
+        "code": {"const": "STALE_PROJECTION"},
+        "message": {"type": "string"}
+      }
+    }
+  }
+}

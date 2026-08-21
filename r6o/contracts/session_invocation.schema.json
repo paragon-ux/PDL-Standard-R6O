@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pdl.local/r6o/session_invocation.schema.json",
+  "title": "SessionInvocation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "presentation"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "r6o-session-invocation-1"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_text": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resume_session_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "presentation": {
+      "enum": [
+        "AUTO",
+        "TUI",
+        "SIDECAR"
+      ]
+    },
+    "worker_profile": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Optional PDLt-owned worker profile; not ambient host LLM identity."
+    }
+  }
+}

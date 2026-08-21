@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pdl.local/r6o/handoff_envelope.schema.json",
+  "title": "HandoffEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "handoff_id",
+    "session_id",
+    "source_model_revision",
+    "disposition",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "r6o-handoff-envelope-1"
+    },
+    "handoff_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workspace_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_model_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "disposition": {
+      "const": "HOST_HANDOFF"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_ref",
+          "artifact_revision",
+          "artifact_kind"
+        ],
+        "properties": {
+          "artifact_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifact_revision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifact_kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "body": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Include only when target host needs an authorized materialized snapshot."
+          }
+        }
+      }
+    },
+    "execution_request": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Deterministic controller-authorized minimum host continuation data.",
+      "additionalProperties": true
+    },
+    "created_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}
