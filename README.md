@@ -1,10 +1,10 @@
 # PDL-Standard-R6O — R6O MVVM Presentation Vertical (implementation repo)
 
-Local-only R6O implementation repository. NOT LIVE / NOT PUBLISHED.
+Published R6O implementation repository for the R6O-1 MVVM vertical.
 
-- Repository: PDL-Standard-R6O
+- Repository: paragon-ux/PDL-Standard-R6O
 - Path: C:\Users\USER\Desktop\Frameworks\PDL-Standard-R6O
-- Remote: none
+- Remote: https://github.com/paragon-ux/PDL-Standard-R6O
 - Baseline oracle (READ-ONLY): C:\Users\USER\Desktop\Frameworks\PDL-Standard-REPL-Harness @ 60d982f3328b45a351879d67dc4bb525172b65fd
 
 ## Rules
@@ -19,8 +19,11 @@ Local-only R6O implementation repository. NOT LIVE / NOT PUBLISHED.
 From this repository root:
 
 ```powershell
+$env:PDL_R6S_BASELINE_REPO='C:\path\to\PDL-Standard-REPL-Harness'
 python -m pytest r6o\tests -q
 python scripts\verify_r6o1.py
 ```
 
-Baseline tests are run against the frozen oracle repository by the verifier.
+The verifier clones the bound frozen oracle into temporary storage before
+running its own verifier and pytest suite, preventing ignored-file writes in
+the oracle checkout.

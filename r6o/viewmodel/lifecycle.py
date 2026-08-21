@@ -13,30 +13,37 @@ from r6o.viewmodel.model_port import (
     ModelStateSnapshot,
 )
 
-_RESUMABLE_CLOSE_STAGES = {"PROMPT_REVIEW", "PLAN_REVIEW", "WAITING_INPUT"}
-
-
 def _hash_identity(prefix: str, value: Any) -> str:
     canonical = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
     return f"{prefix}-" + hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
 def derive_disposition(state: ModelStateSnapshot) -> str:
-    if state.stage == "CLOSED_SUCCESS":
-        return "HOST_HANDOFF"
-    if state.stage == "CLOSED_CANCELLED":
-        return "CANCELLED"
-    if state.stage in _RESUMABLE_CLOSE_STAGES:
+    lifecycle = state.lifecycle
+    if not lifecycle.close_allowed:
+        raise ValueError("Model lifecycle does not authorize close")
+    if lifecycle.terminal:
+        disposition = lifecycle.terminal_disposition
+        if disposition not in {"HOST_HANDOFF", "CANCELLED", "FAILED"}:
+            raise ValueError("terminal Model lifecycle has no valid disposition")
+        if (disposition == "HOST_HANDOFF") != lifecycle.handoff_ready:
+            raise ValueError("Model lifecycle handoff readiness contradicts disposition")
+        return disposition
+    if lifecycle.review_required and lifecycle.terminal_disposition is None:
         return "PDLT_RESUME"
-    raise ValueError(f"stage {state.stage!r} is not an authorized close synchronization point")
+    raise ValueError("Model lifecycle is not an authorized close synchronization point")
 
 
 def build_handoff_envelope(
     state: ModelStateSnapshot,
     artifacts: list[ArtifactSnapshot],
 ) -> dict[str, Any]:
-    if derive_disposition(state) != "HOST_HANDOFF" or not state.lifecycle.handoff_ready:
-        raise ValueError("handoff requires authorized CLOSED_SUCCESS state")
+    if derive_disposition(state) != "HOST_HANDOFF":
+        raise ValueError("handoff requires Model-authorized HOST_HANDOFF state")
+    authorized = [item.to_dict() for item in state.lifecycle.authorized_handoff_artifacts]
+    supplied = [item.to_dict() for item in artifacts]
+    if supplied != authorized:
+        raise ValueError("handoff artifacts do not match the Model-authorized terminal set")
     semantics = {
         "session_id": state.session_id,
         "workspace_id": state.workspace_id,
@@ -65,10 +72,11 @@ def build_handoff_envelope(
     }
 
 
-def build_close_result(
+def _compile_close_result(
     state: ModelStateSnapshot,
     *,
     receipt: HandoffReceipt | None = None,
+    handoff_verified: bool = False,
 ) -> dict[str, Any]:
     disposition = derive_disposition(state)
     if disposition == "HOST_HANDOFF":
@@ -78,6 +86,7 @@ def build_close_result(
             digest_is_valid = False
         if (
             receipt is None
+            or not handoff_verified
             or not receipt.durable
             or not receipt.handoff_ref
             or not receipt.handoff_id
@@ -94,6 +103,7 @@ def build_close_result(
     identity = {
         "disposition": disposition,
         "model_revision": state.model_revision,
+        "session_id": state.session_id,
         "handoff_id": handoff_identity,
     }
     return {
@@ -105,6 +115,14 @@ def build_close_result(
         "handoff_ref": handoff_ref,
         "reason_code": None,
     }
+
+
+def build_close_result(state: ModelStateSnapshot) -> dict[str, Any]:
+    """Compile non-handoff close results; HOST_HANDOFF requires coordination."""
+
+    if derive_disposition(state) == "HOST_HANDOFF":
+        raise ValueError("HOST_HANDOFF must be produced by coordinate_close after persistence")
+    return _compile_close_result(state)
 
 
 def coordinate_close(
@@ -119,4 +137,9 @@ def coordinate_close(
     receipt = store.persist(envelope)
     if receipt.handoff_id != envelope["handoff_id"]:
         raise ValueError("HandoffStore receipt identity does not match persisted envelope")
-    return build_close_result(state, receipt=receipt)
+    expected_digest = hashlib.sha256(
+        (json.dumps(envelope, sort_keys=True, separators=(",", ":"), ensure_ascii=False) + "\n").encode("utf-8")
+    ).hexdigest()
+    if receipt.digest != expected_digest or not receipt.durable:
+        raise ValueError("HandoffStore did not verify durable persistence of the canonical envelope")
+    return _compile_close_result(state, receipt=receipt, handoff_verified=True)

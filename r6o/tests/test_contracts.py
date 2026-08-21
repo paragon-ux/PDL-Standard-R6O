@@ -5,125 +5,113 @@ from pathlib import Path
 
 import pytest
 from jsonschema import Draft202012Validator
+
 from r6o.contracts_validation import make_validator
+from r6o.model_binding.base import HostInvocation, ModelSessionRequest
+from r6o.tests.helpers import artifact, state
+from r6o.viewmodel.projection import build_focus_projection
 
 CONTRACTS = Path(__file__).resolve().parents[1] / "contracts"
 SCHEMAS = sorted(CONTRACTS.glob("*.schema.json"))
 
 
-def _load(name: str):
+def _load(name: str) -> dict:
     return json.loads((CONTRACTS / name).read_text(encoding="utf-8"))
 
 
 def _validates(name: str, instance: dict) -> bool:
-    validator = make_validator(_load(name))
-    return validator.is_valid(instance)
+    return make_validator(_load(name)).is_valid(instance)
 
 
-@pytest.mark.parametrize("path", SCHEMAS, ids=lambda p: p.name)
+@pytest.mark.parametrize("path", SCHEMAS, ids=lambda path: path.name)
 def test_all_schemas_are_valid_json_schemas(path: Path) -> None:
     Draft202012Validator.check_schema(json.loads(path.read_text(encoding="utf-8")))
 
 
-def test_focus_projection_sample() -> None:
-    sample = {
-        "schema_version": "r6o-focus-projection-1",
-        "session_id": "s1",
-        "workspace_id": "W-1",
-        "model_revision": "rev-1",
-        "projection_id": "p-1",
-        "interaction_state": "REVIEW_REQUIRED",
-        "stage": "PROMPT_REVIEW",
-        "focus_kind": "PROMPT_REVIEW",
-        "artifact": {
-            "artifact_ref": "prompt:P1",
-            "artifact_revision": "P1",
-            "artifact_kind": "prompt",
-            "title": "Authoritative Prompt (PDL.md)",
-            "media_type": "text/plain",
-            "body": "COMPARE Kafka and RabbitMQ.",
-            "capabilities": {"copy": True, "open_external": False},
-        },
-        "actions": [],
-        "lifecycle": {"review_required": True, "terminal": False, "close_allowed": True, "handoff_ready": False},
+def test_normalized_model_port_outputs_are_machine_validated() -> None:
+    snapshot = state()
+    assert _validates("model_state_snapshot.schema.json", snapshot.to_dict())
+    assert _validates("artifact_snapshot.schema.json", artifact().to_dict())
+    schema = _load("model_port.schema.json")
+    refs = json.dumps(schema["$defs"], sort_keys=True)
+    assert "model_state_snapshot.schema.json" in refs
+    assert "artifact_snapshot.schema.json" in refs
+    assert "model_port_error.schema.json" in refs
+    assert "wait_for_revision" not in json.dumps(schema)
+
+
+def test_host_and_model_invocations_are_separate() -> None:
+    HostInvocation(request_id="host-1", presentation="AUTO")
+    new = ModelSessionRequest(request_id="new-1", task_text="Do the task")
+    resume = ModelSessionRequest(request_id="resume-1", resume_session_id="I-1")
+    assert new.mode == "NEW"
+    assert resume.mode == "RESUME"
+    assert "presentation" not in _load("model_session_request.schema.json")["properties"]
+    assert "task_text" not in _load("host_invocation.schema.json")["properties"]
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {},
+        {"task_text": "task", "resume_session_id": "I-1"},
+        {"task_text": ""},
+        {"resume_session_id": ""},
+    ],
+)
+def test_new_and_resume_are_mutually_exclusive(kwargs: dict) -> None:
+    with pytest.raises(ValueError):
+        ModelSessionRequest(request_id="request", **kwargs)
+
+
+def test_model_session_request_schema_oneof() -> None:
+    base = {
+        "schema_version": "r6o-model-session-request-1",
+        "request_id": "r1",
+        "worker_profile": None,
     }
-    assert _validates("focus_projection.schema.json", sample)
-    bad = dict(sample)
-    del bad["model_revision"]
-    assert not _validates("focus_projection.schema.json", bad)
+    assert _validates("model_session_request.schema.json", {**base, "task_text": "task", "resume_session_id": None})
+    assert _validates("model_session_request.schema.json", {**base, "task_text": None, "resume_session_id": "I-1"})
+    assert not _validates("model_session_request.schema.json", {**base, "task_text": "task", "resume_session_id": "I-1"})
+    assert not _validates("model_session_request.schema.json", {**base, "task_text": None, "resume_session_id": None})
 
 
-def test_input_envelope_structured_action_requires_identity() -> None:
-    valid = {
-        "schema_version": "r6o-input-envelope-1",
-        "session_id": "s1",
-        "source": "STRUCTURED_ACTION",
-        "model_revision": "rev-1",
-        "text": None,
-        "action_id": "confirm_prompt",
-        "projection_id": "p-1",
-    }
-    assert _validates("input_envelope.schema.json", valid)
-    bad = dict(valid)
-    del bad["action_id"]
-    assert not _validates("input_envelope.schema.json", bad)
-    bad2 = dict(valid)
-    bad2["source"] = "HOST_COMPOSER_TEXT"
-    assert not _validates("input_envelope.schema.json", bad2)
+def test_command_result_conditional_shapes() -> None:
+    projection = build_focus_projection(state(), artifact())
+    samples = [
+        {"schema_version": "r6o-viewmodel-command-result-1", "ok": True, "result_type": "REVISION", "projection": projection, "focus_role": None, "error": None},
+        {"schema_version": "r6o-viewmodel-command-result-1", "ok": True, "result_type": "FOCUS_REQUIRED", "projection": None, "focus_role": "FREE_RESPONSE", "error": None},
+        {"schema_version": "r6o-viewmodel-command-result-1", "ok": False, "result_type": "STALE_PROJECTION", "projection": projection, "focus_role": None, "error": {"code": "STALE_PROJECTION", "message": "stale"}},
+        {"schema_version": "r6o-viewmodel-command-result-1", "ok": False, "result_type": "ERROR", "projection": None, "focus_role": None, "error": {"code": "MODEL_ERROR", "message": "failure"}},
+    ]
+    for sample in samples:
+        assert _validates("viewmodel_command_result.schema.json", sample), sample
+    contradictory = dict(samples[1], ok=False)
+    assert not _validates("viewmodel_command_result.schema.json", contradictory)
+    leaked_copy = dict(samples[1], focus_prompt="Describe the task")
+    assert not _validates("viewmodel_command_result.schema.json", leaked_copy)
 
 
-def test_input_envelope_text_requires_text() -> None:
-    valid = {
-        "schema_version": "r6o-input-envelope-1",
-        "session_id": "s1",
-        "source": "TUI_TEXT",
-        "model_revision": "rev-1",
-        "text": "This is a correction.",
-        "action_id": None,
-        "projection_id": None,
-    }
-    assert _validates("input_envelope.schema.json", valid)
-    bad = dict(valid)
-    bad["text"] = ""
-    assert not _validates("input_envelope.schema.json", bad)
-
-
-def test_command_result_samples() -> None:
-    for result_type, ok in [("REVISION", True), ("FOCUS_REQUIRED", True), ("STALE_PROJECTION", False), ("ERROR", False)]:
-        sample = {
-            "schema_version": "r6o-viewmodel-command-result-1",
-            "ok": ok,
-            "result_type": result_type,
-            "projection": None,
-            "focus_prompt": None,
-            "error": None if ok else {"code": result_type, "message": "reason"},
-        }
-        assert _validates("viewmodel_command_result.schema.json", sample), result_type
-
-
-def test_handoff_and_close_samples() -> None:
-    handoff = {
-        "schema_version": "r6o-handoff-envelope-1",
-        "handoff_id": "h-1",
-        "session_id": "s1",
-        "workspace_id": "W-1",
-        "source_model_revision": "rev-1",
-        "disposition": "HOST_HANDOFF",
-        "artifacts": [{"artifact_ref": "prompt:P1", "artifact_revision": "P1", "artifact_kind": "prompt", "body": "..."}],
-        "execution_request": {"result_body": "out"},
-        "created_at": None,
-    }
-    assert _validates("handoff_envelope.schema.json", handoff)
-    close = {
+def test_close_result_requires_handoff_reference_conditionally() -> None:
+    host = {
         "schema_version": "r6o-close-result-1",
-        "session_id": "s1",
-        "result_id": "c-1",
+        "session_id": "I-1",
+        "result_id": "close-1",
         "disposition": "HOST_HANDOFF",
         "model_revision": "rev-1",
-        "handoff_ref": "C:/tmp/h.json",
+        "handoff_ref": "memory:handoff-1",
         "reason_code": None,
     }
-    assert _validates("close_result.schema.json", close)
+    assert _validates("close_result.schema.json", host)
+    assert not _validates("close_result.schema.json", {**host, "handoff_ref": None})
+    assert _validates("close_result.schema.json", {**host, "disposition": "CANCELLED", "handoff_ref": None})
+    assert not _validates("close_result.schema.json", {**host, "disposition": "CANCELLED"})
+
+
+def test_nested_objects_reject_extra_properties() -> None:
+    value = state().to_dict()
+    value["lifecycle"]["filesystem_path"] = "forbidden"
+    assert not _validates("model_state_snapshot.schema.json", value)
 
 
 def test_canonical_review_messages() -> None:
@@ -131,4 +119,3 @@ def test_canonical_review_messages() -> None:
     assert canonical["mapping_version"] == "r6o-review-msg-1"
     assert canonical["prompt_confirm"] == "Yes, that is what I mean."
     assert canonical["plan_confirm"] == "Confirm the plan and execute."
-

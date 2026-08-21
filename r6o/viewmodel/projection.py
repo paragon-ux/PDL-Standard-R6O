@@ -28,8 +28,12 @@ def _fingerprint(state: ModelStateSnapshot, artifact: ArtifactSnapshot | None, a
         "schema_version": "r6o-focus-projection-1",
         "action_mapping_version": ACTION_MAPPING_VERSION,
         "model_revision": state.model_revision,
+        "session_id": state.session_id,
+        "workspace_id": state.workspace_id,
         "artifact_ref": artifact.artifact_ref if artifact else None,
         "artifact_revision": artifact.artifact_revision if artifact else None,
+        "model_response": state.model_response,
+        "lifecycle": state.lifecycle.to_dict(),
         "actions": actions,
     }
     canonical = json.dumps(material, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
@@ -48,6 +52,7 @@ def build_focus_projection(
         "model_revision": state.model_revision,
         "projection_id": _fingerprint(state, artifact, actions),
         "interaction_state": state.interaction_state,
+        "model_response": state.model_response,
         "stage": state.stage,
         "focus_kind": _FOCUS_KIND.get(state.stage),
         "artifact": _artifact_dict(artifact),

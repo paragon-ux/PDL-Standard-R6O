@@ -10,6 +10,7 @@
     "model_revision",
     "projection_id",
     "interaction_state",
+    "model_response",
     "actions",
     "lifecycle"
   ],
@@ -42,6 +43,9 @@
         "WORKING",
         "TERMINAL"
       ]
+    },
+    "model_response": {
+      "type": ["string", "null"]
     },
     "stage": {
       "type": [
@@ -125,7 +129,8 @@
         "close_allowed",
         "handoff_ready",
         "terminal_disposition",
-        "result_body"
+        "result_body",
+        "authorized_handoff_artifacts"
       ],
       "properties": {
         "review_required": {
@@ -145,6 +150,10 @@
         },
         "result_body": {
           "type": ["string", "null"]
+        },
+        "authorized_handoff_artifacts": {
+          "type": "array",
+          "items": {"$ref": "artifact_snapshot.schema.json"}
         }
       }
     }

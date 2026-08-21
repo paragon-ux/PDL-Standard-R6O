@@ -8,6 +8,7 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
+from r6o.contracts_validation import make_validator
 from r6o.viewmodel.model_port import ModelPort, StaleProjectionError
 from r6o.viewmodel.projection import build_focus_projection_from_port
 
@@ -32,8 +33,12 @@ def _result(result_type: str, ok: bool, **extra: Any) -> dict[str, Any]:
 def _stale(port: ModelPort, session_id: str, message: str) -> dict[str, Any]:
     try:
         projection = build_focus_projection_from_port(port, session_id)
-    except Exception:
-        projection = None
+    except Exception as exc:
+        return _result(
+            "ERROR",
+            False,
+            error={"code": "MODEL_ACCESS", "message": f"stale refresh failed: {exc}"},
+        )
     return _result(
         "STALE_PROJECTION",
         False,
@@ -84,16 +89,16 @@ def handle_input(envelope: dict[str, Any], port: ModelPort) -> dict[str, Any]:
 
 def _submit(port: ModelPort, session_id: str, text: str, expected: str) -> dict[str, Any]:
     try:
-        port.submit_user_message(session_id, text, expected)
-        projection = build_focus_projection_from_port(port, session_id)
-    except StaleProjectionError:
-        return _stale(port, session_id, "authoritative state advanced before submission")
+        submitted = port.submit_user_message(session_id, text, expected)
+        projection = build_focus_projection_from_port(port, submitted.session_id)
+    except StaleProjectionError as exc:
+        return _stale(port, session_id, f"authoritative state advanced before submission: {exc}")
     except Exception as exc:
         return _result("ERROR", False, error={"code": "MODEL_ERROR", "message": str(exc)})
     return _result("REVISION", True, projection=projection)
 
 
 def validate_command_result(result: dict[str, Any]) -> None:
-    errors = list(Draft202012Validator(_RESULT_SCHEMA).iter_errors(result))
+    errors = list(make_validator(_RESULT_SCHEMA).iter_errors(result))
     if errors:
         raise AssertionError(f"command result invalid: {errors[0].message}")

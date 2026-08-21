@@ -1,10 +1,10 @@
 {
   "schema_version": "r6o-work-repository-binding-1",
-  "repository": "PDL-Standard-R6O",
+  "repository": "paragon-ux/PDL-Standard-R6O",
   "path": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O",
-  "remote_status": "NOT_LIVE_NOT_PUBLISHED",
-  "remote_url": null,
-  "starting_commit": null,
+  "remote_status": "PUBLISHED",
+  "remote_url": "https://github.com/paragon-ux/PDL-Standard-R6O",
+  "starting_commit": "f41eddcb625174b5dfd9af14ed707f5bf9cc387a",
   "binding_date": "2026-08-21",
   "human_authorized": true,
   "baseline_oracle": {

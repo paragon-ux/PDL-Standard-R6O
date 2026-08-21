@@ -62,6 +62,7 @@ class LifecycleSnapshot:
     handoff_ready: bool
     terminal_disposition: str | None = None
     result_body: str | None = None
+    authorized_handoff_artifacts: tuple[ArtifactSnapshot, ...] = ()
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -71,6 +72,7 @@ class LifecycleSnapshot:
             "handoff_ready": self.handoff_ready,
             "terminal_disposition": self.terminal_disposition,
             "result_body": self.result_body,
+            "authorized_handoff_artifacts": [item.to_dict() for item in self.authorized_handoff_artifacts],
         }
 
 
@@ -83,6 +85,7 @@ class ModelStateSnapshot:
     interaction_state: str
     review_subject: ReviewSubject | None
     lifecycle: LifecycleSnapshot
+    model_response: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -93,6 +96,7 @@ class ModelStateSnapshot:
             "interaction_state": self.interaction_state,
             "review_subject": self.review_subject.to_dict() if self.review_subject else None,
             "lifecycle": self.lifecycle.to_dict(),
+            "model_response": self.model_response,
         }
 
 

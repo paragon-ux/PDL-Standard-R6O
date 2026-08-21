@@ -1,19 +1,20 @@
 from __future__ import annotations
 
+import json
 import os
 import sys
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import pytest
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
+sys.dont_write_bytecode = True
 
-BASELINE_REPO = Path(os.environ.get("PDL_R6S_BASELINE_REPO") or (Path(__file__).resolve().parents[3] / "PDL-Standard-REPL-Harness"))
-if str(BASELINE_REPO) not in sys.path:
-    sys.path.insert(0, str(BASELINE_REPO))
-
+BASELINE_REPO = Path(
+    os.environ.get("PDL_R6S_BASELINE_REPO")
+    or (Path(__file__).resolve().parents[3] / "PDL-Standard-REPL-Harness")
+).resolve()
 FIXTURE_FILE = BASELINE_REPO / "fixtures" / "r4-recorded-worker" / "recorded-cases.json"
 
 
@@ -23,16 +24,72 @@ def baseline_repo() -> Path:
     return BASELINE_REPO
 
 
-@pytest.fixture(scope="session")
-def fixture_file(baseline_repo: Path) -> Path:
-    return baseline_repo / "fixtures" / "r4-recorded-worker" / "recorded-cases.json"
+def _recorded_classes():
+    old_path = list(sys.path)
+    old_setting = sys.dont_write_bytecode
+    try:
+        sys.path.insert(0, str(BASELINE_REPO))
+        sys.dont_write_bytecode = True
+        from providers.recorded import RecordedFixtureBuilder
+    finally:
+        sys.path[:] = old_path
+        sys.dont_write_bytecode = old_setting
+    return RecordedFixtureBuilder
 
 
 @pytest.fixture()
 def recorded_worker_factory():
-    from providers.fixtures import build_recorded_fixture_from_vendored
-
     def factory(case_ids: list[str]):
-        return build_recorded_fixture_from_vendored(BASELINE_REPO, FIXTURE_FILE, case_ids=case_ids)
+        builder_type = _recorded_classes()
+        entries = json.loads(FIXTURE_FILE.read_text(encoding="utf-8"))["entries"]
+        wanted = set(case_ids)
+        builder = builder_type()
+        for entry in entries:
+            if (entry.get("source") or "").split(":")[0] not in wanted:
+                continue
+            builder.add(
+                entry["operation"],
+                entry["prompt_sha256"],
+                entry["response"],
+                metadata={"source": entry.get("source", "vendored")},
+                prompt_text=entry.get("prompt_text"),
+            )
+        return builder.build()
+
+    return factory
+
+
+@dataclass
+class _WorkerResult:
+    text: str
+    metadata: dict[str, Any]
+
+
+class OperationWorker:
+    """Test worker replaying qualified responses by operation, with call counts."""
+
+    def __init__(self, responses: dict[str, str]) -> None:
+        self.responses = responses
+        self.calls: list[str] = []
+
+    def call(self, request: Any) -> _WorkerResult:
+        self.calls.append(request.operation)
+        try:
+            response = self.responses[request.operation]
+        except KeyError:
+            raise AssertionError(f"unexpected worker operation: {request.operation}") from None
+        return _WorkerResult(response, {"source": "operation-worker"})
+
+
+@pytest.fixture()
+def operation_worker_factory():
+    def factory(case_id: str) -> OperationWorker:
+        entries = json.loads(FIXTURE_FILE.read_text(encoding="utf-8"))["entries"]
+        responses = {
+            entry["operation"]: entry["response"]
+            for entry in entries
+            if (entry.get("source") or "").split(":")[0] == case_id
+        }
+        return OperationWorker(responses)
 
     return factory

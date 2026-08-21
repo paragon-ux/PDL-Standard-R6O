@@ -1,44 +1,16 @@
 {
   "schema_version": "r6o-test-results-1",
   "stage": "R6O-1",
-  "candidate_commit": "c5882eae54fae9be584d2a092af02ae36190014a",
+  "candidate_commit": "b77d390c02d311360a9e836cf8307fc2d12d3775",
+  "candidate_tree": "9fd94668bc50ec413175b768c23ca0a17e6e796c",
   "observed_at_local": "2026-08-21",
   "results": [
-    {
-      "id": "R6O1_CONFORMANCE",
-      "command": "python -m pytest r6o\\tests -q",
-      "cwd": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O",
-      "exit_code": 0,
-      "status": "PASS",
-      "detail": "33 passed in 5.06s",
-      "coverage": [
-        "contract schema validity and samples",
-        "input envelope tightening",
-        "canonical review messages",
-        "projection purity/reconstructability",
-        "dynamic action sets",
-        "stale/unknown fail-closed",
-        "artifact provider substitution (local + non-path)",
-        "G06/A02 ViewModel vs direct runtime parity",
-        "lifecycle close/handoff determinism and ordering",
-        "boundary scans (no runtime/controller/view imports, no path properties)"
-      ]
-    },
-    {
-      "id": "BASELINE_VERIFIER",
-      "command": "python scripts\\verify_repl_baseline.py",
-      "cwd": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness",
-      "exit_code": 0,
-      "status": "PASS",
-      "detail": "REPL BASELINE VERIFICATION PASS; fresh G06 lifecycle + resume CLOSED_SUCCESS"
-    },
-    {
-      "id": "BASELINE_PYTEST",
-      "command": "python -m pytest tests -q",
-      "cwd": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness",
-      "exit_code": 0,
-      "status": "PASS",
-      "detail": "9 passed in 67.43s"
-    }
+    {"id": "BASELINE_VERIFIER", "command": "python scripts/verify_repl_baseline.py (isolated clone)", "exit_code": 0, "status": "PASS", "detail": "REPL BASELINE VERIFICATION PASS; G06 fresh/resume CLOSED_SUCCESS"},
+    {"id": "BASELINE_PYTEST", "command": "python -m pytest tests -q -p no:cacheprovider (isolated clone)", "exit_code": 0, "status": "PASS", "detail": "9 passed in 53.38s"},
+    {"id": "R6O1_PYTEST", "command": "python -m pytest r6o/tests -q -p no:cacheprovider", "exit_code": 0, "status": "PASS", "detail": "87 passed in 56.56s standalone; 87 passed in 48.60s under verifier"},
+    {"id": "R6O1_VERIFIER", "command": "python scripts/verify_r6o1.py", "exit_code": 0, "status": "PASS", "detail": "All baseline and R6O checks passed in 112.8s"},
+    {"id": "BASELINE_PHYSICAL_INVENTORY", "command": "recursive path/length/mtime/SHA-256 inventory before and after repaired verifier", "exit_code": 0, "status": "PASS", "detail": "741 files; SHA-256 426A1E402C90CED18CE1394F6F5F58280C5A6400DE95CFB2BC8AC39DB03D1FBB before and after"},
+    {"id": "GITHUB_CI_PUSH", "command": ".github/workflows/r6o1.yml", "exit_code": 0, "status": "PASS", "detail": "Run 32532890215; Ubuntu job 96928279496 and Windows job 96928279638 passed all gates"},
+    {"id": "GITHUB_CI_PR", "command": ".github/workflows/r6o1.yml", "exit_code": 0, "status": "PASS", "detail": "Run 32532893501; Ubuntu job 96928288859 and Windows job 96928288998 passed all gates"}
   ]
 }

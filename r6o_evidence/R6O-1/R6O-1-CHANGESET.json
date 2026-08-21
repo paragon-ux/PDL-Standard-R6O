@@ -1,36 +1,37 @@
 {
   "schema_version": "r6o-changeset-1",
   "stage": "R6O-1",
-  "base_commit": null,
-  "candidate_commit": "c5882eae54fae9be584d2a092af02ae36190014a",
+  "base_commit": "f41eddcb625174b5dfd9af14ed707f5bf9cc387a",
+  "candidate_commit": "b77d390c02d311360a9e836cf8307fc2d12d3775",
+  "candidate_tree": "9fd94668bc50ec413175b768c23ca0a17e6e796c",
   "work_repository": {
-    "repository": "PDL-Standard-R6O",
-    "path": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O",
-    "remote_status": "NOT_LIVE_NOT_PUBLISHED"
+    "repository": "paragon-ux/PDL-Standard-R6O",
+    "remote_url": "https://github.com/paragon-ux/PDL-Standard-R6O",
+    "remote_status": "PUBLISHED",
+    "branch": "codex/r6o-1-viewmodel",
+    "pull_request": 1
   },
-  "files": [
-    {"path": "r6o/contracts/model_port.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-MVVM-002"], "why_required_now": "Versioned Model Port contract r6o-model-port-1"},
-    {"path": "r6o/contracts/viewmodel_command_result.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-VM-007"], "why_required_now": "Mechanical STALE_PROJECTION/error result contract"},
-    {"path": "r6o/contracts/canonical_review_messages.json", "change_kind": "NEW", "requirement_ids": ["R6O-VM-005", "R6O-PAR-001"], "why_required_now": "Versioned canonical review messages for structured actions"},
-    {"path": "r6o/contracts/input_envelope.schema.json", "change_kind": "MODIFIED", "requirement_ids": ["R6O-VM-007"], "why_required_now": "Text sources require text; structured actions require action/projection identity"},
-    {"path": "r6o/contracts/focus_projection.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-VM-001", "R6O-VM-002", "R6O-VM-003"], "why_required_now": "Language-neutral FocusProjection contract"},
-    {"path": "r6o/contracts/presentation_action.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-VM-004"], "why_required_now": "Dynamic action contract"},
-    {"path": "r6o/contracts/session_invocation.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-MVVM-002"], "why_required_now": "Invocation envelope"},
-    {"path": "r6o/contracts/close_result.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-HND-001"], "why_required_now": "CloseResult lifecycle contract"},
-    {"path": "r6o/contracts/handoff_envelope.schema.json", "change_kind": "NEW", "requirement_ids": ["R6O-HND-001", "R6O-HND-002"], "why_required_now": "HandoffEnvelope contract"},
-    {"path": "r6o/model_binding/base.py", "change_kind": "NEW", "requirement_ids": ["R6O-MVVM-001", "R6O-MVVM-002"], "why_required_now": "Port types, opaque artifact snapshots, revisions, stale error"},
-    {"path": "r6o/model_binding/local_runtime.py", "change_kind": "NEW", "requirement_ids": ["R6O-MOD-001", "R6O-MOD-003"], "why_required_now": "Current MVVM Model binding over frozen PDLtHost"},
-    {"path": "r6o/model_binding/memory_model.py", "change_kind": "NEW", "requirement_ids": ["R6O-MOD-004", "R6O-MOD-005", "R6O-PAR-006"], "why_required_now": "Non-path provider proof"},
-    {"path": "r6o/viewmodel/projection.py", "change_kind": "NEW", "requirement_ids": ["R6O-VM-001", "R6O-VM-002", "R6O-VM-003"], "why_required_now": "FocusProjection builder"},
-    {"path": "r6o/viewmodel/actions.py", "change_kind": "NEW", "requirement_ids": ["R6O-VM-004", "R6O-VM-005"], "why_required_now": "Dynamic action projection with canonical text"},
-    {"path": "r6o/viewmodel/dispatcher.py", "change_kind": "NEW", "requirement_ids": ["R6O-VM-005", "R6O-VM-007", "R6O-PAR-001"], "why_required_now": "Structured/free-response dispatch, stale fail-closed"},
-    {"path": "r6o/viewmodel/lifecycle.py", "change_kind": "NEW", "requirement_ids": ["R6O-HND-001", "R6O-HND-002"], "why_required_now": "CloseResult and HandoffEnvelope mechanical compilers"},
-    {"path": "r6o/viewmodel/model_port.py", "change_kind": "NEW", "requirement_ids": ["R6O-MVVM-002"], "why_required_now": "ViewModel dependency boundary"},
-    {"path": "r6o/tests/*.py", "change_kind": "NEW", "requirement_ids": ["R6O-PAR-001", "R6O-PAR-002", "R6O-PAR-006", "R6O-VM-001", "R6O-VM-002", "R6O-VM-003", "R6O-VM-004", "R6O-VM-005", "R6O-VM-007", "R6O-MOD-005", "R6O-HND-001", "R6O-HND-002"], "why_required_now": "R6O-1 conformance suite"},
-    {"path": "scripts/verify_r6o1.py", "change_kind": "NEW", "requirement_ids": ["R6O-PAR-001"], "why_required_now": "Stage verifier"}
+  "repair_commits": [
+    {"commit": "e40c18f", "subject": "fix(r6o1): normalize Model Port and revision contracts"},
+    {"commit": "c7f972a", "subject": "fix(r6o1): harden runtime binding and lifecycle persistence"},
+    {"commit": "b77d390", "subject": "test(r6o1): close review findings and add qualification CI"}
   ],
-  "notes": [
-    "No frozen baseline files changed.",
-    "Work repository is local-only; no remote is inferred."
-  ]
+  "changed_surfaces": [
+    {"paths": ["r6o/contracts/*.schema.json"], "change_kind": "CONTRACT_REPAIR", "summary": "Normalized Model Port outputs, split invocation, conditional command/close results."},
+    {"paths": ["r6o/model_binding/base.py", "r6o/model_binding/local_runtime.py", "r6o/model_binding/runtime_loader.py"], "change_kind": "MODEL_BINDING_REPAIR", "summary": "Normalized snapshots, content revisions, qualified imports, containment, public session registry."},
+    {"paths": ["r6o/model_binding/memory_model.py"], "change_kind": "AUTHORITY_REPAIR", "summary": "Static/recording test doubles replace the protocol-clone fake."},
+    {"paths": ["r6o/model_binding/handoff_store.py", "r6o/viewmodel/lifecycle.py"], "change_kind": "LIFECYCLE_REPAIR", "summary": "Persistence port, durability barriers, deterministic identities, close ordering."},
+    {"paths": ["r6o/viewmodel/projection.py", "r6o/viewmodel/dispatcher.py"], "change_kind": "VIEWMODEL_REPAIR", "summary": "Deterministic projection fingerprint, dual freshness checks, semantic focus result."},
+    {"paths": ["r6o/tests/*.py"], "change_kind": "REGRESSION_CLOSURE", "summary": "87 tests covering all review, handoff, fresh-review, G06/A02, resume, concurrency, provenance, and lifecycle findings."},
+    {"paths": ["scripts/verify_r6o1.py", ".github/workflows/r6o1.yml"], "change_kind": "GATE_REPAIR", "summary": "Portable isolated verifier and pinned remote qualification workflow."},
+    {"paths": ["README.md", "WORK-REPOSITORY-BINDING.json", "r6o_evidence/R6O-1/*"], "change_kind": "EVIDENCE_REPAIR", "summary": "Published repository binding and regenerated qualification evidence."}
+  ],
+  "baseline_binding": {
+    "commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+    "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+    "tracked_tree_modified": false,
+    "final_repaired_verification_physical_inventory_unchanged": true,
+    "final_inventory_count": 741,
+    "final_inventory_sha256": "426A1E402C90CED18CE1394F6F5F58280C5A6400DE95CFB2BC8AC39DB03D1FBB"
+  }
 }

@@ -4,13 +4,14 @@
   "title": "ModelStateSnapshot",
   "type": "object",
   "additionalProperties": false,
-  "required": ["session_id", "workspace_id", "model_revision", "stage", "interaction_state", "review_subject", "lifecycle"],
+  "required": ["session_id", "workspace_id", "model_revision", "stage", "interaction_state", "review_subject", "lifecycle", "model_response"],
   "properties": {
     "session_id": {"type": "string", "minLength": 1},
     "workspace_id": {"type": ["string", "null"]},
     "model_revision": {"type": "string", "minLength": 1},
     "stage": {"type": "string", "minLength": 1},
     "interaction_state": {"enum": ["INACTIVE", "REVIEW_REQUIRED", "WORKING", "TERMINAL"]},
+    "model_response": {"type": ["string", "null"]},
     "review_subject": {
       "oneOf": [
         {"type": "null"},
@@ -30,15 +31,33 @@
     "lifecycle": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["review_required", "terminal", "close_allowed", "handoff_ready", "terminal_disposition", "result_body"],
+      "required": ["review_required", "terminal", "close_allowed", "handoff_ready", "terminal_disposition", "result_body", "authorized_handoff_artifacts"],
       "properties": {
         "review_required": {"type": "boolean"},
         "terminal": {"type": "boolean"},
         "close_allowed": {"type": "boolean"},
         "handoff_ready": {"type": "boolean"},
         "terminal_disposition": {"type": ["string", "null"]},
-        "result_body": {"type": ["string", "null"]}
+        "result_body": {"type": ["string", "null"]},
+        "authorized_handoff_artifacts": {
+          "type": "array",
+          "items": {"$ref": "artifact_snapshot.schema.json"}
+        }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"stage": {"const": "CLOSED_SUCCESS"}}, "required": ["stage"]},
+      "then": {"properties": {"lifecycle": {"properties": {"review_required": {"const": false}, "terminal": {"const": true}, "close_allowed": {"const": true}, "handoff_ready": {"const": true}, "terminal_disposition": {"const": "HOST_HANDOFF"}}, "required": ["review_required", "terminal", "close_allowed", "handoff_ready", "terminal_disposition"]}}}
+    },
+    {
+      "if": {"properties": {"stage": {"const": "CLOSED_CANCELLED"}}, "required": ["stage"]},
+      "then": {"properties": {"lifecycle": {"properties": {"review_required": {"const": false}, "terminal": {"const": true}, "close_allowed": {"const": true}, "handoff_ready": {"const": false}, "terminal_disposition": {"const": "CANCELLED"}}, "required": ["review_required", "terminal", "close_allowed", "handoff_ready", "terminal_disposition"]}}}
+    },
+    {
+      "if": {"properties": {"stage": {"const": "EXECUTION_READY"}}, "required": ["stage"]},
+      "then": {"properties": {"lifecycle": {"properties": {"terminal": {"const": false}, "close_allowed": {"const": false}, "handoff_ready": {"const": false}, "terminal_disposition": {"type": "null"}}, "required": ["terminal", "close_allowed", "handoff_ready", "terminal_disposition"]}}}
+    }
+  ]
 }
