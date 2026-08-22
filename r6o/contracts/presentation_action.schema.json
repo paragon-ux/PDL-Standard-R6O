@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pdl.local/r6o/presentation_action.schema.json",
+  "title": "PresentationAction",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action_id",
+    "label",
+    "ordinal",
+    "kind"
+  ],
+  "properties": {
+    "action_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ordinal": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "kind": {
+      "enum": [
+        "SEMANTIC_MESSAGE",
+        "FREE_RESPONSE_FOCUS"
+      ]
+    },
+    "canonical_review_text": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "emphasis": {
+      "enum": [
+        "NORMAL",
+        "PRIMARY",
+        "DESTRUCTIVE"
+      ]
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "SEMANTIC_MESSAGE"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "canonical_review_text"
+        ],
+        "properties": {
+          "canonical_review_text": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

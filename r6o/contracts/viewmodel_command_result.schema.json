@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pdl.local/r6o/viewmodel_command_result.schema.json",
+  "title": "ViewModelCommandResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "ok", "result_type", "projection", "focus_role", "error"],
+  "properties": {
+    "schema_version": {"const": "r6o-viewmodel-command-result-1"},
+    "ok": {"type": "boolean"},
+    "result_type": {"enum": ["REVISION", "FOCUS_REQUIRED", "STALE_PROJECTION", "ERROR"]},
+    "projection": {"oneOf": [{"$ref": "focus_projection.schema.json"}, {"type": "null"}]},
+    "focus_role": {"type": ["string", "null"]},
+    "error": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["code", "message"],
+          "properties": {
+            "code": {"type": "string", "minLength": 1},
+            "message": {"type": "string"}
+          }
+        }
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "ok": {"const": true},
+        "result_type": {"const": "REVISION"},
+        "projection": {"$ref": "focus_projection.schema.json"},
+        "focus_role": {"type": "null"},
+        "error": {"type": "null"}
+      }
+    },
+    {
+      "properties": {
+        "ok": {"const": true},
+        "result_type": {"const": "FOCUS_REQUIRED"},
+        "projection": {"type": "null"},
+        "focus_role": {"const": "FREE_RESPONSE"},
+        "error": {"type": "null"}
+      }
+    },
+    {
+      "properties": {
+        "ok": {"const": false},
+        "result_type": {"const": "STALE_PROJECTION"},
+        "projection": {"$ref": "focus_projection.schema.json"},
+        "focus_role": {"type": "null"},
+        "error": {
+          "type": "object",
+          "properties": {"code": {"const": "STALE_PROJECTION"}}
+        }
+      }
+    },
+    {
+      "properties": {
+        "ok": {"const": false},
+        "result_type": {"const": "ERROR"},
+        "projection": {"type": "null"},
+        "focus_role": {"type": "null"},
+        "error": {"type": "object"}
+      }
+    }
+  ]
+}

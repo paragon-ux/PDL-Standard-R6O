@@ -1,0 +1,72 @@
+name: R6O-1 qualification
+
+on:
+  pull_request:
+  push:
+    branches:
+      - codex/r6o-1-viewmodel
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout R6O candidate
+        uses: actions/checkout@v4
+        with:
+          path: PDL-Standard-R6O
+
+      - name: Checkout frozen R6S oracle
+        uses: actions/checkout@v4
+        with:
+          repository: paragon-ux/PDL-Standard-REPL-Harness
+          ref: 60d982f3328b45a351879d67dc4bb525172b65fd
+          path: PDL-Standard-REPL-Harness
+          token: ${{ secrets.PDL_BASELINE_TOKEN || github.token }}
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: PDL-Standard-R6O/.github/workflows/r6o1.yml
+
+      - name: Install qualification dependencies
+        run: python -m pip install pytest==9.0.3 jsonschema==4.26.0
+
+      - name: Isolate baseline test tree
+        run: python -c "import os, subprocess; subprocess.run(['git', 'clone', '--quiet', '--no-hardlinks', 'PDL-Standard-REPL-Harness', os.path.join(os.environ['RUNNER_TEMP'], 'PDL-Standard-REPL-Harness-test')], check=True)"
+
+      - name: Baseline verifier
+        working-directory: ${{ runner.temp }}/PDL-Standard-REPL-Harness-test
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONPATH: ${{ runner.temp }}/PDL-Standard-REPL-Harness-test
+        run: python scripts/verify_repl_baseline.py
+
+      - name: Baseline pytest
+        working-directory: ${{ runner.temp }}/PDL-Standard-REPL-Harness-test
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONPATH: ${{ runner.temp }}/PDL-Standard-REPL-Harness-test
+        run: python -m pytest tests -q -p no:cacheprovider
+
+      - name: R6O pytest
+        working-directory: PDL-Standard-R6O
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PDL_R6S_BASELINE_REPO: ${{ runner.temp }}/PDL-Standard-REPL-Harness-test
+        run: python -m pytest r6o/tests -q -p no:cacheprovider
+
+      - name: R6O verifier
+        working-directory: PDL-Standard-R6O
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PDL_R6S_BASELINE_REPO: ${{ github.workspace }}/PDL-Standard-REPL-Harness
+        run: python scripts/verify_r6o1.py

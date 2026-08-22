@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pdl.local/r6o/model_port_error.schema.json",
+  "title": "ModelPortError",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["code", "message"],
+  "properties": {
+    "code": {"enum": ["STALE_PROJECTION", "UNKNOWN_SESSION", "INVALID_REQUEST", "MODEL_ERROR"]},
+    "message": {"type": "string", "minLength": 1}
+  }
+}

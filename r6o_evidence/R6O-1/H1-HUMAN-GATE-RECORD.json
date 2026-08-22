@@ -1,0 +1,29 @@
+{
+  "schema_version": "r6o-human-gate-2",
+  "gate_id": "H1",
+  "stage_id": "R6O-1",
+  "candidate_commit": "5da375e81e0d0d194d79eadd7cf1ad8c269b066a",
+  "candidate_tree": "1ea0fecf1abaaa30ab82085cff03ca14c94fa6b7",
+  "surface_tested": "VIEWMODEL_PR_CI_AND_INDEPENDENT_REVIEW",
+  "tested_at_local": "2026-08-21",
+  "human_exercises": [
+    "Reviewed current PR head 5da375e (not the earlier Sol snapshot)",
+    "Confirmed no remaining P1/P2 architecture blocker in the repaired implementation",
+    "Reviewed cross-platform CI qualification (PR run 32533208629, Ubuntu + Windows)",
+    "Reviewed evidence closeout (qualified code 5da375e vs evidence commit 7413585)",
+    "Reviewed oracle hygiene and quarantine/reclone disposition"
+  ],
+  "mechanical_gate_status_seen": "PASS",
+  "observations": [
+    "Implementation verdict: good to go; separation confirmed (normalized Model snapshots, deterministic projection identity, semantic-path action dispatch, stale-before-mutation, Model-authorized lifecycle, HandoffStore persistence).",
+    "R6O suite 87/87 on both platforms; baseline verifier PASS; baseline pytest 9 passed locally with documented platform-dependent skips on CI."
+  ],
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "Historical local ignored-file/oracle inventory deviation: early pre-isolation diagnostic modified ignored mlflow.db in the local frozen R6S checkout; tracked R6S commit/tree remained exact; live oracle restored to pristine bound state; repaired verifier/loader prevents recurrence."
+  ],
+  "disposition": "USER_ACCEPT_WITH_FINDING",
+  "promotion_authorized": true,
+  "next_stage": "R6O-2",
+  "notes": "Recorded upon the human authorizing R6O-2 activation via the official R6O-2 handoff (2026-08-21). The finding is historical/operational only and does not authorize baseline mutation."
+}

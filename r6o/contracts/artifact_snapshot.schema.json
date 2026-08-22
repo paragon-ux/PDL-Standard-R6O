@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pdl.local/r6o/artifact_snapshot.schema.json",
+  "title": "ArtifactSnapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["artifact_ref", "artifact_revision", "artifact_kind", "title", "body", "media_type", "capabilities"],
+  "properties": {
+    "artifact_ref": {"type": "string", "minLength": 1},
+    "artifact_revision": {"type": "string", "minLength": 1},
+    "artifact_kind": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "body": {"type": "string"},
+    "media_type": {"type": "string", "minLength": 1},
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "copy": {"type": "boolean"},
+        "open_external": {"type": "boolean"}
+      }
+    }
+  }
+}

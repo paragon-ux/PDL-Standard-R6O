@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pdl.local/r6o/close_result.schema.json",
+  "title": "CloseResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "session_id",
+    "result_id",
+    "disposition",
+    "model_revision"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "r6o-close-result-1"
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "result_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "disposition": {
+      "enum": [
+        "HOST_HANDOFF",
+        "PDLT_RESUME",
+        "CANCELLED",
+        "FAILED"
+      ]
+    },
+    "model_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "handoff_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reason_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"disposition": {"const": "HOST_HANDOFF"}}, "required": ["disposition"]},
+      "then": {"required": ["handoff_ref"], "properties": {"handoff_ref": {"type": "string", "minLength": 1}}},
+      "else": {"required": ["handoff_ref"], "properties": {"handoff_ref": {"type": "null"}}}
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "schema_version": "r6o-stage-report-1",
+  "stage": "R6O-1",
+  "candidate_commit": "5da375e81e0d0d194d79eadd7cf1ad8c269b066a",
+  "candidate_tree": "1ea0fecf1abaaa30ab82085cff03ca14c94fa6b7",
+  "baseline_commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+  "baseline_tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+  "work_repository": {
+    "repository": "paragon-ux/PDL-Standard-R6O",
+    "remote_status": "PUBLISHED",
+    "remote_url": "https://github.com/paragon-ux/PDL-Standard-R6O",
+    "pull_request": 1
+  },
+  "verification": {
+    "baseline_verifier": "PASS",
+    "baseline_pytest": "PASS (9 passed)",
+    "r6o_pytest": "PASS (87 passed)",
+    "r6o_verifier": "PASS",
+    "github_ci": "PASS (push 32533205409 and PR 32533208629; Ubuntu and Windows)",
+    "final_baseline_physical_inventory": "PASS (741 files, identical before/after repaired verifier)"
+  },
+  "parity": {
+    "G06": "PASS",
+    "A02": "PASS",
+    "resume": "PASS",
+    "structured_action_parity": "PASS",
+    "projection_purity": "PASS",
+    "viewmodel_non_path_contract_independence": "PASS",
+    "managed_storage_substitution": "NOT_CLAIMED"
+  },
+  "blocking_findings_resolved": {
+    "thread-3833186371-qualified-runtime-loader": ["test_clean_production_loader_import_in_fresh_subprocess", "test_wrong_preinstalled_host_module_fails_closed_in_subprocess", "test_loader_module_provenance_and_no_baseline_physical_writes", "test_loader_rejects_dirty_tracked_or_untracked_importable_oracle_bytes", "test_loader_rejects_untracked_importable_directory_symlink"],
+    "thread-3833191652-content-staleness": ["test_external_current_edit_fails_closed_before_semantic_mutation[PROMPT_REVIEW]", "test_external_current_edit_fails_closed_before_semantic_mutation[PLAN_REVIEW]"],
+    "thread-3833191770-persist-before-host-handoff": ["test_host_handoff_without_durable_receipt_is_impossible", "test_persist_failure_produces_no_host_handoff_result"],
+    "thread-3833191897-baseline-containment": ["test_workspace_root_inside_baseline_is_rejected", "test_workspace_symlink_into_baseline_is_rejected", "test_cwd_baseline_still_allocates_workspace_outside_baseline", "test_restore_path_inside_baseline_is_rejected_via_public_resume"],
+    "thread-3833192056-session-invocation": ["test_public_start_consumes_task_and_projects_real_workspace", "test_public_resume_by_session_id", "test_new_and_resume_are_mutually_exclusive"],
+    "thread-3833192168-protocol-clone-fake": ["test_test_doubles_have_no_protocol_state_machine", "test_viewmodel_non_path_contract_independence"],
+    "thread-3833192304-durability-barrier": ["test_file_store_flushes_fsyncs_replaces_and_returns_receipt", "Linux and Windows CI matrix"],
+    "thread-3833192441-deterministic-lifecycle-ids": ["test_handoff_envelope_and_retry_ids_are_deterministic", "test_result_identity_is_bound_to_session"],
+    "thread-3833192599-workspace-identity": ["test_public_start_consumes_task_and_projects_real_workspace", "test_projection_uses_actual_workspace_id_and_has_no_paths"],
+    "thread-3833192737-persistence-boundary": ["test_lifecycle_has_no_filesystem_persistence", "test_in_memory_and_file_stores_share_lifecycle_contract"],
+    "handoff-A1-normalized-model-port": ["test_normalized_model_port_outputs_are_machine_validated", "test_viewmodel_has_no_controller_state_or_runtime_imports"],
+    "handoff-A2-machine-output-schemas": ["test_normalized_model_port_outputs_are_machine_validated", "test_nested_objects_reject_extra_properties"],
+    "handoff-A3-projection-id-protection": ["test_projection_fingerprint_is_deterministic", "test_projection_id_is_validated_before_action_resolution"],
+    "handoff-A4-semantic-focus-result": ["test_free_response_action_returns_semantic_focus_role_without_ui_copy", "test_command_result_conditional_shapes"],
+    "handoff-A5-fake-wait-removed": ["test_fake_wait_operation_is_absent", "test_normalized_model_port_outputs_are_machine_validated"],
+    "handoff-A6-bytecode-physical-protection": ["test_loader_module_provenance_and_no_baseline_physical_writes", "BASELINE_PHYSICAL_INVENTORY"],
+    "handoff-A7-stale-evidence-and-binding": ["WORK-REPOSITORY-BINDING.json", "R6O-1 evidence package", "GITHUB_CI_PUSH", "GITHUB_CI_PR"]
+  },
+  "fresh_whole_pr_review": {
+    "status": "PASS_NO_P1_P2_ARCHITECTURE_BLOCKERS",
+    "scope": "entire main..candidate diff",
+    "resolved_seams": [
+      "response preservation and response-bound identity",
+      "exact Model-authorized handoff artifacts and unforgeable HOST_HANDOFF coordination",
+      "authoritative lifecycle disposition and terminal-output completeness",
+      "workspace-contained crash-durable session location and controllerless resume",
+      "NEW_TASK public-session rebinding",
+      "atomic same-revision submission serialization and post-interpretation stale checks",
+      "dirty/shadow/native/symlink oracle provenance rejection",
+      "ambient-temp no-write enforcement in binding, loader, and verifier",
+      "isolated cross-platform CI qualification"
+    ]
+  },
+  "close_stage_rule": {
+    "CLOSED_SUCCESS": "HOST_HANDOFF after durable receipt",
+    "CLOSED_CANCELLED": "CANCELLED",
+    "PROMPT_REVIEW_PLAN_REVIEW_WAITING_INPUT": "PDLT_RESUME",
+    "EXECUTION_READY": "not an authorized close result"
+  },
+  "preflight_operational_note": "Before verifier isolation was repaired, diagnostic execution of the old baseline integration suite created ignored MLflow artifacts. No tracked baseline content or git tree changed. Final repaired verification uses an isolated clone and demonstrated an identical physical inventory before/after.",
+  "remaining_blocking_findings": [
+    "The local oracle physical inventory was altered by a pre-repair diagnostic run before isolation was installed; tracked commit/tree stayed exact and all final isolated verifications were inventory-stable, but the turn-start ignored-file inventory cannot be restored byte-for-byte."
+  ],
+  "h1_finding": {
+    "qualified_code_commit": "5da375e81e0d0d194d79eadd7cf1ad8c269b066a",
+    "qualified_code_tree": "1ea0fecf1abaaa30ab82085cff03ca14c94fa6b7",
+    "pr_qualification_run": 32533208629,
+    "description": "Historical local ignored-file/oracle inventory deviation: an early pre-isolation diagnostic modified the ignored mlflow.db in the local frozen R6S checkout. Tracked R6S commit/tree remained exact (60d982f/b7689fbe). The repaired verifier/loader prevents recurrence via isolated clone, bytecode suppression, and physical inventory checks.",
+    "disposition_recommendation": "USER_ACCEPT_WITH_FINDING"
+  },
+  "candidate_status": "READY_FOR_H1_WITH_FINDING"
+}
+

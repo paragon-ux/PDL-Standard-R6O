@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pdl.local/r6o/input_envelope.schema.json",
+  "title": "InputEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "session_id", "source", "model_revision"],
+  "properties": {
+    "schema_version": {"const": "r6o-input-envelope-1"},
+    "session_id": {"type": "string", "minLength": 1},
+    "source": {"enum": ["TUI_TEXT", "HOST_COMPOSER_TEXT", "STRUCTURED_ACTION"]},
+    "model_revision": {"type": "string", "minLength": 1},
+    "text": {"type": ["string", "null"]},
+    "action_id": {"type": ["string", "null"]},
+    "projection_id": {"type": ["string", "null"]}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"source": {"const": "STRUCTURED_ACTION"}},
+        "required": ["source"]
+      },
+      "then": {
+        "required": ["action_id", "projection_id"],
+        "properties": {
+          "action_id": {"type": "string", "minLength": 1},
+          "projection_id": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"source": {"enum": ["TUI_TEXT", "HOST_COMPOSER_TEXT"]}},
+        "required": ["source"]
+      },
+      "then": {
+        "required": ["text"],
+        "properties": {"text": {"type": "string", "minLength": 1}}
+      }
+    }
+  ]
+}

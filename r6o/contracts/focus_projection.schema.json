@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pdl.local/r6o/focus_projection.schema.json",
+  "title": "FocusProjection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "session_id",
+    "model_revision",
+    "projection_id",
+    "interaction_state",
+    "model_response",
+    "actions",
+    "lifecycle"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "r6o-focus-projection-1"
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workspace_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "projection_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "interaction_state": {
+      "enum": [
+        "INACTIVE",
+        "REVIEW_REQUIRED",
+        "WORKING",
+        "TERMINAL"
+      ]
+    },
+    "model_response": {
+      "type": ["string", "null"]
+    },
+    "stage": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "focus_kind": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "artifact": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "artifact_ref",
+        "artifact_revision",
+        "artifact_kind",
+        "title"
+      ],
+      "properties": {
+        "artifact_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opaque reference; not necessarily a path."
+        },
+        "artifact_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact_kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "media_type": {
+          "type": "string",
+          "default": "text/plain"
+        },
+        "body": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Non-authoritative display snapshot tied to artifact_revision."
+        },
+        "capabilities": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "copy": {
+              "type": "boolean"
+            },
+            "open_external": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "$ref": "presentation_action.schema.json"
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "review_required",
+        "terminal",
+        "close_allowed",
+        "handoff_ready",
+        "terminal_disposition",
+        "result_body",
+        "authorized_handoff_artifacts"
+      ],
+      "properties": {
+        "review_required": {
+          "type": "boolean"
+        },
+        "terminal": {
+          "type": "boolean"
+        },
+        "close_allowed": {
+          "type": "boolean"
+        },
+        "handoff_ready": {
+          "type": "boolean"
+        },
+        "terminal_disposition": {
+          "type": ["string", "null"]
+        },
+        "result_body": {
+          "type": ["string", "null"]
+        },
+        "authorized_handoff_artifacts": {
+          "type": "array",
+          "items": {"$ref": "artifact_snapshot.schema.json"}
+        }
+      }
+    }
+  }
+}

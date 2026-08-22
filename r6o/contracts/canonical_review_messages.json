@@ -1,0 +1,14 @@
+{
+  "mapping_version": "r6o-review-msg-1",
+  "prompt_confirm": "Yes, that is what I mean.",
+  "plan_confirm": "Confirm the plan and execute.",
+  "templates": {
+    "prompt_revise": null,
+    "plan_revise": null,
+    "task_change": null,
+    "question": null
+  },
+  "focus_actions": ["change_task", "change_approach", "something_else"],
+  "baseline_parity_source": "fixtures/r4-recorded-worker/recorded-cases.json case_turns G06",
+  "note": "Revise/task-change/question actions are FREE_RESPONSE_FOCUS: the user's detail is routed as ordinary PDLt review text. No placeholder canonical message is sent for them."
+}

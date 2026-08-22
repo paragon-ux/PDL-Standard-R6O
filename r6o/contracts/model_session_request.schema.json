@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pdl.local/r6o/model_session_request.schema.json",
+  "title": "ModelSessionRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "request_id", "task_text", "resume_session_id", "worker_profile"],
+  "properties": {
+    "schema_version": {"const": "r6o-model-session-request-1"},
+    "request_id": {"type": "string", "minLength": 1},
+    "task_text": {"type": ["string", "null"]},
+    "resume_session_id": {"type": ["string", "null"]},
+    "worker_profile": {"type": ["string", "null"]}
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "task_text": {"type": "string", "minLength": 1},
+        "resume_session_id": {"type": "null"}
+      }
+    },
+    {
+      "properties": {
+        "task_text": {"type": "null"},
+        "resume_session_id": {"type": "string", "minLength": 1}
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "r6o-1-parity-1",
+  "stage": "R6O-1",
+  "candidate_commit": "5da375e81e0d0d194d79eadd7cf1ad8c269b066a",
+  "candidate_tree": "1ea0fecf1abaaa30ab82085cff03ca14c94fa6b7",
+  "g06": {
+    "status": "PASS",
+    "test": "test_g06_structured_actions_match_direct_r6s",
+    "final_stage": "CLOSED_SUCCESS",
+    "viewmodel_equals_direct_runtime": true
+  },
+  "a02": {
+    "status": "PASS",
+    "test": "test_a02_free_response_matches_direct_r6s",
+    "final_stage": "PROMPT_REVIEW",
+    "viewmodel_equals_direct_runtime": true
+  },
+  "resume": {
+    "status": "PASS",
+    "test": "test_resume_preserves_authoritative_r6s_state",
+    "projection_before_equals_projection_after": true
+  },
+  "structured_action_parity": {
+    "status": "PASS",
+    "mapping_version": "r6o-review-msg-1",
+    "confirm_prompt": "Yes, that is what I mean.",
+    "confirm_plan": "Confirm the plan and execute."
+  },
+  "projection_purity": {"status": "PASS", "deterministic_fingerprint": true},
+  "viewmodel_non_path_contract_independence": {"status": "PASS"},
+  "managed_storage_substitution": {
+    "status": "NOT_CLAIMED",
+    "reason": "The current R6S binding remains filesystem-backed; R6O-1 proves ViewModel contract independence only."
+  }
+}
+

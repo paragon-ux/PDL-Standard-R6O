@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pdl.local/r6o/host_invocation.schema.json",
+  "title": "HostInvocation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "request_id", "presentation"],
+  "properties": {
+    "schema_version": {"const": "r6o-host-invocation-1"},
+    "request_id": {"type": "string", "minLength": 1},
+    "presentation": {"enum": ["AUTO", "TUI", "SIDECAR"]}
+  }
+}

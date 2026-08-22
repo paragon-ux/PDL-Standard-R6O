@@ -1,0 +1,17 @@
+{
+  "schema_version": "r6o-test-results-1",
+  "stage": "R6O-1",
+  "candidate_commit": "5da375e81e0d0d194d79eadd7cf1ad8c269b066a",
+  "candidate_tree": "1ea0fecf1abaaa30ab82085cff03ca14c94fa6b7",
+  "observed_at_local": "2026-08-21",
+  "results": [
+    {"id": "BASELINE_VERIFIER", "command": "python scripts/verify_repl_baseline.py (isolated clone)", "exit_code": 0, "status": "PASS", "detail": "REPL BASELINE VERIFICATION PASS; G06 fresh/resume CLOSED_SUCCESS"},
+    {"id": "BASELINE_PYTEST", "command": "python -m pytest tests -q -p no:cacheprovider (isolated clone)", "exit_code": 0, "status": "PASS", "detail": "9 passed in 53.38s"},
+    {"id": "R6O1_PYTEST", "command": "python -m pytest r6o/tests -q -p no:cacheprovider", "exit_code": 0, "status": "PASS", "detail": "87 passed in 56.56s standalone; 87 passed in 48.60s under verifier"},
+    {"id": "R6O1_VERIFIER", "command": "python scripts/verify_r6o1.py", "exit_code": 0, "status": "PASS", "detail": "All baseline and R6O checks passed in 112.8s"},
+    {"id": "BASELINE_PHYSICAL_INVENTORY", "command": "recursive path/length/mtime/SHA-256 inventory before and after repaired verifier", "exit_code": 0, "status": "PASS", "detail": "741 files; SHA-256 426A1E402C90CED18CE1394F6F5F58280C5A6400DE95CFB2BC8AC39DB03D1FBB before and after"},
+    {"id": "GITHUB_CI_PUSH", "command": ".github/workflows/r6o1.yml", "exit_code": 0, "status": "PASS", "detail": "Run 32533205409; Ubuntu and Windows jobs passed all gates"},
+    {"id": "GITHUB_CI_PR", "command": ".github/workflows/r6o1.yml", "exit_code": 0, "status": "PASS", "detail": "Run 32533208629; Ubuntu and Windows jobs passed all gates"}
+  ]
+}
+
