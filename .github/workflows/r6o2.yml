@@ -21,6 +21,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: PDL-Standard-R6O
+          fetch-depth: 0
 
       - name: Checkout frozen R6S oracle
         uses: actions/checkout@v4
