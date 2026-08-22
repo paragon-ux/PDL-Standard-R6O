@@ -1,0 +1,28 @@
+{
+  "schema_version": "r6o-human-gate-2",
+  "gate_id": "H2",
+  "stage_id": "R6O-2",
+  "candidate_commit": "312218a3a1a9d64edd3690aa8393502ff7b02ce9",
+  "candidate_tree": "315f5c0d0b5913aa65648b897d4678864f080398",
+  "surface_tested": "TUI_AND_SIDECAR",
+  "tested_at_local": null,
+  "human_exercises": [
+    "Run python scripts\\run_r6o2_tui.py --recorded and complete the review flow from the keyboard",
+    "Run python scripts\\run_r6o2_sidecar.py --harness --mode STANDARD and verify compact panel above the host composer, artifact left, actions right, no sidecar chatbox",
+    "Run python scripts\\run_r6o2_sidecar.py --harness --mode EXPANDED and verify half-screen right-anchored panel, artifact dominant, action panel intrinsic height, composer at bottom",
+    "Verify close/expand/collapse are presentation-only and reopen refetches",
+    "Review screenshots and R6O-2 evidence, then triage remain-list items R6O2-F4 (P2), R6O2-F6 (P3), R6O2-O1 (OUT_OF_SCOPE)"
+  ],
+  "mechanical_gate_status_seen": "PASS",
+  "observations": [],
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "R6O2-F4 (P2) keyboard/accessibility evidence not yet exercised",
+    "R6O2-F6 (P3) projected label wording differs from reference example",
+    "R6O2-O1 (OUT_OF_SCOPE) local 08-21 package manifest references files absent locally (r2 sync)"
+  ],
+  "disposition": null,
+  "promotion_authorized": false,
+  "next_stage": "R6O-3",
+  "notes": "Prefilled by the implementation agent. The human must complete disposition (USER_ACCEPT / USER_ACCEPT_WITH_FINDING / USER_REJECT) from direct use of the actual TUI and Sidecar surfaces. R6O-3 remains blocked until H2 acceptance."
+}
