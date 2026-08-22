@@ -2,9 +2,20 @@
   "schema_version": "r6o-stage-report-1",
   "stage": "R6O-2",
   "gate": "H2",
-  "r6o2_base": {"commit": "db5ba13aa75073e94a786b339b9dd30cb686e6ae", "tree": "ef4aa93eb75043227ade2cfffffd58d5b0efa9ac"},
-  "r6o2_code_head": {"commit": "312218a3a1a9d64edd3690aa8393502ff7b02ce9", "tree": "315f5c0d0b5913aa65648b897d4678864f080398"},
-  "frozen_oracle": {"commit": "60d982f3328b45a351879d67dc4bb525172b65fd", "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6", "status": "READ_ONLY", "inventory": "unchanged (94 files)"},
+  "r6o2_base": {
+    "commit": "db5ba13aa75073e94a786b339b9dd30cb686e6ae",
+    "tree": "ef4aa93eb75043227ade2cfffffd58d5b0efa9ac"
+  },
+  "r6o2_code_head": {
+    "commit": "312218a3a1a9d64edd3690aa8393502ff7b02ce9",
+    "tree": "315f5c0d0b5913aa65648b897d4678864f080398"
+  },
+  "frozen_oracle": {
+    "commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+    "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+    "status": "READ_ONLY",
+    "inventory": "unchanged (94 files)"
+  },
   "qualification": {
     "baseline_verifier": "PASS",
     "baseline_pytest": "PASS (9)",
@@ -27,8 +38,13 @@
     "initial": "P1s F1-F3; P2 F4; P3 F6; OUT_OF_SCOPE O1",
     "repair_round_1_cf55349": "F1 closed (expanded actions packing + display proof), F2 closed (Sidecar G06 parity), F3 partially addressed",
     "repair_round_2_312218a": "F3 closed (stale no-retry single-submission proof, sidecar redraw, reopen authoritative refetch, TUI reconstruction)",
-    "remains_for_h2_triage": ["R6O2-F4 (P2) keyboard/accessibility evidence", "R6O2-F6 (P3) projected label wording", "R6O2-O1 (OUT_OF_SCOPE) package-manifest completeness"]
+    "remains_for_h2_triage": [
+      "R6O2-F4 (P2) keyboard/accessibility evidence",
+      "R6O2-F6 (P3) projected label wording",
+      "R6O2-O1 (OUT_OF_SCOPE) package-manifest completeness"
+    ],
+    "final_delta_review": "NO P0/P1 FINDINGS IN FIXED R6O-2 SCOPE; F3 CLOSED; CONFORMS_FOR_H2_TRIAGE"
   },
   "decision_requests": [],
-  "candidate_status": "READY_FOR_REVIEW"
+  "candidate_status": "CONFORMS_FOR_H2_TRIAGE"
 }
