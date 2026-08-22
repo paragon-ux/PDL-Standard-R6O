@@ -1,0 +1,12 @@
+{
+  "schema_version": "r6o-2-view-parity-1",
+  "stage": "R6O-2",
+  "r6o2_code_head": "a59f7e76823812a50807337e2b3d88ae2e041aa5",
+  "shared_projection_parity": {"status": "PASS", "note": "TUI and Sidecar render identical action ids/labels/ordinals from the same FocusProjection"},
+  "g06_structured_action_parity": {"status": "PASS", "note": "TUI confirm_prompt/confirm_plan produce identical CLOSED_SUCCESS prompt/plan bodies vs direct R6S"},
+  "a02_free_response_parity": {"status": "PASS", "note": "TUI_TEXT and HOST_COMPOSER_TEXT routes produce identical revised Prompt vs direct R6S"},
+  "free_response_focus": {"status": "PASS", "note": "focus actions request presentation focus without semantic submit; direct typing works"},
+  "stale_behavior": {"status": "PASS", "note": "STALE_PROJECTION refreshes without retry; MODEL_ACCESS shown on refresh failure"},
+  "disposal_reconstruction": {"status": "PASS", "note": "close/toggle do not change model_revision; reopen refetches projection"},
+  "managed_storage_substitution": {"status": "NOT_CLAIMED"}
+}

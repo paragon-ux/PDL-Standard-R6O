@@ -1,0 +1,21 @@
+{
+  "schema_version": "r6o-changeset-1",
+  "stage": "R6O-2",
+  "base_commit": "db5ba13aa75073e94a786b339b9dd30cb686e6ae",
+  "candidate_commit": "a59f7e76823812a50807337e2b3d88ae2e041aa5",
+  "candidate_tree": "ee51447712ee650c8be30d860d423754bb4aeaf7",
+  "work_repository": {"repository": "paragon-ux/PDL-Standard-R6O", "branch": "codex/r6o-2-views", "pull_request": 2},
+  "changed_surfaces": [
+    {"paths": ["r6o/presentation_transport/*"], "change_kind": "NEW", "summary": "Mechanical adapter: current_projection + submit_input only"},
+    {"paths": ["r6o/views/envelopes.py"], "change_kind": "NEW", "summary": "InputEnvelope builders (STRUCTURED_ACTION/TUI_TEXT/HOST_COMPOSER_TEXT)"},
+    {"paths": ["r6o/views/tui/*"], "change_kind": "NEW", "summary": "TUI View controller + console app"},
+    {"paths": ["r6o/views/sidecar/*"], "change_kind": "NEW", "summary": "Sidecar model + embeddable Tk panel + harness shell"},
+    {"paths": ["r6o/tests/test_view_*.py", "r6o/tests/test_presentation_transport.py", "r6o/tests/test_sidecar_display.py"], "change_kind": "NEW", "summary": "R6O-2 conformance, parity, boundary, and opt-in display tests"},
+    {"paths": ["r6o/tests/helpers.py"], "change_kind": "MODIFIED", "summary": "Added plan() test helper"},
+    {"paths": ["scripts/run_r6o2_tui.py", "scripts/run_r6o2_sidecar.py", "scripts/verify_r6o2.py"], "change_kind": "NEW", "summary": "Dev-run entry points and stage verifier"},
+    {"paths": [".github/workflows/r6o2.yml"], "change_kind": "NEW", "summary": "R6O-2 qualification CI (Ubuntu + Windows)"},
+    {"paths": ["README.md"], "change_kind": "MODIFIED", "summary": "R6O-2 usage documentation"}
+  ],
+  "protected_surfaces_unchanged": ["r6o/model_binding/**", "r6o/viewmodel/**", "r6o/contracts/**"],
+  "notes": ["No R6O-1 public contract changed.", "No R6O-3 functionality introduced."]
+}

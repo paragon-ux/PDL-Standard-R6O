@@ -1,0 +1,36 @@
+{
+  "schema_version": "r6o-stage-report-1",
+  "stage": "R6O-2",
+  "gate": "H2",
+  "r6o2_base": {"commit": "db5ba13aa75073e94a786b339b9dd30cb686e6ae", "tree": "ef4aa93eb75043227ade2cfffffd58d5b0efa9ac"},
+  "r6o2_code_head": {"commit": "a59f7e76823812a50807337e2b3d88ae2e041aa5", "tree": "ee51447712ee650c8be30d860d423754bb4aeaf7"},
+  "frozen_oracle": {"commit": "60d982f3328b45a351879d67dc4bb525172b65fd", "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6", "status": "READ_ONLY", "inventory": "unchanged (94 files)"},
+  "qualification": {
+    "baseline_verifier": "PASS",
+    "baseline_pytest": "PASS (9)",
+    "r6o1_regression": "PASS (63)",
+    "r6o2_tests": "PASS (29)",
+    "full_suite": "PASS (116 passed, 4 opt-in display skips; --display 4/4)",
+    "oracle_physical_inventory": "UNCHANGED",
+    "ci": "PASS (push 32541650798, PR R6O-2 32541670426, PR R6O-1 regression 32541670353; Ubuntu + Windows)"
+  },
+  "parity": {
+    "g06_structured_actions": "PASS",
+    "a02_free_response": "PASS",
+    "tui_sidecar_shared_projection": "PASS",
+    "free_response_focus": "PASS",
+    "stale_behavior": "PASS",
+    "disposal_reconstruction": "PASS",
+    "managed_storage_substitution": "NOT_CLAIMED"
+  },
+  "component_reviews": {
+    "component1": "Sol CONFORMS (no P0/P1); Vision CONFIRMS contract",
+    "component2_tui": "Sol F1-F7 fixed; Vision CONFIRMS layout",
+    "component3_sidecar": "Sol F1-F5 fixed; re-review F1-F3 addressed (screenshots + suite + stale fix); Vision CONFIRMS both modes"
+  },
+  "known_findings": [
+    "Display-dependent Tk checks require a display; they are opt-in in CI and were run locally with --display (4/4 PASS)."
+  ],
+  "decision_requests": [],
+  "candidate_status": "READY_FOR_REVIEW"
+}
