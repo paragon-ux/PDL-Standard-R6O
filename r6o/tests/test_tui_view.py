@@ -1,0 +1,136 @@
+from __future__ import annotations
+
+from r6o.model_binding.base import ModelSessionRequest
+from r6o.model_binding.local_runtime import LocalRuntimeModelBinding
+from r6o.model_binding.memory_model import StaticModelPort
+from r6o.presentation_transport import PresentationAdapter
+from r6o.tests.helpers import artifact, state
+from r6o.views.tui import TuiController
+from r6o.views.tui.app import TuiApplication
+
+G06_ACTIVATION = "Use $confirm-with-pseudocode to explain the difference between optimistic and pessimistic locking for senior developers."
+G06_PROMPT = "Explain the difference between optimistic locking and pessimistic locking for an audience of senior developers."
+G06_PLAN = (
+    "IDENTIFY the target audience as senior developers\n"
+    "INTRODUCE the subject of concurrency control\n"
+    "DEFINE optimistic locking\n"
+    "DEFINE pessimistic locking\n"
+    "COMPARE the two approaches\n"
+    "SUMMARIZE the differences"
+)
+A02_ACTIVATION = "Use $confirm-with-pseudocode to compare Kafka and RabbitMQ for event delivery."
+A02_REVISION = "This is not confirmed. The audience should be data engineers, not backend engineers."
+A02_PROMPT = "COMPARE Kafka and RabbitMQ for event delivery, intended for data engineers."
+
+
+def _static_tui() -> TuiController:
+    return TuiController(
+        PresentationAdapter(StaticModelPort(state(), {"prompt:P1": artifact()})),
+        "I-1",
+    )
+
+
+def test_tui_renders_responsive_persistent_layouts() -> None:
+    tui = _static_tui()
+    wide = tui.render(100, 28)
+    narrow = tui.render(56, 28)
+    assert "Authoritative Artifact" in wide and "Review Options" in wide
+    assert "Review >" in wide and "Confirm prompt" in wide
+    assert "Authoritative Artifact" in narrow and "Review Options" in narrow
+    assert len(wide.splitlines()) <= 28
+    assert len(narrow.splitlines()) <= 28
+
+
+def test_tui_keyboard_focus_editing_scroll_and_view_only_close() -> None:
+    tui = _static_tui()
+    tui.handle_key("DOWN")
+    tui.handle_key("DOWN")
+    tui.handle_key("DOWN")
+    result = tui.handle_key("ENTER")
+    assert result["result_type"] == "FOCUS_REQUIRED"
+    assert tui.focus == "input"
+    for value in "Revise this":
+        tui.handle_key(value)
+    tui.handle_key("LEFT")
+    tui.handle_key("BACKSPACE")
+    assert tui.input_buffer == "Revise ths"
+    tui.handle_key("TAB")
+    assert tui.focus == "artifact"
+    tui.handle_key("PAGE_DOWN")
+    assert tui.artifact_scroll > 0
+    tui.handle_key("CTRL_Q")
+    assert tui.closed
+
+
+def test_tui_application_uses_persistent_driver_event_loop() -> None:
+    class FakeDriver:
+        def __init__(self) -> None:
+            self.keys = iter([None, "TAB", "CTRL_Q"])
+            self.screens: list[str] = []
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return None
+
+        def size(self):
+            return (88, 24)
+
+        def draw(self, screen):
+            self.screens.append(screen)
+
+        def read_key(self, _timeout):
+            return next(self.keys)
+
+    tui = _static_tui()
+    driver = FakeDriver()
+    TuiApplication(tui, driver).run()
+    assert tui.closed
+    assert len(driver.screens) >= 2
+    assert all("Review >" in screen for screen in driver.screens)
+
+
+def test_g06_real_tui_key_path_has_no_duplicate_activation(
+    tmp_path, baseline_repo, recorded_worker_factory
+) -> None:
+    binding = LocalRuntimeModelBinding(
+        baseline_repo,
+        worker=recorded_worker_factory(["G06"]),
+        workspace_root=tmp_path / "g06-tui",
+    )
+    started = binding.start_or_resume(
+        ModelSessionRequest(request_id="g06-tui", task_text=G06_ACTIVATION)
+    )
+    tui = TuiController(PresentationAdapter(binding), started.session_id)
+    stages = [tui.projection["stage"]]
+    assert tui.handle_key("ENTER")["result_type"] == "REVISION"
+    stages.append(tui.projection["stage"])
+    assert tui.handle_key("ENTER")["result_type"] == "REVISION"
+    stages.append(tui.projection["stage"])
+    assert stages == ["PROMPT_REVIEW", "PLAN_REVIEW", "CLOSED_SUCCESS"]
+    assert binding.read_artifact(tui.state.session_id, "prompt:current").body == G06_PROMPT
+    assert binding.read_artifact(tui.state.session_id, "plan:current").body == G06_PLAN
+    binding.close()
+
+
+def test_a02_real_tui_editable_input_path_has_no_duplicate_activation(
+    tmp_path, baseline_repo, recorded_worker_factory
+) -> None:
+    binding = LocalRuntimeModelBinding(
+        baseline_repo,
+        worker=recorded_worker_factory(["A02"]),
+        workspace_root=tmp_path / "a02-tui",
+    )
+    started = binding.start_or_resume(
+        ModelSessionRequest(request_id="a02-tui", task_text=A02_ACTIVATION)
+    )
+    tui = TuiController(PresentationAdapter(binding), started.session_id)
+    tui.focus = "input"
+    for value in A02_REVISION:
+        tui.handle_key(value)
+    result = tui.handle_key("ENTER")
+    assert result["result_type"] == "REVISION"
+    assert tui.projection["stage"] == "PROMPT_REVIEW"
+    assert binding.read_artifact(tui.state.session_id, "prompt:current").body == A02_PROMPT
+    binding.close()

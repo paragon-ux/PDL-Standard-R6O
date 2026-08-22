@@ -1,6 +1,7 @@
-# PDL-Standard-R6O — R6O MVVM Presentation Vertical (implementation repo)
+# PDL-Standard-R6O — R6O MVVM Presentation Vertical
 
-Published R6O implementation repository for the R6O-1 MVVM vertical.
+Published R6O implementation repository. R6O-1 supplies the accepted and
+protected Model Port/ViewModel; R6O-2 adds disposable public Views over it.
 
 - Repository: paragon-ux/PDL-Standard-R6O
 - Path: C:\Users\USER\Desktop\Frameworks\PDL-Standard-R6O
@@ -10,9 +11,9 @@ Published R6O implementation repository for the R6O-1 MVVM vertical.
 ## Rules
 
 - The frozen R6S repository is read-only. Any need to patch it is a STOP condition.
-- R6O-1 scope: contracts, current MVVM Model binding adapter, ViewModel, artifact abstraction, parity tests.
-- No TUI, no Sidecar, no Codex integration, no second protocol harness.
-- Views are not implemented in R6O-1.
+- R6O-1 contracts, Model binding, and ViewModel are protected.
+- R6O-2 Views contain no controller, runtime, worker, or artifact authority.
+- The R6O-2 Sidecar is a qualification harness; real host lifecycle integration remains R6O-3 scope.
 
 ## Run
 
@@ -27,3 +28,19 @@ python scripts\verify_r6o1.py
 The verifier clones the bound frozen oracle into temporary storage before
 running its own verifier and pytest suite, preventing ignored-file writes in
 the oracle checkout.
+
+## R6O-2 public Views
+
+From the repository root, with the frozen sibling baseline present or
+`PDL_R6S_BASELINE_REPO` set:
+
+```powershell
+python scripts\run_r6o2_tui.py --recorded
+python scripts\run_r6o2_sidecar.py --recorded --harness --mode STANDARD
+python scripts\run_r6o2_sidecar.py --recorded --harness --mode EXPANDED
+python scripts\verify_r6o2.py --display
+```
+
+The TUI is a persistent raw-key event-loop screen. The Sidecar uses the host
+composer for free-response input and has no duplicate text box. Mechanical
+visual conformance does not constitute human H2 acceptance.
