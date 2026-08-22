@@ -1,0 +1,58 @@
+{
+  "schema_version": "r6o2-rewrite-visual-mechanical-1",
+  "candidate_commit": "51456ba321c059c717aeefdba83b14f0d002cebe",
+  "qualification_shell": {
+    "client_width": 1200,
+    "client_height": 800,
+    "dpi_scaling": "system/default"
+  },
+  "reference_hashes": {
+    "REFERENCE_UI.png": "95bcaae782b111301b686f93074ff7e7ab814d4b7eaf6b40f483428203d0fc47",
+    "REFERENCE_UI-HARNESS.png": "731159289f10be111c0a04d9b0b4a9ef3c646879c94cd514380c3987e6a8786c",
+    "TUI-REFERENCE-v3.md": "c296a61c2b5dd8877cdcf939fd2c3c9ff2cdead1427554916e8b453668c9db67",
+    "VIEW-CONTRACT-v3-amended.md": "91202d65892ccebfcffaa647d928cd4acb49b615d671d21a4c977ca266ee625c"
+  },
+  "standard": {
+    "panel_height": 280,
+    "artifact_width": 805,
+    "options_width": 343,
+    "artifact_ratio": 0.7012,
+    "composer_immediately_below": true,
+    "artifact_options_horizontal": true
+  },
+  "expanded": {
+    "panel_width": 584,
+    "client_width": 1200,
+    "panel_width_ratio": 0.4867,
+    "right_anchored": true,
+    "composer_left_only": true,
+    "artifact_height": 498,
+    "options_height": 214,
+    "artifact_options_vertical": true
+  },
+  "screenshots": [
+    {
+      "path": "screenshots/tui-prompt-review.png",
+      "viewport": "100x30 cells",
+      "pixels": "1139x514",
+      "sha256": "06d040432992c1b33bdb51dea1e0e50089e0764f00e6ef8cbdb92a8db91f55cd"
+    },
+    {
+      "path": "screenshots/sidecar-standard-prompt-review.png",
+      "pixels": "1200x800",
+      "sha256": "d4588b413c70d7b214f3a2a89d0ed7454d94420eb997ce4cc1212155c2349e0e"
+    },
+    {
+      "path": "screenshots/sidecar-expanded-prompt-review.png",
+      "pixels": "1200x800",
+      "sha256": "2492a2db2e7e0205d989b9371d679b1347343a4b9b0007e9fae9a2610a0c430e"
+    },
+    {
+      "path": "screenshots/sidecar-expanded-plan-review.png",
+      "pixels": "1200x800",
+      "sha256": "c7baef614af79327b64a50179d096edf8ef6c42d3d41cb6f69a9fd1eb7383b1d"
+    }
+  ],
+  "VISUAL_MECHANICAL_CONFORMANCE": "PASS",
+  "H2_HUMAN_VISUAL_DISPOSITION": "PENDING"
+}

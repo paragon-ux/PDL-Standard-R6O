@@ -1,0 +1,15 @@
+{
+  "schema_version": "r6o2-h2-human-gate-record-1",
+  "stage": "R6O-2 rewrite",
+  "candidate_commit": "51456ba321c059c717aeefdba83b14f0d002cebe",
+  "mechanical_status": "PASS",
+  "independent_review_status": "PENDING",
+  "human_visual_disposition": "PENDING",
+  "promotion_authorized": false,
+  "r6o3_status": "BLOCKED",
+  "allowed_human_dispositions": [
+    "USER_ACCEPT",
+    "USER_ACCEPT_WITH_FINDING",
+    "USER_REJECT"
+  ]
+}

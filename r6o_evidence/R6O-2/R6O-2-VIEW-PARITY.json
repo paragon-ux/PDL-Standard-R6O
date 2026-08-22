@@ -1,0 +1,27 @@
+{
+  "schema_version": "r6o2-rewrite-view-parity-1",
+  "candidate_commit": "51456ba321c059c717aeefdba83b14f0d002cebe",
+  "g06": {
+    "status": "PASS",
+    "activation_submitted_once": true,
+    "tui_stage_sequence": ["PROMPT_REVIEW", "PLAN_REVIEW", "CLOSED_SUCCESS"],
+    "sidecar_stage_sequence": ["PROMPT_REVIEW", "PLAN_REVIEW", "CLOSED_SUCCESS"],
+    "structured_route": "STRUCTURED_ACTION -> accepted ViewModel dispatcher -> canonical ordinary review text -> Model Port",
+    "authoritative_prompt_equal": true,
+    "authoritative_plan_equal": true
+  },
+  "a02": {
+    "status": "PASS",
+    "activation_submitted_once": true,
+    "tui_source": "TUI_TEXT",
+    "sidecar_source": "HOST_COMPOSER_TEXT",
+    "final_stage": "PROMPT_REVIEW",
+    "authoritative_revised_prompt_equal": true
+  },
+  "stale": {
+    "status": "PASS",
+    "semantic_retry": false,
+    "current_projection_replaced": true,
+    "mechanical_notice": true
+  }
+}

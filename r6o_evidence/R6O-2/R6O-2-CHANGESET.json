@@ -1,0 +1,46 @@
+{
+  "schema_version": "r6o2-rewrite-changeset-1",
+  "stage": "R6O-2 rewrite",
+  "branch": "codex/r6o-2-view-rewrite",
+  "base_commit": "87717ea77975a9b9ac7637850926944e6ab4d48a",
+  "base_tree": "ef4aa93eb75043227ade2cfffffd58d5b0efa9ac",
+  "code_commit": "51456ba321c059c717aeefdba83b14f0d002cebe",
+  "code_tree": "24221ae218795dd7e210073a54e94fae77603dc6",
+  "implementation_commit": "016f7bc388790af4b33de5bd4a44e309cce07449",
+  "ci_fix_commit": "51456ba321c059c717aeefdba83b14f0d002cebe",
+  "protected_paths_changed": false,
+  "areas": {
+    "presentation_transport": [
+      "r6o/presentation_transport/adapter.py"
+    ],
+    "tui": [
+      "r6o/views/tui/app.py",
+      "r6o/views/tui/controller.py",
+      "r6o/views/tui/terminal.py",
+      "scripts/run_r6o2_tui.py"
+    ],
+    "sidecar": [
+      "r6o/views/sidecar/app.py",
+      "r6o/views/sidecar/model.py",
+      "scripts/run_r6o2_sidecar.py"
+    ],
+    "qualification": [
+      "scripts/_r6o2_recorded.py",
+      "scripts/verify_r6o2.py",
+      ".github/workflows/r6o2.yml",
+      "r6o/tests/test_presentation_transport.py",
+      "r6o/tests/test_public_runners.py",
+      "r6o/tests/test_sidecar_display.py",
+      "r6o/tests/test_sidecar_view.py",
+      "r6o/tests/test_tui_view.py",
+      "r6o/tests/test_view_boundaries.py",
+      "r6o/tests/test_view_parity.py"
+    ]
+  },
+  "protected_paths": [
+    "r6o/model_binding/**",
+    "r6o/viewmodel/**",
+    "r6o/contracts/**",
+    "r6o_evidence/R6O-1/**"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": "r6o2-rewrite-test-results-1",
+  "stage": "R6O-2 rewrite",
+  "candidate_commit": "51456ba321c059c717aeefdba83b14f0d002cebe",
+  "candidate_tree": "24221ae218795dd7e210073a54e94fae77603dc6",
+  "observed_at_local": "2026-08-22",
+  "results": [
+    {
+      "id": "BASELINE_VERIFIER",
+      "status": "PASS",
+      "detail": "Frozen R6S verifier passed against an isolated clone; G06 fresh and resume reached CLOSED_SUCCESS."
+    },
+    {
+      "id": "BASELINE_PYTEST",
+      "status": "PASS",
+      "detail": "9 passed in 47.73s during frozen-code local qualification."
+    },
+    {
+      "id": "R6O1_REGRESSION",
+      "status": "PASS",
+      "detail": "87 passed in 38.29s; accepted protected paths unchanged."
+    },
+    {
+      "id": "R6O2_VIEW_TESTS",
+      "status": "PASS",
+      "detail": "19 passed in 15.26s, including exact public runner smoke, actual TUI key paths, cross-View stale/parity, and boundary tests."
+    },
+    {
+      "id": "FULL_SUITE",
+      "status": "PASS",
+      "detail": "106 passed and 4 display-gated tests skipped in 52.70s."
+    },
+    {
+      "id": "LOCAL_DISPLAY_GATE",
+      "status": "PASS",
+      "detail": "4 passed in 4.48s; real Tk widgets exercised for geometry, G06 structured actions, and A02 host-composer revision."
+    },
+    {
+      "id": "GITHUB_CI_PUSH",
+      "status": "PASS",
+      "run_id": 32550627928,
+      "url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/32550627928",
+      "detail": "Ubuntu job 96976663010 and Windows job 96976663051 passed the canonical non-display gates."
+    },
+    {
+      "id": "FROZEN_ORACLE_INVENTORY",
+      "status": "PASS",
+      "detail": "94 non-.git files unchanged before/after qualification; aggregate content inventory SHA-256 9d2523e3d5f6735787d6a772e845cc4b1f30f2a10854b230e8842a72932a53b8."
+    }
+  ],
+  "visual_status": {
+    "VISUAL_MECHANICAL_CONFORMANCE": "PASS",
+    "H2_HUMAN_VISUAL_DISPOSITION": "PENDING"
+  }
+}
