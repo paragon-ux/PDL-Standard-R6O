@@ -82,7 +82,8 @@ def test_stale_refresh_failure_shows_model_access() -> None:
 
 
 def test_stale_structured_action_uses_returned_projection() -> None:
-    stale_projection = {"session_id": "I-1", "model_revision": "r2", "projection_id": "p2", "stage": "PLAN_REVIEW", "artifact": None, "actions": [], "lifecycle": {}}
+    stale_actions = [{"action_id": "confirm_plan", "label": "Confirm plan", "ordinal": 1, "kind": "SEMANTIC_MESSAGE", "canonical_review_text": "Confirm the plan and execute.", "emphasis": "PRIMARY", "enabled": True}]
+    stale_projection = {"session_id": "I-1", "model_revision": "r2", "projection_id": "p2", "stage": "PLAN_REVIEW", "artifact": None, "actions": stale_actions, "lifecycle": {}}
     class _StaleAdapter:
         def __init__(self): self.submits = []
         def current_projection(self, s): return {"session_id": s, "model_revision": "r1", "projection_id": "p1", "stage": "PROMPT_REVIEW", "artifact": None, "actions": [{"action_id": "confirm_prompt", "label": "Confirm prompt", "ordinal": 1, "kind": "SEMANTIC_MESSAGE", "canonical_review_text": "Yes, that is what I mean.", "emphasis": "PRIMARY", "enabled": True}], "lifecycle": {}}
@@ -92,4 +93,27 @@ def test_stale_structured_action_uses_returned_projection() -> None:
     m = SidecarModel(_StaleAdapter(), "I-1")
     result = m.select_action("confirm_prompt")
     assert result["result_type"] == "STALE_PROJECTION"
+    assert len(m.adapter.submits) == 1
     assert m.projection["model_revision"] == "r2"
+    assert [a["action_id"] for a in m.projection["actions"]] == ["confirm_plan"]
+
+
+
+def test_reopen_refetches_authoritative_revision_change() -> None:
+    rev1 = {"session_id": "I-1", "model_revision": "r1", "projection_id": "p1", "stage": "PROMPT_REVIEW", "artifact": {"artifact_ref": "prompt:P1", "artifact_revision": "P1", "artifact_kind": "prompt", "title": "Authoritative Prompt (PDL.md)", "media_type": "text/plain", "body": "BODY V1", "capabilities": {}}, "actions": [], "lifecycle": {}}
+    rev2 = {"session_id": "I-1", "model_revision": "r2", "projection_id": "p2", "stage": "PROMPT_REVIEW", "artifact": {"artifact_ref": "prompt:P1", "artifact_revision": "P2", "artifact_kind": "prompt", "title": "Authoritative Prompt (PDL.md)", "media_type": "text/plain", "body": "BODY V2", "capabilities": {}}, "actions": [{"action_id": "change_task", "label": "Change the task", "ordinal": 2, "kind": "FREE_RESPONSE_FOCUS", "emphasis": "NORMAL", "enabled": True}], "lifecycle": {}}
+
+    class _RevAdapter:
+        def __init__(self): self.calls = 0
+        def current_projection(self, s):
+            self.calls += 1
+            return rev1 if self.calls == 1 else rev2
+        def submit_input(self, e): return {"result_type": "REVISION", "projection": rev2}
+
+    m = SidecarModel(_RevAdapter(), "I-1")
+    assert m.projection["model_revision"] == "r1"
+    m.close()
+    m.open_()
+    assert m.projection["model_revision"] == "r2"
+    assert m.projection["artifact"]["body"] == "BODY V2"
+    assert m.projection["actions"][0]["action_id"] == "change_task"

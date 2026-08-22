@@ -103,6 +103,7 @@ def test_stale_structured_action_no_retry_and_redraw() -> None:
     c = TuiController(_StaleAdapter(), "I-1")
     result = c.select_action(1)
     assert result["result_type"] == "STALE_PROJECTION"
+    assert len(c.adapter.submits) == 1
     assert c.projection["model_revision"] == "r2"
     assert c.projection["actions"][0]["action_id"] == "confirm_plan"
 
@@ -132,3 +133,4 @@ def test_reconstruction_after_revision_change() -> None:
     out = c.render()
     assert "REVISED BODY" in out
     assert "2 Change the task" in out
+
