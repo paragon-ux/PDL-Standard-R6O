@@ -42,6 +42,7 @@ def test_exact_public_tui_command_reaches_real_ready_state(baseline_repo) -> Non
     )
     assert a02.returncode == 0, a02.stdout + a02.stderr
     assert "case=A02" in a02.stdout
+    assert "prefill=yes" in a02.stdout
 
 
 def test_exact_public_sidecar_commands_reach_real_ready_state(baseline_repo) -> None:
@@ -75,3 +76,4 @@ def test_exact_public_sidecar_commands_reach_real_ready_state(baseline_repo) -> 
     )
     assert a02.returncode == 0, a02.stdout + a02.stderr
     assert "case=A02" in a02.stdout
+    assert "prefill=yes" in a02.stdout

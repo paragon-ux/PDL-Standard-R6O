@@ -112,6 +112,7 @@ class RecordedSession:
     adapter: PresentationAdapter
     session_id: str
     workspace_root: Path
+    review_input: str | None
     _temporary: tempfile.TemporaryDirectory[str]
 
     def close(self) -> None:
@@ -146,5 +147,6 @@ def start_recorded_session(
         adapter=PresentationAdapter(binding),
         session_id=snapshot.session_id,
         workspace_root=workspace_root,
+        review_input=A02_REVISION if case_id == "A02" else None,
         _temporary=temporary,
     )

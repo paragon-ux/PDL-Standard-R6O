@@ -44,8 +44,11 @@ python scripts\verify_r6o2.py --display
 ```
 
 `G06` is the default structured Prompt/Plan case. `A02` is the recorded
-free-response revision case; an unrecorded qualification input reports a
-friendly deterministic-fixture notice and never falls back to a live worker.
+free-response revision case. Its exact deterministic revision starts preloaded
+in the TUI input line or Sidecar host composer: choose `4 Something else...`,
+then press `Enter`/`Send` without editing the selected text. An unrecorded
+qualification input reports a friendly deterministic-fixture notice and never
+falls back to a live worker.
 The TUI is a persistent raw-key event-loop screen. The Sidecar is a separate,
 owned floating window over a neutral fullscreen parent and uses the parent
 composer for free-response input, with no duplicate text box. Closing the

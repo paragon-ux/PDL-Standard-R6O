@@ -19,6 +19,7 @@ from r6o.views.sidecar.app import (
     EXPANDED_WIDTH_RATIO,
     STANDARD_GAP,
     STANDARD_HEIGHT,
+    SURFACE,
 )
 
 pytestmark = pytest.mark.skipif(
@@ -42,13 +43,22 @@ def display_master():
     root.destroy()
 
 
-def _harness(display_master, *, model: SidecarModel | None = None) -> SidecarHarness:
+def _harness(
+    display_master,
+    *,
+    model: SidecarModel | None = None,
+    composer_prefill: str | None = None,
+) -> SidecarHarness:
     root = tk.Toplevel(display_master)
     model = model or SidecarModel(
         PresentationAdapter(StaticModelPort(state(), {"prompt:P1": artifact()})),
         "I-1",
     )
-    harness = SidecarHarness(model, root=root)
+    harness = SidecarHarness(
+        model,
+        root=root,
+        composer_prefill=composer_prefill,
+    )
     harness.root.update()
     return harness
 
@@ -69,6 +79,8 @@ def test_fullscreen_parent_and_standard_floating_geometry(display_master) -> Non
         assert geometry["sidecar_frameless"] is True
         assert geometry["sidecar_resizable"] is False
         assert geometry["sidecar_transient"] is True
+        assert geometry["sidecar_native_owner_attached"] is True
+        assert geometry["sidecar_above_owner"] is True
         assert geometry["sidecar_global_topmost"] is False
         assert geometry["native_sidecar_chrome"] is False
         assert geometry["panel_x"] == geometry["composer_x"]
@@ -84,6 +96,26 @@ def test_fullscreen_parent_and_standard_floating_geometry(display_master) -> Non
         assert 0.65 <= int(geometry["artifact_width"]) / total <= 0.75
         assert abs(int(geometry["artifact_y"]) - int(geometry["options_y"])) <= 2
         assert harness.panel is not None and harness.panel.source_label is None
+    finally:
+        harness.close()
+
+
+def test_public_capture_contains_the_live_sidecar_pixels(
+    tmp_path, display_master
+) -> None:
+    harness = _harness(display_master)
+    try:
+        destination = harness.capture(tmp_path / "sidecar-visible.png")
+        geometry = harness.geometry_snapshot()
+        from PIL import Image
+
+        image = Image.open(destination).convert("RGB")
+        x = int(geometry["sidecar_x"]) - int(geometry["parent_x"]) + 2
+        y = int(geometry["sidecar_y"]) - int(geometry["parent_y"]) + 2
+        expected = tuple(bytes.fromhex(SURFACE.removeprefix("#")))
+        assert image.getpixel((x, y)) == expected
+        assert geometry["sidecar_native_owner_attached"] is True
+        assert geometry["sidecar_above_owner"] is True
     finally:
         harness.close()
 
@@ -139,6 +171,9 @@ def test_live_expand_lock_and_collapse_restore_standard(display_master) -> None:
         harness.invoke_action("something_else")
         harness.root.update()
         assert harness.sidecar_rect() == locked
+        focused = harness.geometry_snapshot()
+        assert focused["sidecar_native_owner_attached"] is True
+        assert focused["sidecar_above_owner"] is True
 
         harness.invoke_mode_control()
         collapsed = harness.geometry_snapshot()
@@ -223,10 +258,15 @@ def test_real_a02_composer_revision_keeps_window_locked(
             started.session_id,
             qualification_case="A02",
         ),
+        composer_prefill=A02_REVISION,
     )
     try:
         locked = harness.sidecar_rect()
-        harness.composer_entry.insert(0, A02_REVISION)
+        assert harness.composer_entry.get() == A02_REVISION
+        assert "preloaded" in harness.model.notice
+        harness.invoke_action("something_else")
+        assert harness.composer_focus_requested
+        assert harness.geometry_snapshot()["sidecar_above_owner"] is True
         harness._submit_composer()
         assert harness.model.projection["stage"] == "PROMPT_REVIEW"
         assert harness.sidecar_rect() == locked

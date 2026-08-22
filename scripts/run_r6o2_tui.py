@@ -37,13 +37,11 @@ def _capture_screen(screen: str, destination: Path) -> None:
             font = ImageFont.truetype(str(candidate), 18)
             break
     font = font or ImageFont.load_default()
-    lines = screen.splitlines()
-    box = font.getbbox("M")
-    cell_width = max(8, box[2] - box[0])
-    cell_height = max(16, box[3] - box[1] + 6)
+    measure = ImageDraw.Draw(Image.new("RGB", (1, 1)))
+    bounds = measure.multiline_textbbox((0, 0), screen, font=font, spacing=6)
     image = Image.new(
         "RGB",
-        (max(len(line) for line in lines) * cell_width + 28, len(lines) * cell_height + 28),
+        (bounds[2] - bounds[0] + 28, bounds[3] - bounds[1] + 28),
         "#080f18",
     )
     draw = ImageDraw.Draw(image)
@@ -78,6 +76,8 @@ def main() -> int:
             session.session_id,
             qualification_case=args.case,
         )
+        if session.review_input:
+            controller.prefill_input(session.review_input)
         smoke = args.smoke or os.environ.get("R6O2_SMOKE_MODE") == "1"
         if smoke or args.capture:
             if args.capture_stage == "PLAN_REVIEW":
@@ -89,7 +89,8 @@ def main() -> int:
                 "R6O2_TUI_READY "
                 f"session={controller.projection['session_id']} "
                 f"stage={controller.projection['stage']} "
-                f"case={args.case} event_loop={TuiApplication.__name__}"
+                f"case={args.case} prefill={'yes' if session.review_input else 'no'} "
+                f"event_loop={TuiApplication.__name__}"
             )
             return 0
         TuiApplication(controller).run()

@@ -36,7 +36,7 @@ class SidecarModel:
 
     @property
     def notice(self) -> str | None:
-        return self.state.notice
+        return self.state.presentation_notice
 
     @property
     def terminal(self) -> bool:

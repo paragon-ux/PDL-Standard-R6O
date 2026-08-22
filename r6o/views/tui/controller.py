@@ -42,7 +42,14 @@ class TuiController:
 
     @property
     def notice(self) -> str | None:
-        return self.state.notice
+        return self.state.presentation_notice
+
+    def prefill_input(self, value: str) -> None:
+        """Populate deterministic qualification input without submitting semantics."""
+
+        self.input_buffer = value
+        self.cursor = len(value)
+        self.dirty = True
 
     def close_view(self) -> None:
         self.state.close_view()

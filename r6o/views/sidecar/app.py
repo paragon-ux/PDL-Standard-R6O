@@ -64,6 +64,139 @@ def _geometry(rect: WindowRect) -> str:
     return f"{rect.width}x{rect.height}{rect.x:+d}{rect.y:+d}"
 
 
+def _windows_toplevel_handle(widget: tk.Misc) -> int | None:
+    if os.name != "nt":
+        return None
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        get_ancestor = ctypes.windll.user32.GetAncestor
+        get_ancestor.argtypes = [wintypes.HWND, wintypes.UINT]
+        get_ancestor.restype = wintypes.HWND
+        handle = get_ancestor(wintypes.HWND(widget.winfo_id()), 2)  # GA_ROOT
+        return int(handle) if handle else None
+    except (AttributeError, OSError, TypeError, ValueError):
+        return None
+
+
+def _attach_native_owner(owner: tk.Misc, sidecar: tk.Misc) -> bool:
+    """Attach the Win32 owner that Tk transient omits for this frameless window."""
+
+    if os.name != "nt":
+        return bool(sidecar.transient())
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        owner_handle = _windows_toplevel_handle(owner)
+        sidecar_handle = _windows_toplevel_handle(sidecar)
+        if owner_handle is None or sidecar_handle is None:
+            return False
+        user32 = ctypes.windll.user32
+        setter = getattr(user32, "SetWindowLongPtrW", user32.SetWindowLongW)
+        setter.argtypes = [wintypes.HWND, ctypes.c_int, ctypes.c_void_p]
+        setter.restype = ctypes.c_void_p
+        setter(
+            wintypes.HWND(sidecar_handle),
+            -8,  # GWLP_HWNDPARENT: owner for a top-level window
+            ctypes.c_void_p(owner_handle),
+        )
+        get_window = user32.GetWindow
+        get_window.argtypes = [wintypes.HWND, wintypes.UINT]
+        get_window.restype = wintypes.HWND
+        attached = get_window(wintypes.HWND(sidecar_handle), 4)  # GW_OWNER
+        return bool(attached and int(attached) == owner_handle)
+    except (AttributeError, OSError, TypeError, ValueError):
+        return False
+
+
+def _native_window_above(sidecar: tk.Misc, owner: tk.Misc) -> bool | None:
+    """Report whether the Sidecar precedes its owner in the Win32 Z-order."""
+
+    if os.name != "nt":
+        return None
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        owner_handle = _windows_toplevel_handle(owner)
+        sidecar_handle = _windows_toplevel_handle(sidecar)
+        if owner_handle is None or sidecar_handle is None:
+            return False
+        user32 = ctypes.windll.user32
+        get_top = user32.GetTopWindow
+        get_top.argtypes = [wintypes.HWND]
+        get_top.restype = wintypes.HWND
+        get_window = user32.GetWindow
+        get_window.argtypes = [wintypes.HWND, wintypes.UINT]
+        get_window.restype = wintypes.HWND
+        handle = get_top(wintypes.HWND(0))
+        for _ in range(4096):
+            if not handle:
+                break
+            value = int(handle)
+            if value == sidecar_handle:
+                return True
+            if value == owner_handle:
+                return False
+            handle = get_window(handle, 2)  # GW_HWNDNEXT
+        return False
+    except (AttributeError, OSError, TypeError, ValueError):
+        return False
+
+
+def _activate_windows_toplevel(widget: tk.Misc) -> bool | None:
+    """Request foreground activation for deterministic local evidence capture."""
+
+    if os.name != "nt":
+        return None
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        handle = _windows_toplevel_handle(widget)
+        if handle is None:
+            return False
+        user32 = ctypes.windll.user32
+        kernel32 = ctypes.windll.kernel32
+        user32.GetForegroundWindow.restype = wintypes.HWND
+        user32.GetWindowThreadProcessId.argtypes = [wintypes.HWND, ctypes.c_void_p]
+        user32.GetWindowThreadProcessId.restype = wintypes.DWORD
+        user32.AttachThreadInput.argtypes = [
+            wintypes.DWORD,
+            wintypes.DWORD,
+            wintypes.BOOL,
+        ]
+        user32.AttachThreadInput.restype = wintypes.BOOL
+        user32.ShowWindow.argtypes = [wintypes.HWND, ctypes.c_int]
+        user32.BringWindowToTop.argtypes = [wintypes.HWND]
+        user32.SetForegroundWindow.argtypes = [wintypes.HWND]
+        user32.SetFocus.argtypes = [wintypes.HWND]
+        user32.SetFocus.restype = wintypes.HWND
+        kernel32.GetCurrentThreadId.restype = wintypes.DWORD
+        foreground_before = user32.GetForegroundWindow()
+        foreground_thread = user32.GetWindowThreadProcessId(
+            wintypes.HWND(foreground_before), None
+        )
+        current_thread = kernel32.GetCurrentThreadId()
+        attached = bool(
+            foreground_thread
+            and foreground_thread != current_thread
+            and user32.AttachThreadInput(current_thread, foreground_thread, True)
+        )
+        user32.ShowWindow(wintypes.HWND(handle), 5)  # SW_SHOW
+        user32.BringWindowToTop(wintypes.HWND(handle))
+        activated = user32.SetForegroundWindow(wintypes.HWND(handle))
+        user32.SetFocus(wintypes.HWND(handle))
+        foreground = user32.GetForegroundWindow()
+        if attached:
+            user32.AttachThreadInput(current_thread, foreground_thread, False)
+        return bool(activated and foreground and int(foreground) == handle)
+    except (AttributeError, OSError, TypeError, ValueError):
+        return False
+
+
 def detect_work_area(root: tk.Misc) -> WorkArea:
     """Return the selected monitor usable work area using stdlib/toolkit APIs."""
 
@@ -450,12 +583,18 @@ class SidecarWindow:
         self.panel.pack(fill="both", expand=True)
         self.apply(rect)
         self.window.deiconify()
-        self.window.lift(owner)
         self.window.update_idletasks()
+        self.native_owner_attached = _attach_native_owner(owner, self.window)
+        self.raise_above_owner()
 
     def apply(self, rect: WindowRect) -> None:
         self.window.geometry(_geometry(rect))
         self.window.update_idletasks()
+
+    def raise_above_owner(self) -> None:
+        if self.window.winfo_exists():
+            self.window.lift(self.window.master)
+            self.window.update_idletasks()
 
     def destroy(self) -> None:
         if self.window.winfo_exists():
@@ -477,6 +616,7 @@ class SidecarHarness:
         title: str = "PDLt R6O-2 Sidecar Qualification Harness",
         work_area: WorkArea | None = None,
         debug_ui: bool = False,
+        composer_prefill: str | None = None,
     ) -> None:
         self.model = model
         self.root = root or tk.Tk()
@@ -513,6 +653,9 @@ class SidecarHarness:
         )
         self.composer_entry.grid(row=0, column=0, sticky="ew", padx=(14, 8), pady=16)
         self.composer_entry.bind("<Return>", self._submit_composer)
+        if composer_prefill:
+            self.composer_entry.insert(0, composer_prefill)
+            self.composer_entry.selection_range(0, "end")
         self.send_button = tk.Button(
             self.composer,
             text="Send",
@@ -534,6 +677,12 @@ class SidecarHarness:
         self.root.update_idletasks()
         self.placement = SidecarPlacementController(self.root, self.composer, self.work_area)
         self.attach_sidecar(model)
+        self.root.bind("<FocusIn>", self._owner_interaction, add="+")
+        self.root.bind("<ButtonPress>", self._owner_interaction, add="+")
+
+    def _owner_interaction(self, _event: Any = None) -> None:
+        if self.window is not None:
+            self.root.after_idle(self.window.raise_above_owner)
 
     def _layout_composer(self, mode: str) -> None:
         scale = self.work_area.scale
@@ -586,6 +735,7 @@ class SidecarHarness:
         self._layout_composer(self.model.mode)
         self.window.panel.render()
         self.window.apply(self.placement.rect_for(self.model.mode))
+        self.window.raise_above_owner()
         self.root.update_idletasks()
 
     def invoke_mode_control(self) -> None:
@@ -621,8 +771,9 @@ class SidecarHarness:
 
     def focus_composer(self) -> None:
         self.composer_focus_requested = True
-        self.root.lift()
         self.composer_entry.focus_force()
+        if self.window is not None:
+            self.window.raise_above_owner()
 
     def invoke_action(self, action_id: str) -> None:
         """Invoke one currently projected action through its visible widget."""
@@ -695,6 +846,13 @@ class SidecarHarness:
             "sidecar_transient": bool(
                 self.window is not None and self.window.window.transient()
             ),
+            "sidecar_native_owner_attached": bool(
+                self.window is not None and self.window.native_owner_attached
+            ),
+            "sidecar_above_owner": bool(
+                self.window is not None
+                and _native_window_above(self.window.window, self.root) is not False
+            ),
             "native_sidecar_chrome": not frameless,
         }
         if self.window is not None:
@@ -720,10 +878,20 @@ class SidecarHarness:
     def capture(self, destination: str | Path) -> Path:
         from PIL import ImageGrab
 
+        if self.window is not None and not self.window.native_owner_attached:
+            raise RuntimeError("Sidecar has no native fullscreen-window owner")
+        # Tk can place an overrideredirect child below its owner when the parent is
+        # activated, even after Win32 ownership is attached. Bring the group forward,
+        # then restore and verify the owned Sidecar ordering before accepting pixels.
+        self.root.lift()
+        self.root.focus_force()
+        _activate_windows_toplevel(self.root)
         self.root.update()
         if self.window is not None:
-            self.window.window.lift(self.root)
-            self.window.window.update()
+            self.window.raise_above_owner()
+            self.root.update()
+        if self.window is not None and not self.geometry_snapshot()["sidecar_above_owner"]:
+            raise RuntimeError("Sidecar is not above its fullscreen owner")
         parent = self._widget_rect(self.root)
         image = ImageGrab.grab(
             bbox=(parent.x, parent.y, parent.right, parent.bottom), all_screens=True

@@ -26,6 +26,17 @@ class ProjectionViewState:
         self.closed = False
 
     @property
+    def presentation_notice(self) -> str | None:
+        if self.notice:
+            return self.notice
+        if self.qualification_case == "A02":
+            return (
+                "A02 recorded revision is preloaded. Choose Something else, "
+                "then submit the composer/input text."
+            )
+        return None
+
+    @property
     def actions(self) -> list[dict[str, Any]]:
         return sorted(
             self.projection.get("actions") or [],
@@ -92,10 +103,16 @@ class ProjectionViewState:
             message = error.get("message", "Command failed")
             self.debug_error = dict(error)
             if self.qualification_case and "ReplayMissError" in f"{code}: {message}":
-                self.notice = (
-                    "Recorded qualification fixture has no response for that input. "
-                    "Use the A02 recorded case to exercise free-response revision."
-                )
+                if self.qualification_case == "A02":
+                    self.notice = (
+                        "Recorded A02 accepts only its preloaded revision. "
+                        "Relaunch A02 to restore that deterministic input."
+                    )
+                else:
+                    self.notice = (
+                        "Recorded qualification fixture has no response for that input. "
+                        "Use the A02 recorded case to exercise free-response revision."
+                    )
             else:
                 self.notice = f"{code}: {message}"
         return result

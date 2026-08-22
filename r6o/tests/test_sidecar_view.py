@@ -82,3 +82,31 @@ def test_recorded_replay_miss_is_a_qualification_notice_without_raw_exception() 
     assert "ReplayMissError" not in model.notice
     assert model.projection == before
     assert model.state.debug_error["message"].startswith("ReplayMissError")
+
+
+def test_a02_replay_miss_explains_how_to_restore_its_preloaded_input() -> None:
+    projection = PresentationAdapter(
+        StaticModelPort(state(), {"prompt:P1": artifact()})
+    ).current_projection("I-1")
+
+    class ReplayMissAdapter:
+        def current_projection(self, _session_id):
+            return projection
+
+        def submit_input(self, _envelope):
+            return {
+                "result_type": "ERROR",
+                "projection": None,
+                "error": {
+                    "code": "MODEL_ERROR",
+                    "message": "ReplayMissError: no deterministic response",
+                },
+            }
+
+    model = SidecarModel(ReplayMissAdapter(), "I-1", qualification_case="A02")
+    assert "preloaded" in model.notice
+    result = model.host_composer_text("not the recorded A02 input")
+    assert result["result_type"] == "ERROR"
+    assert "Recorded A02" in model.notice
+    assert "Relaunch A02" in model.notice
+    assert "ReplayMissError" not in model.notice

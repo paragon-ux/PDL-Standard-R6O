@@ -66,10 +66,15 @@ def main() -> int:
                 "R6O2_SIDECAR_READY "
                 f"session={model.projection['session_id']} "
                 f"stage={model.projection['stage']} mode={args.mode} case={args.case} "
+                f"prefill={'yes' if session.review_input else 'no'} "
                 "display=LOCAL_DISPLAY_GATE_REQUIRED"
             )
             return 0
-        harness = SidecarHarness(model, debug_ui=args.debug_ui)
+        harness = SidecarHarness(
+            model,
+            debug_ui=args.debug_ui,
+            composer_prefill=session.review_input,
+        )
         harness.set_mode_via_control(args.mode)
         if args.capture or display_smoke:
             harness.root.update()

@@ -150,9 +150,12 @@ def test_a02_real_tui_editable_input_path_has_no_duplicate_activation(
         ModelSessionRequest(request_id="a02-tui", task_text=A02_ACTIVATION)
     )
     tui = TuiController(PresentationAdapter(binding), started.session_id)
-    tui.focus = "input"
-    for value in A02_REVISION:
-        tui.handle_key(value)
+    tui.state.qualification_case = "A02"
+    tui.prefill_input(A02_REVISION)
+    assert tui.input_buffer == A02_REVISION
+    assert "preloaded" in tui.notice
+    tui.select_action(3)
+    assert tui.focus == "input"
     result = tui.handle_key("ENTER")
     assert result["result_type"] == "REVISION"
     assert tui.projection["stage"] == "PROMPT_REVIEW"
