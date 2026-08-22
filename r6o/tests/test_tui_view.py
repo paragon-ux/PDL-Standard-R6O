@@ -159,3 +159,58 @@ def test_a02_real_tui_editable_input_path_has_no_duplicate_activation(
     assert tui.focus == "actions"
     assert binding.read_artifact(tui.state.session_id, "prompt:current").body == A02_PROMPT
     binding.close()
+
+
+def test_stale_text_refresh_to_real_terminal_projection_exits_tui(
+    tmp_path, baseline_repo, recorded_worker_factory
+) -> None:
+    binding = LocalRuntimeModelBinding(
+        baseline_repo,
+        worker=recorded_worker_factory(["G06"]),
+        workspace_root=tmp_path / "g06-stale-terminal-tui",
+    )
+    started = binding.start_or_resume(
+        ModelSessionRequest(request_id="g06-stale-tui", task_text=G06_ACTIVATION)
+    )
+    adapter = PresentationAdapter(binding)
+    stale_tui = TuiController(adapter, started.session_id)
+    current_tui = TuiController(adapter, started.session_id)
+    assert current_tui.select_action()["projection"]["stage"] == "PLAN_REVIEW"
+    assert current_tui.select_action()["projection"]["stage"] == "CLOSED_SUCCESS"
+
+    stale_tui.focus = "input"
+    stale_tui.input_buffer = "stale feedback"
+    stale_tui.cursor = len(stale_tui.input_buffer)
+    result = stale_tui.submit_input()
+    assert result["result_type"] == "STALE_PROJECTION"
+    assert stale_tui.projection["stage"] == "CLOSED_SUCCESS"
+    assert stale_tui.closed
+    binding.close()
+
+
+def test_stale_text_refresh_clamps_action_index_to_replacement_projection() -> None:
+    initial = PresentationAdapter(
+        StaticModelPort(state(), {"prompt:P1": artifact()})
+    ).current_projection("I-1")
+    replacement = dict(initial)
+    replacement["model_revision"] = "model-rev-2"
+    replacement["actions"] = replacement["actions"][:1]
+
+    class StaleAdapter:
+        def current_projection(self, _session_id):
+            return initial
+
+        def submit_input(self, _envelope):
+            return {
+                "result_type": "STALE_PROJECTION",
+                "projection": replacement,
+                "error": None,
+            }
+
+    tui = TuiController(StaleAdapter(), "I-1")
+    tui.action_index = len(tui.state.actions) - 1
+    tui.input_buffer = "stale feedback"
+    result = tui.submit_input()
+    assert result["result_type"] == "STALE_PROJECTION"
+    assert tui.action_index == 0
+    assert tui.state.actions[0]["action_id"] == "confirm_prompt"

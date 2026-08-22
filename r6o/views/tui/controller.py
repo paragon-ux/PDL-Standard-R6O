@@ -102,10 +102,12 @@ class TuiController:
     def submit_input(self) -> dict[str, Any] | None:
         value = self.input_buffer
         result = self.state.submit_text("TUI_TEXT", value)
-        if result and result.get("result_type") == "REVISION":
-            self.input_buffer = ""
-            self.cursor = 0
-            self._projection_changed(prefer_actions=True)
+        if result and result.get("projection"):
+            revised = result.get("result_type") == "REVISION"
+            if revised:
+                self.input_buffer = ""
+                self.cursor = 0
+            self._projection_changed(prefer_actions=revised)
         self.dirty = True
         return result
 
