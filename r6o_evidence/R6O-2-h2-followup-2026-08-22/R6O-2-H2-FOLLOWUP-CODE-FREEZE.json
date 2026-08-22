@@ -1,0 +1,22 @@
+{
+  "schema_version": "r6o2-h2-followup-code-freeze-1",
+  "date": "2026-08-22",
+  "pull_request": 3,
+  "branch": "codex/r6o-2-view-rewrite",
+  "rewrite_base": "87717ea77975a9b9ac7637850926944e6ab4d48a",
+  "previous_converged_code_head": "f9d3a569c066486d6f621901097c75d477197a79",
+  "previous_evidence_head": "cb57d816fb7842a8b3d1ef4f537d004ce2b10dff",
+  "previous_h2_disposition": "USER_REJECT",
+  "followup_code_head": "b1802d49e33e8a6449c27a2839aa682083d11666",
+  "followup_code_tree": "e1b6d58023afde47f836b6674d7a74c5055cf8d7",
+  "resolution_freeze_id": "R6O2-RF-2026-08-22-01",
+  "expanded_composition": "artifact_TOP_options_BELOW",
+  "protected_paths_changed": [],
+  "frozen_oracle_head": "60d982f3328b45a351879d67dc4bb525172b65fd",
+  "frozen_oracle_worktree_clean": true,
+  "pushed": true,
+  "code_must_not_be_amended": true,
+  "independent_luna_review_3": "CONFORMS_FOR_H2_REVIEW",
+  "h2_human_visual_disposition": "PENDING_RETEST",
+  "evidence_commit": "CONTAINING_EVIDENCE_ONLY_COMMIT"
+}

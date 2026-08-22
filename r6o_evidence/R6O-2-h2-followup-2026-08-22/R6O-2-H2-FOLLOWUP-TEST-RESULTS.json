@@ -1,0 +1,36 @@
+{
+  "schema_version": "r6o2-h2-followup-tests-1",
+  "date": "2026-08-22",
+  "code_head": "b1802d49e33e8a6449c27a2839aa682083d11666",
+  "command": "python scripts/verify_r6o2.py --display",
+  "result": "PASS",
+  "baseline_verifier": "PASS",
+  "baseline_pytest": {"passed": 9, "failed": 0},
+  "protected_r6o1_regression": {"passed": 87, "failed": 0},
+  "r6o2_views": {"passed": 26, "failed": 0},
+  "full_suite": {"passed": 113, "failed": 0, "skipped_display_gated": 6},
+  "local_display_gate": {"passed": 6, "failed": 0},
+  "public_sidecar_display_smoke": {
+    "standard": "PASS",
+    "expanded": "PASS",
+    "native_owner_attached": true,
+    "sidecar_above_owner": true,
+    "global_topmost": false
+  },
+  "public_a02": {
+    "tui_prefill": "PASS",
+    "sidecar_prefill": "PASS",
+    "semantic_revision": "PASS",
+    "live_worker_fallback": false
+  },
+  "visual_mechanical_conformance": "PASS",
+  "h2_human_visual_disposition": "PENDING_RETEST",
+  "github_checks": {
+    "all_pr_checks_green": true,
+    "ubuntu": "PASS",
+    "windows": "PASS",
+    "r6o1_run": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/32589760895",
+    "r6o2_run": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/32589760883",
+    "additional_r6o2_run": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/32589758847"
+  }
+}

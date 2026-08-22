@@ -1,0 +1,55 @@
+{
+  "schema_version": "r6o2-h2-followup-visual-1",
+  "date": "2026-08-22",
+  "code_head": "b1802d49e33e8a6449c27a2839aa682083d11666",
+  "display": {
+    "monitor_id": "65537",
+    "dpi": 96.07565011820331,
+    "scale": 1.000788022064618,
+    "work_area": {"x": 0, "y": 0, "width": 1600, "height": 900},
+    "parent": {"x": 0, "y": 0, "width": 1600, "height": 900}
+  },
+  "standard": {
+    "composer": {"x": 24, "y": 804, "width": 1552, "height": 72},
+    "sidecar": {"x": 24, "y": 496, "width": 1552, "height": 300},
+    "artifact": {"x": 35, "y": 543, "width": 1066, "height": 242},
+    "options": {"x": 1111, "y": 543, "width": 454, "height": 242},
+    "composition": "artifact_LEFT_options_RIGHT"
+  },
+  "expanded": {
+    "composer": {"x": 24, "y": 804, "width": 1056, "height": 72},
+    "sidecar": {"x": 1096, "y": 48, "width": 480, "height": 828},
+    "artifact": {"x": 1107, "y": 95, "width": 458, "height": 546},
+    "options": {"x": 1107, "y": 651, "width": 458, "height": 214},
+    "parent_width_ratio": 0.30,
+    "composition": "artifact_TOP_options_BELOW"
+  },
+  "window_properties": {
+    "separate_top_level": true,
+    "tk_transient": true,
+    "win32_native_owner_attached": true,
+    "sidecar_above_owner": true,
+    "frameless": true,
+    "resizable": false,
+    "global_topmost": false,
+    "capture_fails_closed_when_owner_or_z_order_is_invalid": true
+  },
+  "a02": {
+    "exact_recorded_revision_preloaded": true,
+    "instruction_visible": true,
+    "tui_input_visible_in_capture": true,
+    "sidecar_host_composer_visible_in_capture": true
+  },
+  "screenshots": [
+    {"file": "screenshots/sidecar-standard-prompt-review.png", "width": 1600, "height": 900, "sha256": "3a5365e14aae6c0a6f606ecec6b458065d05bd1196907c13b4d4d78688ea7f42"},
+    {"file": "screenshots/sidecar-expanded-prompt-review.png", "width": 1600, "height": 900, "sha256": "7112bc2ad872a33f366e335eeb83da0d5b5e1eab71661eb802402ad010b6d905"},
+    {"file": "screenshots/sidecar-collapsed-standard-prompt-review.png", "width": 1600, "height": 900, "sha256": "3a5365e14aae6c0a6f606ecec6b458065d05bd1196907c13b4d4d78688ea7f42"},
+    {"file": "screenshots/sidecar-expanded-plan-review.png", "width": 1600, "height": 900, "sha256": "868b713d15bdbe0a86c79d3f2a5303757037f787344d5aec9be1f9f3ff031029"},
+    {"file": "screenshots/sidecar-a02-prompt-review.png", "width": 1600, "height": 900, "sha256": "9af14f5412a8e93d9550ab19a3de7ef35301fc0b201dfdbc7b26b995ed85d258"},
+    {"file": "screenshots/tui-prompt-review.png", "width": 1128, "height": 638, "sha256": "5f7bb8c7978ccf01ae7593647e4be2c37449d082733795352a32871df4dacfbc"},
+    {"file": "screenshots/tui-plan-review.png", "width": 1128, "height": 638, "sha256": "db032b3402d4230f4a1eb54ccce0f23a83885e7cd69bdd2a8e72038dccad1d99"},
+    {"file": "screenshots/tui-a02-prompt-review.png", "width": 1128, "height": 638, "sha256": "bb3fe97f06af5e8901be8391c4965540975d8876d7274cef07df1d08addab33a"}
+  ],
+  "visual_mechanical_conformance": "PASS",
+  "human_h2_visual_disposition": "PENDING_RETEST"
+}
