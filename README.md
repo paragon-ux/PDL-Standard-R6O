@@ -27,3 +27,13 @@ python scripts\verify_r6o1.py
 The verifier clones the bound frozen oracle into temporary storage before
 running its own verifier and pytest suite, preventing ignored-file writes in
 the oracle checkout.
+
+## R6O-2 — TUI and Sidecar Views
+
+R6O-2 adds two disposable public Views over the accepted R6O-1 ViewModel:
+
+- `python scripts/run_r6o2_tui.py` — terminal TUI View (free response via `TUI_TEXT`).
+- `python scripts/run_r6o2_sidecar.py --harness --mode STANDARD|EXPANDED` — graphical Sidecar in the qualification harness (host composer routes `HOST_COMPOSER_TEXT`; the Sidecar panel has no text input).
+- `python scripts/verify_r6o2.py [--display]` — mechanical H2 gates: baseline verifier/tests, R6O-1 regression, R6O-2 view tests, full suite, and live-oracle physical inventory. `--display` runs opt-in Tk checks.
+
+Reference fidelity is pinned by `PDL-Archival/R6O-2-OFFICIAL-HANDOFF-2026-08-21-r2.md` and `R6O-2-VISUAL-GUIDE-REFERENCE.md`; the locked visual guide is `PDLt-R6O-Vertical-Presentation-Implementation-v2.0/references/`.

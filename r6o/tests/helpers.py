@@ -19,6 +19,17 @@ def artifact(revision: str = "artifact-rev-1", body: str = "PROMPT BODY") -> Art
     )
 
 
+def plan(revision: str = "artifact-rev-1", body: str = "PLAN BODY") -> ArtifactSnapshot:
+    return ArtifactSnapshot(
+        artifact_ref="plan:R1",
+        artifact_revision=revision,
+        artifact_kind="plan",
+        title="Authoritative Response Plan (PDL.md)",
+        body=body,
+        capabilities={"copy": True, "open_external": False},
+    )
+
+
 def state(
     *,
     revision: str = "model-rev-1",
@@ -62,3 +73,4 @@ def state(
         ),
         model_response=model_response,
     )
+
