@@ -1,0 +1,43 @@
+{
+  "schema_version": "r6o2-independent-luna-review-1",
+  "stage": "R6O-2 rewrite",
+  "reviewer_route": "Luna Max",
+  "review_mode": "separate read-only invocation",
+  "review_range": "87717ea77975a9b9ac7637850926944e6ab4d48a..51456ba321c059c717aeefdba83b14f0d002cebe",
+  "base_tree": "ef4aa93eb75043227ade2cfffffd58d5b0efa9ac",
+  "code_tree": "24221ae218795dd7e210073a54e94fae77603dc6",
+  "evidence_head_inspected": "d8aa84f20f8df3c060fa1774b7f87d8355a23888",
+  "verdict": "CAUTION",
+  "p0_p1_repair_trigger": false,
+  "decision_request": null,
+  "category_disposition": {
+    "authority_semantic_bypass": "PASS",
+    "protected_mvvm_boundary": "PASS",
+    "public_executable_viability": "PASS",
+    "interaction_parity_stale": "PASS",
+    "visual_fidelity_geometry": "CAUTION",
+    "tui_public_interaction_quality": "CAUTION",
+    "baseline_environment_containment": "PASS",
+    "qualification_evidence_truthfulness": "PASS_H2_PENDING"
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "P2",
+      "summary": "TUI top border is one character wider than the requested viewport.",
+      "evidence": "r6o/views/tui/controller.py:167; render(100,30) top_width=101",
+      "implementation_triage": "out-of-scope",
+      "triage_reason": "Validated P2; only P0/P1 may trigger an autonomous repair round. Preserved for human triage."
+    },
+    {
+      "id": "F2",
+      "priority": "P2",
+      "summary": "The accepted 42x14 minimum viewport renders only two of four projected actions.",
+      "evidence": "r6o/views/tui/controller.py:218-244 and scripts/run_r6o2_tui.py:23-24",
+      "implementation_triage": "out-of-scope",
+      "triage_reason": "Validated P2; only P0/P1 may trigger an autonomous repair round. Preserved for human triage."
+    }
+  ],
+  "h2_human_visual_disposition": "PENDING",
+  "promotion_authorized": false
+}

@@ -66,7 +66,8 @@ H2_HUMAN_VISUAL_DISPOSITION = PENDING
 
 ## Remaining gates
 
-- Independent fixed-scope read-only review: pending.
+- Independent fixed-scope Luna Max review: **CAUTION; no P0/P1 repair trigger**. See `R6O-2-INDEPENDENT-LUNA-REVIEW.md`.
+- Human triage of preserved P2 findings F1 (one-column TUI border overflow) and F2 (minimum-viewport action truncation): pending.
 - Human direct use and H2 disposition: pending.
 - R6O-3: blocked until human H2 promotion.
 

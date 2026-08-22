@@ -3,7 +3,12 @@
   "stage": "R6O-2 rewrite",
   "candidate_commit": "51456ba321c059c717aeefdba83b14f0d002cebe",
   "mechanical_status": "PASS",
-  "independent_review_status": "PENDING",
+  "independent_review_status": "CAUTION_NO_P0_P1",
+  "independent_review_route": "Luna Max",
+  "independent_review_findings": [
+    "F1_P2_TUI_BORDER_WIDTH",
+    "F2_P2_MINIMUM_VIEWPORT_ACTION_TRUNCATION"
+  ],
   "human_visual_disposition": "PENDING",
   "promotion_authorized": false,
   "r6o3_status": "BLOCKED",
