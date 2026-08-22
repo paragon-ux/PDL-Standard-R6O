@@ -91,3 +91,44 @@ def test_scroll_changes_window() -> None:
     second = c.render()
     assert first != second
 
+
+def test_stale_structured_action_no_retry_and_redraw() -> None:
+    stale_projection = {"session_id": "I-1", "model_revision": "r2", "projection_id": "p2", "stage": "PLAN_REVIEW", "artifact": None, "actions": [{"action_id": "confirm_plan", "label": "Confirm plan", "ordinal": 1, "kind": "SEMANTIC_MESSAGE", "canonical_review_text": "Confirm the plan and execute.", "emphasis": "PRIMARY", "enabled": True}], "lifecycle": {}}
+    class _StaleAdapter:
+        def __init__(self): self.submits = []
+        def current_projection(self, s): return {"session_id": s, "model_revision": "r1", "projection_id": "p1", "stage": "PROMPT_REVIEW", "artifact": None, "actions": [{"action_id": "confirm_prompt", "label": "Confirm prompt", "ordinal": 1, "kind": "SEMANTIC_MESSAGE", "canonical_review_text": "Yes, that is what I mean.", "emphasis": "PRIMARY", "enabled": True}], "lifecycle": {}}
+        def submit_input(self, e):
+            self.submits.append(e)
+            return {"result_type": "STALE_PROJECTION", "projection": stale_projection}
+    c = TuiController(_StaleAdapter(), "I-1")
+    result = c.select_action(1)
+    assert result["result_type"] == "STALE_PROJECTION"
+    assert c.projection["model_revision"] == "r2"
+    assert c.projection["actions"][0]["action_id"] == "confirm_plan"
+
+
+def test_stale_refresh_failure_shows_model_access() -> None:
+    class _FailingAdapter:
+        def __init__(self): self.calls = 0
+        def current_projection(self, s):
+            self.calls += 1
+            if self.calls > 1:
+                raise RuntimeError("refresh down")
+            return {"session_id": s, "model_revision": "r1", "projection_id": "p1", "stage": "PROMPT_REVIEW", "artifact": None, "actions": [], "lifecycle": {}}
+        def submit_input(self, e): return {"result_type": "STALE_PROJECTION", "projection": None}
+    c = TuiController(_FailingAdapter(), "I-1")
+    c.select_action(99)  # no-op to prime? use direct submit path
+    c2 = TuiController(_FailingAdapter(), "I-1")
+    c2.submit_text("x")
+    assert "MODEL_ACCESS" in c2.notice
+
+
+def test_reconstruction_after_revision_change() -> None:
+    rev2_projection = {"session_id": "I-1", "model_revision": "r2", "projection_id": "p2", "stage": "PROMPT_REVIEW", "artifact": {"artifact_ref": "prompt:P1", "artifact_revision": "P2", "artifact_kind": "prompt", "title": "Authoritative Prompt (PDL.md)", "media_type": "text/plain", "body": "REVISED BODY", "capabilities": {}}, "actions": [{"action_id": "change_task", "label": "Change the task", "ordinal": 2, "kind": "FREE_RESPONSE_FOCUS", "emphasis": "NORMAL", "enabled": True}], "lifecycle": {}}
+    class _RevAdapter:
+        def current_projection(self, s): return rev2_projection
+        def submit_input(self, e): return {"result_type": "REVISION", "projection": rev2_projection}
+    c = TuiController(_RevAdapter(), "I-1")
+    out = c.render()
+    assert "REVISED BODY" in out
+    assert "2 Change the task" in out

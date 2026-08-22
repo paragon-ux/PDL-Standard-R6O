@@ -103,12 +103,10 @@ class SidecarPanel(tk.Frame):
     def _apply_layout(self) -> None:
         self.artifact_text.pack_forget()
         self.actions_frame.pack_forget()
-        if self.model.mode == "EXPANDED":
-            self.artifact_text.pack(side="left", fill="both", expand=True)
-            self.actions_frame.pack(side="right", anchor="n", fill="none", padx=(8, 0))
-        else:
-            self.artifact_text.pack(side="left", fill="both", expand=True)
-            self.actions_frame.pack(side="right", anchor="n", fill="none", padx=(8, 0))
+        # Actions are packed first so they always receive their intrinsic width
+        # and remain visible in both STANDARD and EXPANDED modes.
+        self.actions_frame.pack(side="right", anchor="n", fill="none", padx=(8, 0))
+        self.artifact_text.pack(side="left", fill="both", expand=True)
 
     def _on_action(self, action: dict[str, Any]) -> None:
         self.model.select_action(str(action.get("action_id")))
@@ -209,5 +207,6 @@ class HarnessShell:
 
     def run(self) -> None:
         self.root.mainloop()
+
 
 

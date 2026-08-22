@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 from r6o.model_binding.base import ModelSessionRequest
@@ -43,6 +44,7 @@ def _binding(tmp_path, baseline_repo, recorded_worker_factory, case_ids):
 
 
 def test_g06_tui_structured_parity(tmp_path, baseline_repo, recorded_worker_factory):
+    sys.path.insert(0, str(baseline_repo))
     from host.app import PDLtHost
 
     binding = _binding(tmp_path, baseline_repo, recorded_worker_factory, ["G06"])
@@ -76,6 +78,7 @@ def test_g06_tui_structured_parity(tmp_path, baseline_repo, recorded_worker_fact
 
 
 def test_a02_free_response_parity(tmp_path, baseline_repo, recorded_worker_factory):
+    sys.path.insert(0, str(baseline_repo))
     from host.app import PDLtHost
 
     binding = _binding(tmp_path, baseline_repo, recorded_worker_factory, ["A02"])
@@ -103,4 +106,40 @@ def test_a02_free_response_parity(tmp_path, baseline_repo, recorded_worker_facto
 
     assert stage == direct_stage == "PROMPT_REVIEW"
     assert prompt.body == direct_prompt == A02_PROMPT
+
+
+
+def test_g06_sidecar_structured_parity(tmp_path, baseline_repo, recorded_worker_factory):
+    sys.path.insert(0, str(baseline_repo))
+    from host.app import PDLtHost
+
+    binding = _binding(tmp_path, baseline_repo, recorded_worker_factory, ["G06"])
+    snapshot = binding.start_or_resume(ModelSessionRequest(request_id="g06s", task_text=G06_ACTIVATION))
+    session = snapshot.session_id
+    adapter = PresentationAdapter(binding)
+    side = SidecarModel(adapter, session)
+    side.host_composer_text(G06_ACTIVATION)
+    assert side.select_action("confirm_prompt")["result_type"] == "REVISION"
+    assert side.select_action("confirm_plan")["result_type"] == "REVISION"
+    prompt = binding.read_artifact(session, "prompt:current")
+    plan = binding.read_artifact(session, "plan:current")
+    stage = binding.read_state(session).stage
+    binding.close()
+
+    worker2 = recorded_worker_factory(["G06"])
+    host = PDLtHost(baseline_repo, worker=worker2, workspace_root=tmp_path / "directs", run_id="directs").start()
+    try:
+        for turn in [G06_ACTIVATION, "Yes, that is what I mean.", "Confirm the plan and execute."]:
+            host.handle(turn)
+        workspace = Path(host.status()["workspace_path"])
+        direct_prompt = (workspace / "stages" / "10_prompt" / "output" / "current.md").read_text(encoding="utf-8").rstrip("\n")
+        direct_plan = (workspace / "stages" / "30_plan" / "output" / "current.md").read_text(encoding="utf-8").rstrip("\n")
+        direct_stage = host.status()["controller_state"]["stage"]
+    finally:
+        host.close()
+
+    assert stage == direct_stage == "CLOSED_SUCCESS"
+    assert prompt.body == direct_prompt == G06_PROMPT
+    assert plan.body == direct_plan == G06_PLAN
+
 

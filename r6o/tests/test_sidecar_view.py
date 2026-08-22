@@ -80,3 +80,16 @@ def test_stale_refresh_failure_shows_model_access() -> None:
     m.host_composer_text("x")
     assert "MODEL_ACCESS" in m.notice
 
+
+def test_stale_structured_action_uses_returned_projection() -> None:
+    stale_projection = {"session_id": "I-1", "model_revision": "r2", "projection_id": "p2", "stage": "PLAN_REVIEW", "artifact": None, "actions": [], "lifecycle": {}}
+    class _StaleAdapter:
+        def __init__(self): self.submits = []
+        def current_projection(self, s): return {"session_id": s, "model_revision": "r1", "projection_id": "p1", "stage": "PROMPT_REVIEW", "artifact": None, "actions": [{"action_id": "confirm_prompt", "label": "Confirm prompt", "ordinal": 1, "kind": "SEMANTIC_MESSAGE", "canonical_review_text": "Yes, that is what I mean.", "emphasis": "PRIMARY", "enabled": True}], "lifecycle": {}}
+        def submit_input(self, e):
+            self.submits.append(e)
+            return {"result_type": "STALE_PROJECTION", "projection": stale_projection}
+    m = SidecarModel(_StaleAdapter(), "I-1")
+    result = m.select_action("confirm_prompt")
+    assert result["result_type"] == "STALE_PROJECTION"
+    assert m.projection["model_revision"] == "r2"

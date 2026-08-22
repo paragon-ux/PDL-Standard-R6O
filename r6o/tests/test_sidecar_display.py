@@ -98,3 +98,17 @@ def test_standalone_geometry_modes() -> None:
         "v.root.destroy()\n"
         "print('OK')\n"
     )
+
+
+def test_expanded_actions_visible() -> None:
+    _run(
+        "model = make_model()\n"
+        "model.mode = 'EXPANDED'\n"
+        "s = HarnessShell(model)\n"
+        "s.root.update()\n"
+        "assert s.panel.actions_frame.winfo_ismapped()\n"
+        "assert len(s.panel._buttons) == 4\n"
+        "assert all(b.winfo_ismapped() for b in s.panel._buttons.values())\n"
+        "s.root.destroy()\n"
+        "print('OK')\n"
+    )
