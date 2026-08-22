@@ -147,6 +147,12 @@ def json_bytes(value: Any) -> bytes:
     return (json.dumps(value, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
 
 
+def canonical_json_sha256(value: Any) -> str:
+    """Hash a validated JSON document independently of checkout line endings."""
+
+    return sha256_bytes(json_bytes(value))
+
+
 def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -493,8 +499,6 @@ def run_human_equivalent_flow(
 def validate_fixture_documents(
     recorded: dict[str, Any],
     manifest: dict[str, Any],
-    *,
-    recorded_case_bytes: bytes | None = None,
 ) -> None:
     recorded = require_object(recorded, "recorded case root")
     manifest = require_object(manifest, "manifest root")
@@ -639,11 +643,8 @@ def validate_fixture_documents(
         require_sha256(worker_operation["prompt_sha256"], f"worker operation {operation_id} prompt hash")
         require_sha256(worker_operation["response_sha256"], f"worker operation {operation_id} response hash")
     require_sha256(manifest.get("recorded_case_sha256"), "recorded_case_sha256")
-    frozen_recorded_case_bytes = (
-        RECORDED_CASE_PATH.read_bytes() if recorded_case_bytes is None else recorded_case_bytes
-    )
-    if manifest.get("recorded_case_sha256") != sha256_bytes(frozen_recorded_case_bytes):
-        raise AssertionError("recorded-case file hash mismatch")
+    if manifest.get("recorded_case_sha256") != canonical_json_sha256(recorded):
+        raise AssertionError("recorded-case canonical JSON hash mismatch")
     expected_operation_manifest = [
         {
             "operation_id": entry["operation_id"],
@@ -798,7 +799,7 @@ def record_fixture(
         ],
         "recorded_case_sha256": sha256_bytes(recorded_bytes),
     }
-    validate_fixture_documents(recorded, manifest, recorded_case_bytes=recorded_bytes)
+    validate_fixture_documents(recorded, manifest)
     FIXTURE_DIR.mkdir(parents=True, exist_ok=True)
     RECORDED_CASE_PATH.write_bytes(recorded_bytes)
     MANIFEST_PATH.write_bytes(json_bytes(manifest))

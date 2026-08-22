@@ -13,6 +13,7 @@ from scripts.h2.verify_a02_full_fixture import (
     RECORDED_CASE_PATH,
     ReplayMissError,
     StrictReplayWorker,
+    canonical_json_sha256,
     record_fixture,
     sha256_text,
     validate_fixture_documents,
@@ -88,22 +89,28 @@ def test_a02_full_documents_reject_unapproved_per_operation_provenance(
     value: str,
     message: str,
 ) -> None:
-    recorded_bytes = RECORDED_CASE_PATH.read_bytes()
-    recorded = json.loads(recorded_bytes)
+    recorded = json.loads(RECORDED_CASE_PATH.read_bytes())
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
     mutated = deepcopy(recorded)
     mutated["entries"][0]["recording_metadata"][field] = value
     with pytest.raises(AssertionError, match=message):
-        validate_fixture_documents(mutated, manifest, recorded_case_bytes=recorded_bytes)
+        validate_fixture_documents(mutated, manifest)
 
 
 def test_a02_full_documents_reject_non_utc_recording_timestamp() -> None:
-    recorded_bytes = RECORDED_CASE_PATH.read_bytes()
-    recorded = json.loads(recorded_bytes)
+    recorded = json.loads(RECORDED_CASE_PATH.read_bytes())
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
     manifest["recording_process"]["recorded_at_utc"] = "2026-08-22T23:12:42+01:00"
     with pytest.raises(AssertionError, match="must be UTC"):
-        validate_fixture_documents(recorded, manifest, recorded_case_bytes=recorded_bytes)
+        validate_fixture_documents(recorded, manifest)
+
+
+def test_recorded_case_hash_is_stable_across_windows_checkout_line_endings() -> None:
+    lf_bytes = RECORDED_CASE_PATH.read_bytes().replace(b"\r\n", b"\n")
+    crlf_bytes = lf_bytes.replace(b"\n", b"\r\n")
+    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    assert canonical_json_sha256(json.loads(lf_bytes)) == manifest["recorded_case_sha256"]
+    assert canonical_json_sha256(json.loads(crlf_bytes)) == manifest["recorded_case_sha256"]
 
 
 def test_a02_full_recording_rejects_unapproved_model_before_worker_invocation() -> None:
