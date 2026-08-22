@@ -3,19 +3,19 @@
   "stage": "R6O-2",
   "gate": "H2",
   "r6o2_base": {"commit": "db5ba13aa75073e94a786b339b9dd30cb686e6ae", "tree": "ef4aa93eb75043227ade2cfffffd58d5b0efa9ac"},
-  "r6o2_code_head": {"commit": "a59f7e76823812a50807337e2b3d88ae2e041aa5", "tree": "ee51447712ee650c8be30d860d423754bb4aeaf7"},
+  "r6o2_code_head": {"commit": "312218a3a1a9d64edd3690aa8393502ff7b02ce9", "tree": "315f5c0d0b5913aa65648b897d4678864f080398"},
   "frozen_oracle": {"commit": "60d982f3328b45a351879d67dc4bb525172b65fd", "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6", "status": "READ_ONLY", "inventory": "unchanged (94 files)"},
   "qualification": {
     "baseline_verifier": "PASS",
     "baseline_pytest": "PASS (9)",
     "r6o1_regression": "PASS (63)",
-    "r6o2_tests": "PASS (29)",
-    "full_suite": "PASS (116 passed, 4 opt-in display skips; --display 4/4)",
-    "oracle_physical_inventory": "UNCHANGED",
-    "ci": "PASS (push 32541650798, PR R6O-2 32541670426, PR R6O-1 regression 32541670353; Ubuntu + Windows)"
+    "r6o2_tests": "PASS (35)",
+    "full_suite": "PASS (122 passed, 5 opt-in display skips; --display 5/5)",
+    "oracle_physical_inventory": "UNCHANGED (94 files)",
+    "ci": "PASS (push 32543191202, PR R6O-2 32543193268, PR R6O-1 regression 32543193198; Ubuntu + Windows)"
   },
   "parity": {
-    "g06_structured_actions": "PASS",
+    "g06_structured_actions": "PASS (TUI and Sidecar)",
     "a02_free_response": "PASS",
     "tui_sidecar_shared_projection": "PASS",
     "free_response_focus": "PASS",
@@ -23,14 +23,12 @@
     "disposal_reconstruction": "PASS",
     "managed_storage_substitution": "NOT_CLAIMED"
   },
-  "component_reviews": {
-    "component1": "Sol CONFORMS (no P0/P1); Vision CONFIRMS contract",
-    "component2_tui": "Sol F1-F7 fixed; Vision CONFIRMS layout",
-    "component3_sidecar": "Sol F1-F5 fixed; re-review F1-F3 addressed (screenshots + suite + stale fix); Vision CONFIRMS both modes"
+  "review_rounds": {
+    "initial": "P1s F1-F3; P2 F4; P3 F6; OUT_OF_SCOPE O1",
+    "repair_round_1_cf55349": "F1 closed (expanded actions packing + display proof), F2 closed (Sidecar G06 parity), F3 partially addressed",
+    "repair_round_2_312218a": "F3 closed (stale no-retry single-submission proof, sidecar redraw, reopen authoritative refetch, TUI reconstruction)",
+    "remains_for_h2_triage": ["R6O2-F4 (P2) keyboard/accessibility evidence", "R6O2-F6 (P3) projected label wording", "R6O2-O1 (OUT_OF_SCOPE) package-manifest completeness"]
   },
-  "known_findings": [
-    "Display-dependent Tk checks require a display; they are opt-in in CI and were run locally with --display (4/4 PASS)."
-  ],
   "decision_requests": [],
   "candidate_status": "READY_FOR_REVIEW"
 }

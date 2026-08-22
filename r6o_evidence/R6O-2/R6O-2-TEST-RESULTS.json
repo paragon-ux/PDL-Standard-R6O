@@ -2,18 +2,18 @@
   "schema_version": "r6o-test-results-1",
   "stage": "R6O-2",
   "r6o2_base": {"commit": "db5ba13aa75073e94a786b339b9dd30cb686e6ae", "tree": "ef4aa93eb75043227ade2cfffffd58d5b0efa9ac"},
-  "r6o2_code_head": {"commit": "a59f7e76823812a50807337e2b3d88ae2e041aa5", "tree": "ee51447712ee650c8be30d860d423754bb4aeaf7"},
+  "r6o2_code_head": {"commit": "312218a3a1a9d64edd3690aa8393502ff7b02ce9", "tree": "315f5c0d0b5913aa65648b897d4678864f080398"},
   "observed_at_local": "2026-08-21",
   "results": [
     {"id": "BASELINE_VERIFIER", "command": "python scripts/verify_repl_baseline.py (isolated clone)", "exit_code": 0, "status": "PASS"},
     {"id": "BASELINE_PYTEST", "command": "python -m pytest tests -q -p no:cacheprovider", "exit_code": 0, "status": "PASS", "detail": "9 passed"},
     {"id": "R6O1_REGRESSION", "command": "r6o1 regression subset", "exit_code": 0, "status": "PASS", "detail": "63 passed"},
-    {"id": "R6O2_TESTS", "command": "r6o2 view/transport/envelope tests", "exit_code": 0, "status": "PASS", "detail": "29 passed"},
-    {"id": "FULL_SUITE", "command": "python -m pytest r6o/tests -q -p no:cacheprovider", "exit_code": 0, "status": "PASS", "detail": "116 passed, 4 opt-in skips (run with --display: 4/4 passed)"},
-    {"id": "DISPLAY_TESTS", "command": "python -m pytest r6o/tests/test_sidecar_display.py -q (R6O2_RUN_DISPLAY_TESTS=1)", "exit_code": 0, "status": "PASS", "detail": "4 passed"},
+    {"id": "R6O2_TESTS", "command": "r6o2 view/transport/envelope tests", "exit_code": 0, "status": "PASS", "detail": "35 passed"},
+    {"id": "FULL_SUITE", "command": "python -m pytest r6o/tests -q -p no:cacheprovider", "exit_code": 0, "status": "PASS", "detail": "122 passed, 5 opt-in display skips"},
+    {"id": "DISPLAY_TESTS", "command": "python -m pytest r6o/tests/test_sidecar_display.py -q (R6O2_RUN_DISPLAY_TESTS=1)", "exit_code": 0, "status": "PASS", "detail": "5 passed"},
     {"id": "ORACLE_INVENTORY", "command": "physical inventory before/after verifier", "exit_code": 0, "status": "PASS", "detail": "94 files unchanged"},
-    {"id": "CI_PUSH", "command": ".github/workflows/r6o2.yml", "exit_code": 0, "status": "PASS", "detail": "Run 32541650798; Ubuntu and Windows"},
-    {"id": "CI_PR_R6O2", "command": ".github/workflows/r6o2.yml", "exit_code": 0, "status": "PASS", "detail": "Run 32541670426; Ubuntu and Windows"},
-    {"id": "CI_PR_R6O1_REGRESSION", "command": ".github/workflows/r6o1.yml", "exit_code": 0, "status": "PASS", "detail": "Run 32541670353; R6O-1 regression on R6O-2 head"}
+    {"id": "CI_PUSH", "command": ".github/workflows/r6o2.yml", "exit_code": 0, "status": "PASS", "detail": "Run 32543191202; Ubuntu and Windows"},
+    {"id": "CI_PR_R6O2", "command": ".github/workflows/r6o2.yml", "exit_code": 0, "status": "PASS", "detail": "Run 32543193268; Ubuntu and Windows"},
+    {"id": "CI_PR_R6O1_REGRESSION", "command": ".github/workflows/r6o1.yml", "exit_code": 0, "status": "PASS", "detail": "Run 32543193198; R6O-1 regression on R6O-2 head"}
   ]
 }
