@@ -1,0 +1,23 @@
+{
+  "schema_version": "r6o2-code-freeze-1",
+  "date": "2026-08-22",
+  "pull_request": 3,
+  "branch": "codex/r6o-2-view-rewrite",
+  "rewrite_base": "87717ea77975a9b9ac7637850926944e6ab4d48a",
+  "validation_head": "526bf10988bfbfd66b8680e618f70a85b26aa8a1",
+  "superseded_code_head": "ebe5f9cab34dce928f22ec6a047c7fc9bf0cbdee",
+  "superseded_review_outcome": "DOES_NOT_CONFORM_FOR_H2_REVIEW",
+  "converged_code_head": "f9d3a569c066486d6f621901097c75d477197a79",
+  "converged_code_tree": "fcb217b869d852c8cc2880d3e065a4bbc3993ff3",
+  "resolution_freeze_id": "R6O2-RF-2026-08-22-01",
+  "resolution_freeze_sha256": "e0a9f73afe89a6ee07eaccf71a10b42cb011a71f1661ef965d3e017ad0d64b1a",
+  "validation_report_sha256": "13a1f5aebc3ba3cfe01e5a057ac7ff5ccaeddf4dc9ee637eb6a9d3e968ff9985",
+  "protected_paths_changed": [],
+  "frozen_oracle_head": "60d982f3328b45a351879d67dc4bb525172b65fd",
+  "frozen_oracle_worktree_clean": true,
+  "pushed": true,
+  "code_must_not_be_amended": true,
+  "independent_luna_review_1": "DOES_NOT_CONFORM_FOR_H2_REVIEW",
+  "independent_luna_review_2": "CONFORMS_FOR_H2_REVIEW",
+  "evidence_commit": "CONTAINING_EVIDENCE_ONLY_COMMIT"
+}

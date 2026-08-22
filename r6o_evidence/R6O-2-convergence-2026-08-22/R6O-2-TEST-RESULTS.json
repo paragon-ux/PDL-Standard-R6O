@@ -1,0 +1,26 @@
+{
+  "schema_version": "r6o2-convergence-tests-1",
+  "date": "2026-08-22",
+  "code_head": "f9d3a569c066486d6f621901097c75d477197a79",
+  "command": "python scripts/verify_r6o2.py --display",
+  "result": "PASS",
+  "baseline_verifier": "PASS",
+  "baseline_pytest": {"passed": 9, "failed": 0},
+  "protected_r6o1_regression": {"passed": 87, "failed": 0},
+  "r6o2_views": {"passed": 25, "failed": 0},
+  "full_suite": {"passed": 112, "failed": 0, "skipped_display_gated": 5},
+  "local_display_gate": {"passed": 5, "failed": 0},
+  "public_sidecar_display_smoke": {
+    "standard": "PASS",
+    "expanded_via_visible_mode_control": "PASS"
+  },
+  "visual_mechanical_conformance": "PASS",
+  "h2_human_visual_disposition": "PENDING",
+  "github_checks": {
+    "all_pr_checks_green": true,
+    "ubuntu": "PASS",
+    "windows": "PASS",
+    "r6o2_run": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/32559625175",
+    "r6o1_run": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/32559625182"
+  }
+}

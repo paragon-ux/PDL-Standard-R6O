@@ -1,0 +1,61 @@
+{
+  "schema_version": "r6o2-convergence-visual-1",
+  "date": "2026-08-22",
+  "code_head": "f9d3a569c066486d6f621901097c75d477197a79",
+  "display": {
+    "monitor_id": "65537",
+    "dpi": 96.07565011820331,
+    "scale": 1.000788022064618,
+    "work_area": {"x": 0, "y": 0, "width": 1600, "height": 900},
+    "parent": {"x": 0, "y": 0, "width": 1600, "height": 900}
+  },
+  "standard": {
+    "composer": {"x": 24, "y": 804, "width": 1552, "height": 72},
+    "sidecar": {"x": 24, "y": 496, "width": 1552, "height": 300},
+    "artifact": {"x": 35, "y": 543, "width": 1066, "height": 242},
+    "options": {"x": 1111, "y": 543, "width": 454, "height": 242},
+    "composer_anchor_exact": true,
+    "gap_px": 8,
+    "artifact_share_of_cards": 0.7013,
+    "composition": "artifact_LEFT_options_RIGHT"
+  },
+  "expanded": {
+    "composer": {"x": 24, "y": 804, "width": 1056, "height": 72},
+    "sidecar": {"x": 1096, "y": 48, "width": 480, "height": 828},
+    "artifact": {"x": 1107, "y": 95, "width": 458, "height": 546},
+    "options": {"x": 1107, "y": 651, "width": 458, "height": 214},
+    "parent_width_ratio": 0.30,
+    "right_inset_px": 24,
+    "top_inset_px": 48,
+    "bottom_inset_px": 24,
+    "composer_clearance_px": 16,
+    "composition": "artifact_TOP_options_BELOW",
+    "options_intrinsic_height": true
+  },
+  "window_properties": {
+    "separate_top_level": true,
+    "owned_transient": true,
+    "frameless": true,
+    "resizable": false,
+    "draggable": false,
+    "global_topmost": false,
+    "native_sidecar_chrome": false
+  },
+  "transitions": {
+    "standard_to_expand_via_custom_control": "PASS",
+    "expanded_lock_during_interaction": "PASS",
+    "expanded_to_standard_via_custom_control": "PASS",
+    "collapsed_standard_matches_initial": true,
+    "collapsed_screenshot_pixel_identical_to_initial": true
+  },
+  "screenshots": [
+    {"file": "screenshots/sidecar-standard-prompt-review.png", "width": 1600, "height": 900, "sha256": "3a5365e14aae6c0a6f606ecec6b458065d05bd1196907c13b4d4d78688ea7f42"},
+    {"file": "screenshots/sidecar-expanded-prompt-review.png", "width": 1600, "height": 900, "sha256": "7112bc2ad872a33f366e335eeb83da0d5b5e1eab71661eb802402ad010b6d905"},
+    {"file": "screenshots/sidecar-collapsed-standard-prompt-review.png", "width": 1600, "height": 900, "sha256": "3a5365e14aae6c0a6f606ecec6b458065d05bd1196907c13b4d4d78688ea7f42"},
+    {"file": "screenshots/sidecar-expanded-plan-review.png", "width": 1600, "height": 900, "sha256": "868b713d15bdbe0a86c79d3f2a5303757037f787344d5aec9be1f9f3ff031029"},
+    {"file": "screenshots/tui-prompt-review.png", "width": 1128, "height": 514, "sha256": "de423a0bd5f23bbba13e1266aed13f6efb7c8704b0c2de36f18a3ea9d73bafaa"},
+    {"file": "screenshots/tui-plan-review.png", "width": 1128, "height": 514, "sha256": "96a237c42e919826813efafcc3a7aa3bdb2c2371360ed874c06957b0c3acdc02"}
+  ],
+  "visual_mechanical_conformance": "PASS",
+  "human_h2_visual_disposition": "PENDING"
+}
