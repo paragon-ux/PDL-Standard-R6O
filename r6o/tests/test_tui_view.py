@@ -6,6 +6,7 @@ from r6o.model_binding.memory_model import StaticModelPort
 from r6o.presentation_transport import PresentationAdapter
 from r6o.tests.helpers import artifact, state
 from r6o.views.tui import TuiController
+from r6o.views.tui.controller import _display_width
 from r6o.views.tui.app import TuiApplication
 
 G06_ACTIVATION = "Use $confirm-with-pseudocode to explain the difference between optimistic and pessimistic locking for senior developers."
@@ -39,6 +40,28 @@ def test_tui_renders_responsive_persistent_layouts() -> None:
     assert "Authoritative Artifact" in narrow and "Review Options" in narrow
     assert len(wide.splitlines()) <= 28
     assert len(narrow.splitlines()) <= 28
+
+
+def test_tui_never_exceeds_supported_viewport_widths() -> None:
+    tui = _static_tui()
+    for width in (42, 56, 76, 100, 120):
+        assert all(
+            _display_width(line) <= width
+            for line in tui.render(width, 30).splitlines()
+        )
+
+
+def test_minimum_viewport_keeps_every_action_keyboard_reachable_and_cued() -> None:
+    tui = _static_tui()
+    labels = [item["label"] for item in tui.state.actions]
+    observed = []
+    for _ in labels:
+        screen = tui.render(42, 14)
+        observed.append(labels[tui.action_index])
+        assert labels[tui.action_index] in screen
+        tui.handle_key("DOWN")
+    assert observed == labels
+    assert "↓" in _static_tui().render(42, 14)
 
 
 def test_tui_keyboard_focus_editing_scroll_and_view_only_close() -> None:
@@ -109,6 +132,7 @@ def test_g06_real_tui_key_path_has_no_duplicate_activation(
     assert tui.handle_key("ENTER")["result_type"] == "REVISION"
     stages.append(tui.projection["stage"])
     assert stages == ["PROMPT_REVIEW", "PLAN_REVIEW", "CLOSED_SUCCESS"]
+    assert tui.closed
     assert binding.read_artifact(tui.state.session_id, "prompt:current").body == G06_PROMPT
     assert binding.read_artifact(tui.state.session_id, "plan:current").body == G06_PLAN
     binding.close()
@@ -132,5 +156,6 @@ def test_a02_real_tui_editable_input_path_has_no_duplicate_activation(
     result = tui.handle_key("ENTER")
     assert result["result_type"] == "REVISION"
     assert tui.projection["stage"] == "PROMPT_REVIEW"
+    assert tui.focus == "actions"
     assert binding.read_artifact(tui.state.session_id, "prompt:current").body == A02_PROMPT
     binding.close()

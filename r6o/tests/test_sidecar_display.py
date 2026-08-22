@@ -11,7 +11,15 @@ from r6o.model_binding.memory_model import StaticModelPort
 from r6o.presentation_transport import PresentationAdapter
 from r6o.tests.helpers import artifact, state
 from r6o.views.sidecar import SidecarHarness, SidecarModel
-from r6o.views.sidecar.app import STANDARD_HEIGHT, STANDARD_HEIGHT_TOLERANCE
+from r6o.views.sidecar.app import (
+    EXPANDED_BOTTOM_INSET,
+    EXPANDED_COMPOSER_CLEARANCE,
+    EXPANDED_RIGHT_INSET,
+    EXPANDED_TOP_INSET,
+    EXPANDED_WIDTH_RATIO,
+    STANDARD_GAP,
+    STANDARD_HEIGHT,
+)
 
 pytestmark = pytest.mark.skipif(
     os.environ.get("R6O2_RUN_DISPLAY_TESTS") != "1",
@@ -34,47 +42,142 @@ def display_master():
     root.destroy()
 
 
-def _harness(mode: str, display_master) -> SidecarHarness:
+def _harness(display_master, *, model: SidecarModel | None = None) -> SidecarHarness:
     root = tk.Toplevel(display_master)
-    model = SidecarModel(
+    model = model or SidecarModel(
         PresentationAdapter(StaticModelPort(state(), {"prompt:P1": artifact()})),
         "I-1",
-        mode,
     )
-    return SidecarHarness(model, root=root)
+    harness = SidecarHarness(model, root=root)
+    harness.root.update()
+    return harness
 
 
-def test_standard_geometry_is_compact_horizontal_and_above_composer(display_master) -> None:
-    harness = _harness("STANDARD", display_master)
+def _scaled(value: int, geometry: dict[str, object]) -> int:
+    return round(value * float(geometry["scale"]))
+
+
+def _rect(geometry: dict[str, object], prefix: str) -> tuple[int, int, int, int]:
+    return tuple(int(geometry[f"{prefix}_{field}"]) for field in ("x", "y", "width", "height"))
+
+
+def test_fullscreen_parent_and_standard_floating_geometry(display_master) -> None:
+    harness = _harness(display_master)
     try:
-        harness.root.update()
         geometry = harness.geometry_snapshot()
-        assert abs(geometry["panel_height"] - STANDARD_HEIGHT) <= STANDARD_HEIGHT_TOLERANCE
-        assert geometry["panel_y"] + geometry["panel_height"] <= geometry["composer_y"] + 2
-        total = geometry["artifact_width"] + geometry["options_width"]
-        artifact_ratio = geometry["artifact_width"] / total
-        assert 0.65 <= artifact_ratio <= 0.75
-        assert abs(geometry["artifact_y"] - geometry["options_y"]) <= 2
+        assert _rect(geometry, "parent") == _rect(geometry, "work_area")
+        assert geometry["sidecar_frameless"] is True
+        assert geometry["sidecar_resizable"] is False
+        assert geometry["sidecar_transient"] is True
+        assert geometry["sidecar_global_topmost"] is False
+        assert geometry["native_sidecar_chrome"] is False
+        assert geometry["panel_x"] == geometry["composer_x"]
+        assert geometry["panel_width"] == geometry["composer_width"]
+        assert geometry["panel_height"] == _scaled(STANDARD_HEIGHT, geometry)
+        assert (
+            geometry["panel_y"]
+            + geometry["panel_height"]
+            + _scaled(STANDARD_GAP, geometry)
+            == geometry["composer_y"]
+        )
+        total = int(geometry["artifact_width"]) + int(geometry["options_width"])
+        assert 0.65 <= int(geometry["artifact_width"]) / total <= 0.75
+        assert abs(int(geometry["artifact_y"]) - int(geometry["options_y"])) <= 2
+        assert harness.panel is not None and harness.panel.source_label is None
     finally:
         harness.close()
 
 
-def test_expanded_geometry_is_right_half_vertical_and_composer_left_only(display_master) -> None:
-    harness = _harness("EXPANDED", display_master)
+def test_live_expand_lock_and_collapse_restore_standard(display_master) -> None:
+    harness = _harness(display_master)
     try:
+        before_projection = (
+            harness.model.projection["model_revision"],
+            harness.model.projection["stage"],
+        )
+        standard = harness.geometry_snapshot()
+        harness.invoke_mode_control()
+        expanded = harness.geometry_snapshot()
+        assert expanded["mode"] == "EXPANDED"
+        assert expanded["panel_width"] == round(
+            int(expanded["parent_width"]) * EXPANDED_WIDTH_RATIO
+        )
+        assert (
+            int(expanded["panel_x"]) + int(expanded["panel_width"])
+            == int(expanded["parent_x"])
+            + int(expanded["parent_width"])
+            - _scaled(EXPANDED_RIGHT_INSET, expanded)
+        )
+        assert expanded["panel_y"] == int(expanded["parent_y"]) + _scaled(
+            EXPANDED_TOP_INSET, expanded
+        )
+        assert (
+            int(expanded["panel_y"]) + int(expanded["panel_height"])
+            == int(expanded["parent_y"])
+            + int(expanded["parent_height"])
+            - _scaled(EXPANDED_BOTTOM_INSET, expanded)
+        )
+        assert (
+            int(expanded["composer_x"]) + int(expanded["composer_width"])
+            <= int(expanded["panel_x"])
+            - _scaled(EXPANDED_COMPOSER_CLEARANCE, expanded)
+            + 2
+        )
+        assert int(expanded["artifact_y"]) + int(expanded["artifact_height"]) <= int(
+            expanded["options_y"]
+        ) + 2
+        assert abs(int(expanded["artifact_width"]) - int(expanded["options_width"])) <= 2
+        assert int(expanded["artifact_height"]) > int(expanded["options_height"])
+        assert harness.panel is not None
+        assert abs(
+            int(expanded["options_height"]) - harness.panel.options_card.winfo_reqheight()
+        ) <= 2
+
+        locked = harness.sidecar_rect()
+        harness.panel.artifact_text.yview_scroll(1, "units")
+        harness.panel._action_buttons["confirm_prompt"].focus_set()
+        harness.invoke_action("something_else")
         harness.root.update()
-        geometry = harness.geometry_snapshot()
-        ratio = geometry["panel_width"] / geometry["client_width"]
-        assert 0.45 <= ratio <= 0.55
-        assert geometry["panel_x"] >= geometry["client_width"] * 0.45
-        assert geometry["composer_x"] + geometry["composer_width"] <= geometry["panel_x"] + 2
-        assert geometry["artifact_y"] + geometry["artifact_height"] <= geometry["options_y"] + 2
-        assert geometry["artifact_height"] > geometry["options_height"]
+        assert harness.sidecar_rect() == locked
+
+        harness.invoke_mode_control()
+        collapsed = harness.geometry_snapshot()
+        assert collapsed["mode"] == "STANDARD"
+        assert _rect(collapsed, "panel") == _rect(standard, "panel")
+        assert _rect(collapsed, "composer") == _rect(standard, "composer")
+        assert before_projection == (
+            harness.model.projection["model_revision"],
+            harness.model.projection["stage"],
+        )
     finally:
         harness.close()
 
 
-def test_real_g06_sidecar_buttons_follow_prompt_plan_terminal_sequence(
+def test_close_has_no_launcher_and_fresh_view_reattaches(display_master) -> None:
+    port = StaticModelPort(state(), {"prompt:P1": artifact()})
+    adapter = PresentationAdapter(port)
+    model = SidecarModel(adapter, "I-1")
+    harness = _harness(display_master, model=model)
+    try:
+        before = (model.projection["model_revision"], model.projection["stage"])
+        assert harness.panel is not None
+        harness.panel.close_button.invoke()
+        harness.root.update()
+        assert harness.window is None
+        assert harness.composer_focus_requested
+        assert not hasattr(harness, "reopen_button")
+        assert before == (model.projection["model_revision"], model.projection["stage"])
+
+        attached = SidecarModel(adapter, "I-1")
+        harness.attach_sidecar(attached)
+        harness.root.update()
+        assert harness.window is not None and harness.window.mapped
+        assert attached.projection == model.projection
+    finally:
+        harness.close()
+
+
+def test_real_g06_terminal_dismisses_sidecar_and_focuses_composer(
     tmp_path, baseline_repo, recorded_worker_factory, display_master
 ) -> None:
     binding = LocalRuntimeModelBinding(
@@ -85,26 +188,24 @@ def test_real_g06_sidecar_buttons_follow_prompt_plan_terminal_sequence(
     started = binding.start_or_resume(
         ModelSessionRequest(request_id="g06-sidecar", task_text=G06_ACTIVATION)
     )
-    root = tk.Toplevel(display_master)
-    harness = SidecarHarness(
-        SidecarModel(PresentationAdapter(binding), started.session_id), root=root
+    harness = _harness(
+        display_master,
+        model=SidecarModel(PresentationAdapter(binding), started.session_id),
     )
     try:
-        harness.root.update()
-        stages = [harness.model.projection["stage"]]
         harness.invoke_action("confirm_prompt")
-        harness.root.update()
-        stages.append(harness.model.projection["stage"])
+        assert harness.model.projection["stage"] == "PLAN_REVIEW"
         harness.invoke_action("confirm_plan")
-        harness.root.update()
-        stages.append(harness.model.projection["stage"])
-        assert stages == ["PROMPT_REVIEW", "PLAN_REVIEW", "CLOSED_SUCCESS"]
+        assert harness.model.projection["stage"] == "CLOSED_SUCCESS"
+        assert harness.model.projection["model_response"]
+        assert harness.window is None
+        assert harness.composer_focus_requested
     finally:
         harness.close()
         binding.close()
 
 
-def test_real_a02_harness_composer_revises_without_duplicate_activation(
+def test_real_a02_composer_revision_keeps_window_locked(
     tmp_path, baseline_repo, recorded_worker_factory, display_master
 ) -> None:
     binding = LocalRuntimeModelBinding(
@@ -115,14 +216,20 @@ def test_real_a02_harness_composer_revises_without_duplicate_activation(
     started = binding.start_or_resume(
         ModelSessionRequest(request_id="a02-sidecar", task_text=A02_ACTIVATION)
     )
-    root = tk.Toplevel(display_master)
-    harness = SidecarHarness(
-        SidecarModel(PresentationAdapter(binding), started.session_id), root=root
+    harness = _harness(
+        display_master,
+        model=SidecarModel(
+            PresentationAdapter(binding),
+            started.session_id,
+            qualification_case="A02",
+        ),
     )
     try:
+        locked = harness.sidecar_rect()
         harness.composer_entry.insert(0, A02_REVISION)
         harness._submit_composer()
         assert harness.model.projection["stage"] == "PROMPT_REVIEW"
+        assert harness.sidecar_rect() == locked
         assert (
             binding.read_artifact(harness.model.state.session_id, "prompt:current").body
             == "COMPARE Kafka and RabbitMQ for event delivery, intended for data engineers."

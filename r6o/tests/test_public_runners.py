@@ -36,6 +36,13 @@ def test_exact_public_tui_command_reaches_real_ready_state(baseline_repo) -> Non
     assert "R6O2_TUI_READY" in process.stdout
     assert "stage=PROMPT_REVIEW" in process.stdout
 
+    a02 = _run_exact(
+        ["scripts/run_r6o2_tui.py", "--recorded", "--case", "A02"],
+        baseline_repo,
+    )
+    assert a02.returncode == 0, a02.stdout + a02.stderr
+    assert "case=A02" in a02.stdout
+
 
 def test_exact_public_sidecar_commands_reach_real_ready_state(baseline_repo) -> None:
     for mode in ("STANDARD", "EXPANDED"):
@@ -53,3 +60,18 @@ def test_exact_public_sidecar_commands_reach_real_ready_state(baseline_repo) -> 
         assert "R6O2_SIDECAR_READY" in process.stdout
         assert f"mode={mode}" in process.stdout
         assert "stage=PROMPT_REVIEW" in process.stdout
+
+    a02 = _run_exact(
+        [
+            "scripts/run_r6o2_sidecar.py",
+            "--recorded",
+            "--case",
+            "A02",
+            "--harness",
+            "--mode",
+            "STANDARD",
+        ],
+        baseline_repo,
+    )
+    assert a02.returncode == 0, a02.stdout + a02.stderr
+    assert "case=A02" in a02.stdout

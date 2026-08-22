@@ -10,11 +10,19 @@ from r6o.views.envelopes import structured_action_envelope, text_envelope
 class ProjectionViewState:
     """Own projection, notice, and presentation-only disposal state."""
 
-    def __init__(self, adapter: Any, session_id: str) -> None:
+    def __init__(
+        self,
+        adapter: Any,
+        session_id: str,
+        *,
+        qualification_case: str | None = None,
+    ) -> None:
         self.adapter = adapter
         self.session_id = session_id
+        self.qualification_case = qualification_case
         self.projection = adapter.current_projection(session_id)
         self.notice: str | None = None
+        self.debug_error: dict[str, Any] | None = None
         self.closed = False
 
     @property
@@ -32,6 +40,7 @@ class ProjectionViewState:
             return False
         self.session_id = self.projection["session_id"]
         self.notice = None
+        self.debug_error = None
         return True
 
     def submit_action(self, action_id: str) -> dict[str, Any] | None:
@@ -66,6 +75,7 @@ class ProjectionViewState:
             self.projection = projection
             self.session_id = projection["session_id"]
             self.notice = None
+            self.debug_error = None
         elif result_type == "STALE_PROJECTION":
             if projection:
                 self.projection = projection
@@ -75,11 +85,19 @@ class ProjectionViewState:
                 self.refresh()
         elif result_type == "FOCUS_REQUIRED":
             self.notice = None
+            self.debug_error = None
         else:
             error = result.get("error") or {}
             code = error.get("code", "UNKNOWN")
             message = error.get("message", "Command failed")
-            self.notice = f"{code}: {message}"
+            self.debug_error = dict(error)
+            if self.qualification_case and "ReplayMissError" in f"{code}: {message}":
+                self.notice = (
+                    "Recorded qualification fixture has no response for that input. "
+                    "Use the A02 recorded case to exercise free-response revision."
+                )
+            else:
+                self.notice = f"{code}: {message}"
         return result
 
     def close_view(self) -> None:

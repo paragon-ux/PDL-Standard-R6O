@@ -125,3 +125,26 @@ def test_a02_tui_and_host_composer_free_response_outcomes_are_equivalent(
         )
         binding.close()
     assert outcomes[0] == outcomes[1]
+
+
+def test_real_recorded_replay_miss_preserves_projection_and_hides_raw_error(
+    tmp_path, baseline_repo, recorded_worker_factory
+) -> None:
+    binding = _binding(tmp_path, baseline_repo, recorded_worker_factory, "G06", "miss")
+    started = binding.start_or_resume(
+        ModelSessionRequest(request_id="miss", task_text=G06_ACTIVATION)
+    )
+    adapter = PresentationAdapter(binding)
+    view = SidecarModel(
+        adapter,
+        started.session_id,
+        qualification_case="G06",
+    )
+    before = view.projection
+    result = view.host_composer_text("This input is intentionally not recorded.")
+    assert result["result_type"] == "ERROR"
+    assert view.projection == before
+    assert "Recorded qualification fixture" in view.notice
+    assert "ReplayMissError" not in view.notice
+    assert "ReplayMissError" in view.state.debug_error["message"]
+    binding.close()

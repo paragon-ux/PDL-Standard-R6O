@@ -1,18 +1,25 @@
 from __future__ import annotations
 
-"""High-fidelity Tk Sidecar with contract-measured Standard/Expanded layouts."""
+"""Fullscreen neutral harness plus a locked, frameless floating Tk Sidecar."""
 
+import os
 import tkinter as tk
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
 from r6o.views.sidecar.model import SidecarModel
 
-SHELL_WIDTH = 1200
-SHELL_HEIGHT = 800
-STANDARD_HEIGHT = 280
-STANDARD_HEIGHT_TOLERANCE = 24
-EXPANDED_WIDTH_RATIO = 0.50
+STANDARD_HEIGHT = 300
+STANDARD_GAP = 8
+STANDARD_HEIGHT_TOLERANCE = 2
+EXPANDED_WIDTH_RATIO = 0.30
+EXPANDED_RIGHT_INSET = 24
+EXPANDED_TOP_INSET = 48
+EXPANDED_BOTTOM_INSET = 24
+EXPANDED_COMPOSER_CLEARANCE = 16
+HOST_MARGIN = 24
+COMPOSER_HEIGHT = 72
 
 BG = "#080f18"
 SURFACE = "#101a26"
@@ -26,7 +33,142 @@ WARNING = "#ffc857"
 DANGER = "#ff6577"
 
 
+@dataclass(frozen=True)
+class WindowRect:
+    x: int
+    y: int
+    width: int
+    height: int
+
+    @property
+    def right(self) -> int:
+        return self.x + self.width
+
+    @property
+    def bottom(self) -> int:
+        return self.y + self.height
+
+
+@dataclass(frozen=True)
+class WorkArea(WindowRect):
+    monitor_id: str
+    dpi: float
+    scale: float
+
+
+def _scaled(value: int, scale: float) -> int:
+    return max(1, round(value * scale))
+
+
+def _geometry(rect: WindowRect) -> str:
+    return f"{rect.width}x{rect.height}{rect.x:+d}{rect.y:+d}"
+
+
+def detect_work_area(root: tk.Misc) -> WorkArea:
+    """Return the selected monitor usable work area using stdlib/toolkit APIs."""
+
+    root.update_idletasks()
+    dpi = float(root.winfo_fpixels("1i"))
+    scale = dpi / 96.0
+    if os.name == "nt":
+        try:
+            import ctypes
+            from ctypes import wintypes
+
+            class Rect(ctypes.Structure):
+                _fields_ = [
+                    ("left", wintypes.LONG),
+                    ("top", wintypes.LONG),
+                    ("right", wintypes.LONG),
+                    ("bottom", wintypes.LONG),
+                ]
+
+            class MonitorInfo(ctypes.Structure):
+                _fields_ = [
+                    ("cbSize", wintypes.DWORD),
+                    ("rcMonitor", Rect),
+                    ("rcWork", Rect),
+                    ("dwFlags", wintypes.DWORD),
+                ]
+
+            user32 = ctypes.windll.user32
+            monitor = user32.MonitorFromWindow(
+                wintypes.HWND(root.winfo_id()), 2  # MONITOR_DEFAULTTONEAREST
+            )
+            info = MonitorInfo()
+            info.cbSize = ctypes.sizeof(MonitorInfo)
+            if monitor and user32.GetMonitorInfoW(monitor, ctypes.byref(info)):
+                rect = info.rcWork
+                return WorkArea(
+                    int(rect.left),
+                    int(rect.top),
+                    int(rect.right - rect.left),
+                    int(rect.bottom - rect.top),
+                    str(int(monitor)),
+                    dpi,
+                    scale,
+                )
+        except (AttributeError, OSError, TypeError, ValueError):
+            pass
+    return WorkArea(
+        0,
+        0,
+        int(root.winfo_screenwidth()),
+        int(root.winfo_screenheight()),
+        "tk-primary",
+        dpi,
+        scale,
+    )
+
+
+class SidecarPlacementController:
+    """Own only parent/composer/window geometry; never semantic state."""
+
+    def __init__(self, parent: tk.Misc, composer: tk.Misc, work_area: WorkArea) -> None:
+        self.parent = parent
+        self.composer = composer
+        self.work_area = work_area
+
+    def composer_rect(self) -> WindowRect:
+        self.parent.update_idletasks()
+        return WindowRect(
+            self.composer.winfo_rootx(),
+            self.composer.winfo_rooty(),
+            self.composer.winfo_width(),
+            self.composer.winfo_height(),
+        )
+
+    def standard_rect(self) -> WindowRect:
+        composer = self.composer_rect()
+        height = _scaled(STANDARD_HEIGHT, self.work_area.scale)
+        gap = _scaled(STANDARD_GAP, self.work_area.scale)
+        return WindowRect(
+            composer.x,
+            composer.y - gap - height,
+            composer.width,
+            height,
+        )
+
+    def expanded_rect(self) -> WindowRect:
+        area = self.work_area
+        width = round(area.width * EXPANDED_WIDTH_RATIO)
+        right = _scaled(EXPANDED_RIGHT_INSET, area.scale)
+        top = _scaled(EXPANDED_TOP_INSET, area.scale)
+        bottom = _scaled(EXPANDED_BOTTOM_INSET, area.scale)
+        return WindowRect(
+            area.x + area.width - right - width,
+            area.y + top,
+            width,
+            area.height - top - bottom,
+        )
+
+    def rect_for(self, mode: str) -> WindowRect:
+        return self.standard_rect() if mode == "STANDARD" else self.expanded_rect()
+
+
 class SidecarPanel(tk.Frame):
+    """Custom PDLt chrome and projection-driven content inside a Sidecar window."""
+
     def __init__(
         self,
         master: tk.Misc,
@@ -35,6 +177,8 @@ class SidecarPanel(tk.Frame):
         on_mode_change: Callable[[], None],
         on_close: Callable[[], None],
         on_focus_composer: Callable[[], None],
+        on_result: Callable[[dict[str, Any] | None], None],
+        debug_ui: bool = False,
     ) -> None:
         super().__init__(
             master,
@@ -46,6 +190,7 @@ class SidecarPanel(tk.Frame):
         self.on_mode_change = on_mode_change
         self.on_close = on_close
         self.on_focus_composer = on_focus_composer
+        self.on_result = on_result
         self._action_buttons: dict[str, tk.Button] = {}
 
         self.header = tk.Frame(self, background=SURFACE, height=46)
@@ -78,13 +223,9 @@ class SidecarPanel(tk.Frame):
             font=("Segoe UI", 9, "bold"),
         )
         self.status_label.grid(row=0, column=2, padx=8)
-        self.mode_button = _header_button(
-            self.header, "Expand", ACCENT, self._toggle_mode
-        )
+        self.mode_button = _header_button(self.header, "Expand", ACCENT, self._toggle_mode)
         self.mode_button.grid(row=0, column=3, padx=4, pady=7)
-        self.close_button = _header_button(
-            self.header, "Close", DANGER, self._close
-        )
+        self.close_button = _header_button(self.header, "Close", DANGER, self._close)
         self.close_button.grid(row=0, column=4, padx=(4, 10), pady=7)
 
         self.body = tk.Frame(self, background=SURFACE)
@@ -110,7 +251,7 @@ class SidecarPanel(tk.Frame):
         )
         self.artifact_title.grid(row=0, column=0, sticky="ew", padx=10, pady=(8, 4))
         artifact_frame = tk.Frame(self.artifact_card, background=CARD)
-        artifact_frame.grid(row=1, column=0, sticky="nsew", padx=10)
+        artifact_frame.grid(row=1, column=0, sticky="nsew", padx=10, pady=(0, 8))
         artifact_frame.rowconfigure(0, weight=1)
         artifact_frame.columnconfigure(0, weight=1)
         self.artifact_text = tk.Text(
@@ -132,15 +273,17 @@ class SidecarPanel(tk.Frame):
         )
         artifact_scroll.grid(row=0, column=1, sticky="ns")
         self.artifact_text.configure(yscrollcommand=artifact_scroll.set)
-        self.source_label = tk.Label(
-            self.artifact_card,
-            text="Projection snapshot · revision-bound",
-            background=CARD,
-            foreground=MUTED,
-            anchor="w",
-            font=("Segoe UI", 8),
-        )
-        self.source_label.grid(row=2, column=0, sticky="ew", padx=10, pady=(4, 8))
+        self.source_label: tk.Label | None = None
+        if debug_ui:
+            self.source_label = tk.Label(
+                self.artifact_card,
+                text="",
+                background=CARD,
+                foreground=MUTED,
+                anchor="w",
+                font=("Segoe UI", 8),
+            )
+            self.source_label.grid(row=2, column=0, sticky="ew", padx=10, pady=(0, 8))
 
         self.options_card = tk.Frame(
             self.body,
@@ -187,16 +330,15 @@ class SidecarPanel(tk.Frame):
             text="Collapse" if self.model.mode == "EXPANDED" else "Expand"
         )
         artifact = projection.get("artifact") or {}
-        self.artifact_title.configure(
-            text=artifact.get("title") or "Authoritative Artifact"
-        )
-        body = artifact.get("body") or projection.get("model_response") or "(no artifact)"
+        self.artifact_title.configure(text=artifact.get("title") or "Authoritative Artifact")
+        body = artifact.get("body") if artifact else None
         self.artifact_text.configure(state="normal")
         self.artifact_text.delete("1.0", "end")
-        self.artifact_text.insert("1.0", body)
+        self.artifact_text.insert("1.0", body if body is not None else "(no review artifact)")
         self.artifact_text.configure(state="disabled")
-        revision = artifact.get("artifact_revision") or projection.get("model_revision")
-        self.source_label.configure(text=f"Projection snapshot · revision {revision}")
+        if self.source_label is not None:
+            revision = artifact.get("artifact_revision") or projection.get("model_revision")
+            self.source_label.configure(text=f"Projection snapshot · revision {revision}")
 
         for child in self.actions_frame.winfo_children():
             child.destroy()
@@ -207,9 +349,7 @@ class SidecarPanel(tk.Frame):
             button = tk.Button(
                 self.actions_frame,
                 text=f"{action.get('ordinal')}   {action.get('label')}",
-                command=lambda action_id=action["action_id"]: self._invoke_action(
-                    action_id
-                ),
+                command=lambda action_id=action["action_id"]: self._invoke_action(action_id),
                 state="normal" if enabled else "disabled",
                 background="#173b26" if emphasis else "#172638",
                 foreground=PRIMARY if emphasis else TEXT,
@@ -229,15 +369,11 @@ class SidecarPanel(tk.Frame):
             )
             button.bind(
                 "<FocusIn>",
-                lambda _event, target=button: target.configure(
-                    highlightbackground=ACCENT
-                ),
+                lambda _event, target=button: target.configure(highlightbackground=ACCENT),
             )
             button.bind(
                 "<FocusOut>",
-                lambda _event, target=button: target.configure(
-                    highlightbackground=BORDER
-                ),
+                lambda _event, target=button: target.configure(highlightbackground=BORDER),
             )
             button.grid(row=row, column=0, sticky="ew", pady=2)
             self._action_buttons[action["action_id"]] = button
@@ -250,11 +386,11 @@ class SidecarPanel(tk.Frame):
         self.artifact_card.grid_forget()
         self.options_card.grid_forget()
         for index in range(2):
-            self.body.rowconfigure(index, weight=0, minsize=0)
-            self.body.columnconfigure(index, weight=0, minsize=0)
+            self.body.rowconfigure(index, weight=0, minsize=0, uniform="")
+            self.body.columnconfigure(index, weight=0, minsize=0, uniform="")
         if self.model.mode == "STANDARD":
-            self.body.columnconfigure(0, weight=7, uniform="standard")
-            self.body.columnconfigure(1, weight=3, uniform="standard")
+            self.body.columnconfigure(0, weight=7, uniform="standard-columns")
+            self.body.columnconfigure(1, weight=3, uniform="standard-columns")
             self.body.rowconfigure(0, weight=1)
             self.artifact_card.grid(row=0, column=0, sticky="nsew", padx=(0, 5))
             self.options_card.grid(row=0, column=1, sticky="nsew", padx=(5, 0))
@@ -269,7 +405,7 @@ class SidecarPanel(tk.Frame):
         result = self.model.select_action(action_id)
         if result and result.get("result_type") == "FOCUS_REQUIRED":
             self.on_focus_composer()
-        self.render()
+        self.on_result(result)
 
     def _toggle_mode(self) -> None:
         self.model.toggle_mode()
@@ -280,70 +416,84 @@ class SidecarPanel(tk.Frame):
         self.on_close()
 
 
+class SidecarWindow:
+    """Owned frameless top-level containing the custom Sidecar panel."""
+
+    def __init__(
+        self,
+        owner: tk.Misc,
+        model: SidecarModel,
+        rect: WindowRect,
+        *,
+        on_mode_change: Callable[[], None],
+        on_close: Callable[[], None],
+        on_focus_composer: Callable[[], None],
+        on_result: Callable[[dict[str, Any] | None], None],
+        debug_ui: bool,
+    ) -> None:
+        self.window = tk.Toplevel(owner)
+        self.window.withdraw()
+        self.window.configure(background=SURFACE)
+        self.window.overrideredirect(True)
+        self.window.resizable(False, False)
+        self.window.transient(owner)
+        self.window.protocol("WM_DELETE_WINDOW", on_close)
+        self.panel = SidecarPanel(
+            self.window,
+            model,
+            on_mode_change=on_mode_change,
+            on_close=on_close,
+            on_focus_composer=on_focus_composer,
+            on_result=on_result,
+            debug_ui=debug_ui,
+        )
+        self.panel.pack(fill="both", expand=True)
+        self.apply(rect)
+        self.window.deiconify()
+        self.window.lift(owner)
+        self.window.update_idletasks()
+
+    def apply(self, rect: WindowRect) -> None:
+        self.window.geometry(_geometry(rect))
+        self.window.update_idletasks()
+
+    def destroy(self) -> None:
+        if self.window.winfo_exists():
+            self.window.destroy()
+
+    @property
+    def mapped(self) -> bool:
+        return bool(self.window.winfo_exists() and self.window.winfo_ismapped())
+
+
 class SidecarHarness:
-    """Qualification shell preserving the host/composer/Sidecar relationship."""
+    """Neutral fullscreen parent/composer fixture for the floating Sidecar."""
 
     def __init__(
         self,
         model: SidecarModel,
         *,
-        root: tk.Tk | None = None,
+        root: tk.Tk | tk.Toplevel | None = None,
         title: str = "PDLt R6O-2 Sidecar Qualification Harness",
+        work_area: WorkArea | None = None,
+        debug_ui: bool = False,
     ) -> None:
         self.model = model
         self.root = root or tk.Tk()
+        self.debug_ui = debug_ui
         self.root.title(title)
-        self.root.geometry(f"{SHELL_WIDTH}x{SHELL_HEIGHT}")
-        self.root.minsize(900, 620)
         self.root.configure(background=BG)
         self.root.protocol("WM_DELETE_WINDOW", self.close)
-        self.root.columnconfigure(0, weight=1)
-        self.root.rowconfigure(0, weight=1)
+        self.root.bind("<Control-q>", lambda _event: self.close())
+        self.root.bind("<Control-Q>", lambda _event: self.close())
+        self.work_area = work_area or detect_work_area(self.root)
+        self.root.overrideredirect(True)
+        self.root.geometry(_geometry(self.work_area))
 
         self.client = tk.Frame(self.root, background=BG)
-        self.client.grid(row=0, column=0, sticky="nsew")
-
-        self.host = tk.Frame(self.client, background="#0d1621")
-        self.host.columnconfigure(0, weight=1)
-        self.host.rowconfigure(1, weight=1)
-        host_header = tk.Frame(self.host, background="#111d2a", height=42)
-        host_header.grid(row=0, column=0, sticky="ew")
-        host_header.grid_propagate(False)
-        tk.Label(
-            host_header,
-            text="Qualification Host · editor",
-            background="#111d2a",
-            foreground=MUTED,
-            font=("Segoe UI", 10, "bold"),
-        ).pack(side="left", padx=14, pady=10)
-        self.reopen_button = tk.Button(
-            host_header,
-            text="Open PDLt Review",
-            command=self.reopen,
-            background="#173b26",
-            foreground=PRIMARY,
-            relief="flat",
-            padx=10,
-            pady=4,
-        )
-        self.editor = tk.Text(
-            self.host,
-            background="#09131f",
-            foreground="#a9bed3",
-            relief="flat",
-            borderwidth=0,
-            padx=18,
-            pady=16,
-            font=("Cascadia Mono", 11),
-        )
-        self.editor.insert(
-            "1.0",
-            "# Qualification host\n\n"
-            "The host/editor remains independent of the PDLt Sidecar.\n"
-            "Free-response review is entered in the composer below.\n",
-        )
-        self.editor.configure(state="disabled")
-        self.editor.grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
+        self.client.place(x=0, y=0, width=self.work_area.width, height=self.work_area.height)
+        self.host_surface = tk.Frame(self.client, background="#0b1521")
+        self.host_surface.place(x=0, y=0, width=self.work_area.width, height=self.work_area.height)
 
         self.composer = tk.Frame(
             self.client,
@@ -378,71 +528,108 @@ class SidecarHarness:
         )
         self.send_button.grid(row=0, column=1, padx=(0, 14), pady=10)
 
-        self.panel = SidecarPanel(
-            self.client,
+        self.window: SidecarWindow | None = None
+        self.composer_focus_requested = False
+        self._layout_composer(model.mode)
+        self.root.update_idletasks()
+        self.placement = SidecarPlacementController(self.root, self.composer, self.work_area)
+        self.attach_sidecar(model)
+
+    def _layout_composer(self, mode: str) -> None:
+        scale = self.work_area.scale
+        margin = _scaled(HOST_MARGIN, scale)
+        height = _scaled(COMPOSER_HEIGHT, scale)
+        y = self.work_area.height - margin - height
+        width = self.work_area.width - 2 * margin
+        if mode == "EXPANDED":
+            expanded_width = round(self.work_area.width * EXPANDED_WIDTH_RATIO)
+            expanded_x_local = (
+                self.work_area.width
+                - _scaled(EXPANDED_RIGHT_INSET, scale)
+                - expanded_width
+            )
+            right = expanded_x_local - _scaled(EXPANDED_COMPOSER_CLEARANCE, scale)
+            width = max(1, right - margin)
+        self.composer.place(x=margin, y=y, width=width, height=height)
+        self.root.update_idletasks()
+
+    def attach_sidecar(self, model: SidecarModel) -> None:
+        """Externally attach a fresh View instance to the current session projection."""
+
+        if self.window is not None:
+            self.window.destroy()
+        self.model = model
+        if model.terminal:
+            self.window = None
+            self.focus_composer()
+            return
+        self._layout_composer(model.mode)
+        rect = self.placement.rect_for(model.mode)
+        self.window = SidecarWindow(
+            self.root,
             model,
+            rect,
             on_mode_change=self._mode_changed,
             on_close=self._panel_closed,
             on_focus_composer=self.focus_composer,
+            on_result=self._after_result,
+            debug_ui=self.debug_ui,
         )
-        self._apply_shell_layout()
 
-    def _apply_shell_layout(self) -> None:
-        for widget in (self.host, self.composer, self.panel):
-            widget.grid_forget()
-        for index in range(3):
-            self.client.rowconfigure(index, weight=0, minsize=0)
-            self.client.columnconfigure(index, weight=0, minsize=0, uniform="")
-        if self.model.mode == "STANDARD":
-            self.client.columnconfigure(0, weight=1)
-            self.client.rowconfigure(0, weight=1)
-            self.client.rowconfigure(1, weight=0, minsize=STANDARD_HEIGHT)
-            self.client.rowconfigure(2, weight=0, minsize=76)
-            self.host.grid(row=0, column=0, sticky="nsew")
-            self.panel.configure(height=STANDARD_HEIGHT)
-            self.panel.grid_propagate(False)
-            if self.model.visible:
-                self.panel.grid(row=1, column=0, sticky="nsew", padx=10, pady=0)
-            self.composer.grid(row=2, column=0, sticky="ew", padx=10, pady=(6, 10))
-        else:
-            self.client.columnconfigure(0, weight=1, uniform="expanded")
-            self.client.columnconfigure(1, weight=1, uniform="expanded")
-            self.client.rowconfigure(0, weight=1)
-            self.client.rowconfigure(1, weight=0, minsize=76)
-            self.host.grid(row=0, column=0, sticky="nsew")
-            self.composer.grid(row=1, column=0, sticky="ew", padx=10, pady=(6, 10))
-            self.panel.grid_propagate(True)
-            if self.model.visible:
-                self.panel.grid(
-                    row=0,
-                    column=1,
-                    rowspan=2,
-                    sticky="nsew",
-                    padx=(6, 10),
-                    pady=10,
-                )
-        self.panel.render()
-        self.root.update_idletasks()
+    @property
+    def panel(self) -> SidecarPanel | None:
+        return self.window.panel if self.window is not None else None
 
     def _mode_changed(self) -> None:
-        self._apply_shell_layout()
-
-    def _panel_closed(self) -> None:
-        self.panel.grid_remove()
-        self.reopen_button.pack(side="right", padx=12, pady=6)
+        if self.window is None:
+            return
+        self._layout_composer(self.model.mode)
+        self.window.panel.render()
+        self.window.apply(self.placement.rect_for(self.model.mode))
         self.root.update_idletasks()
 
-    def reopen(self) -> None:
-        self.model.reopen()
-        self.reopen_button.pack_forget()
-        self._apply_shell_layout()
+    def invoke_mode_control(self) -> None:
+        if self.window is None:
+            raise RuntimeError("Sidecar is not attached")
+        self.window.panel.mode_button.invoke()
+        self.root.update_idletasks()
+
+    def set_mode_via_control(self, mode: str) -> None:
+        if mode not in {"STANDARD", "EXPANDED"}:
+            raise ValueError(f"unsupported Sidecar mode: {mode}")
+        if self.model.mode != mode:
+            self.invoke_mode_control()
+
+    def _panel_closed(self) -> None:
+        self.model.close()
+        if self.window is not None:
+            self.window.destroy()
+            self.window = None
+        self.focus_composer()
+        self.root.update_idletasks()
+
+    def _after_result(self, result: dict[str, Any] | None) -> None:
+        if self.model.terminal:
+            self.model.close()
+            if self.window is not None:
+                self.window.destroy()
+                self.window = None
+            self.focus_composer()
+        elif self.window is not None:
+            self.window.panel.render()
+        self.root.update_idletasks()
 
     def focus_composer(self) -> None:
-        self.composer_entry.focus_set()
+        self.composer_focus_requested = True
+        self.root.lift()
+        self.composer_entry.focus_force()
 
     def invoke_action(self, action_id: str) -> None:
         """Invoke one currently projected action through its visible widget."""
-        self.panel._action_buttons[action_id].invoke()
+
+        if self.window is None:
+            raise RuntimeError("Sidecar is not attached")
+        self.window.panel._action_buttons[action_id].invoke()
         self.root.update_idletasks()
 
     def _submit_composer(self, _event: Any = None) -> str | None:
@@ -450,42 +637,97 @@ class SidecarHarness:
         result = self.model.host_composer_text(value)
         if result and result.get("result_type") == "REVISION":
             self.composer_entry.delete(0, "end")
-        self.panel.render()
+        self._after_result(result)
         return "break" if _event is not None else None
 
-    def geometry_snapshot(self) -> dict[str, int | str | bool]:
+    @staticmethod
+    def _widget_rect(widget: tk.Misc) -> WindowRect:
+        return WindowRect(
+            widget.winfo_rootx(),
+            widget.winfo_rooty(),
+            widget.winfo_width(),
+            widget.winfo_height(),
+        )
+
+    def sidecar_rect(self) -> WindowRect | None:
+        if self.window is None:
+            return None
+        return self._widget_rect(self.window.window)
+
+    def geometry_snapshot(self) -> dict[str, int | float | str | bool]:
         self.root.update_idletasks()
-        root_x, root_y = self.root.winfo_rootx(), self.root.winfo_rooty()
-
-        def geometry(prefix: str, widget: tk.Misc) -> dict[str, int]:
-            return {
-                f"{prefix}_x": widget.winfo_rootx() - root_x,
-                f"{prefix}_y": widget.winfo_rooty() - root_y,
-                f"{prefix}_width": widget.winfo_width(),
-                f"{prefix}_height": widget.winfo_height(),
-            }
-
-        result: dict[str, int | str | bool] = {
+        parent = self._widget_rect(self.root)
+        composer = self._widget_rect(self.composer)
+        frameless = bool(
+            self.window is not None and self.window.window.overrideredirect()
+        )
+        resizable = bool(
+            self.window is not None and any(self.window.window.resizable())
+        )
+        global_topmost = bool(
+            self.window is not None
+            and self.window.window.attributes("-topmost")
+        )
+        result: dict[str, int | float | str | bool] = {
             "mode": self.model.mode,
-            "client_width": self.client.winfo_width(),
-            "client_height": self.client.winfo_height(),
-            "panel_visible": bool(self.panel.winfo_ismapped()),
+            "monitor_id": self.work_area.monitor_id,
+            "dpi": self.work_area.dpi,
+            "scale": self.work_area.scale,
+            "parent_x": parent.x,
+            "parent_y": parent.y,
+            "parent_width": parent.width,
+            "parent_height": parent.height,
+            "work_area_x": self.work_area.x,
+            "work_area_y": self.work_area.y,
+            "work_area_width": self.work_area.width,
+            "work_area_height": self.work_area.height,
+            "client_width": parent.width,
+            "client_height": parent.height,
+            "composer_x": composer.x,
+            "composer_y": composer.y,
+            "composer_width": composer.width,
+            "composer_height": composer.height,
+            "sidecar_visible": self.window is not None and self.window.mapped,
+            "panel_visible": self.window is not None and self.window.mapped,
+            "sidecar_frameless": frameless,
+            "sidecar_resizable": resizable,
+            "sidecar_global_topmost": global_topmost,
+            "sidecar_transient": bool(
+                self.window is not None and self.window.window.transient()
+            ),
+            "native_sidecar_chrome": not frameless,
         }
-        result.update(geometry("panel", self.panel))
-        result.update(geometry("composer", self.composer))
-        result.update(geometry("artifact", self.panel.artifact_card))
-        result.update(geometry("options", self.panel.options_card))
+        if self.window is not None:
+            sidecar = self._widget_rect(self.window.window)
+            artifact = self._widget_rect(self.window.panel.artifact_card)
+            options = self._widget_rect(self.window.panel.options_card)
+            for prefix, rect in (
+                ("sidecar", sidecar),
+                ("panel", sidecar),
+                ("artifact", artifact),
+                ("options", options),
+            ):
+                result.update(
+                    {
+                        f"{prefix}_x": rect.x,
+                        f"{prefix}_y": rect.y,
+                        f"{prefix}_width": rect.width,
+                        f"{prefix}_height": rect.height,
+                    }
+                )
         return result
 
     def capture(self, destination: str | Path) -> Path:
         from PIL import ImageGrab
 
         self.root.update()
-        x = self.root.winfo_rootx()
-        y = self.root.winfo_rooty()
-        width = self.root.winfo_width()
-        height = self.root.winfo_height()
-        image = ImageGrab.grab(bbox=(x, y, x + width, y + height))
+        if self.window is not None:
+            self.window.window.lift(self.root)
+            self.window.window.update()
+        parent = self._widget_rect(self.root)
+        image = ImageGrab.grab(
+            bbox=(parent.x, parent.y, parent.right, parent.bottom), all_screens=True
+        )
         path = Path(destination)
         path.parent.mkdir(parents=True, exist_ok=True)
         image.save(path)
@@ -495,8 +737,12 @@ class SidecarHarness:
         self.root.mainloop()
 
     def close(self) -> None:
+        if self.window is not None:
+            self.window.destroy()
+            self.window = None
         self.model.state.close_view()
-        self.root.destroy()
+        if self.root.winfo_exists():
+            self.root.destroy()
 
 
 def _header_button(

@@ -211,6 +211,8 @@ def main() -> int:
         if args.display:
             display_environment = dict(r6o_environment)
             display_environment["R6O2_RUN_DISPLAY_TESTS"] = "1"
+            display_environment["R6O2_DISPLAY_SMOKE"] = "1"
+            display_environment.pop("R6O2_SMOKE_MODE", None)
             _check(
                 "local_display_gate",
                 [
@@ -226,6 +228,23 @@ def main() -> int:
                 display_environment,
                 failures,
             )
+            for mode in ("STANDARD", "EXPANDED"):
+                _check(
+                    f"public_sidecar_{mode.lower()}_display_smoke",
+                    [
+                        sys.executable,
+                        str(ROOT / "scripts" / "run_r6o2_sidecar.py"),
+                        "--recorded",
+                        "--harness",
+                        "--case",
+                        "G06",
+                        "--mode",
+                        mode,
+                    ],
+                    ROOT,
+                    display_environment,
+                    failures,
+                )
         else:
             print("--- local_display_gate ---")
             print("LOCAL_DISPLAY_GATE_REQUIRED (run: python scripts/verify_r6o2.py --display)")

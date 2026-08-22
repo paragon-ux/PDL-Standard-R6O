@@ -54,19 +54,34 @@ def _capture_screen(screen: str, destination: Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Launch the public R6O-2 TUI")
-    parser.add_argument("--recorded", action="store_true", help="use the qualified G06 recorded binding")
+    parser.add_argument("--recorded", action="store_true", help="use a deterministic recorded binding")
+    parser.add_argument("--case", choices=("G06", "A02"), default="G06")
     parser.add_argument("--capture", type=Path, help="capture the initial public screen and exit")
+    parser.add_argument(
+        "--capture-stage",
+        choices=("PROMPT_REVIEW", "PLAN_REVIEW"),
+        default="PROMPT_REVIEW",
+    )
     parser.add_argument("--viewport", type=_viewport, default=(100, 30), help="capture/smoke viewport WIDTHxHEIGHT")
     parser.add_argument("--smoke", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
     if not args.recorded:
         parser.error("--recorded is required for the H2 public surface")
 
-    session = start_recorded_session("G06", surface="r6o2-tui")
+    if args.case != "G06" and args.capture_stage == "PLAN_REVIEW":
+        parser.error("--capture-stage PLAN_REVIEW requires --case G06")
+
+    session = start_recorded_session(args.case, surface=f"r6o2-tui-{args.case.lower()}")
     try:
-        controller = TuiController(session.adapter, session.session_id)
+        controller = TuiController(
+            session.adapter,
+            session.session_id,
+            qualification_case=args.case,
+        )
         smoke = args.smoke or os.environ.get("R6O2_SMOKE_MODE") == "1"
         if smoke or args.capture:
+            if args.capture_stage == "PLAN_REVIEW":
+                controller.select_action()
             screen = controller.render(*args.viewport)
             if args.capture:
                 _capture_screen(screen, args.capture)
@@ -74,7 +89,7 @@ def main() -> int:
                 "R6O2_TUI_READY "
                 f"session={controller.projection['session_id']} "
                 f"stage={controller.projection['stage']} "
-                f"event_loop={TuiApplication.__name__}"
+                f"case={args.case} event_loop={TuiApplication.__name__}"
             )
             return 0
         TuiApplication(controller).run()

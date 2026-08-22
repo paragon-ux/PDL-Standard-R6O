@@ -36,11 +36,18 @@ From the repository root, with the frozen sibling baseline present or
 
 ```powershell
 python scripts\run_r6o2_tui.py --recorded
+python scripts\run_r6o2_tui.py --recorded --case A02
 python scripts\run_r6o2_sidecar.py --recorded --harness --mode STANDARD
 python scripts\run_r6o2_sidecar.py --recorded --harness --mode EXPANDED
+python scripts\run_r6o2_sidecar.py --recorded --harness --case A02 --mode STANDARD
 python scripts\verify_r6o2.py --display
 ```
 
-The TUI is a persistent raw-key event-loop screen. The Sidecar uses the host
-composer for free-response input and has no duplicate text box. Mechanical
-visual conformance does not constitute human H2 acceptance.
+`G06` is the default structured Prompt/Plan case. `A02` is the recorded
+free-response revision case; an unrecorded qualification input reports a
+friendly deterministic-fixture notice and never falls back to a live worker.
+The TUI is a persistent raw-key event-loop screen. The Sidecar is a separate,
+owned floating window over a neutral fullscreen parent and uses the parent
+composer for free-response input, with no duplicate text box. Closing the
+Sidecar leaves the parent running; press `Ctrl+Q` to exit the parent harness.
+Mechanical visual conformance does not constitute human H2 acceptance.

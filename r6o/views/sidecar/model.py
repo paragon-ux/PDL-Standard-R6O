@@ -8,10 +8,21 @@ from r6o.views.state import ProjectionViewState
 
 
 class SidecarModel:
-    def __init__(self, adapter: Any, session_id: str, mode: str = "STANDARD") -> None:
+    def __init__(
+        self,
+        adapter: Any,
+        session_id: str,
+        mode: str = "STANDARD",
+        *,
+        qualification_case: str | None = None,
+    ) -> None:
         if mode not in {"STANDARD", "EXPANDED"}:
             raise ValueError(f"unsupported Sidecar mode: {mode}")
-        self.state = ProjectionViewState(adapter, session_id)
+        self.state = ProjectionViewState(
+            adapter,
+            session_id,
+            qualification_case=qualification_case,
+        )
         self.mode = mode
         self.visible = True
 
@@ -27,6 +38,10 @@ class SidecarModel:
     def notice(self) -> str | None:
         return self.state.notice
 
+    @property
+    def terminal(self) -> bool:
+        return self.projection.get("interaction_state") == "TERMINAL"
+
     def select_action(self, action_id: str) -> dict[str, Any] | None:
         return self.state.submit_action(action_id)
 
@@ -39,7 +54,3 @@ class SidecarModel:
 
     def close(self) -> None:
         self.visible = False
-
-    def reopen(self) -> bool:
-        self.visible = True
-        return self.state.refresh()
