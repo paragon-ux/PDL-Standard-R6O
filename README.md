@@ -16,6 +16,88 @@ and its independently gated H2 presentation work.
 - H2 work proceeds through independent gates and dedicated pull requests.
 - A later H2 gate must not be inferred to have passed from an earlier gate.
 
+## H2-D2 actual Codex attachment checkout
+
+Review and run H2-D2 only from this branch:
+
+```text
+codex/h2-d2-codex-attachment
+```
+
+Verify the branch and remote PR head before installing or running anything:
+
+```powershell
+& {
+    $ErrorActionPreference = 'Stop'
+    $ExpectedReviewBranch = 'codex/h2-d2-codex-attachment'
+    git fetch origin --prune
+    if ($LASTEXITCODE -ne 0) { throw 'Unable to fetch the H2-D2 review branch' }
+    $ActualBranch = (git branch --show-current).Trim()
+    if ($ActualBranch -ne $ExpectedReviewBranch) {
+        throw "Wrong H2-D2 branch: $ActualBranch. Run: git switch $ExpectedReviewBranch"
+    }
+    $LocalHead = (git rev-parse HEAD).Trim()
+    $RemoteHead = (git rev-parse "origin/$ExpectedReviewBranch").Trim()
+    if ($LocalHead -ne $RemoteHead) {
+        throw "Checkout is not at the current PR head. Run: git pull --ff-only origin $ExpectedReviewBranch"
+    }
+    "H2-D2 CHECKOUT VERIFIED: $ActualBranch@$LocalHead"
+}
+```
+
+H2-D2 consumes the H2-C-approved Qt Quick Sidecar without changing its QML.
+The later fidelity lock fixes Standard at 675x300 logical pixels and Expanded
+at 412x806 logical pixels. Standard keeps the approved eight-pixel gap and
+actual-composer left anchor; Expanded keeps the approved host-relative right
+and top insets. This is the controlling reconciliation with the older
+provisional composer-width and 30%-rail equations.
+The D1 record remains the frozen host-identity anchor; D2 remeasures that exact
+verified HWND's client rectangle, monitor work area, and DPI immediately before
+each placement so a moved or resized Codex window cannot pass against stale D1
+geometry.
+The native Sidecar remains hidden while a projection is validated; successful
+rendering is the only operation that reveals it.
+
+Run the Windows-only live qualification while the frozen H2-D1 Codex window is
+open, visible, and not minimized. The actual Codex composer must be empty. The
+verifier types and removes only `H2D2NONINTERFERENCE`; it never submits it. Do
+not press Enter or click Codex Send while this command is running.
+
+```powershell
+& {
+    $ErrorActionPreference = 'Stop'
+    python -m pip install -r requirements-h2-d2.txt
+    if ($LASTEXITCODE -ne 0) { throw 'H2-D2 dependency installation failed' }
+    $env:QT_QUICK_BACKEND = 'software'
+    $env:QT_SCALE_FACTOR = '1'
+    $env:QT_FONT_DPI = '96'
+    python scripts\h2\verify_codex_attachment.py --host-record r6o_evidence\H2-D1\host-environment.json --selectors r6o\host\codex\windows\selectors.json
+    if ($LASTEXITCODE -ne 0) { throw 'H2-D2 actual Codex attachment qualification failed' }
+    python -m pytest r6o\tests\h2\test_codex_binding_contract.py -q -p no:cacheprovider
+    if ($LASTEXITCODE -ne 0) { throw 'H2-D2 focused pytest failed' }
+}
+```
+
+Expected live status:
+
+```text
+H2_D2_ATTACHMENT_PASS
+```
+
+Evidence is written to `r6o_evidence/H2-D2/`: two cropped MP4 recordings, a
+Win32/UIA event ledger, and the fail-closed attachment result. The recordings
+cover only the Sidecar and composer/attachment surfaces; they do not capture
+the conversation body. Evidence observation never foregrounds, raises, or
+repairs the Sidecar immediately before a z-order check.
+
+Windows normally redirects owner activation to its last active owned popup.
+While this D2 binding is active, a scoped low-level mouse observer reacts only
+to a left click inside the exact Codex window and outside the Sidecar. It queues
+a focus transaction onto the Qt GUI thread, briefly attaches the two Windows
+input queues, activates the exact Codex HWND, and detaches them immediately.
+The Sidecar owner is never changed, no keyboard content is observed, and the
+steady-state evidence remains read-only.
+
 ## H2-C Qt Quick replacement checkout
 
 The active H2-C replacement supersedes the unmerged Tk prototype in PR #9.

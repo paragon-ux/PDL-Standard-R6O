@@ -1,0 +1,4 @@
+-r requirements-r6o2-host.txt
+-r requirements-h2-sidecar.txt
+Pillow==12.3.0
+imageio-ffmpeg==0.6.0
