@@ -65,6 +65,14 @@ def test_discovery_uses_product_metadata_not_generic_title() -> None:
     assert selected.hwnd == 2
 
 
+def test_discovery_excludes_untitled_auxiliary_codex_windows() -> None:
+    selected = select_unique_codex_host(
+        [candidate(hwnd=1, title=""), candidate(hwnd=2, title="ChatGPT")],
+        current_pid=999,
+    )
+    assert selected.hwnd == 2
+
+
 @pytest.mark.parametrize(
     ("windows", "current_pid", "code", "candidate_count"),
     [
@@ -73,6 +81,7 @@ def test_discovery_uses_product_metadata_not_generic_title() -> None:
         ([candidate(visible=False)], 999, "HOST_NOT_FOUND", 0),
         ([candidate(product_version="")], 999, "HOST_NOT_FOUND", 0),
         ([candidate(file_version="   ")], 999, "HOST_NOT_FOUND", 0),
+        ([candidate(title="")], 999, "HOST_NOT_FOUND", 0),
         ([candidate(hwnd=1), candidate(hwnd=2, pid=201)], 999, "HOST_AMBIGUOUS", 2),
     ],
 )

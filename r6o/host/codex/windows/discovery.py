@@ -143,6 +143,7 @@ def is_codex_candidate(candidate: HostCandidate, *, current_pid: int) -> bool:
         and candidate.product_name.strip().casefold() == CODEX_PRODUCT_NAME.casefold()
         and bool(candidate.product_version.strip())
         and bool(candidate.file_version.strip())
+        and bool(candidate.title.strip())
         and Path(candidate.executable).is_absolute()
     )
 

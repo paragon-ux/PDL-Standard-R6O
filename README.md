@@ -73,3 +73,43 @@ Expected terminal status from the first command:
 The `--record` mode is not an ordinary qualification command. It replaces the
 frozen fixture using a live worker and therefore additionally requires the
 explicit `--approve-live-recording` acknowledgement.
+
+## H2-D1 qualification (Windows only)
+
+H2-D1 binds to the installed Codex desktop application. Run these commands from
+the repository root on Windows with exactly one Codex top-level window open:
+
+```powershell
+python -m pip install -r requirements-r6o2-host.txt
+if ($LASTEXITCODE -ne 0) { throw 'H2-D1 host dependency installation failed' }
+
+python scripts\h2\reset_codex_test_session.py --selectors r6o\host\codex\windows\selectors.json
+if ($LASTEXITCODE -ne 0) { throw 'H2-D1 live Codex reset failed' }
+
+python -m pytest r6o\tests\h2\test_codex_discovery_contract.py -q -p no:cacheprovider
+if ($LASTEXITCODE -ne 0) { throw 'H2-D1 contract qualification failed' }
+```
+
+Expected terminal status from the reset command:
+
+```text
+CODEX_TEST_SESSION_READY
+```
+
+The reset is fail-closed: it refuses to invoke New chat if the actual Codex
+composer is not proven empty. On success it invokes the native New chat control,
+proves one visible home surface, zero visible turn groups, and an empty focused
+composer, then refreshes `r6o_evidence/H2-D1/reset-session.log`.
+
+The following commands regenerate frozen discovery evidence; they are not
+routine qualification commands:
+
+```powershell
+python scripts\h2\inspect_codex_host.py --discover --output r6o_evidence\H2-D1\host-environment.json
+python scripts\h2\dump_codex_uia.py --host-record r6o_evidence\H2-D1\host-environment.json --output r6o_evidence\H2-D1\codex-uia.json
+```
+
+Regeneration changes evidence hashes. The hashes in
+`r6o/host/codex/windows/selectors.json` must then be explicitly re-frozen and
+reviewed before the reset command or contract tests can pass. Do not overwrite
+the frozen evidence merely to run qualification.
