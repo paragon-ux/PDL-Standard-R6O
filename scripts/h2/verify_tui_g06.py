@@ -178,9 +178,12 @@ class ProcessKeyboardDriver:
                 self.condition.wait(min(remaining, 0.1))
 
     def press_enter(self) -> None:
+        self.send_keys("\r")
+
+    def send_keys(self, value: str) -> None:
         if self.process.stdin is None:
             raise AssertionError("public process stdin is unavailable")
-        payload = b"\r"
+        payload = value.encode("utf-8")
         with self.condition:
             self.process.stdin.write(payload)
             self.process.stdin.flush()
@@ -209,7 +212,7 @@ class ProcessKeyboardDriver:
     def cast_events(self) -> list[list[Any]]:
         coalesced: list[list[Any]] = []
         for elapsed, event_type, payload in self.events:
-            if coalesced and coalesced[-1][1] == event_type:
+            if coalesced and event_type == "o" and coalesced[-1][1] == event_type:
                 coalesced[-1][2].extend(payload)
             else:
                 coalesced.append([round(elapsed, 6), event_type, bytearray(payload)])

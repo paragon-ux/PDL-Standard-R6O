@@ -8,6 +8,7 @@ import json
 import os
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -35,6 +36,23 @@ G06_OPERATIONS = (
     ("G06:0004", "INTERPRET_PLAN_REVIEW"),
     ("G06:0005", "EXECUTE"),
 )
+A02_ACTIVATION = "Use $confirm-with-pseudocode to compare Kafka and RabbitMQ for event delivery."
+A02_OPERATIONS = (
+    ("A02F:0001", "DRAFT_PROMPT"),
+    ("A02F:0002", "INTERPRET_PROMPT_REVIEW"),
+    ("A02F:0003", "REVISE_PROMPT"),
+    ("A02F:0004", "INTERPRET_PROMPT_REVIEW"),
+    ("A02F:0005", "DRAFT_PLAN"),
+    ("A02F:0006", "INTERPRET_PLAN_REVIEW"),
+    ("A02F:0007", "EXECUTE"),
+)
+A02_FIXTURE = ROOT / "fixtures" / "r6o2" / "a02-full" / "recorded-case.json"
+
+
+@dataclass(frozen=True)
+class WorkerResult:
+    text: str
+    metadata: dict[str, Any]
 
 
 def sha256_text(value: str) -> str:
@@ -57,7 +75,7 @@ def resolve_baseline(value: Path | None) -> Path:
     return baseline
 
 
-def load_recorded_worker(baseline: Path, case_id: str) -> Any:
+def load_g06_worker(baseline: Path) -> Any:
     fixture_path = baseline / "fixtures" / "r4-recorded-worker" / "recorded-cases.json"
     entries = json.loads(fixture_path.read_text(encoding="utf-8"))["entries"]
     old_path = list(sys.path)
@@ -69,7 +87,7 @@ def load_recorded_worker(baseline: Path, case_id: str) -> Any:
     builder = RecordedFixtureBuilder()
     selected = 0
     for entry in entries:
-        if (entry.get("source") or "").split(":", 1)[0] != case_id:
+        if (entry.get("source") or "").split(":", 1)[0] != "G06":
             continue
         builder.add(
             entry["operation"],
@@ -84,18 +102,57 @@ def load_recorded_worker(baseline: Path, case_id: str) -> Any:
     return builder.build()
 
 
+class A02ReplayWorker:
+    """Fail closed unless every request matches the next frozen A02-FULL entry."""
+
+    def __init__(self) -> None:
+        value = json.loads(A02_FIXTURE.read_text(encoding="utf-8"))
+        if not isinstance(value, dict) or value.get("case_id") != "A02-FULL":
+            raise RuntimeError("A02-FULL fixture identity differs")
+        entries = value.get("entries")
+        if not isinstance(entries, list) or len(entries) != len(A02_OPERATIONS):
+            raise RuntimeError("A02-FULL fixture must contain exactly seven entries")
+        self.entries = entries
+        self.index = 0
+
+    def call(self, request: Any) -> WorkerResult:
+        if self.index >= len(self.entries):
+            raise RuntimeError(f"ReplayMissError: replay exhausted at {request.operation}")
+        entry = self.entries[self.index]
+        operation_id, expected_operation = A02_OPERATIONS[self.index]
+        actual_hash = sha256_text(request.prompt)
+        if (
+            entry.get("operation_id") != operation_id
+            or entry.get("operation") != expected_operation
+            or request.operation != expected_operation
+            or actual_hash != entry.get("prompt_sha256")
+        ):
+            raise RuntimeError(
+                "ReplayMissError: replay mismatch at "
+                f"{operation_id}; expected {expected_operation} prompt={entry.get('prompt_sha256')}, "
+                f"got {request.operation} prompt={actual_hash}"
+            )
+        self.index += 1
+        return WorkerResult(
+            text=entry["response"],
+            metadata={"source": operation_id, "fixture": "A02-FULL"},
+        )
+
+
 class ObservedWorker:
     """Record successful calls while preserving the frozen worker's matching."""
 
-    def __init__(self, delegate: Any) -> None:
+    def __init__(self, delegate: Any, operations: tuple[tuple[str, str], ...], case_id: str) -> None:
         self.delegate = delegate
+        self.operations = operations
+        self.case_id = case_id
         self.calls: list[dict[str, str]] = []
 
     def call(self, request: Any) -> Any:
         index = len(self.calls)
-        if index >= len(G06_OPERATIONS):
-            raise RuntimeError(f"unexpected extra G06 operation: {request.operation}")
-        operation_id, expected = G06_OPERATIONS[index]
+        if index >= len(self.operations):
+            raise RuntimeError(f"unexpected extra {self.case_id} operation: {request.operation}")
+        operation_id, expected = self.operations[index]
         if request.operation != expected:
             raise RuntimeError(f"expected {operation_id} {expected}, got {request.operation}")
         result = self.delegate.call(request)
@@ -104,9 +161,10 @@ class ObservedWorker:
 
 
 class StateTransitionRecorder:
-    def __init__(self, path: Path | None, worker: ObservedWorker) -> None:
+    def __init__(self, path: Path | None, worker: ObservedWorker, case_id: str) -> None:
         self.path = path.resolve() if path else None
         self.worker = worker
+        self.case_id = case_id
         self.call_cursor = 0
         self.records: list[dict[str, Any]] = []
         if self.path:
@@ -116,22 +174,49 @@ class StateTransitionRecorder:
     def __call__(self, event: str, action_id: str | None, projection: dict[str, Any]) -> None:
         new_calls = self.worker.calls[self.call_cursor :]
         self.call_cursor = len(self.worker.calls)
-        transition = {
-            ("START", None): ("G06-T0-TUI", "G06-S1", "TUI_ACTION_CONFIRM_PROMPT"),
-            ("ACTION", "confirm_prompt"): ("G06-T1-TUI", "G06-S2", "TUI_ACTION_CONFIRM_PLAN"),
-            ("ACTION", "confirm_plan"): ("G06-T2-TUI", "G06-S3", "CALLING_SHELL"),
-        }.get((event, action_id))
+        transitions = {
+            "G06": {
+                ("START", None): ("G06-T0-TUI", "G06-S1", "TUI_ACTION_CONFIRM_PROMPT", None),
+                ("ACTION", "confirm_prompt"): (
+                    "G06-T1-TUI", "G06-S2", "TUI_ACTION_CONFIRM_PLAN", "STRUCTURED_ACTION"
+                ),
+                ("ACTION", "confirm_plan"): (
+                    "G06-T2-TUI", "G06-S3", "CALLING_SHELL", "STRUCTURED_ACTION"
+                ),
+            },
+            "A02-FULL": {
+                ("START", None): ("A02-T0-TUI", "A02-S1", "TUI_ACTION_CONFIRM_PROMPT", None),
+                ("FOCUS", "something_else"): (
+                    "A02-T1-FOCUS-TUI", "A02-S1", "TUI_FREE_RESPONSE_INPUT", "STRUCTURED_ACTION"
+                ),
+                ("TEXT", None): (
+                    "A02-T2-REVISE-TUI", "A02-S2", "TUI_ACTION_CONFIRM_PROMPT", "TUI_TEXT"
+                ),
+                ("ACTION", "confirm_prompt"): (
+                    "A02-T3-TUI", "A02-S3", "TUI_ACTION_CONFIRM_PLAN", "STRUCTURED_ACTION"
+                ),
+                ("ACTION", "confirm_plan"): (
+                    "A02-T4-TUI", "A02-S4", "CALLING_SHELL", "STRUCTURED_ACTION"
+                ),
+            },
+        }
+        transition = transitions[self.case_id].get((event, action_id))
         if transition is None:
-            raise RuntimeError(f"unexpected G06 TUI transition: {event}/{action_id}")
-        transition_id, state_id, focus_owner = transition
+            raise RuntimeError(f"unexpected {self.case_id} TUI transition: {event}/{action_id}")
+        transition_id, state_id, focus_owner, envelope_source = transition
         artifact = projection.get("artifact")
         lifecycle = projection["lifecycle"]
         record: dict[str, Any] = {
-            "schema_version": "r6o-h2-b1-state-transition-1",
+            "schema_version": (
+                "r6o-h2-b1-state-transition-1"
+                if self.case_id == "G06"
+                else "r6o-h2-b2-state-transition-1"
+            ),
             "transition_id": transition_id,
             "state_id": state_id,
             "stage": projection["stage"],
             "action_id": action_id,
+            "input_envelope_source": envelope_source,
             "worker_operations": new_calls,
             "artifact_kind": artifact["artifact_kind"] if artifact else None,
             "artifact_body_sha256": sha256_text(artifact["body"]) if artifact else None,
@@ -152,8 +237,8 @@ class StateTransitionRecorder:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--recorded", action="store_true", help="use the frozen R6S recorded worker")
-    parser.add_argument("--case", choices=("G06",), required=True)
+    parser.add_argument("--recorded", action="store_true", help="use the gate-approved recorded fixture")
+    parser.add_argument("--case", choices=("G06", "A02-FULL"), required=True)
     parser.add_argument("--baseline-repo", type=Path)
     parser.add_argument("--workspace-root", type=Path)
     parser.add_argument("--state-log", type=Path)
@@ -163,7 +248,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     if not args.recorded:
-        print("R6O TUI FAIL: H2-B1 requires --recorded", file=sys.stderr)
+        print("R6O TUI FAIL: H2 TUI qualification requires --recorded", file=sys.stderr)
         return 2
     binding: LocalRuntimeModelBinding | None = None
     temporary: tempfile.TemporaryDirectory[str] | None = None
@@ -175,18 +260,22 @@ def main() -> int:
         if workspace_root is None:
             temporary = tempfile.TemporaryDirectory(prefix="pdl-r6o2-tui-")
             workspace_root = Path(temporary.name) / "workspaces"
-        worker = ObservedWorker(load_recorded_worker(baseline, args.case))
+        operations = G06_OPERATIONS if args.case == "G06" else A02_OPERATIONS
+        activation = G06_ACTIVATION if args.case == "G06" else A02_ACTIVATION
+        delegate = load_g06_worker(baseline) if args.case == "G06" else A02ReplayWorker()
+        worker = ObservedWorker(delegate, operations, args.case)
+        run_token = f"h2-{'b1-tui-g06' if args.case == 'G06' else 'b2-tui-a02-full'}"
         binding = LocalRuntimeModelBinding(
             baseline,
             worker=worker,
             workspace_root=workspace_root,
-            run_id="h2-b1-tui-g06",
+            run_id=run_token,
         )
         started = binding.start_or_resume(
-            ModelSessionRequest(request_id="h2-b1-tui-g06", task_text=G06_ACTIVATION)
+            ModelSessionRequest(request_id=run_token, task_text=activation)
         )
         projection = build_focus_projection_from_port(binding, started.session_id)
-        recorder = StateTransitionRecorder(args.state_log, worker)
+        recorder = StateTransitionRecorder(args.state_log, worker, args.case)
         final_projection = TerminalReviewApp(
             binding,
             started.session_id,
@@ -194,9 +283,9 @@ def main() -> int:
         ).run(projection)
         if final_projection["stage"] != "CLOSED_SUCCESS":
             raise RuntimeError(f"TUI ended at {final_projection['stage']}, expected CLOSED_SUCCESS")
-        expected_ids = [operation_id for operation_id, _ in G06_OPERATIONS]
+        expected_ids = [operation_id for operation_id, _ in operations]
         if [item["operation_id"] for item in worker.calls] != expected_ids:
-            raise RuntimeError("G06 worker operations were not consumed exactly once in order")
+            raise RuntimeError(f"{args.case} worker operations were not consumed exactly once in order")
         print("R6O TUI PASS: CLOSED_SUCCESS", flush=True)
         return 0
     except KeyboardInterrupt:
