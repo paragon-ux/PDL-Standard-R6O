@@ -435,6 +435,18 @@ def test_host_dependencies_are_exactly_pinned() -> None:
     ]
 
 
+def test_readme_d1_qualification_is_checkout_bound_and_paste_safe() -> None:
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    normalized = " ".join(readme.split())
+    assert "Read-Host" not in readme
+    assert "codex/h2-d1-codex-discovery" in readme
+    assert 'git rev-parse "origin/$ExpectedReviewBranch"' in readme
+    assert readme.count("& {") >= 4
+    assert "COMPOSER_NOT_EMPTY" in readme
+    assert "Do not continue to the focused test after a reset failure" in normalized
+    assert "Never restore the prior READY log with Git" in normalized
+
+
 def test_d1_hashed_evidence_uses_lf_checkout_identity() -> None:
     paths = [
         "r6o/host/codex/windows/selectors.json",
