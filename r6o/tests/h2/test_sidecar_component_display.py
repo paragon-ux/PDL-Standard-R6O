@@ -132,6 +132,17 @@ def test_component_evidence_rejects_later_gate_authority(key: str) -> None:
         validate_evidence(report, evidence_dir=DEFAULT_EVIDENCE_DIR)
 
 
+@pytest.mark.parametrize(
+    "claim",
+    ["H2 PASS", "CODEX TESTED", "H2-C AUTHORIZED", "E2E CONFORMS"],
+)
+def test_component_evidence_rejects_textual_later_gate_authority(claim: str) -> None:
+    report = json.loads((DEFAULT_EVIDENCE_DIR / "component-result.json").read_text(encoding="utf-8"))
+    report["modes"]["STANDARD"]["visible_text_inventory"].append(claim)
+    with pytest.raises(AssertionError, match="forbidden authority"):
+        validate_evidence(report, evidence_dir=DEFAULT_EVIDENCE_DIR)
+
+
 def test_design_evidence_rejects_human_pass_divergence_and_fuzzy_authority() -> None:
     report = json.loads((DEFAULT_EVIDENCE_DIR / DESIGN_EVIDENCE_FILE).read_text(encoding="utf-8"))
     mutation = copy.deepcopy(report)

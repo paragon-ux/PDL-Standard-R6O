@@ -150,7 +150,7 @@
       ],
       "native_scrollbars_mapped": 0,
       "capture": "H2-C-STANDARD-SIDECAR.png",
-      "capture_sha256": "52e9db6eccac4d4f02db69641ba9d520af7bd25536f200d98b9a018950e11e52"
+      "capture_sha256": "332de5c8409595542bddca92307878a86772aa573c2a9de7a2cdbf9958c8bb02"
     },
     "EXPANDED": {
       "layout": {
@@ -255,7 +255,7 @@
       ],
       "native_scrollbars_mapped": 0,
       "capture": "H2-C-EXPANDED-SIDECAR.png",
-      "capture_sha256": "7f5906b0cbfafc37e65e3d39150e4523d2d694480ead53824834a53a4c5f30fc"
+      "capture_sha256": "36751e8ca3f1b13dfb51a9a3feda198a44d33409fc8260b280b5aaa68239c530"
     }
   },
   "geometry_evidence": "geometry.json",

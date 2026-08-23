@@ -111,12 +111,15 @@ class _ActionHandle:
 class SidecarWindow:
     """Render a FocusProjection in a disposable, design-locked Sidecar."""
 
-    BG = "#081018"
-    SURFACE = "#0d151c"
-    CARD = "#10181f"
-    BODY = "#0a1218"
-    BORDER = "#26323b"
-    BORDER_SOFT = "#1d2932"
+    # Reference-raster samples cluster tightly around these low-contrast
+    # surfaces.  Keeping the layers close is important: the approved design
+    # reads as one compact Sidecar, not four flat black rectangles.
+    BG = "#11171d"
+    SURFACE = "#0d141a"
+    CARD = "#12181e"
+    BODY = "#0b1117"
+    BORDER = "#242a30"
+    BORDER_SOFT = "#242a30"
     TEXT = "#eef2f5"
     MUTED = "#a8afb6"
     ACCENT = "#a891e9"
@@ -354,8 +357,8 @@ class SidecarWindow:
             fill=self.TEXT,
             font=("Segoe UI Semibold", 12),
         )
-        badge = Rect(134, 14, 99, 21)
-        self._rounded_rect(badge, radius=5, fill="#2a2145", outline="#40325f")
+        badge = Rect(134, 15, 97, 19)
+        self._rounded_rect(badge, radius=4, fill="#2a2145", outline="#40325f")
         self.canvas.create_text(
             badge.x + badge.width // 2,
             badge.y + badge.height // 2,
@@ -371,7 +374,7 @@ class SidecarWindow:
             text="ACTIVE",
             anchor="w",
             fill=self.ACTIVE,
-            font=("Segoe UI Semibold", 8),
+            font=("Segoe UI Semibold", 9),
         )
         if not expanded:
             expand = Rect(587, 8, 32, 30)
@@ -394,7 +397,12 @@ class SidecarWindow:
         expanded = self.mode is SidecarMode.EXPANDED
         panel = self.layout.artifact
         self._semantic_rects["artifact"] = panel
-        self._rounded_rect(panel, radius=9, fill=self.CARD, outline=self.BORDER_SOFT)
+        self._rounded_rect(
+            panel,
+            radius=9,
+            fill="#0f161c" if expanded else self.CARD,
+            outline=self.BORDER_SOFT,
+        )
         title_y = 71 if expanded else 63
         artifact = (self.projection or {}).get("artifact") or {}
         self.canvas.create_text(
@@ -403,9 +411,9 @@ class SidecarWindow:
             text=str(artifact.get("title") or "Authoritative Artifact"),
             anchor="w",
             fill=self.TEXT,
-            font=("Segoe UI Semibold", 9),
+            font=("Segoe UI Semibold", 10),
         )
-        open_rect = Rect(284, 56, 112, 30) if expanded else Rect(287, 51, 112, 28)
+        open_rect = Rect(284, 52, 112, 31) if expanded else Rect(287, 51, 112, 28)
         self._rounded_rect(open_rect, radius=6, fill=self.SURFACE, outline=self.BORDER)
         self.canvas.create_text(
             open_rect.x + 10,
@@ -413,21 +421,21 @@ class SidecarWindow:
             text="Open in Editor",
             anchor="w",
             fill=self.TEXT,
-            font=("Segoe UI", 8),
+            font=("Segoe UI", 9),
         )
         self._draw_external_link_icon(
             Rect(open_rect.right - 20, open_rect.y + (open_rect.height - 16) // 2, 16, 16)
         )
         self._add_hit("open_editor", open_rect, self._open_artifact)
 
-        body_rect = Rect(18, 92, 378, 246) if expanded else Rect(19, 82, 381, 159)
+        body_rect = Rect(18, 91, 378, 248) if expanded else Rect(19, 82, 381, 167)
         self._rounded_rect(body_rect, radius=6, fill=self.BODY, outline=self.BORDER_SOFT)
         line_positions = (
             (114, 132, 155, 178, 202, 225, 249, 272, 298, 321)
             if expanded
             else (97, 106, 122, 140, 156, 172, 185, 202, 217)
         )
-        body_font = ("Consolas", 9 if expanded else 8)
+        body_font = ("Consolas", 10 if expanded else 9)
         for index, line in enumerate(self.artifact_body.visible):
             self.canvas.create_text(
                 body_rect.x + 11,
@@ -445,7 +453,7 @@ class SidecarWindow:
                 text=self._source_label,
                 anchor="w",
                 fill=self.MUTED,
-                font=("Segoe UI", 8),
+                font=("Segoe UI", 9),
             )
             self.canvas.create_text(
                 27,
@@ -453,7 +461,7 @@ class SidecarWindow:
                 text=self._source_value,
                 anchor="w",
                 fill=self.MUTED,
-                font=("Segoe UI", 8),
+                font=("Segoe UI", 9),
             )
             copy_rect = Rect(337, 352, 58, 31)
         else:
@@ -463,7 +471,7 @@ class SidecarWindow:
                 text=self._source_label,
                 anchor="w",
                 fill=self.MUTED,
-                font=("Segoe UI", 8),
+                font=("Segoe UI", 9),
             )
             self.canvas.create_text(
                 149,
@@ -471,7 +479,7 @@ class SidecarWindow:
                 text=self._source_value,
                 anchor="w",
                 fill=self.MUTED,
-                font=("Segoe UI", 8),
+                font=("Segoe UI", 9),
             )
             copy_rect = Rect(343, 259, 56, 30)
         self._rounded_rect(copy_rect, radius=6, fill=self.SURFACE, outline=self.BORDER)
@@ -480,7 +488,7 @@ class SidecarWindow:
             copy_rect.y + copy_rect.height // 2,
             text="Copy",
             fill=self.TEXT,
-            font=("Segoe UI", 8),
+            font=("Segoe UI", 9),
         )
         self._add_hit("copy", copy_rect, self._copy_artifact)
 
@@ -491,18 +499,30 @@ class SidecarWindow:
         self._semantic_rects["review_options"] = panel
         if not expanded:
             self._rounded_rect(panel, radius=9, fill=self.CARD, outline=self.BORDER_SOFT)
+        else:
+            # This is the open Sidecar surface, not a bordered or scrollable
+            # options card.  The reference's lower-field sample is slightly
+            # darker than the outer edge.
+            self.canvas.create_rectangle(
+                2,
+                panel.y,
+                self.layout.window.width - 2,
+                self.layout.window.height - 2,
+                fill="#0f161c",
+                outline="",
+            )
         self.canvas.create_text(
             18 if expanded else 431,
             425 if expanded else 63,
             text="Review Options",
             anchor="w",
             fill=self.TEXT,
-            font=("Segoe UI Semibold", 9),
+            font=("Segoe UI Semibold", 10),
         )
         row_y = 449 if expanded else 80
-        badge_x = 20 if expanded else 432
-        action_x = 56 if expanded else 467
-        action_width = 340 if expanded else 190
+        badge_x = 20 if expanded else 433
+        action_x = 55 if expanded else 468
+        action_width = 341 if expanded else 190
         self._semantic_rects["actions_content"] = Rect(
             18 if expanded else 431,
             row_y,
@@ -510,34 +530,40 @@ class SidecarWindow:
             151 if expanded else 139,
         )
         accents = (self.ACTIVE, self.BLUE, self.AMBER, self.NEUTRAL)
+        expanded_row_offsets = (0, 41, 83, 124)
         for index, button in enumerate(self._action_buttons):
-            y = row_y + index * (40 if expanded else 36)
-            badge = Rect(badge_x, y, 31 if expanded else 29, 31)
+            if expanded and index < len(expanded_row_offsets):
+                y = row_y + expanded_row_offsets[index]
+            else:
+                y = row_y + index * 36
+            badge = Rect(badge_x, y, 30 if expanded else 28, 31)
             action = Rect(action_x, y, action_width, 31)
             accent = accents[index] if index < len(accents) else self.NEUTRAL
-            focused = self._focused_role == button.action_id
             self._rounded_rect(badge, radius=5, fill=self.SURFACE, outline=accent)
             self.canvas.create_text(
                 badge.x + badge.width // 2,
                 badge.y + badge.height // 2,
                 text=str(button.ordinal),
                 fill=accent,
-                font=("Segoe UI Semibold", 9),
+                font=("Segoe UI Semibold", 10 if expanded else 9),
             )
             self._rounded_rect(
                 action,
                 radius=5,
                 fill=self.SURFACE,
-                outline=accent if focused else self.BORDER,
+                # The reference expresses primary/focus emphasis through the
+                # numbered badge.  A bright outline around the action body is
+                # a visible design deviation even though it is custom chrome.
+                outline=self.BORDER,
                 width=1,
             )
             self.canvas.create_text(
-                action.x + 10,
+                action.x + (6 if expanded else 7),
                 action.y + action.height // 2,
                 text=button.label,
                 anchor="w",
                 fill=self.TEXT if button.enabled else "#68727b",
-                font=("Segoe UI", 8 if not expanded else 9),
+                font=("Segoe UI", 9 if not expanded else 10),
             )
             self._add_hit(button.action_id, action, button.invoke)
         tip_y = 644 if expanded else 252
@@ -549,7 +575,7 @@ class SidecarWindow:
             text="Tip:",
             anchor="w",
             fill=self.TEXT,
-            font=("Segoe UI Semibold", 8),
+            font=("Segoe UI Semibold", 9),
         )
         self.canvas.create_text(
             tip_x + 24,
@@ -557,7 +583,7 @@ class SidecarWindow:
             text="Type directly in the chat below",
             anchor="w",
             fill=self.MUTED,
-            font=("Segoe UI", 8),
+            font=("Segoe UI", 9),
         )
         self.canvas.create_text(
             tip_x,
@@ -565,7 +591,7 @@ class SidecarWindow:
             text="to provide other feedback.",
             anchor="w",
             fill=self.MUTED,
-            font=("Segoe UI", 8),
+            font=("Segoe UI", 9),
         )
 
     def _apply_layout(self) -> SidecarLayout:

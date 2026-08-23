@@ -220,15 +220,36 @@ def _reject_overall_authority(value: Any, path: str = "result") -> None:
     if not isinstance(value, str):
         return
     words = _authority_words(value)
-    if "pass" in words and (
-        "overall" in words
-        or "codex" in words
-        or "e2e" in words
-        or "attachment" in words
-        or "composer" in words
-        or "focus" in words
-        or {"human", "pass"} <= words
-    ):
+    claim_words = {
+        "pass",
+        "passed",
+        "approve",
+        "approved",
+        "authorize",
+        "authorized",
+        "complete",
+        "completed",
+        "conform",
+        "conforms",
+        "conformant",
+        "qualify",
+        "qualified",
+        "test",
+        "tested",
+        "verify",
+        "verified",
+    }
+    later_scope_words = {
+        "overall",
+        "h2",
+        "codex",
+        "e2e",
+        "attachment",
+        "composer",
+        "focus",
+        "human",
+    }
+    if words & claim_words and words & later_scope_words:
         raise AssertionError(f"H2-C evidence claims forbidden authority at {path}: {value!r}")
 
 
