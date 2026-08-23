@@ -1,0 +1,132 @@
+{
+  "schema_version": "r6o-h2-a02-full-manifest-1",
+  "case_id": "A02-FULL",
+  "status": "FROZEN_FOR_INDEPENDENT_REVIEW",
+  "recording_process": {
+    "process_version": "h2-a2-codex-recording-1",
+    "recorded_at_utc": "2026-08-22T22:12:42.831625+00:00",
+    "worker": "CodexWorker",
+    "requested_model": "gpt-5.6-sol",
+    "observed_model": null,
+    "codex_cli_version": "codex-cli 0.147.0",
+    "sandbox_mode": "read-only",
+    "approval_mode": "never",
+    "dangerous_bypass": false,
+    "ambient_llm_fallback": false
+  },
+  "frozen_r6s_oracle": {
+    "commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+    "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+    "mutation_policy": "READ_ONLY"
+  },
+  "semantic_inputs": {
+    "activation_text": "Use $confirm-with-pseudocode to compare Kafka and RabbitMQ for event delivery.",
+    "free_response_revision_text": "This is not confirmed. The audience should be data engineers, not backend engineers.",
+    "revised_prompt_confirmation_text": "Yes, that is what I mean.",
+    "plan_confirmation_text": "Confirm the plan and execute."
+  },
+  "expected_milestones": [
+    {
+      "state_id": "A02-S1",
+      "state_name": "PROMPT_REVIEW_INITIAL",
+      "stage": "PROMPT_REVIEW",
+      "after_operation_ids": [
+        "A02F:0001"
+      ],
+      "artifact_kind": "prompt",
+      "artifact_ref": "PROMPT_PROJECTION_REF",
+      "artifact_revision_relation": "NEW_NON_EMPTY_REVISION",
+      "artifact_body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c"
+    },
+    {
+      "state_id": "A02-S2",
+      "state_name": "PROMPT_REVIEW_REVISED",
+      "stage": "PROMPT_REVIEW",
+      "after_operation_ids": [
+        "A02F:0002",
+        "A02F:0003"
+      ],
+      "artifact_kind": "prompt",
+      "artifact_ref": "PROMPT_PROJECTION_REF",
+      "artifact_revision_relation": "CHANGED_FROM_A02_S1",
+      "artifact_body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a"
+    },
+    {
+      "state_id": "A02-S3",
+      "state_name": "PLAN_REVIEW",
+      "stage": "PLAN_REVIEW",
+      "after_operation_ids": [
+        "A02F:0004",
+        "A02F:0005"
+      ],
+      "artifact_kind": "plan",
+      "artifact_ref": "PLAN_PROJECTION_REF",
+      "artifact_revision_relation": "NEW_NON_EMPTY_REVISION",
+      "artifact_body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68"
+    },
+    {
+      "state_id": "A02-S4",
+      "state_name": "CLOSED_SUCCESS",
+      "stage": "CLOSED_SUCCESS",
+      "after_operation_ids": [
+        "A02F:0006",
+        "A02F:0007"
+      ],
+      "artifact_kind": null,
+      "artifact_ref": null,
+      "artifact_revision_relation": "NO_ACTIVE_REVIEW_ARTIFACT",
+      "artifact_body_sha256": null
+    }
+  ],
+  "expected_artifact_hashes": {
+    "initial_prompt_body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
+    "revised_prompt_body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
+    "plan_body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
+    "final_result_body_sha256": "79cd3ac621e54343d4cbef28229766f2c8ae4b5e694dc46b7d69b9375f7e35c4"
+  },
+  "worker_operations": [
+    {
+      "operation_id": "A02F:0001",
+      "operation": "DRAFT_PROMPT",
+      "prompt_sha256": "816b045edd8e711e6ecb15a1fe370d92a706906a2c283f1fae1627770f198d7b",
+      "response_sha256": "bfdc55679b732e558cd5a0946b857442e96c605e0ce6a943de2545ec66b98a5f"
+    },
+    {
+      "operation_id": "A02F:0002",
+      "operation": "INTERPRET_PROMPT_REVIEW",
+      "prompt_sha256": "aa2b04200facd9ae96ee4ef830dd1a4cf949f4a3e098046c2510cf52f08b9af9",
+      "response_sha256": "5637061e85a792fe8b408f0b96fbff83237e7f03ea182c3a5b1d06dcb8936506"
+    },
+    {
+      "operation_id": "A02F:0003",
+      "operation": "REVISE_PROMPT",
+      "prompt_sha256": "a80c5c5668fb9e89c4365dd5b931c7d22931b6af034216f3894ba855e7f79e03",
+      "response_sha256": "1d703b5a12b9a2097df68bda19af4d607df6a3070d830f13e07d22903df8dba2"
+    },
+    {
+      "operation_id": "A02F:0004",
+      "operation": "INTERPRET_PROMPT_REVIEW",
+      "prompt_sha256": "eb1192a09ebe7d687f6d44e9d926227db5ea510c1131cfb7a99866f6bfced019",
+      "response_sha256": "fdc3329f419a0167aaa599d34190c5154fc5ba4877e66c9592914312c7dc480a"
+    },
+    {
+      "operation_id": "A02F:0005",
+      "operation": "DRAFT_PLAN",
+      "prompt_sha256": "edde065e2821e12f0d111f0d5fc37da02866445bc2adcea335dccff7d4fc636d",
+      "response_sha256": "d0b102d2b9abfacf4af0f009b28edf12ab9d56dea2c66fa781539c37afe2cbfa"
+    },
+    {
+      "operation_id": "A02F:0006",
+      "operation": "INTERPRET_PLAN_REVIEW",
+      "prompt_sha256": "b495a8ba4df841ebb92fa91f2b07a3750d13d30b154cc6fd4954cd2f5e55c81e",
+      "response_sha256": "fdc3329f419a0167aaa599d34190c5154fc5ba4877e66c9592914312c7dc480a"
+    },
+    {
+      "operation_id": "A02F:0007",
+      "operation": "EXECUTE",
+      "prompt_sha256": "e467946b4498aaa64871dcfbd476e065c2a73eea661dfa7f7fe712aab986425e",
+      "response_sha256": "5eab148f2fb81826f89bffb3e91c0da01e6f98cefaab990efadd35d381aef6dc"
+    }
+  ],
+  "recorded_case_sha256": "e00d7ced8b12a9a4108983955ff2d6bc969d2cc16a7eaf60c363d2ae8a37de19"
+}
