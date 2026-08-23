@@ -1,3 +1,4 @@
 r6o/host/codex/windows/selectors.json text eol=lf
 r6o_evidence/H2-D1/*.json text eol=lf
 r6o_evidence/H2-D1/reset-session.log text eol=lf
+docs/h2/sidecar-design/* -text
