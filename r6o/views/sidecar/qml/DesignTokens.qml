@@ -15,6 +15,7 @@ QtObject {
     readonly property color artifactAccent: "#A891E9"
     readonly property color stageFill: "#2A2145"
     readonly property color stageBorder: "#40325F"
+    readonly property color stageText: "#DED2FF"
     readonly property color active: "#4BD477"
     readonly property color actionBlue: "#48A7E8"
     readonly property color actionAmber: "#E58B25"

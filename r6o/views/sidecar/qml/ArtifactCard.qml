@@ -8,6 +8,11 @@ Rectangle {
     required property string uiFamily
     required property string monoFamily
     required property var artifactLines
+    required property string artifactTitle
+    required property string sourceLabel
+    required property string sourceValue
+    required property bool canOpenExternal
+    required property bool canCopy
     signal openRequested
     signal copyRequested
 
@@ -20,7 +25,7 @@ Rectangle {
         objectName: "artifactTitle"
         x: 11
         y: card.expanded ? 15 : 11
-        text: "Authoritative Prompt (PDL.md)"
+        text: card.artifactTitle
         color: DesignTokens.textPrimary
         font.family: card.uiFamily
         font.pixelSize: card.expanded ? 14 : 13
@@ -30,6 +35,7 @@ Rectangle {
     Rectangle {
         id: openControl
         objectName: "openEditorControl"
+        visible: card.canOpenExternal
         x: card.width - 123
         y: card.expanded ? 8 : 7
         width: 112
@@ -113,7 +119,7 @@ Rectangle {
         objectName: "sourceLabel"
         x: card.expanded ? 18 : 13
         y: card.expanded ? 308 : 216
-        text: "Source: Workspace File"
+        text: card.sourceLabel
         color: DesignTokens.textMuted
         font.family: card.uiFamily
         font.pixelSize: 11
@@ -122,7 +128,7 @@ Rectangle {
         objectName: "sourceValue"
         x: card.expanded ? 18 : sourceLabel.x + sourceLabel.width + 7
         y: card.expanded ? 326 : 216
-        text: "/workspace/pdlt/PDL.md"
+        text: card.sourceValue
         color: DesignTokens.textMuted
         font.family: card.uiFamily
         font.pixelSize: 11
@@ -131,6 +137,7 @@ Rectangle {
     Rectangle {
         id: copyControl
         objectName: "copyControl"
+        visible: card.canCopy
         x: card.width - 68
         y: card.expanded ? 303 : 215
         width: 56
@@ -150,5 +157,9 @@ Rectangle {
         MouseArea { anchors.fill: parent; onClicked: card.copyRequested() }
         Keys.onReturnPressed: card.copyRequested()
         Keys.onSpacePressed: card.copyRequested()
+    }
+
+    function scrollToBottom() {
+        artifactFlickable.contentY = Math.max(0, artifactFlickable.contentHeight - artifactFlickable.height)
     }
 }

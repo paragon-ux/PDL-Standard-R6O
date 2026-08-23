@@ -6,6 +6,8 @@ Item {
     objectName: "sidecarChrome"
     required property bool expanded
     required property string uiFamily
+    required property string stageLabel
+    required property string statusLabel
     signal expandRequested
     signal closeRequested
 
@@ -35,8 +37,8 @@ Item {
 
         Text {
             anchors.centerIn: parent
-            text: "PROMPT REVIEW"
-            color: "#DED2FF"
+            text: chrome.stageLabel
+            color: DesignTokens.stageText
             font.family: chrome.uiFamily
             font.pixelSize: 9
             font.weight: Font.DemiBold
@@ -58,7 +60,7 @@ Item {
         objectName: "activeLabel"
         x: statusDot.x + 13
         y: 16
-        text: "ACTIVE"
+        text: chrome.statusLabel
         color: DesignTokens.active
         font.family: chrome.uiFamily
         font.pixelSize: 11

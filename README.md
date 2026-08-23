@@ -46,7 +46,8 @@ Verify the checkout before running any H2-C command:
 }
 ```
 
-Install the pinned Qt dependency and run the Windows feasibility proof:
+Install the pinned Qt dependency and run the complete Windows H2-C component
+qualification:
 
 ```powershell
 & {
@@ -56,16 +57,23 @@ Install the pinned Qt dependency and run the Windows feasibility proof:
     $env:QT_QUICK_BACKEND = 'software'
     $env:QT_SCALE_FACTOR = '1'
     $env:QT_FONT_DPI = '96'
-    python scripts\h2\verify_qt_sidecar_feasibility.py --platform windows
-    if ($LASTEXITCODE -ne 0) { throw 'H2-C Windows feasibility failed' }
-    python -m pytest r6o\tests\h2\test_qt_sidecar_feasibility.py -q -p no:cacheprovider
+    python scripts\h2\verify_qt_sidecar_component.py --platform windows
+    if ($LASTEXITCODE -ne 0) { throw 'H2-C Windows component qualification failed' }
+    python -m pytest r6o\tests\h2\test_qt_sidecar_feasibility.py r6o\tests\h2\test_qt_sidecar_component.py -q -p no:cacheprovider
     if ($LASTEXITCODE -ne 0) { throw 'H2-C focused pytest failed' }
 }
 ```
 
-The replacement PR additionally runs fail-closed X11 and Wayland display jobs.
-None of the three display paths may silently skip or fall back to another Qt
-platform backend.
+Expected automated status is
+`MECHANICAL_PASS_PENDING_FINAL_REVIEW`. The production-window captures are
+written beneath
+`r6o_evidence/H2-C-QT-QUICK/qualification/windows/`. This status closes only
+Q01-Q24 mechanical qualification; Q25-Q26 remain assigned to the independent
+final PR review.
+
+The replacement PR runs the same fail-closed qualification and focused tests
+on Windows, Linux/X11, and Linux/Wayland. None of the display paths may silently
+skip or fall back to another Qt platform backend.
 
 ## Checkout under review for H2-B2
 

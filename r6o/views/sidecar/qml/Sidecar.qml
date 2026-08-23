@@ -52,6 +52,8 @@ Window {
             height: root.expanded ? 49 : 44
             expanded: root.expanded
             uiFamily: root.uiFamily
+            stageLabel: sidecarBridge.stageLabel
+            statusLabel: sidecarBridge.statusLabel
             onExpandRequested: sidecarBridge.setMode("EXPANDED")
             onCloseRequested: sidecarBridge.requestClose()
         }
@@ -66,6 +68,13 @@ Window {
             uiFamily: root.uiFamily
             monoFamily: root.monoFamily
             artifactLines: sidecarBridge.artifactLines
+            artifactTitle: sidecarBridge.artifactTitle
+            sourceLabel: sidecarBridge.sourceLabel
+            sourceValue: sidecarBridge.sourceValue
+            canOpenExternal: sidecarBridge.canOpenExternal
+            canCopy: sidecarBridge.canCopy
+            onOpenRequested: sidecarBridge.requestOpen()
+            onCopyRequested: sidecarBridge.requestCopy()
         }
 
         ReviewOptions {
@@ -83,5 +92,9 @@ Window {
 
     function focusFirstAction() {
         reviewOptions.focusFirstAction()
+    }
+
+    function scrollArtifactToBottom() {
+        artifactCard.scrollToBottom()
     }
 }

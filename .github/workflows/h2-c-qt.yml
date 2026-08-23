@@ -1,4 +1,4 @@
-name: H2-C Qt Quick feasibility
+name: H2-C Qt Quick qualification
 
 on:
   pull_request:
@@ -17,22 +17,26 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-h2-sidecar.txt
       - run: python -m pip install -r requirements-h2-sidecar.txt
-      - name: Windows Qt Quick shell proof
+      - name: Windows Qt Quick component qualification
         env:
           QT_QUICK_BACKEND: software
           QT_SCALE_FACTOR: "1"
           QT_FONT_DPI: "96"
-        run: python scripts/h2/verify_qt_sidecar_feasibility.py --platform windows
+        run: python scripts/h2/verify_qt_sidecar_component.py --platform windows
       - name: Focused tests
         env:
           QT_QUICK_BACKEND: software
           QT_SCALE_FACTOR: "1"
           QT_FONT_DPI: "96"
-        run: python -m pytest r6o/tests/h2/test_qt_sidecar_feasibility.py -q -p no:cacheprovider
+        run: >-
+          python -m pytest
+          r6o/tests/h2/test_qt_sidecar_feasibility.py
+          r6o/tests/h2/test_qt_sidecar_component.py
+          -q -p no:cacheprovider
       - uses: actions/upload-artifact@v4
         with:
-          name: h2-c-qt-feasibility-windows
-          path: r6o_evidence/H2-C-QT-QUICK/feasibility/windows
+          name: h2-c-qt-qualification-windows
+          path: r6o_evidence/H2-C-QT-QUICK/qualification/windows
 
   linux-x11:
     runs-on: ubuntu-latest
@@ -51,7 +55,7 @@ jobs:
           libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0
           libxcb-sync1 libxcb-xfixes0 libxcb-xinerama0 libxcb-xkb1
       - run: python -m pip install -r requirements-h2-sidecar.txt
-      - name: Linux X11 Qt Quick shell proof
+      - name: Linux X11 Qt Quick component qualification
         env:
           QT_QUICK_BACKEND: software
           QT_QPA_PLATFORM: xcb
@@ -67,12 +71,12 @@ jobs:
           xdpyinfo -display :99 >/dev/null
           openbox >"$RUNNER_TEMP/openbox.log" 2>&1 &
           xcompmgr -c -n >"$RUNNER_TEMP/xcompmgr.log" 2>&1 &
-          python scripts/h2/verify_qt_sidecar_feasibility.py --platform x11
-          python -m pytest r6o/tests/h2/test_qt_sidecar_feasibility.py -q -p no:cacheprovider
+          python scripts/h2/verify_qt_sidecar_component.py --platform x11
+          python -m pytest r6o/tests/h2/test_qt_sidecar_feasibility.py r6o/tests/h2/test_qt_sidecar_component.py -q -p no:cacheprovider
       - uses: actions/upload-artifact@v4
         with:
-          name: h2-c-qt-feasibility-linux-x11
-          path: r6o_evidence/H2-C-QT-QUICK/feasibility/x11
+          name: h2-c-qt-qualification-linux-x11
+          path: r6o_evidence/H2-C-QT-QUICK/qualification/x11
 
   linux-wayland:
     runs-on: ubuntu-latest
@@ -86,7 +90,7 @@ jobs:
       - name: Install Wayland display dependencies
         run: sudo apt-get update && sudo apt-get install -y weston libegl1 libxkbcommon-x11-0
       - run: python -m pip install -r requirements-h2-sidecar.txt
-      - name: Linux Wayland Qt Quick shell proof
+      - name: Linux Wayland Qt Quick component qualification
         env:
           QT_QUICK_BACKEND: software
           QT_QPA_PLATFORM: wayland
@@ -103,9 +107,9 @@ jobs:
             sleep 0.1
           done
           test -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY"
-          python scripts/h2/verify_qt_sidecar_feasibility.py --platform wayland
-          python -m pytest r6o/tests/h2/test_qt_sidecar_feasibility.py -q -p no:cacheprovider
+          python scripts/h2/verify_qt_sidecar_component.py --platform wayland
+          python -m pytest r6o/tests/h2/test_qt_sidecar_feasibility.py r6o/tests/h2/test_qt_sidecar_component.py -q -p no:cacheprovider
       - uses: actions/upload-artifact@v4
         with:
-          name: h2-c-qt-feasibility-linux-wayland
-          path: r6o_evidence/H2-C-QT-QUICK/feasibility/wayland
+          name: h2-c-qt-qualification-linux-wayland
+          path: r6o_evidence/H2-C-QT-QUICK/qualification/wayland
