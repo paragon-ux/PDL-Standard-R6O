@@ -16,33 +16,39 @@ and its independently gated H2 presentation work.
 - H2 work proceeds through independent gates and dedicated pull requests.
 - A later H2 gate must not be inferred to have passed from an earlier gate.
 
-## Checkout under review for H2-B2
+## Checkout under review for H2-C-QUALIFICATION
 
-PR #8 is reviewed from branch `codex/h2-b2-tui-a02-full`. Before running
+PR #9 is reviewed from branch `codex/h2-c-sidecar-qualification`. Before running
 qualification, verify that this checkout is at the current remote PR head:
 
 ```powershell
 & {
     $ErrorActionPreference = 'Stop'
-    $ExpectedReviewBranch = 'codex/h2-b2-tui-a02-full'
+    $ExpectedReviewBranch = 'codex/h2-c-sidecar-qualification'
     git fetch origin --prune
-    if ($LASTEXITCODE -ne 0) { throw 'Unable to fetch the H2-B2 review branch' }
+    if ($LASTEXITCODE -ne 0) { throw 'Unable to fetch the H2-C review branch' }
 
     $ActualBranch = (git branch --show-current).Trim()
     if ($ActualBranch -ne $ExpectedReviewBranch) {
-        throw "Wrong H2-B2 branch: $ActualBranch. Run: git switch $ExpectedReviewBranch"
+        throw "Wrong H2-C branch: $ActualBranch. Run: git switch $ExpectedReviewBranch"
     }
     $LocalHead = (git rev-parse HEAD).Trim()
     $RemoteHead = (git rev-parse "origin/$ExpectedReviewBranch").Trim()
     if ($LocalHead -ne $RemoteHead) {
         throw "Checkout is not at the current PR head. Run: git pull --ff-only origin $ExpectedReviewBranch"
     }
-    "H2-B2 CHECKOUT VERIFIED: $ActualBranch@$LocalHead"
+    "H2-C CHECKOUT VERIFIED: $ActualBranch@$LocalHead"
 }
 ```
 
-After PR #8 is merged, merged `main` replaces this branch as the authoritative
+After PR #9 is merged, merged `main` replaces this branch as the authoritative
 checkout for later gates.
+
+## Accepted H2-B2 review branch
+
+H2-B2 was human-approved and merged through PR #8 from branch
+`codex/h2-b2-tui-a02-full`. Its merged `main` lineage, not the old review
+worktree, is the base for H2-C.
 
 ## Accepted H2-D1 review branch
 
@@ -125,6 +131,16 @@ qualification block:
 The verifier clones the bound frozen oracle into temporary storage before
 running its own verifier and pytest suite, preventing ignored-file writes in
 the oracle checkout.
+
+The frozen verifier currently emits this advisory before its PASS marker:
+
+```text
+WARN forbidden-term 'architecture-decisions' in scripts/verify_repl_baseline.py
+```
+
+It is non-blocking only when the same invocation subsequently prints
+`REPL BASELINE VERIFICATION PASS` and exits 0. The warning originates in the
+read-only frozen oracle and must not be repaired from this repository.
 
 ## H2-A2 qualification
 
@@ -220,6 +236,45 @@ This is not confirmed. The audience should be data engineers, not backend engine
 Confirm the revised Prompt with Enter, then confirm the Plan with Enter. The
 same process must return to PowerShell with `R6O TUI PASS: CLOSED_SUCCESS`.
 There is no relaunch and no qualification-harness Send step.
+
+## H2-C Sidecar component qualification
+
+H2-C qualifies only the reusable Sidecar window against a visibly labeled
+synthetic fullscreen Tk owner. It does not test Codex and cannot authorize
+overall H2 PASS.
+
+Install the pinned display/screenshot dependencies, then run the exact gate
+command:
+
+```powershell
+& {
+    $ErrorActionPreference = 'Stop'
+    python -m pip install -r requirements-h2-sidecar.txt
+    if ($LASTEXITCODE -ne 0) { throw 'H2-C dependency installation failed' }
+    python scripts\h2\verify_sidecar_component.py --display
+    if ($LASTEXITCODE -ne 0) { throw 'H2-C display qualification failed' }
+    python scripts\h2\verify_sidecar_component.py --validate-evidence r6o_evidence\H2-C-QUALIFICATION\component-result.json
+    if ($LASTEXITCODE -ne 0) { throw 'H2-C evidence validation failed' }
+    python -m pytest r6o\tests\h2\test_sidecar_component_display.py -q -p no:cacheprovider
+    if ($LASTEXITCODE -ne 0) { throw 'H2-C focused pytest failed' }
+}
+```
+
+The display command briefly shows and captures STANDARD and EXPANDED modes. To
+hold each mode longer for visual inspection, rerun it with
+`--hold-seconds 5`. The expected authority fields are exactly:
+
+```json
+{
+  "gate": "H2-C-QUALIFICATION",
+  "status": "MECHANICAL_PASS",
+  "overall_h2_pass_authorized": false,
+  "real_codex_host_tested": false
+}
+```
+
+The verifier rejects evidence that claims Codex attachment, Codex z-order,
+Codex focus, Codex composer behavior, Sidecar E2E, or overall H2 PASS.
 
 ## H2-D1 qualification (Windows only)
 

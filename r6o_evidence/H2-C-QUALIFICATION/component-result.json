@@ -1,0 +1,162 @@
+{
+  "schema_version": "r6o-h2-c-component-result-1",
+  "gate": "H2-C-QUALIFICATION",
+  "status": "MECHANICAL_PASS",
+  "overall_h2_pass_authorized": false,
+  "real_codex_host_tested": false,
+  "qualification_parent": "SYNTHETIC_FULLSCREEN_TK",
+  "visual_reference": {
+    "path": "references/REFERENCE_UI-HARNESS.png",
+    "sha256": "a4defa180dbcebbcc443cd486474a1e6869cbeeb1a58359abb00c07b22facb2e"
+  },
+  "claims": [
+    "SIDECAR_COMPONENT_RENDERING",
+    "WINDOW_CHROME",
+    "SYNTHETIC_OWNER_GEOMETRY"
+  ],
+  "behaviors": {
+    "frameless": true,
+    "synthetic_owner": true,
+    "floating": true,
+    "custom_chrome": true,
+    "standard_geometry": true,
+    "expanded_geometry": true,
+    "expand_collapse": true,
+    "close_view_only": true,
+    "window_lock": true,
+    "artifact_scroll": true,
+    "primary_action_focus": true,
+    "terminal_dismissal": true
+  },
+  "modes": {
+    "STANDARD": {
+      "layout": {
+        "mode": "STANDARD",
+        "owner": {
+          "x": 0,
+          "y": 0,
+          "width": 1600,
+          "height": 900
+        },
+        "composer": {
+          "x": 40,
+          "y": 734,
+          "width": 1520,
+          "height": 126
+        },
+        "window": {
+          "x": 40,
+          "y": 418,
+          "width": 1520,
+          "height": 306
+        },
+        "chrome": {
+          "x": 1,
+          "y": 1,
+          "width": 1518,
+          "height": 50
+        },
+        "artifact": {
+          "x": 13,
+          "y": 63,
+          "width": 950,
+          "height": 230
+        },
+        "review_options": {
+          "x": 973,
+          "y": 63,
+          "width": 534,
+          "height": 230
+        },
+        "parent_width_fraction": 0.95,
+        "composition": "ARTIFACT_LEFT_REVIEW_OPTIONS_RIGHT",
+        "composer_anchor_gap": 10
+      },
+      "observed_window": {
+        "x": 40,
+        "y": 418,
+        "width": 1520,
+        "height": 306
+      },
+      "observed_artifact": {
+        "x": 13,
+        "y": 63,
+        "width": 950,
+        "height": 230
+      },
+      "observed_review_options": {
+        "x": 973,
+        "y": 63,
+        "width": 534,
+        "height": 230
+      },
+      "screenshot": "sidecar-standard.png",
+      "screenshot_sha256": "307d9fffdcdfefa1be0cd691330aa7a50c10b3b3e549bdd15df2cde15a32fd28"
+    },
+    "EXPANDED": {
+      "layout": {
+        "mode": "EXPANDED",
+        "owner": {
+          "x": 0,
+          "y": 0,
+          "width": 1600,
+          "height": 900
+        },
+        "composer": {
+          "x": 40,
+          "y": 734,
+          "width": 1520,
+          "height": 126
+        },
+        "window": {
+          "x": 1100,
+          "y": 20,
+          "width": 480,
+          "height": 860
+        },
+        "chrome": {
+          "x": 1,
+          "y": 1,
+          "width": 478,
+          "height": 50
+        },
+        "artifact": {
+          "x": 13,
+          "y": 63,
+          "width": 454,
+          "height": 464
+        },
+        "review_options": {
+          "x": 13,
+          "y": 537,
+          "width": 454,
+          "height": 310
+        },
+        "parent_width_fraction": 0.3,
+        "composition": "ARTIFACT_TOP_REVIEW_OPTIONS_BELOW",
+        "composer_anchor_gap": null
+      },
+      "observed_window": {
+        "x": 1100,
+        "y": 20,
+        "width": 480,
+        "height": 860
+      },
+      "observed_artifact": {
+        "x": 13,
+        "y": 63,
+        "width": 454,
+        "height": 464
+      },
+      "observed_review_options": {
+        "x": 13,
+        "y": 537,
+        "width": 454,
+        "height": 310
+      },
+      "screenshot": "sidecar-expanded.png",
+      "screenshot_sha256": "594064b1d9664b3848fa39a644b5e3a85679b1942d56a22ee863d10f49d8f6fb"
+    }
+  },
+  "geometry_evidence": "geometry.json"
+}

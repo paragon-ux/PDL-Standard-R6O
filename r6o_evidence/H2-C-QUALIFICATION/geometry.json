@@ -1,0 +1,139 @@
+{
+  "schema_version": "r6o-h2-c-geometry-1",
+  "qualification_parent": {
+    "x": 0,
+    "y": 0,
+    "width": 1600,
+    "height": 900
+  },
+  "composer_anchor": {
+    "x": 40,
+    "y": 734,
+    "width": 1520,
+    "height": 126
+  },
+  "STANDARD": {
+    "layout": {
+      "mode": "STANDARD",
+      "owner": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 900
+      },
+      "composer": {
+        "x": 40,
+        "y": 734,
+        "width": 1520,
+        "height": 126
+      },
+      "window": {
+        "x": 40,
+        "y": 418,
+        "width": 1520,
+        "height": 306
+      },
+      "chrome": {
+        "x": 1,
+        "y": 1,
+        "width": 1518,
+        "height": 50
+      },
+      "artifact": {
+        "x": 13,
+        "y": 63,
+        "width": 950,
+        "height": 230
+      },
+      "review_options": {
+        "x": 973,
+        "y": 63,
+        "width": 534,
+        "height": 230
+      },
+      "parent_width_fraction": 0.95,
+      "composition": "ARTIFACT_LEFT_REVIEW_OPTIONS_RIGHT",
+      "composer_anchor_gap": 10
+    },
+    "observed_window": {
+      "x": 40,
+      "y": 418,
+      "width": 1520,
+      "height": 306
+    },
+    "observed_artifact": {
+      "x": 13,
+      "y": 63,
+      "width": 950,
+      "height": 230
+    },
+    "observed_review_options": {
+      "x": 973,
+      "y": 63,
+      "width": 534,
+      "height": 230
+    }
+  },
+  "EXPANDED": {
+    "layout": {
+      "mode": "EXPANDED",
+      "owner": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 900
+      },
+      "composer": {
+        "x": 40,
+        "y": 734,
+        "width": 1520,
+        "height": 126
+      },
+      "window": {
+        "x": 1100,
+        "y": 20,
+        "width": 480,
+        "height": 860
+      },
+      "chrome": {
+        "x": 1,
+        "y": 1,
+        "width": 478,
+        "height": 50
+      },
+      "artifact": {
+        "x": 13,
+        "y": 63,
+        "width": 454,
+        "height": 464
+      },
+      "review_options": {
+        "x": 13,
+        "y": 537,
+        "width": 454,
+        "height": 310
+      },
+      "parent_width_fraction": 0.3,
+      "composition": "ARTIFACT_TOP_REVIEW_OPTIONS_BELOW",
+      "composer_anchor_gap": null
+    },
+    "observed_window": {
+      "x": 1100,
+      "y": 20,
+      "width": 480,
+      "height": 860
+    },
+    "observed_artifact": {
+      "x": 13,
+      "y": 63,
+      "width": 454,
+      "height": 464
+    },
+    "observed_review_options": {
+      "x": 13,
+      "y": 537,
+      "width": 454,
+      "height": 310
+    }
+  }
+}
