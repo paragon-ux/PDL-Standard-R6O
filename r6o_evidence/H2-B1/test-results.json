@@ -7,9 +7,13 @@
   "exit_code": 0,
   "observed_screens": [
     "PROMPT REVIEW",
-    "PLAN REVIEW",
-    "REVIEW COMPLETE"
+    "PLAN REVIEW"
   ],
+  "terminal_behavior": "RESTORE_AND_RETURN_WITHOUT_TERMINAL_REVIEW_SCREEN",
+  "presentation_reference": {
+    "path": "docs/h2/TUI-REFERENCE-v4-2026-08-22.md",
+    "sha256": "af74ce9fa9b09b8f7e4e555e9213c9e6a0574897718749c872f015da51c331b5"
+  },
   "observed_operation_ids": [
     "G06:0001",
     "G06:0002",

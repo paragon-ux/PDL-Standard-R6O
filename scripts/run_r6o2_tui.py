@@ -21,7 +21,7 @@ if str(ROOT) not in sys.path:
 from r6o.model_binding.base import ModelSessionRequest
 from r6o.model_binding.local_runtime import LocalRuntimeModelBinding
 from r6o.viewmodel.projection import build_focus_projection_from_port
-from r6o.views.tui import TerminalReviewApp
+from r6o.views.tui import TerminalReviewApp, TerminalViewClosed
 
 
 G06_ACTIVATION = (
@@ -202,6 +202,9 @@ def main() -> int:
     except KeyboardInterrupt:
         print("R6O TUI INTERRUPTED", file=sys.stderr, flush=True)
         return 130
+    except TerminalViewClosed:
+        print("R6O TUI CLOSED", flush=True)
+        return 0
     except Exception as exc:
         print(f"R6O TUI FAIL: {exc}", file=sys.stderr, flush=True)
         return 1

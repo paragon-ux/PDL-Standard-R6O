@@ -20,6 +20,8 @@ sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
 RUNNER = ROOT / "scripts" / "run_r6o2_tui.py"
 DEFAULT_EVIDENCE_DIR = ROOT / "r6o_evidence" / "H2-B1"
+REFERENCE_PATH = ROOT / "docs" / "h2" / "TUI-REFERENCE-v4-2026-08-22.md"
+REFERENCE_SHA256 = "af74ce9fa9b09b8f7e4e555e9213c9e6a0574897718749c872f015da51c331b5"
 FROZEN_ORACLE_COMMIT = "60d982f3328b45a351879d67dc4bb525172b65fd"
 FROZEN_ORACLE_TREE = "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6"
 PROMPT_SHA256 = "3b981f581b4f8ab151852f9214493c65accc72153f2f57c68dbc3c4c244911f2"
@@ -158,12 +160,14 @@ class ProcessKeyboardDriver:
     def cast_events(self) -> list[list[Any]]:
         coalesced: list[list[Any]] = []
         for elapsed, event_type, payload in self.events:
-            text = payload.decode("utf-8", errors="replace")
             if coalesced and coalesced[-1][1] == event_type:
-                coalesced[-1][2] += text
+                coalesced[-1][2].extend(payload)
             else:
-                coalesced.append([round(elapsed, 6), event_type, text])
-        return coalesced
+                coalesced.append([round(elapsed, 6), event_type, bytearray(payload)])
+        return [
+            [elapsed, event_type, bytes(payload).decode("utf-8", errors="strict")]
+            for elapsed, event_type, payload in coalesced
+        ]
 
 
 def load_state_log(path: Path) -> list[dict[str, Any]]:
@@ -244,6 +248,8 @@ def run_qualification(
     evidence_dir: Path = DEFAULT_EVIDENCE_DIR,
 ) -> dict[str, Any]:
     baseline = resolve_baseline(baseline_repo)
+    if not REFERENCE_PATH.is_file() or hashlib.sha256(REFERENCE_PATH.read_bytes()).hexdigest() != REFERENCE_SHA256:
+        raise AssertionError("H2-B1 TUI reference v4 identity differs")
     oracle_before = physical_inventory(baseline)
     evidence = evidence_dir.resolve()
     if is_within(evidence, baseline):
@@ -254,6 +260,7 @@ def run_qualification(
     results_path = evidence / "test-results.json"
     environment = dict(os.environ)
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    environment["PYTHONIOENCODING"] = "utf-8"
     with tempfile.TemporaryDirectory(prefix="pdl-h2-b1-") as temporary:
         workspace_root = Path(temporary) / "workspaces"
         command = [
@@ -271,15 +278,21 @@ def run_qualification(
         ]
         driver = ProcessKeyboardDriver(command, cwd=ROOT, environment=environment)
         try:
-            prompt_position = driver.wait_for("PROMPT REVIEW")
-            driver.wait_for("Explain the difference between optimistic locking and pessimistic locking", after=prompt_position)
-            driver.wait_for("> 1. Confirm prompt [Enter]", after=prompt_position)
+            prompt_position = driver.wait_for("PDLt · PROMPT REVIEW")
+            driver.wait_for("ACTIVE", after=prompt_position)
+            driver.wait_for(
+                "Explain the difference between optimistic locking and pessimistic locking",
+                after=prompt_position,
+            )
+            driver.wait_for("Review Options", after=prompt_position)
+            driver.wait_for("> 1  Confirm prompt", after=prompt_position)
+            driver.wait_for("Enter  Select", after=prompt_position)
             driver.press_enter()
-            plan_position = driver.wait_for("PLAN REVIEW", after=prompt_position + 1)
+            plan_position = driver.wait_for("PDLt · PLAN REVIEW", after=prompt_position + 1)
             driver.wait_for("IDENTIFY the target audience as senior developers", after=plan_position)
-            driver.wait_for("> 1. Confirm plan [Enter]", after=plan_position)
+            driver.wait_for("Review Options", after=plan_position)
+            driver.wait_for("> 1  Confirm plan", after=plan_position)
             driver.press_enter()
-            driver.wait_for("REVIEW COMPLETE", after=plan_position + 1)
             returncode, transcript = driver.finish()
         finally:
             driver.stop()
@@ -287,6 +300,9 @@ def run_qualification(
         raise AssertionError(f"public TUI exited {returncode}:\n{transcript}")
     if "R6O TUI PASS: CLOSED_SUCCESS" not in transcript:
         raise AssertionError("public runner did not report CLOSED_SUCCESS")
+    for forbidden in ("PDLt REVIEW", "\nACTIONS\n", "[Enter]", "PDLt · REVIEW COMPLETE"):
+        if forbidden in transcript:
+            raise AssertionError(f"superseded TUI presentation marker rendered: {forbidden!r}")
     records = load_state_log(state_log)
     verify_state_log(records)
     oracle_after = physical_inventory(baseline)
@@ -300,7 +316,12 @@ def run_qualification(
         "driver": "PUBLIC_PROCESS_STDIN_KEYBOARD_BOUNDARY",
         "public_command": "python scripts\\run_r6o2_tui.py --recorded --case G06",
         "exit_code": returncode,
-        "observed_screens": ["PROMPT REVIEW", "PLAN REVIEW", "REVIEW COMPLETE"],
+        "observed_screens": ["PROMPT REVIEW", "PLAN REVIEW"],
+        "terminal_behavior": "RESTORE_AND_RETURN_WITHOUT_TERMINAL_REVIEW_SCREEN",
+        "presentation_reference": {
+            "path": "docs/h2/TUI-REFERENCE-v4-2026-08-22.md",
+            "sha256": REFERENCE_SHA256,
+        },
         "observed_operation_ids": [f"G06:000{index}" for index in range(1, 6)],
         "final_stage": "CLOSED_SUCCESS",
         "prompt_body_sha256": PROMPT_SHA256,
