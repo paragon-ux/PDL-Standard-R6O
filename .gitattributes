@@ -4,7 +4,7 @@ r6o_evidence/H2-D1/reset-session.log text eol=lf
 
 *.png binary
 *.ttf binary
+*.svg binary
+r6o/views/sidecar/assets/fonts/*.txt binary
 docs/h2/sidecar-design/*.md -whitespace
 docs/h2/sidecar-qt/*.md -whitespace
-r6o/views/sidecar/assets/fonts/*LICENSE*.txt -whitespace
-r6o/views/sidecar/assets/fonts/*OFL*.txt -whitespace
