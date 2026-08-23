@@ -277,7 +277,6 @@ class NativeWindowApi:
         flags = (
             self.win32con.SWP_NOACTIVATE
             | self.win32con.SWP_NOZORDER
-            | self.win32con.SWP_SHOWWINDOW
         )
         try:
             # Ownership keeps the Sidecar above Codex. Placement must not use
@@ -339,6 +338,8 @@ class HostClickFocusRouter:
         self.sidecar_activation_count = 0
         self.last_point: tuple[int, int] | None = None
         self.last_transfer_succeeded = False
+        self.last_thread_input_attached = False
+        self.last_thread_input_detached = False
         self._ready = threading.Event()
         self._stop = threading.Event()
         self._error: str | None = None
@@ -388,20 +389,38 @@ class HostClickFocusRouter:
         if self._error:
             raise CodexBindingError(self._error)
 
-    def _complete_host_transfer(self) -> None:
-        user32 = ctypes.windll.user32
+    def _complete_host_transfer(self, user32: Any | None = None) -> None:
+        user32 = user32 or ctypes.windll.user32
+        self.last_transfer_succeeded = False
+        self.last_thread_input_attached = False
+        self.last_thread_input_detached = False
         style = int(user32.GetWindowLongW(self.sidecar_hwnd, GWL_EXSTYLE))
         user32.SetWindowLongW(self.sidecar_hwnd, GWL_EXSTYLE, style | WS_EX_NOACTIVATE)
         sidecar_thread = int(user32.GetWindowThreadProcessId(self.sidecar_hwnd, None))
         host_thread = int(user32.GetWindowThreadProcessId(self.host_hwnd, None))
         attached = bool(user32.AttachThreadInput(sidecar_thread, host_thread, True))
+        self.last_thread_input_attached = attached
+        if not attached:
+            self._error = "HOST_THREAD_INPUT_ATTACH_FAILED"
+            return
+        focus_calls_succeeded = False
         try:
             user32.SetForegroundWindow(self.host_hwnd)
             user32.SetActiveWindow(self.host_hwnd)
+            focus_calls_succeeded = True
+        except Exception:
+            self._error = "HOST_FOCUS_TRANSFER_FAILED"
         finally:
-            if attached:
+            self.last_thread_input_detached = bool(
                 user32.AttachThreadInput(sidecar_thread, host_thread, False)
-        self.last_transfer_succeeded = int(user32.GetForegroundWindow() or 0) == self.host_hwnd
+            )
+        if not self.last_thread_input_detached:
+            self._error = "HOST_THREAD_INPUT_DETACH_FAILED"
+            return
+        self.last_transfer_succeeded = (
+            focus_calls_succeeded
+            and int(user32.GetForegroundWindow() or 0) == self.host_hwnd
+        )
 
     def _complete_sidecar_activation(self) -> None:
         user32 = ctypes.windll.user32
@@ -558,17 +577,38 @@ class CodexSidecarBinding:
 
             sidecar_factory = QtSidecarWindow
         self._close_focus_error: str | None = None
-        self.sidecar = sidecar_factory(on_close_view=self._return_focus_to_composer)
-        self.sidecar_hwnd = int(self.sidecar.window.winId())
-        if self.sidecar_hwnd <= 0 or not self.native.is_window(self.sidecar_hwnd):
-            raise CodexBindingError("SIDECAR_NATIVE_WINDOW_UNAVAILABLE")
-        self.native.set_owner(self.sidecar_hwnd, self.host_hwnd)
-        if self.native.is_topmost(self.sidecar_hwnd):
-            raise CodexBindingError("SIDECAR_GLOBAL_TOPMOST_PROHIBITED")
-        self.focus_router = HostClickFocusRouter(
-            host_hwnd=self.host_hwnd,
-            sidecar_hwnd=self.sidecar_hwnd,
-        )
+        self.sidecar: Any | None = None
+        self.sidecar_hwnd = 0
+        self.focus_router: HostClickFocusRouter | None = None
+        self._initialize_native_sidecar(sidecar_factory)
+
+    def _initialize_native_sidecar(self, sidecar_factory: Callable[..., Any]) -> None:
+        sidecar = sidecar_factory(on_close_view=self._return_focus_to_composer)
+        self.sidecar = sidecar
+        try:
+            self.sidecar_hwnd = int(sidecar.window.winId())
+            if self.sidecar_hwnd <= 0 or not self.native.is_window(self.sidecar_hwnd):
+                raise CodexBindingError("SIDECAR_NATIVE_WINDOW_UNAVAILABLE")
+            self.native.set_owner(self.sidecar_hwnd, self.host_hwnd)
+            if self.native.is_topmost(self.sidecar_hwnd):
+                raise CodexBindingError("SIDECAR_GLOBAL_TOPMOST_PROHIBITED")
+            self.focus_router = HostClickFocusRouter(
+                host_hwnd=self.host_hwnd,
+                sidecar_hwnd=self.sidecar_hwnd,
+            )
+        except Exception:
+            try:
+                if self.focus_router is not None:
+                    self.focus_router.stop()
+            except Exception:
+                pass
+            try:
+                sidecar.close()
+            except Exception:
+                pass
+            self.sidecar = None
+            self.focus_router = None
+            raise
 
     def refresh_host_geometry(self) -> dict[str, Any]:
         """Remeasure the verified D1 HWND without weakening its frozen identity."""
@@ -599,6 +639,9 @@ class CodexSidecarBinding:
     def refresh_controls(self) -> ResolvedHostControls:
         """Reconnect after a Chromium focus/render boundary invalidates UIA wrappers."""
 
+        self.host_candidate = verify_frozen_host_identity(
+            self.host_record, enumerator=self._enumerator
+        )
         try:
             self._app, root = connect_to_host(self.host_hwnd)
         except Exception as exc:
@@ -743,9 +786,11 @@ class CodexSidecarBinding:
 
     def close(self) -> None:
         try:
-            self.focus_router.stop()
+            if self.focus_router is not None:
+                self.focus_router.stop()
         finally:
-            self.sidecar.close()
+            if self.sidecar is not None:
+                self.sidecar.close()
 
     def logical_and_physical_size(self, mode: SidecarMode) -> dict[str, list[int]]:
         return {

@@ -13,6 +13,7 @@ import pytest
 from r6o.host.codex.windows.binding import (
     CodexBindingError,
     CodexSidecarBinding,
+    HostClickFocusRouter,
     NativeWindowApi,
     ResolvedHostControls,
     resolve_actual_composer,
@@ -323,7 +324,54 @@ def test_native_placement_never_mutates_z_order() -> None:
     api.win32con = SimpleNamespace(SWP_NOACTIVATE=1, SWP_NOZORDER=2, SWP_SHOWWINDOW=4)
     api.win32gui = SimpleNamespace(SetWindowPos=lambda *args: calls.append(args))
     api.move_resize(303, Rect(10, 20, 110, 220))
-    assert calls == [(303, 0, 10, 20, 100, 200, 7)]
+    assert calls == [(303, 0, 10, 20, 100, 200, 3)]
+
+
+@pytest.mark.parametrize(
+    ("attach_results", "expected_error", "expected_success"),
+    [
+        ([False], "HOST_THREAD_INPUT_ATTACH_FAILED", False),
+        ([True, False], "HOST_THREAD_INPUT_DETACH_FAILED", False),
+        ([True, True], None, True),
+    ],
+)
+def test_focus_transaction_requires_both_thread_input_attach_and_detach(
+    attach_results: list[bool], expected_error: str | None, expected_success: bool
+) -> None:
+    class FakeUser32:
+        def __init__(self) -> None:
+            self.results = iter(attach_results)
+
+        def GetWindowLongW(self, hwnd: int, index: int) -> int:
+            return 0
+
+        def SetWindowLongW(self, hwnd: int, index: int, style: int) -> int:
+            return 0
+
+        def GetWindowThreadProcessId(self, hwnd: int, pid: object) -> int:
+            return 11 if hwnd == 303 else 22
+
+        def AttachThreadInput(self, first: int, second: int, attach: bool) -> bool:
+            return next(self.results)
+
+        def SetForegroundWindow(self, hwnd: int) -> bool:
+            return True
+
+        def SetActiveWindow(self, hwnd: int) -> int:
+            return hwnd
+
+        def GetForegroundWindow(self) -> int:
+            return 101
+
+    router = HostClickFocusRouter.__new__(HostClickFocusRouter)
+    router.host_hwnd = 101
+    router.sidecar_hwnd = 303
+    router._error = None
+    router._complete_host_transfer(FakeUser32())
+    assert router._error == expected_error
+    assert router.last_transfer_succeeded is expected_success
+    assert router.last_thread_input_attached is (attach_results[0] is True)
+    assert router.last_thread_input_detached is (len(attach_results) == 2 and attach_results[1])
 
 
 def test_binding_remeasures_exact_host_geometry_instead_of_using_frozen_d1_rectangles() -> None:
@@ -362,6 +410,33 @@ def test_binding_remeasures_exact_host_geometry_instead_of_using_frozen_d1_recta
     assert binding.work_area_rectangle == Rect(0, 0, 1600, 860)
 
 
+def test_uia_refresh_revalidates_full_frozen_identity_before_reconnect() -> None:
+    binding = bare_binding(FakeNative(Rect(377, 491, 1052, 791)))
+    frozen = candidate()
+    binding.host_record = host_record(frozen)
+    binding._enumerator = lambda: [candidate(pid=999)]
+    with pytest.raises(CodexBindingError, match="FROZEN_HOST_IDENTITY_MISMATCH"):
+        binding.refresh_controls()
+
+
+def test_partial_sidecar_initialization_closes_created_window() -> None:
+    closed: list[bool] = []
+    sidecar = SimpleNamespace(
+        window=SimpleNamespace(winId=lambda: 303),
+        close=lambda: closed.append(True),
+    )
+    binding = CodexSidecarBinding.__new__(CodexSidecarBinding)
+    binding.host_hwnd = 101
+    binding.sidecar = None
+    binding.sidecar_hwnd = 0
+    binding.focus_router = None
+    binding.native = SimpleNamespace(is_window=lambda hwnd: False)
+    with pytest.raises(CodexBindingError, match="SIDECAR_NATIVE_WINDOW_UNAVAILABLE"):
+        binding._initialize_native_sidecar(lambda **kwargs: sidecar)
+    assert closed == [True]
+    assert binding.sidecar is None
+
+
 def test_failure_cleanup_clears_partial_marker_without_requiring_full_marker_match() -> None:
     value = SimpleNamespace(CurrentValue="H2D2PARTIAL")
     composer = SimpleNamespace(
@@ -369,9 +444,12 @@ def test_failure_cleanup_clears_partial_marker_without_requiring_full_marker_mat
         element_info=SimpleNamespace(name="Ask for follow-up changes"),
         descendants=lambda: [],
         set_focus=lambda: None,
+        has_keyboard_focus=lambda: True,
     )
     binding = SimpleNamespace(
         refresh_controls=lambda: SimpleNamespace(composer=composer),
+        native=SimpleNamespace(foreground=lambda: 101),
+        host_hwnd=101,
     )
 
     def fake_send_keys(keys: str, *, pause: float) -> None:
@@ -502,6 +580,7 @@ def test_readme_d2_qualification_is_branch_bound_and_paste_safe() -> None:
     assert "H2_D2_ATTACHMENT_PASS" in readme
     assert "$env:QT_QUICK_BACKEND = 'software'" in readme
     assert "remeasures that exact" in normalized
+    assert "remains hidden while a projection is validated" in normalized
     assert "Do not press Enter or click Codex Send" in normalized
 
 
@@ -592,4 +671,6 @@ def test_d2_evidence_schema_and_required_observations_when_present() -> None:
     clicked = next(event for event in events if event["event"] == "actual_codex_composer_clicked")
     assert clicked["focus_router_transfer_count"] >= 1
     assert clicked["exact_owner_preserved"] is True
+    assert clicked["thread_input_attached"] is True
+    assert clicked["thread_input_detached"] is True
     assert clicked["thread_input_attached_only_for_focus_transaction"] is True

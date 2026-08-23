@@ -55,6 +55,8 @@ The D1 record remains the frozen host-identity anchor; D2 remeasures that exact
 verified HWND's client rectangle, monitor work area, and DPI immediately before
 each placement so a moved or resized Codex window cannot pass against stale D1
 geometry.
+The native Sidecar remains hidden while a projection is validated; successful
+rendering is the only operation that reveals it.
 
 Run the Windows-only live qualification while the frozen H2-D1 Codex window is
 open, visible, and not minimized. The actual Codex composer must be empty. The

@@ -20,7 +20,7 @@
   "event_log": {
     "event_count": 10,
     "path": "r6o_evidence/H2-D2/win32-uia-events.jsonl",
-    "sha256": "ab4ea2fe98b1e1c76f6c9eb48e6bc15a43d4bf975df5b8efd8cf90609734531a"
+    "sha256": "f754dd5106c2dee6a4d42926d027d90db22441a6c619c59917eb4a90091443cf"
   },
   "expanded": {
     "actual_rectangle": {
@@ -57,7 +57,7 @@
     "owner_hwnd": 15009088,
     "placement_matches": true,
     "sidecar_above_host": true,
-    "sidecar_hwnd": 13239434,
+    "sidecar_hwnd": 9965424,
     "visible": true,
     "work_area_rectangle": {
       "bottom": 900,
@@ -101,9 +101,9 @@
   },
   "host_record_sha256": "7cf1b2219f38b2d7e1f610dd25467969c688b681b3ac0632041eff3978ce9db5",
   "implementation_sha256": {
-    "r6o/host/codex/windows/binding.py": "6312098cc0247ab013b5cce90ac3783235f42ba1121b5a637273022251b21e8d",
+    "r6o/host/codex/windows/binding.py": "eed2c7db45ff56ebad2ccec542dc795ce86a02652ac6ed1d33e38e7ab295413c",
     "r6o/host/codex/windows/placement.py": "8d01b1b2d2e6c77965decadcf2b34f27ee90728f72b8f0ce8ad770d0d1b43ddb",
-    "scripts/h2/verify_codex_attachment.py": "e5453c8aff530c4437869bbedef354a126d92808df068defe4de5b8e23ed0f1f"
+    "scripts/h2/verify_codex_attachment.py": "2c85a1f14e65021e3a2aaaf73276e47c1c165c34abb838620055db9218d3cbec"
   },
   "non_interference": {
     "composer_clicked_outside_sidecar": true,
@@ -137,9 +137,9 @@
       "path": "r6o_evidence/H2-D2/attachment-expanded.mp4",
       "sha256": "46e154ca32fb5b71b5eddd660967523e3b90d0f76e2cb7eb5bf0068b98059162"
     },
-    "frame_count": 412,
+    "frame_count": 419,
     "mandatory": true,
-    "sha256": "dc05e54186ee323ab9eb9ce82d8e9eb71ad60b36698f154494f620565931e63e",
+    "sha256": "f577f3dbbd8f1b8acb6b5446b94cc4693e8ade539b4fc445edb1cf0c191a79df",
     "standard": {
       "crop_rectangle": {
         "bottom": 843,
@@ -150,10 +150,10 @@
         "width": 676
       },
       "fps": 8,
-      "frame_count": 403,
+      "frame_count": 410,
       "observer_ordering_mutation": false,
       "path": "r6o_evidence/H2-D2/attachment-standard.mp4",
-      "sha256": "9785771731a9932a0a818f6c9fc50b1132924fcfbeed91ee0ef2466d1ec6cf74"
+      "sha256": "e8c284f6ad1a7225eabd966df621fefab8eca8568abf7b05934a863be9919973"
     }
   },
   "runtime": {
@@ -198,7 +198,7 @@
       "top": 491,
       "width": 675
     },
-    "foreground_hwnd": 13239434,
+    "foreground_hwnd": 9965424,
     "global_topmost": false,
     "host_client_rectangle": {
       "bottom": 899,
@@ -213,7 +213,7 @@
     "owner_hwnd": 15009088,
     "placement_matches": true,
     "sidecar_above_host": true,
-    "sidecar_hwnd": 13239434,
+    "sidecar_hwnd": 9965424,
     "visible": true,
     "work_area_rectangle": {
       "bottom": 900,
@@ -230,13 +230,13 @@
   },
   "status": "H2_D2_ATTACHMENT_PASS",
   "synthetic_owner_used": false,
-  "timestamp_utc": "2026-08-23T12:51:23.676143Z",
+  "timestamp_utc": "2026-08-23T13:14:45.027293Z",
   "unrelated_window": {
     "host_focus_router_ignored_probe_click": true,
     "probe_above_sidecar": true,
     "probe_foreground": true,
     "probe_global_topmost": false,
-    "probe_hwnd": 9180212,
+    "probe_hwnd": 4526894,
     "probe_owner_hwnd": 0
   }
 }

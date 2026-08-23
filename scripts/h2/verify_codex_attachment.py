@@ -262,6 +262,12 @@ def clear_injected_composer_text(
 
     current = binding.refresh_controls().composer
     current.set_focus()
+    wait_until(
+        lambda: bool(binding.refresh_controls().composer.has_keyboard_focus())
+        and binding.native.foreground() == binding.host_hwnd,
+        timeout=5.0,
+        code="NON_INTERFERENCE_CLEANUP_FOCUS_UNVERIFIED",
+    )
     send_keys("^a{BACKSPACE}", pause=0.025)
     wait_until(
         lambda: composer_empty_observation(
@@ -393,6 +399,8 @@ def run_non_interference(binding: CodexSidecarBinding, ledger: EventLedger) -> d
     wait_until(
         lambda: binding.focus_router.transfer_count >= 1
         and binding.focus_router.last_transfer_succeeded
+        and binding.focus_router.last_thread_input_attached
+        and binding.focus_router.last_thread_input_detached
         and binding.native.owner(binding.sidecar_hwnd) == binding.host_hwnd,
         timeout=5.0,
         code="HOST_CLICK_FOCUS_ROUTING_UNVERIFIED",
@@ -410,7 +418,12 @@ def run_non_interference(binding: CodexSidecarBinding, ledger: EventLedger) -> d
         point_outside_sidecar=True,
         focus_router_transfer_count=binding.focus_router.transfer_count,
         exact_owner_preserved=binding.native.owner(binding.sidecar_hwnd) == binding.host_hwnd,
-        thread_input_attached_only_for_focus_transaction=True,
+        thread_input_attached=binding.focus_router.last_thread_input_attached,
+        thread_input_detached=binding.focus_router.last_thread_input_detached,
+        thread_input_attached_only_for_focus_transaction=(
+            binding.focus_router.last_thread_input_attached
+            and binding.focus_router.last_thread_input_detached
+        ),
     )
 
     try:
