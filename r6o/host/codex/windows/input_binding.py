@@ -278,11 +278,12 @@ class CodexComposerInputBinding:
             time.sleep(0.025)
         raise CodexInputBindingError("ACTUAL_COMPOSER_FOCUS_UNVERIFIED")
 
-    def deactivate(self) -> None:
+    def deactivate(self, *, preserve_enter_pairing: bool = False) -> None:
         with self._state_lock:
             self._armed = False
             self._active_projection = None
-            self._enter_down = False
+            if not preserve_enter_pairing:
+                self._enter_down = False
 
     def wait_for_delivery(self, timeout: float = 5.0) -> dict[str, Any]:
         deadline = time.monotonic() + timeout
@@ -335,7 +336,9 @@ class CodexComposerInputBinding:
             foreground_matches = int(user32.GetForegroundWindow() or 0) == self.host.host_hwnd
         except Exception:
             self._set_error("HOST_KEY_STATE_UNAVAILABLE")
-            self.deactivate()
+            with self._state_lock:
+                self._enter_down = True
+            self.deactivate(preserve_enter_pairing=True)
             return True
         if not foreground_matches:
             # The active H2 binding never captures another application's Enter.
@@ -375,13 +378,13 @@ class CodexComposerInputBinding:
             focus_verified = False
         if not focus_verified:
             self._set_error("ACTUAL_COMPOSER_FOCUS_UNVERIFIED_AT_ENTER")
-            self.deactivate()
+            self.deactivate(preserve_enter_pairing=True)
             return True
         try:
             text = self._text_probe()
         except Exception:
             self._set_error("HOST_COMPOSER_VALUE_UNAVAILABLE")
-            self.deactivate()
+            self.deactivate(preserve_enter_pairing=True)
             return True
         if not isinstance(text, str) or not text.strip():
             self.empty_enter_suppressed_count += 1
@@ -441,11 +444,11 @@ class CodexComposerInputBinding:
                 raise CodexInputBindingError("CAPTURE_RECORD_INVALID")
             envelope = build_host_composer_envelope(capture.projection, capture.text)
             self._clear_actual_composer()
-            with self._state_lock:
-                self._delivery_pending = False
             self.on_envelope(dict(envelope))
             self.last_envelope = envelope
             self.delivery_count += 1
+            with self._state_lock:
+                self._delivery_pending = False
         except Exception as exc:
             code = exc.code if isinstance(exc, CodexInputBindingError) else "ENVELOPE_DELIVERY_FAILED"
             self._set_error(code)
@@ -517,6 +520,18 @@ class CodexComposerInputBinding:
                 self._hook = 0
 
     def stop(self) -> None:
+        pending_failure: CodexInputBindingError | None = None
+        with self._state_lock:
+            delivery_pending = self._delivery_pending
+        if delivery_pending:
+            try:
+                # A clean stop cannot discard a captured submission that is
+                # queued to the GUI thread. Drain it before removing the hook
+                # and dispatcher, or retain an explicit failure while cleanup
+                # continues.
+                self.wait_for_delivery(timeout=5.0)
+            except CodexInputBindingError as exc:
+                pending_failure = exc
         self.deactivate()
         self._stop.set()
         if self._hook_thread is not None:
@@ -529,6 +544,8 @@ class CodexComposerInputBinding:
         with self._state_lock:
             self._delivery_pending = False
         self._dispatcher = None
+        if pending_failure is not None:
+            raise pending_failure
         self.assert_healthy()
 
     def __enter__(self) -> "CodexComposerInputBinding":

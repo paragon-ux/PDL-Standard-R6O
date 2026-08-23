@@ -274,10 +274,68 @@ def test_empty_enter_is_suppressed_without_emitting_review_text() -> None:
 
 def test_unverified_composer_focus_suppresses_host_dispatch_but_fails_gate() -> None:
     binding = input_binding(focused=False)
-    assert binding._handle_key_event(FakeUser32(), 0x0D, WM_KEYDOWN) is True
+    api = FakeUser32()
+    assert binding._handle_key_event(api, 0x0D, WM_KEYDOWN) is True
+    assert binding._handle_key_event(api, 0x0D, WM_KEYUP) is True
     assert binding.last_error == "ACTUAL_COMPOSER_FOCUS_UNVERIFIED_AT_ENTER"
     assert binding.capture_count == 0
     assert binding.armed is False
+    assert binding.suppressed_keyup_count == 1
+
+
+def test_unavailable_composer_text_preserves_suppressed_key_pair() -> None:
+    binding = input_binding()
+
+    def unavailable() -> str:
+        raise RuntimeError("composer unavailable")
+
+    binding._text_probe = unavailable
+    api = FakeUser32()
+    assert binding._handle_key_event(api, 0x0D, WM_KEYDOWN) is True
+    assert binding._handle_key_event(api, 0x0D, WM_KEYUP) is True
+    assert binding.last_error == "HOST_COMPOSER_VALUE_UNAVAILABLE"
+    assert binding.capture_count == 0
+    assert binding.armed is False
+    assert binding.suppressed_keyup_count == 1
+
+
+def test_stop_drains_pending_delivery_before_removing_dispatcher() -> None:
+    calls: list[str] = []
+    binding = input_binding()
+    binding._armed = False
+    binding._delivery_pending = True
+    binding._dispatcher = object()
+
+    def drain(timeout: float) -> dict[str, object]:
+        assert timeout == 5.0
+        assert binding._dispatcher is not None
+        calls.append("drain")
+        with binding._state_lock:
+            binding._delivery_pending = False
+        return {}
+
+    binding.wait_for_delivery = drain  # type: ignore[method-assign]
+    binding.stop()
+
+    assert calls == ["drain"]
+    assert binding._dispatcher is None
+
+
+def test_stop_reports_pending_delivery_failure_after_cleanup() -> None:
+    binding = input_binding()
+    binding._armed = False
+    binding._delivery_pending = True
+    binding._dispatcher = object()
+
+    def fail_drain(timeout: float) -> dict[str, object]:
+        raise CodexInputBindingError("HOST_COMPOSER_ENVELOPE_TIMEOUT")
+
+    binding.wait_for_delivery = fail_drain  # type: ignore[method-assign]
+    with pytest.raises(CodexInputBindingError, match="HOST_COMPOSER_ENVELOPE_TIMEOUT"):
+        binding.stop()
+
+    assert binding._dispatcher is None
+    assert binding._delivery_pending is False
 
 
 def test_production_binding_has_no_semantics_fixture_or_direct_authority() -> None:
