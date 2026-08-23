@@ -148,7 +148,18 @@ def physical_click(point: tuple[int, int]) -> None:
         import win32con
     except ImportError as exc:
         raise CodexInputBindingError("HOST_DEPENDENCY_MISSING") from exc
-    win32api.SetCursorPos(point)
+    positioned = False
+    for _attempt in range(3):
+        try:
+            win32api.SetCursorPos(point)
+            positioned = tuple(int(value) for value in win32api.GetCursorPos()) == point
+        except Exception:
+            positioned = False
+        if positioned:
+            break
+        time.sleep(0.1)
+    if not positioned:
+        raise CodexInputBindingError("SIDECAR_ACTION_CURSOR_POSITION_FAILED")
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
     time.sleep(0.05)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
