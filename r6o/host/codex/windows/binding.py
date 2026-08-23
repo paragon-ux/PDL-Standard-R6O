@@ -15,6 +15,7 @@ from typing import Any, Callable
 from r6o.host.codex.windows.discovery import (
     HostCandidate,
     HostDiscoveryError,
+    build_environment_record,
     enumerate_visible_top_level_windows,
     validate_environment_record,
 )
@@ -273,12 +274,18 @@ class NativeWindowApi:
         return int(self.win32gui.GetWindow(hwnd, GW_OWNER) or 0)
 
     def move_resize(self, hwnd: int, rectangle: Rect) -> None:
-        flags = self.win32con.SWP_NOACTIVATE | self.win32con.SWP_SHOWWINDOW
+        flags = (
+            self.win32con.SWP_NOACTIVATE
+            | self.win32con.SWP_NOZORDER
+            | self.win32con.SWP_SHOWWINDOW
+        )
         try:
-            # pywin32 returns None on success and raises on failure.
+            # Ownership keeps the Sidecar above Codex. Placement must not use
+            # HWND_TOP or otherwise repair z-order immediately before evidence
+            # observation; SWP_NOZORDER makes hWndInsertAfter intentionally inert.
             self.win32gui.SetWindowPos(
                 hwnd,
-                self.win32con.HWND_TOP,
+                0,
                 rectangle.left,
                 rectangle.top,
                 rectangle.width,
@@ -528,26 +535,23 @@ class CodexSidecarBinding:
         native: NativeWindowApi | Any | None = None,
         sidecar_factory: Callable[..., Any] | None = None,
         enumerator: Callable[[], list[HostCandidate]] = enumerate_visible_top_level_windows,
+        environment_builder: Callable[[HostCandidate], dict[str, Any]] = build_environment_record,
     ) -> None:
         self.host_record_path = host_record_path.resolve()
         self.selectors_path = selectors_path.resolve()
         self.host_record = load_host_record(self.host_record_path)
         self.selectors = load_selectors(self.selectors_path)
         verify_selector_host_compatibility(self.selectors, self.host_record)
+        self._enumerator = enumerator
         self.host_candidate = verify_frozen_host_identity(self.host_record, enumerator=enumerator)
         self.host_hwnd = int(self.host_record["codex"]["hwnd"])
-        self.dpi = int(self.host_record["codex"]["dpi"])
+        self._environment_builder = environment_builder
+        self.refresh_host_geometry()
         try:
             self._app, root = connect_to_host(self.host_hwnd)
         except Exception as exc:
             raise CodexBindingError("FROZEN_HOST_UIA_CONNECTION_FAILED") from exc
         self.controls = resolve_host_controls(root, self.selectors, dpi=self.dpi)
-        self.host_client_rectangle = rect_from_record(
-            self.host_record["codex"]["client_rectangle"], label="host_client"
-        )
-        self.work_area_rectangle = rect_from_record(
-            self.host_record["codex"]["monitor"]["work_area"], label="work_area"
-        )
         self.native = native or NativeWindowApi()
         if sidecar_factory is None:
             from r6o.views.sidecar.qt_app import QtSidecarWindow
@@ -565,6 +569,32 @@ class CodexSidecarBinding:
             host_hwnd=self.host_hwnd,
             sidecar_hwnd=self.sidecar_hwnd,
         )
+
+    def refresh_host_geometry(self) -> dict[str, Any]:
+        """Remeasure the verified D1 HWND without weakening its frozen identity."""
+
+        try:
+            self.host_candidate = verify_frozen_host_identity(
+                self.host_record, enumerator=self._enumerator
+            )
+            live_record = self._environment_builder(self.host_candidate)
+        except HostDiscoveryError as exc:
+            raise CodexBindingError(f"LIVE_HOST_GEOMETRY_UNAVAILABLE:{exc.code}") from exc
+        try:
+            live = live_record["codex"]
+            if int(live["hwnd"]) != self.host_hwnd:
+                raise ValueError
+            self.dpi = int(live["dpi"])
+            self.host_client_rectangle = rect_from_record(
+                live["client_rectangle"], label="live_host_client"
+            )
+            self.work_area_rectangle = rect_from_record(
+                live["monitor"]["work_area"], label="live_work_area"
+            )
+        except (KeyError, TypeError, ValueError) as exc:
+            raise CodexBindingError("LIVE_HOST_GEOMETRY_INVALID") from exc
+        self.live_host_record = live_record
+        return live_record
 
     def refresh_controls(self) -> ResolvedHostControls:
         """Reconnect after a Chromium focus/render boundary invalidates UIA wrappers."""
@@ -590,6 +620,8 @@ class CodexSidecarBinding:
         )
 
     def attach(self, projection: dict[str, object], *, settle_seconds: float = 0.75) -> dict[str, Any]:
+        self.refresh_host_geometry()
+        self.refresh_controls()
         expected = self.expected_rectangle(SidecarMode.STANDARD)
         self.native.move_resize(self.sidecar_hwnd, expected)
         if not self.sidecar.render(projection):
@@ -605,6 +637,8 @@ class CodexSidecarBinding:
 
     def set_mode(self, mode: SidecarMode, *, settle_seconds: float = 0.75) -> dict[str, Any]:
         parsed = SidecarMode.parse(mode)
+        self.refresh_host_geometry()
+        self.refresh_controls()
         self.sidecar.set_mode(parsed)
         expected = self.expected_rectangle(parsed)
         self.native.move_resize(self.sidecar_hwnd, expected)
@@ -655,6 +689,10 @@ class CodexSidecarBinding:
             "placement_matches": rectangles_match(actual, expected_rectangle),
             "foreground_hwnd": self.native.foreground(),
             "composer_selector_match_count": self.controls.composer_selector_match_count,
+            "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
+            "host_client_rectangle": self.host_client_rectangle.as_record(),
+            "work_area_rectangle": self.work_area_rectangle.as_record(),
+            "dpi": self.dpi,
         }
         if owner != self.host_hwnd:
             raise CodexBindingError("SIDECAR_OWNER_CHANGED")

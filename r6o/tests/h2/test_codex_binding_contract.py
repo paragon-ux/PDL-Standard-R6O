@@ -13,6 +13,7 @@ import pytest
 from r6o.host.codex.windows.binding import (
     CodexBindingError,
     CodexSidecarBinding,
+    NativeWindowApi,
     ResolvedHostControls,
     resolve_actual_composer,
     verify_frozen_host_identity,
@@ -30,6 +31,7 @@ from r6o.host.codex.windows.placement import (
     standard_placement,
 )
 from r6o.views.sidecar.model import EXPANDED_SIZE, STANDARD_SIZE, SidecarMode
+from scripts.h2.verify_codex_attachment import clear_injected_composer_text
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -315,6 +317,88 @@ def bare_binding(native: FakeNative) -> CodexSidecarBinding:
     return binding
 
 
+def test_native_placement_never_mutates_z_order() -> None:
+    calls: list[tuple[object, ...]] = []
+    api = NativeWindowApi.__new__(NativeWindowApi)
+    api.win32con = SimpleNamespace(SWP_NOACTIVATE=1, SWP_NOZORDER=2, SWP_SHOWWINDOW=4)
+    api.win32gui = SimpleNamespace(SetWindowPos=lambda *args: calls.append(args))
+    api.move_resize(303, Rect(10, 20, 110, 220))
+    assert calls == [(303, 0, 10, 20, 100, 200, 7)]
+
+
+def test_binding_remeasures_exact_host_geometry_instead_of_using_frozen_d1_rectangles() -> None:
+    binding = CodexSidecarBinding.__new__(CodexSidecarBinding)
+    binding.host_candidate = candidate()
+    binding.host_hwnd = 101
+    binding.host_record = host_record(binding.host_candidate)
+    binding._enumerator = lambda: [binding.host_candidate]
+    binding._environment_builder = lambda selected: {
+        "codex": {
+            "hwnd": selected.hwnd,
+            "dpi": 144,
+            "client_rectangle": {
+                "left": 100,
+                "top": 50,
+                "right": 1300,
+                "bottom": 850,
+                "width": 1200,
+                "height": 800,
+            },
+            "monitor": {
+                "work_area": {
+                    "left": 0,
+                    "top": 0,
+                    "right": 1600,
+                    "bottom": 860,
+                    "width": 1600,
+                    "height": 860,
+                }
+            },
+        }
+    }
+    binding.refresh_host_geometry()
+    assert binding.dpi == 144
+    assert binding.host_client_rectangle == Rect(100, 50, 1300, 850)
+    assert binding.work_area_rectangle == Rect(0, 0, 1600, 860)
+
+
+def test_failure_cleanup_clears_partial_marker_without_requiring_full_marker_match() -> None:
+    value = SimpleNamespace(CurrentValue="H2D2PARTIAL")
+    composer = SimpleNamespace(
+        iface_value=value,
+        element_info=SimpleNamespace(name="Ask for follow-up changes"),
+        descendants=lambda: [],
+        set_focus=lambda: None,
+    )
+    binding = SimpleNamespace(
+        refresh_controls=lambda: SimpleNamespace(composer=composer),
+    )
+
+    def fake_send_keys(keys: str, *, pause: float) -> None:
+        assert keys == "^a{BACKSPACE}"
+        assert pause == 0.025
+        value.CurrentValue = ""
+
+    clear_injected_composer_text(
+        binding,
+        {
+            "accessibility_name": "Ask for follow-up changes",
+            "uia_values": [""],
+        },
+        fake_send_keys,
+    )
+    assert value.CurrentValue == ""
+
+
+def test_marker_cleanup_is_armed_before_real_composer_injection() -> None:
+    source = (ROOT / "scripts" / "h2" / "verify_codex_attachment.py").read_text(
+        encoding="utf-8"
+    )
+    armed = source.index("marker_may_be_present = True")
+    injection = source.index("send_keys(MARKER")
+    assert armed < injection
+
+
 def test_steady_state_observation_is_read_only_and_proves_owner_z_order_and_placement() -> None:
     expected = Rect(377, 491, 1052, 791)
     native = FakeNative(expected)
@@ -324,6 +408,8 @@ def test_steady_state_observation_is_read_only_and_proves_owner_z_order_and_plac
     assert record["global_topmost"] is False
     assert record["placement_matches"] is True
     assert record["composer_selector_match_count"] == 2
+    assert record["host_geometry_source"] == "LIVE_REMEASURED_EXACT_D1_HWND"
+    assert record["host_client_rectangle"] == Rect(-1, -1, 1601, 899).as_record()
     assert all(call not in native.calls for call in ("move_resize", "set_owner", "activate", "raise"))
 
 
@@ -414,6 +500,8 @@ def test_readme_d2_qualification_is_branch_bound_and_paste_safe() -> None:
     assert "requirements-h2-d2.txt" in readme
     assert "verify_codex_attachment.py --host-record" in readme
     assert "H2_D2_ATTACHMENT_PASS" in readme
+    assert "$env:QT_QUICK_BACKEND = 'software'" in readme
+    assert "remeasures that exact" in normalized
     assert "Do not press Enter or click Codex Send" in normalized
 
 
@@ -445,6 +533,9 @@ def test_d2_evidence_schema_and_required_observations_when_present() -> None:
     assert document["recording"]["frame_count"] > 0
     assert len(document["recording"]["sha256"]) == 64
     assert document["observer_ordering_mutation"] is False
+    assert document["host"]["geometry_source"] == "LIVE_REMEASURED_EXACT_D1_HWND"
+    assert document["host"]["client_rectangle"]["width"] > 0
+    assert document["host"]["work_area"]["height"] > 0
     assert document["host_record_sha256"] == hashlib.sha256(
         (ROOT / "r6o_evidence" / "H2-D1" / "host-environment.json").read_bytes()
     ).hexdigest()

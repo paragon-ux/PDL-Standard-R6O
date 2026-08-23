@@ -51,6 +51,10 @@ at 412x806 logical pixels. Standard keeps the approved eight-pixel gap and
 actual-composer left anchor; Expanded keeps the approved host-relative right
 and top insets. This is the controlling reconciliation with the older
 provisional composer-width and 30%-rail equations.
+The D1 record remains the frozen host-identity anchor; D2 remeasures that exact
+verified HWND's client rectangle, monitor work area, and DPI immediately before
+each placement so a moved or resized Codex window cannot pass against stale D1
+geometry.
 
 Run the Windows-only live qualification while the frozen H2-D1 Codex window is
 open, visible, and not minimized. The actual Codex composer must be empty. The
@@ -62,6 +66,9 @@ not press Enter or click Codex Send while this command is running.
     $ErrorActionPreference = 'Stop'
     python -m pip install -r requirements-h2-d2.txt
     if ($LASTEXITCODE -ne 0) { throw 'H2-D2 dependency installation failed' }
+    $env:QT_QUICK_BACKEND = 'software'
+    $env:QT_SCALE_FACTOR = '1'
+    $env:QT_FONT_DPI = '96'
     python scripts\h2\verify_codex_attachment.py --host-record r6o_evidence\H2-D1\host-environment.json --selectors r6o\host\codex\windows\selectors.json
     if ($LASTEXITCODE -ne 0) { throw 'H2-D2 actual Codex attachment qualification failed' }
     python -m pytest r6o\tests\h2\test_codex_binding_contract.py -q -p no:cacheprovider

@@ -253,6 +253,26 @@ def safe_current_value(composer: Any) -> str:
         raise CodexBindingError("COMPOSER_VALUE_UNAVAILABLE") from exc
 
 
+def clear_injected_composer_text(
+    binding: CodexSidecarBinding,
+    empty_contract: dict[str, Any],
+    send_keys: Any,
+) -> None:
+    """Clear even a partial marker after an injection failure or timeout."""
+
+    current = binding.refresh_controls().composer
+    current.set_focus()
+    send_keys("^a{BACKSPACE}", pause=0.025)
+    wait_until(
+        lambda: composer_empty_observation(
+            binding.refresh_controls().composer, empty_contract
+        ).get("empty")
+        is True,
+        timeout=5.0,
+        code="NON_INTERFERENCE_MARKER_CLEANUP_FAILED",
+    )
+
+
 def visible_turn_group_count(region: Any, class_name: str) -> int:
     try:
         return sum(
@@ -399,8 +419,11 @@ def run_non_interference(binding: CodexSidecarBinding, ledger: EventLedger) -> d
         raise CodexBindingError("HOST_DEPENDENCY_MISSING") from exc
     marker_may_be_present = False
     try:
-        send_keys(MARKER, pause=0.025, with_spaces=False)
+        # Set this before injection: send_keys can fail after typing only a
+        # prefix, and the real composer must still be restored to its verified
+        # empty precondition.
         marker_may_be_present = True
+        send_keys(MARKER, pause=0.025, with_spaces=False)
         wait_until(
             lambda: MARKER in safe_current_value(binding.refresh_controls().composer),
             timeout=5.0,
@@ -428,18 +451,7 @@ def run_non_interference(binding: CodexSidecarBinding, ledger: EventLedger) -> d
     except Exception:
         if marker_may_be_present:
             try:
-                current = binding.refresh_controls().composer
-                if MARKER in safe_current_value(current):
-                    current.set_focus()
-                    send_keys("^a{BACKSPACE}", pause=0.025)
-                    wait_until(
-                        lambda: composer_empty_observation(
-                            binding.refresh_controls().composer, empty_contract
-                        ).get("empty")
-                        is True,
-                        timeout=5.0,
-                        code="NON_INTERFERENCE_MARKER_CLEANUP_FAILED",
-                    )
+                clear_injected_composer_text(binding, empty_contract, send_keys)
                 ledger.add("failure_cleanup_marker_removed", marker_removed=True)
             except Exception as cleanup_error:
                 raise CodexBindingError("NON_INTERFERENCE_MARKER_CLEANUP_FAILED") from cleanup_error
@@ -520,6 +532,10 @@ def main() -> int:
             pid=host["pid"],
             product_version=host["product_version"],
             package_version=host["package_version"],
+            geometry_source="LIVE_REMEASURED_EXACT_D1_HWND",
+            live_client_rectangle=binding.host_client_rectangle.as_record(),
+            live_work_area=binding.work_area_rectangle.as_record(),
+            live_dpi=binding.dpi,
             composer_selector_match_count=binding.controls.composer_selector_match_count,
             geometry_tie_breaker="LOWER_HALF_BOTTOM_ANCHORED_MINIMUM_35_PERCENT_PRIMARY_WIDTH",
         )
@@ -602,6 +618,9 @@ def main() -> int:
                 "file_version": host["file_version"],
                 "package_version": host["package_version"],
                 "dpi": binding.dpi,
+                "geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
+                "client_rectangle": binding.host_client_rectangle.as_record(),
+                "work_area": binding.work_area_rectangle.as_record(),
             },
             "host_record_sha256": sha256_file(args.host_record),
             "selectors_sha256": sha256_file(args.selectors),

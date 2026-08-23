@@ -20,7 +20,7 @@
   "event_log": {
     "event_count": 10,
     "path": "r6o_evidence/H2-D2/win32-uia-events.jsonl",
-    "sha256": "4b53560abe9eed38dd36a20339813e19f75d616214fd64bc4c40a2ad340dcc1a"
+    "sha256": "ab4ea2fe98b1e1c76f6c9eb48e6bc15a43d4bf975df5b8efd8cf90609734531a"
   },
   "expanded": {
     "actual_rectangle": {
@@ -32,6 +32,7 @@
       "width": 412
     },
     "composer_selector_match_count": 2,
+    "dpi": 96,
     "expected_owner_hwnd": 15009088,
     "expected_rectangle": {
       "bottom": 853,
@@ -43,12 +44,29 @@
     },
     "foreground_hwnd": 15009088,
     "global_topmost": false,
+    "host_client_rectangle": {
+      "bottom": 899,
+      "height": 900,
+      "left": -1,
+      "right": 1601,
+      "top": -1,
+      "width": 1602
+    },
+    "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
     "mode": "EXPANDED",
     "owner_hwnd": 15009088,
     "placement_matches": true,
     "sidecar_above_host": true,
-    "sidecar_hwnd": 3740992,
+    "sidecar_hwnd": 13239434,
     "visible": true,
+    "work_area_rectangle": {
+      "bottom": 900,
+      "height": 900,
+      "left": 0,
+      "right": 1600,
+      "top": 0,
+      "width": 1600
+    },
     "z_order_indices": {
       "host": 25,
       "sidecar": 24
@@ -56,19 +74,36 @@
   },
   "gate": "H2-D2",
   "host": {
+    "client_rectangle": {
+      "bottom": 899,
+      "height": 900,
+      "left": -1,
+      "right": 1601,
+      "top": -1,
+      "width": 1602
+    },
     "dpi": 96,
     "file_version": "151.0.7922.170",
+    "geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
     "hwnd": 15009088,
     "package_version": "26.818.3698.0",
     "pid": 18644,
     "product_name": "Codex",
-    "product_version": "151.0.7922.170"
+    "product_version": "151.0.7922.170",
+    "work_area": {
+      "bottom": 900,
+      "height": 900,
+      "left": 0,
+      "right": 1600,
+      "top": 0,
+      "width": 1600
+    }
   },
   "host_record_sha256": "7cf1b2219f38b2d7e1f610dd25467969c688b681b3ac0632041eff3978ce9db5",
   "implementation_sha256": {
-    "r6o/host/codex/windows/binding.py": "3a4b666232bca54a26c2e815e4674784530bfe726386ff484809b29f3e1c7cd3",
+    "r6o/host/codex/windows/binding.py": "6312098cc0247ab013b5cce90ac3783235f42ba1121b5a637273022251b21e8d",
     "r6o/host/codex/windows/placement.py": "8d01b1b2d2e6c77965decadcf2b34f27ee90728f72b8f0ce8ad770d0d1b43ddb",
-    "scripts/h2/verify_codex_attachment.py": "16f3b9b834e859bd323b9d18392b7f8bce01c1249492b28843aa540b6af067cc"
+    "scripts/h2/verify_codex_attachment.py": "e5453c8aff530c4437869bbedef354a126d92808df068defe4de5b8e23ed0f1f"
   },
   "non_interference": {
     "composer_clicked_outside_sidecar": true,
@@ -102,9 +137,9 @@
       "path": "r6o_evidence/H2-D2/attachment-expanded.mp4",
       "sha256": "46e154ca32fb5b71b5eddd660967523e3b90d0f76e2cb7eb5bf0068b98059162"
     },
-    "frame_count": 437,
+    "frame_count": 412,
     "mandatory": true,
-    "sha256": "464ab4c5bc6bbafbd6ee115abb954c291944aec4e581396ebe7865334da110fc",
+    "sha256": "dc05e54186ee323ab9eb9ce82d8e9eb71ad60b36698f154494f620565931e63e",
     "standard": {
       "crop_rectangle": {
         "bottom": 843,
@@ -115,10 +150,10 @@
         "width": 676
       },
       "fps": 8,
-      "frame_count": 428,
+      "frame_count": 403,
       "observer_ordering_mutation": false,
       "path": "r6o_evidence/H2-D2/attachment-standard.mp4",
-      "sha256": "d1b5d21c27b39b403c7fe267c3d20d2ecafe1073e11f1e6465f38a1b1170f405"
+      "sha256": "9785771731a9932a0a818f6c9fc50b1132924fcfbeed91ee0ef2466d1ec6cf74"
     }
   },
   "runtime": {
@@ -153,6 +188,7 @@
       "width": 675
     },
     "composer_selector_match_count": 2,
+    "dpi": 96,
     "expected_owner_hwnd": 15009088,
     "expected_rectangle": {
       "bottom": 791,
@@ -162,28 +198,45 @@
       "top": 491,
       "width": 675
     },
-    "foreground_hwnd": 3740992,
+    "foreground_hwnd": 13239434,
     "global_topmost": false,
+    "host_client_rectangle": {
+      "bottom": 899,
+      "height": 900,
+      "left": -1,
+      "right": 1601,
+      "top": -1,
+      "width": 1602
+    },
+    "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
     "mode": "STANDARD",
     "owner_hwnd": 15009088,
     "placement_matches": true,
     "sidecar_above_host": true,
-    "sidecar_hwnd": 3740992,
+    "sidecar_hwnd": 13239434,
     "visible": true,
+    "work_area_rectangle": {
+      "bottom": 900,
+      "height": 900,
+      "left": 0,
+      "right": 1600,
+      "top": 0,
+      "width": 1600
+    },
     "z_order_indices": {
-      "host": 25,
+      "host": 28,
       "sidecar": 24
     }
   },
   "status": "H2_D2_ATTACHMENT_PASS",
   "synthetic_owner_used": false,
-  "timestamp_utc": "2026-08-23T12:31:51.339109Z",
+  "timestamp_utc": "2026-08-23T12:51:23.676143Z",
   "unrelated_window": {
     "host_focus_router_ignored_probe_click": true,
     "probe_above_sidecar": true,
     "probe_foreground": true,
     "probe_global_topmost": false,
-    "probe_hwnd": 11928714,
+    "probe_hwnd": 9180212,
     "probe_owner_hwnd": 0
   }
 }
