@@ -1,0 +1,99 @@
+{
+  "schema_version": "r6o-sidecar-qml-design-tokens-2",
+  "date": "2026-08-23",
+  "architecture": "PySide6 + Qt Quick/QML",
+  "canonical_sizes": {
+    "STANDARD": [
+      675,
+      300
+    ],
+    "EXPANDED": [
+      412,
+      806
+    ]
+  },
+  "radii_px": {
+    "outer": 12,
+    "artifact_card": 9,
+    "artifact_body": 6,
+    "compact_control": 6,
+    "action_row": 5,
+    "number_badge": 5,
+    "stage_badge": 4
+  },
+  "borders_px": {
+    "outer": 1,
+    "cards": 1,
+    "controls": 1
+  },
+  "colors": {
+    "outer_border": "#22282F",
+    "card_control_border": "#242A30",
+    "standard_outer_surface": "#12181E",
+    "artifact_body": "#0B1117",
+    "text_primary": "#EEF2F5",
+    "text_muted": "#A8AFB6",
+    "stage_fill": "#2A2145",
+    "stage_border": "#40325F",
+    "active": "#4BD477",
+    "action_blue": "#48A7E8",
+    "action_amber": "#E58B25",
+    "action_neutral": "#9AA4AD"
+  },
+  "fonts": {
+    "ui_family": "Inter",
+    "artifact_family": "JetBrains Mono",
+    "local_assets_required": true,
+    "system_fallback_allowed": false,
+    "asset_provenance_required": true
+  },
+  "icons": {
+    "expand": {
+      "source": "assets/svg/expand.svg",
+      "optical_size": [
+        17,
+        15
+      ],
+      "control_size": [
+        32,
+        30
+      ]
+    },
+    "close": {
+      "source": "assets/svg/close.svg",
+      "optical_size": [
+        14,
+        14
+      ],
+      "control_size": [
+        32,
+        30
+      ]
+    },
+    "external_link": {
+      "source": "assets/svg/external-link.svg",
+      "optical_size": [
+        12,
+        12
+      ]
+    }
+  },
+  "cross_platform": {
+    "required": [
+      "windows",
+      "linux_x11",
+      "linux_wayland"
+    ],
+    "same_qml_required": true,
+    "same_assets_required": true,
+    "same_tokens_required": true,
+    "byte_identical_screenshots_required": false,
+    "human_final_visual_approval": true
+  },
+  "forbidden_production_renderers": [
+    "Tk Canvas",
+    "Pillow Sidecar bitmap renderer",
+    "Electron",
+    "platform-specific alternative visual renderer"
+  ]
+}

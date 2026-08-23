@@ -5,3 +5,4 @@ runs/
 mlflow.db
 *.log
 !r6o_evidence/H2-D1/reset-session.log
+r6o_evidence/H2-C-QT-QUICK/feasibility/

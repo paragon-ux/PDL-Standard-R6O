@@ -1,0 +1,131 @@
+{
+  "schema_version": "r6o-sidecar-design-contract-1",
+  "status": "PROPOSED_HUMAN_DESIGN_LOCK",
+  "scope": "SIDECAR_ONLY",
+  "tui_in_scope": false,
+  "approval_rule": "ZERO_KNOWN_SIDECAR_VISUAL_DIVERGENCES",
+  "reference": {
+    "full": {
+      "file": "REFERENCE_UI-HARNESS.png",
+      "width": 1672,
+      "height": 941,
+      "sha256": "a4defa180dbcebbcc443cd486474a1e6869cbeeb1a58359abb00c07b22facb2e"
+    },
+    "standard": {
+      "file": "REFERENCE_SIDECAR_STANDARD.png",
+      "source_crop": {
+        "left": 28,
+        "top": 479,
+        "right": 703,
+        "bottom": 779
+      },
+      "width": 675,
+      "height": 300,
+      "sha256": "f78361a61734848a47c26feca1be31c1f01e8a2ee21f4bd650e436053c5b140c",
+      "composition": "ARTIFACT_LEFT_REVIEW_OPTIONS_RIGHT"
+    },
+    "expanded": {
+      "file": "REFERENCE_SIDECAR_EXPANDED.png",
+      "source_crop": {
+        "left": 1241,
+        "top": 98,
+        "right": 1653,
+        "bottom": 904
+      },
+      "width": 412,
+      "height": 806,
+      "sha256": "3939a378d12cf45c25aa5aa32bc0fb429ab044ca510aeb428049938ee3c61313",
+      "composition": "ARTIFACT_TOP_REVIEW_OPTIONS_BELOW"
+    }
+  },
+  "visual_evidence": {
+    "capture": "SIDECAR_WINDOW_ONLY",
+    "synthetic_background_allowed_as_visual_evidence": false,
+    "fuzzy_similarity_can_authorize_pass": false,
+    "human_direct_reference_comparison_required": true
+  },
+  "required_visible_elements": {
+    "both": [
+      "PDLt Review",
+      "PROMPT REVIEW badge",
+      "ACTIVE status with green dot",
+      "Authoritative Prompt (PDL.md)",
+      "Open in Editor",
+      "external-link icon",
+      "artifact content surface",
+      "Source: Workspace File",
+      "/workspace/pdlt/PDL.md",
+      "Copy",
+      "Review Options",
+      "numbered action badges",
+      "four canonical action rows",
+      "Tip text",
+      "custom Close control"
+    ],
+    "standard_only": [
+      "custom Expand control"
+    ],
+    "expanded_only": []
+  },
+  "forbidden_visible_elements": [
+    "LOCK",
+    "MOVE",
+    "visible Collapse control in EXPANDED",
+    "native Windows title bar",
+    "native minimize/maximize controls",
+    "native Windows close control",
+    "native Tk scrollbar in canonical state",
+    "native dotted focus rectangle",
+    "Projection snapshot footer",
+    "artifact:// debug reference",
+    "qualification/debug text inside Sidecar"
+  ],
+  "canonical_fixture": {
+    "stage": "PROMPT REVIEW",
+    "status": "ACTIVE",
+    "artifact_title": "Authoritative Prompt (PDL.md)",
+    "artifact_body": "# Prompt\n\nBuild a task manager with:\n- User authentication\n- Project management\n- Task tracking\n- Due dates and reminders\n\nTarget tech stack: React + FastAPI + SQLite",
+    "source_label": "Source: Workspace File",
+    "source_value": "/workspace/pdlt/PDL.md",
+    "actions": [
+      {
+        "ordinal": 1,
+        "label": "Confirm this prompt"
+      },
+      {
+        "ordinal": 2,
+        "label": "Change the task"
+      },
+      {
+        "ordinal": 3,
+        "label": "Change the approach"
+      },
+      {
+        "ordinal": 4,
+        "label": "Something else..."
+      }
+    ],
+    "tip": "Tip: Type directly in the chat below\nto provide other feedback."
+  },
+  "post_lock_d2_may_change": [
+    "window owner",
+    "window coordinates",
+    "host-relative placement",
+    "z-order mechanics",
+    "focus transfer"
+  ],
+  "post_lock_d2_may_not_change": [
+    "Sidecar chrome",
+    "cards",
+    "action styling",
+    "typography hierarchy",
+    "visible control inventory",
+    "scrollbar treatment",
+    "STANDARD composition",
+    "EXPANDED composition",
+    "Tip",
+    "source treatment",
+    "Open in Editor treatment",
+    "Copy treatment"
+  ]
+}

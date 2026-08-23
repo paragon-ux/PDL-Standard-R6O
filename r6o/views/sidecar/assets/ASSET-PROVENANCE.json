@@ -1,0 +1,37 @@
+{
+  "schema_version": "r6o-sidecar-asset-provenance-1",
+  "fonts": [
+    {
+      "family": "Inter",
+      "version": "v4.1",
+      "upstream": "https://github.com/rsms/inter",
+      "upstream_commit": "e3a3d4c57d5ecc01453a575621882a384c1995a3",
+      "license": "SIL Open Font License 1.1",
+      "files": {
+        "fonts/Inter-Regular.ttf": "40d692fce188e4471e2b3cba937be967878f631ad3ebbbdcd587687c7ebe0c82",
+        "fonts/Inter-SemiBold.ttf": "78a843fade9d4612a5567302fb595b56976eb5fcebf4fea5a5912d638bafcde3",
+        "fonts/Inter-Bold.ttf": "288316099b1e0a47a4716d159098005eef7c0066921f34e3200393dbdb01947f",
+        "fonts/INTER-LICENSE.txt": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a"
+      }
+    },
+    {
+      "family": "JetBrains Mono",
+      "version": "v2.304",
+      "upstream": "https://github.com/JetBrains/JetBrainsMono",
+      "upstream_commit": "cd5227bd1f61dff3bbd6c814ceaf7ffd95e947d9",
+      "license": "SIL Open Font License 1.1",
+      "files": {
+        "fonts/JetBrainsMono-Regular.ttf": "a0bf60ef0f83c5ed4d7a75d45838548b1f6873372dfac88f71804491898d138f",
+        "fonts/JETBRAINS-MONO-OFL.txt": "30f0c136e3c88e422d0791acd97238870f9054a9729bc34cf2ff0d4ed8cac4ad"
+      }
+    }
+  ],
+  "icons": {
+    "upstream": "R6O-SIDECAR-FIDELITY-MINI-SPEC-v2-2026-08-23",
+    "files": {
+      "icons/expand.svg": "7eb3d607dea4a8cb9a53df9e34315f9c991a07eec756f7b2f00997e0cf0d2834",
+      "icons/close.svg": "eb66d8d7c5809d9eb55483906046b563301de1128d7e006ae492f0ba01ee2513",
+      "icons/external-link.svg": "b26c3ddf2d3fdd81f8c0accebeaef60feeffe21efd1616d2cdb2a3599de579ec"
+    }
+  }
+}

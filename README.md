@@ -16,6 +16,57 @@ and its independently gated H2 presentation work.
 - H2 work proceeds through independent gates and dedicated pull requests.
 - A later H2 gate must not be inferred to have passed from an earlier gate.
 
+## H2-C Qt Quick replacement checkout
+
+The active H2-C replacement supersedes the unmerged Tk prototype in PR #9.
+Review and qualification must use this exact branch, never PR #9:
+
+```text
+codex/h2-c-qt-quick-sidecar
+```
+
+Verify the checkout before running any H2-C command:
+
+```powershell
+& {
+    $ErrorActionPreference = 'Stop'
+    $ExpectedReviewBranch = 'codex/h2-c-qt-quick-sidecar'
+    git fetch origin --prune
+    if ($LASTEXITCODE -ne 0) { throw 'Unable to fetch the H2-C Qt branch' }
+    $ActualBranch = (git branch --show-current).Trim()
+    if ($ActualBranch -ne $ExpectedReviewBranch) {
+        throw "Wrong H2-C branch: $ActualBranch. Run: git switch $ExpectedReviewBranch"
+    }
+    $LocalHead = (git rev-parse HEAD).Trim()
+    $RemoteHead = (git rev-parse "origin/$ExpectedReviewBranch").Trim()
+    if ($LocalHead -ne $RemoteHead) {
+        throw "Checkout is not at the current PR head. Run: git pull --ff-only origin $ExpectedReviewBranch"
+    }
+    "H2-C QT CHECKOUT VERIFIED: $ActualBranch@$LocalHead"
+}
+```
+
+Install the pinned Qt dependency and run the Windows feasibility proof:
+
+```powershell
+& {
+    $ErrorActionPreference = 'Stop'
+    python -m pip install -r requirements-h2-sidecar.txt
+    if ($LASTEXITCODE -ne 0) { throw 'H2-C Qt dependency installation failed' }
+    $env:QSG_RHI_BACKEND = 'software'
+    $env:QT_SCALE_FACTOR = '1'
+    $env:QT_FONT_DPI = '96'
+    python scripts\h2\verify_qt_sidecar_feasibility.py --platform windows
+    if ($LASTEXITCODE -ne 0) { throw 'H2-C Windows feasibility failed' }
+    python -m pytest r6o\tests\h2\test_qt_sidecar_feasibility.py -q -p no:cacheprovider
+    if ($LASTEXITCODE -ne 0) { throw 'H2-C focused pytest failed' }
+}
+```
+
+The replacement PR additionally runs fail-closed X11 and Wayland display jobs.
+None of the three display paths may silently skip or fall back to another Qt
+platform backend.
+
 ## Checkout under review for H2-B2
 
 PR #8 is reviewed from branch `codex/h2-b2-tui-a02-full`. Before running
