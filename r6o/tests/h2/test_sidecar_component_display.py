@@ -51,6 +51,15 @@ def test_expanded_layout_is_exact_thirty_percent_right_rail_with_vertical_compos
     assert layout.composer_anchor_gap is None
 
 
+@pytest.mark.parametrize("width", [1024, 1366, 1536, 1600, 1920])
+def test_expanded_layout_uses_nearest_pixel_to_thirty_percent(width: int) -> None:
+    owner = Rect(0, 0, width, 900)
+    composer = Rect(24, 730, width - 48, 140)
+    layout = calculate_sidecar_layout(owner, composer, SidecarMode.EXPANDED)
+    assert layout.window.width == round(width * 0.30)
+    assert layout.parent_width_fraction == round(layout.window.width / width, 6)
+
+
 @pytest.mark.parametrize(
     ("owner", "composer", "message"),
     [
@@ -92,6 +101,40 @@ def test_evidence_rejects_overall_h2_or_real_codex_authority() -> None:
     mutation = copy.deepcopy(report)
     mutation["claims"].append("Codex attachment PASS")
     with pytest.raises(AssertionError, match="forbidden authority"):
+        validate_evidence(mutation)
+
+
+@pytest.mark.parametrize(
+    "claim",
+    [
+        "Overall H2 PASS",
+        "H2 overall PASS",
+        "Overall H2 PASS authorized",
+        "Z-order PASS",
+        "Focus PASS",
+        "Composer PASS",
+        "Host composer PASS",
+        "H2-PASS",
+        "Sidecar host attachment PASS",
+    ],
+)
+def test_evidence_rejects_semantically_equivalent_forbidden_claims(claim: str) -> None:
+    report = json.loads((DEFAULT_EVIDENCE_DIR / "component-result.json").read_text(encoding="utf-8"))
+    mutation = copy.deepcopy(report)
+    mutation["modes"]["STANDARD"]["layout"]["qualification_note"] = claim
+    with pytest.raises(AssertionError, match="forbidden authority"):
+        validate_evidence(mutation)
+
+
+def test_evidence_rejects_nested_authority_booleans_and_external_screenshot_paths() -> None:
+    report = json.loads((DEFAULT_EVIDENCE_DIR / "component-result.json").read_text(encoding="utf-8"))
+    mutation = copy.deepcopy(report)
+    mutation["modes"]["STANDARD"]["layout"]["overall_h2_pass"] = True
+    with pytest.raises(AssertionError, match="forbidden authority"):
+        validate_evidence(mutation)
+    mutation = copy.deepcopy(report)
+    mutation["modes"]["STANDARD"]["screenshot"] = "..\\outside.png"
+    with pytest.raises(AssertionError, match="local file"):
         validate_evidence(mutation)
 
 
@@ -158,13 +201,20 @@ def test_live_tk_component_is_frameless_owned_focusable_and_close_only() -> None
         assert standard is not None
         assert bool(sidecar.window.overrideredirect()) is True
         assert sidecar.window.transient()
+        assert bool(sidecar.window.attributes("-topmost")) is False
         assert sidecar.window.winfo_exists()
         assert sidecar._action_buttons[0].cget("text") == "Confirm prompt"
         sidecar._action_buttons[0].invoke()
         assert actions == ["confirm_prompt"]
         assert sidecar.toggle_mode() is SidecarMode.EXPANDED
-        assert sidecar.layout is not None and sidecar.layout.parent_width_fraction == 0.3
+        assert sidecar.layout is not None and sidecar.layout.window.width == round(owner.width * 0.30)
         assert sidecar.toggle_mode() is SidecarMode.STANDARD
+        root.update()
+        assert sidecar.layout == standard
+        assert (sidecar.window.winfo_x(), sidecar.window.winfo_y()) == (
+            standard.window.x,
+            standard.window.y,
+        )
         assert sidecar.toggle_lock() is False
         assert sidecar.toggle_lock() is True
         sidecar.close_view()

@@ -71,6 +71,46 @@ FORBIDDEN_CLAIMS = {
 }
 
 
+def _normalized_words(value: str) -> tuple[str, ...]:
+    return tuple(re.findall(r"[a-z0-9]+", value.casefold()))
+
+
+def _reject_forbidden_authority(value: Any, path: str = "result") -> None:
+    """Reject component evidence that claims later-gate or overall authority anywhere."""
+
+    if isinstance(value, dict):
+        for key, nested in value.items():
+            key_words = set(_normalized_words(str(key)))
+            if nested is True and "pass" in key_words and (
+                "h2" in key_words
+                or "codex" in key_words
+                or "e2e" in key_words
+                or key_words & {"attachment", "zorder", "focus", "composer"}
+                or ({"z", "order"} <= key_words)
+            ):
+                raise AssertionError(f"H2-C evidence claims forbidden authority at {path}.{key}")
+            _reject_forbidden_authority(nested, f"{path}.{key}")
+        return
+    if isinstance(value, list):
+        for index, nested in enumerate(value):
+            _reject_forbidden_authority(nested, f"{path}[{index}]")
+        return
+    if not isinstance(value, str):
+        return
+    words = set(_normalized_words(value))
+    if "pass" not in words:
+        return
+    forbidden = (
+        "h2" in words
+        or "codex" in words
+        or "e2e" in words
+        or words & {"attachment", "zorder", "focus", "composer"}
+        or ({"z", "order"} <= words)
+    )
+    if forbidden:
+        raise AssertionError(f"H2-C evidence claims forbidden authority at {path}: {value!r}")
+
+
 def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -82,6 +122,7 @@ def require_object(value: Any, label: str) -> dict[str, Any]:
 
 
 def validate_evidence(value: Any, *, evidence_dir: Path | None = None) -> dict[str, Any]:
+    _reject_forbidden_authority(value)
     report = require_object(value, "H2-C result")
     if set(report) != REPORT_KEYS:
         raise AssertionError("H2-C result fields differ")
@@ -135,12 +176,26 @@ def validate_evidence(value: Any, *, evidence_dir: Path | None = None) -> dict[s
             raise AssertionError(f"modes.{mode_name} composition differs")
         if mode_name == "STANDARD" and layout.get("composer_anchor_gap") != 10:
             raise AssertionError("STANDARD is not anchored directly above the composer")
-        if mode_name == "EXPANDED" and layout.get("parent_width_fraction") != 0.3:
-            raise AssertionError("EXPANDED width must be exactly 30% of the qualification parent")
+        if mode_name == "EXPANDED":
+            owner = require_object(layout.get("owner"), "EXPANDED owner")
+            window = require_object(layout.get("window"), "EXPANDED window")
+            owner_width = owner.get("width")
+            if not isinstance(owner_width, int) or owner_width <= 0:
+                raise AssertionError("EXPANDED owner width is invalid")
+            expected_width = round(owner_width * 0.30)
+            expected_fraction = round(expected_width / owner_width, 6)
+            if (
+                window.get("width") != expected_width
+                or layout.get("parent_width_fraction") != expected_fraction
+            ):
+                raise AssertionError("EXPANDED width must be pixel-rounded from 30% of the parent")
         screenshot = mode.get("screenshot")
         screenshot_hash = mode.get("screenshot_sha256")
-        if not isinstance(screenshot, str) or not screenshot.endswith(".png"):
-            raise AssertionError(f"modes.{mode_name} screenshot must be a PNG path")
+        expected_screenshot = f"sidecar-{mode_name.casefold()}.png"
+        if screenshot != expected_screenshot:
+            raise AssertionError(
+                f"modes.{mode_name} screenshot must be the local file {expected_screenshot}"
+            )
         if not isinstance(screenshot_hash, str) or SHA256_PATTERN.fullmatch(screenshot_hash) is None:
             raise AssertionError(f"modes.{mode_name} screenshot hash is invalid")
         if evidence_dir is not None:
@@ -150,8 +205,8 @@ def validate_evidence(value: Any, *, evidence_dir: Path | None = None) -> dict[s
     if modes["STANDARD"]["screenshot_sha256"] == modes["EXPANDED"]["screenshot_sha256"]:
         raise AssertionError("STANDARD and EXPANDED screenshots must be visibly distinct")
     geometry_name = report.get("geometry_evidence")
-    if not isinstance(geometry_name, str) or not geometry_name.endswith(".json"):
-        raise AssertionError("geometry_evidence must name a JSON file")
+    if geometry_name != "geometry.json":
+        raise AssertionError("geometry_evidence must name the local geometry.json file")
     if evidence_dir is not None and not (evidence_dir / geometry_name).is_file():
         raise AssertionError("geometry evidence file is missing")
     if evidence_dir is not None:
@@ -437,14 +492,42 @@ def run_display_qualification(
             raise AssertionError(
                 f"EXPANDED review-options pane differs: {expanded_options_observed} != {expanded.review_options}"
             )
-        if expanded.parent_width_fraction != 0.3:
-            raise AssertionError("EXPANDED window is not 30% of the qualification parent")
+        if expanded.window.width != round(owner_rect.width * 0.30):
+            raise AssertionError("EXPANDED window is not the pixel-rounded 30% parent width")
+        chrome_widgets = (
+            sidecar.title_label,
+            sidecar.stage_label,
+            sidecar.active_label,
+            sidecar.lock_button,
+            sidecar.expand_button,
+            sidecar.close_button,
+        )
+        chrome_bounds_pass = all(
+            widget.winfo_ismapped()
+            and widget.winfo_rootx() >= sidecar.window.winfo_rootx()
+            and widget.winfo_rootx() + widget.winfo_width()
+            <= sidecar.window.winfo_rootx() + sidecar.window.winfo_width()
+            for widget in chrome_widgets
+        )
+        if not chrome_bounds_pass:
+            raise AssertionError("EXPANDED custom chrome controls are clipped")
         if hold_seconds:
             time.sleep(hold_seconds)
             root.update()
         _capture_parent(expanded_path, root, expanded.window)
-        collapse_pass = sidecar.toggle_mode() is SidecarMode.STANDARD
+        collapse_mode_pass = sidecar.toggle_mode() is SidecarMode.STANDARD
         root.update()
+        collapsed_layout = sidecar.layout
+        assert collapsed_layout is not None
+        collapse_pass = (
+            collapse_mode_pass
+            and collapsed_layout == standard
+            and _observed_rect(sidecar.window) == standard.window
+            and _observed_local_rect(sidecar.artifact_panel, sidecar.window) == standard.artifact
+            and _observed_local_rect(sidecar.options_panel, sidecar.window) == standard.review_options
+        )
+        if not collapse_pass:
+            raise AssertionError("Collapse did not restore complete STANDARD geometry")
         close_view = sidecar.window
         sidecar.close_view()
         root.update()
@@ -493,7 +576,7 @@ def run_display_qualification(
                 "frameless": True,
                 "synthetic_owner": True,
                 "floating": floating_pass,
-                "custom_chrome": True,
+                "custom_chrome": chrome_bounds_pass,
                 "standard_geometry": (
                     standard_observed == standard.window
                     and standard_artifact_observed == standard.artifact

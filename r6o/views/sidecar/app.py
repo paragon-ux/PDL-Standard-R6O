@@ -89,11 +89,11 @@ class SidecarWindow:
         )
         self.active_label.pack(side="left", padx=10)
 
-        self.close_button = self._chrome_button("CLOSE", self.close_view)
+        self.close_button = self._chrome_button("×", self.close_view)
         self.close_button.pack(side="right", padx=(0, 8), pady=8)
-        self.expand_button = self._chrome_button("EXPAND", self.toggle_mode)
+        self.expand_button = self._chrome_button("↗", self.toggle_mode)
         self.expand_button.pack(side="right", padx=4, pady=8)
-        self.lock_button = self._chrome_button("LOCKED", self.toggle_lock)
+        self.lock_button = self._chrome_button("LOCK", self.toggle_lock)
         self.lock_button.pack(side="right", padx=4, pady=8)
 
         self.content = tk.Frame(self.window, bg=self.BG)
@@ -243,14 +243,14 @@ class SidecarWindow:
 
     def toggle_mode(self) -> SidecarMode:
         self.mode = SidecarMode.EXPANDED if self.mode is SidecarMode.STANDARD else SidecarMode.STANDARD
-        self.expand_button.configure(text="COLLAPSE" if self.mode is SidecarMode.EXPANDED else "EXPAND")
+        self.expand_button.configure(text="↙" if self.mode is SidecarMode.EXPANDED else "↗")
         self._compose_panels()
         self._apply_layout()
         return self.mode
 
     def toggle_lock(self) -> bool:
         self.locked = not self.locked
-        self.lock_button.configure(text="LOCKED" if self.locked else "MOVE")
+        self.lock_button.configure(text="LOCK" if self.locked else "MOVE")
         if self.locked:
             self._apply_layout()
         return self.locked
