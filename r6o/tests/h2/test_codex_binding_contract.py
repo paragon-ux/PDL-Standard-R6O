@@ -382,6 +382,30 @@ def test_d2_verifier_has_portable_help() -> None:
     assert result.returncode == 0, result.stdout + result.stderr
 
 
+def test_d2_contract_import_does_not_require_qt_runtime() -> None:
+    script = """
+import sys
+class BlockPySide:
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname == 'PySide6' or fullname.startswith('PySide6.'):
+            raise ModuleNotFoundError('blocked PySide6')
+        return None
+sys.meta_path.insert(0, BlockPySide())
+from r6o.host.codex.windows.binding import CodexBindingError
+from r6o.host.codex.windows.placement import Rect
+from r6o.views.sidecar import SidecarMode
+assert CodexBindingError and Rect(0, 0, 1, 1).width == 1
+assert SidecarMode.STANDARD.value == 'STANDARD'
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", script],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
 def test_readme_d2_qualification_is_branch_bound_and_paste_safe() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     normalized = " ".join(readme.split())
