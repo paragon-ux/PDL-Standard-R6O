@@ -1,0 +1,167 @@
+{
+  "schema_version": "r6o-h2-a02-full-recorded-case-1",
+  "case_id": "A02-FULL",
+  "entries": [
+    {
+      "operation_id": "A02F:0001",
+      "operation": "DRAFT_PROMPT",
+      "prompt_sha256": "816b045edd8e711e6ecb15a1fe370d92a706906a2c283f1fae1627770f198d7b",
+      "response": "{\"kind\":\"PROMPT\",\"prompt_body\":\"COMPARE Kafka and RabbitMQ for event delivery.\",\"approach_handoff\":\"NONE\"}",
+      "response_sha256": "bfdc55679b732e558cd5a0946b857442e96c605e0ce6a943de2545ec66b98a5f",
+      "recording_metadata": {
+        "worker": "codex",
+        "model": "gpt-5.6-sol",
+        "mode": "live-demonstration",
+        "sandbox_mode": "read-only",
+        "approval_mode": "never",
+        "codex_cli_version": "codex-cli 0.147.0",
+        "json_mode": true,
+        "usage_source": "codex_cli_json",
+        "usage_exact": true,
+        "usage": {
+          "codex_cli_input_tokens": 19170,
+          "codex_cli_cached_input_tokens": 5888,
+          "codex_cli_output_tokens": 29
+        }
+      }
+    },
+    {
+      "operation_id": "A02F:0002",
+      "operation": "INTERPRET_PROMPT_REVIEW",
+      "prompt_sha256": "aa2b04200facd9ae96ee4ef830dd1a4cf949f4a3e098046c2510cf52f08b9af9",
+      "response": "{\"kind\":\"REVIEW_FACTS\",\"task_change_dimensions\":[\"AUDIENCE_OR_OUTPUT_CHARACTERISTIC\"],\"approach_change_dimensions\":[],\"progression_requested\":false}",
+      "response_sha256": "5637061e85a792fe8b408f0b96fbff83237e7f03ea182c3a5b1d06dcb8936506",
+      "recording_metadata": {
+        "worker": "codex",
+        "model": "gpt-5.6-sol",
+        "mode": "live-demonstration",
+        "sandbox_mode": "read-only",
+        "approval_mode": "never",
+        "codex_cli_version": "codex-cli 0.147.0",
+        "json_mode": true,
+        "usage_source": "codex_cli_json",
+        "usage_exact": true,
+        "usage": {
+          "codex_cli_input_tokens": 19415,
+          "codex_cli_cached_input_tokens": 0,
+          "codex_cli_output_tokens": 37
+        }
+      }
+    },
+    {
+      "operation_id": "A02F:0003",
+      "operation": "REVISE_PROMPT",
+      "prompt_sha256": "a80c5c5668fb9e89c4365dd5b931c7d22931b6af034216f3894ba855e7f79e03",
+      "response": "{\"prompt_body\":\"COMPARE Kafka and RabbitMQ for event delivery for an audience of data engineers.\"}",
+      "response_sha256": "1d703b5a12b9a2097df68bda19af4d607df6a3070d830f13e07d22903df8dba2",
+      "recording_metadata": {
+        "worker": "codex",
+        "model": "gpt-5.6-sol",
+        "mode": "live-demonstration",
+        "sandbox_mode": "read-only",
+        "approval_mode": "never",
+        "codex_cli_version": "codex-cli 0.147.0",
+        "json_mode": true,
+        "usage_source": "codex_cli_json",
+        "usage_exact": true,
+        "usage": {
+          "codex_cli_input_tokens": 18325,
+          "codex_cli_cached_input_tokens": 0,
+          "codex_cli_output_tokens": 24
+        }
+      }
+    },
+    {
+      "operation_id": "A02F:0004",
+      "operation": "INTERPRET_PROMPT_REVIEW",
+      "prompt_sha256": "eb1192a09ebe7d687f6d44e9d926227db5ea510c1131cfb7a99866f6bfced019",
+      "response": "{\"kind\":\"REVIEW_FACTS\",\"task_change_dimensions\":[],\"approach_change_dimensions\":[],\"progression_requested\":true}",
+      "response_sha256": "fdc3329f419a0167aaa599d34190c5154fc5ba4877e66c9592914312c7dc480a",
+      "recording_metadata": {
+        "worker": "codex",
+        "model": "gpt-5.6-sol",
+        "mode": "live-demonstration",
+        "sandbox_mode": "read-only",
+        "approval_mode": "never",
+        "codex_cli_version": "codex-cli 0.147.0",
+        "json_mode": true,
+        "usage_source": "codex_cli_json",
+        "usage_exact": true,
+        "usage": {
+          "codex_cli_input_tokens": 19413,
+          "codex_cli_cached_input_tokens": 11008,
+          "codex_cli_output_tokens": 29
+        }
+      }
+    },
+    {
+      "operation_id": "A02F:0005",
+      "operation": "DRAFT_PLAN",
+      "prompt_sha256": "edde065e2821e12f0d111f0d5fc37da02866445bc2adcea335dccff7d4fc636d",
+      "response": "{\"neutral_plan_body\":\"IDENTIFY comparison criteria relevant to event delivery and data engineers.\\nCOMPARE Kafka and RabbitMQ consistently across those criteria.\\nSUMMARIZE the tradeoffs and the conditions that affect suitability.\"}",
+      "response_sha256": "d0b102d2b9abfacf4af0f009b28edf12ab9d56dea2c66fa781539c37afe2cbfa",
+      "recording_metadata": {
+        "worker": "codex",
+        "model": "gpt-5.6-sol",
+        "mode": "live-demonstration",
+        "sandbox_mode": "read-only",
+        "approval_mode": "never",
+        "codex_cli_version": "codex-cli 0.147.0",
+        "json_mode": true,
+        "usage_source": "codex_cli_json",
+        "usage_exact": true,
+        "usage": {
+          "codex_cli_input_tokens": 18732,
+          "codex_cli_cached_input_tokens": 5888,
+          "codex_cli_output_tokens": 47
+        }
+      }
+    },
+    {
+      "operation_id": "A02F:0006",
+      "operation": "INTERPRET_PLAN_REVIEW",
+      "prompt_sha256": "b495a8ba4df841ebb92fa91f2b07a3750d13d30b154cc6fd4954cd2f5e55c81e",
+      "response": "{\"kind\":\"REVIEW_FACTS\",\"task_change_dimensions\":[],\"approach_change_dimensions\":[],\"progression_requested\":true}",
+      "response_sha256": "fdc3329f419a0167aaa599d34190c5154fc5ba4877e66c9592914312c7dc480a",
+      "recording_metadata": {
+        "worker": "codex",
+        "model": "gpt-5.6-sol",
+        "mode": "live-demonstration",
+        "sandbox_mode": "read-only",
+        "approval_mode": "never",
+        "codex_cli_version": "codex-cli 0.147.0",
+        "json_mode": true,
+        "usage_source": "codex_cli_json",
+        "usage_exact": true,
+        "usage": {
+          "codex_cli_input_tokens": 19338,
+          "codex_cli_cached_input_tokens": 11008,
+          "codex_cli_output_tokens": 29
+        }
+      }
+    },
+    {
+      "operation_id": "A02F:0007",
+      "operation": "EXECUTE",
+      "prompt_sha256": "e467946b4498aaa64871dcfbd476e065c2a73eea661dfa7f7fe712aab986425e",
+      "response": "{\"kind\":\"RESULT\",\"body\":\"Kafka and RabbitMQ solve different event-delivery problems.\\n\\nKafka is a distributed event-streaming platform built around durable, partitioned logs. Consumers independently track offsets, so events can be retained and replayed. It is generally the stronger choice for data pipelines, stream processing, event sourcing, CDC, and high-throughput integration where multiple consumer groups need the same history.\\n\\nRabbitMQ is a message broker built around exchanges and queues. It supports flexible routing, acknowledgments, retries, priorities, and per-message delivery patterns. It is generally the stronger choice for task queues, commands, request/reply workflows, and operational messaging where messages should be routed to specific consumers and removed after successful processing.\\n\\nKey tradeoffs:\\n\\n- Delivery model: Kafka consumers pull from partitioned logs; RabbitMQ pushes or dispatches messages from queues.\\n- Retention and replay: Kafka retains events according to time or size policies and supports straightforward replay. RabbitMQ normally removes acknowledged messages; replay requires additional design.\\n- Ordering: Kafka guarantees ordering within a partition. RabbitMQ queues are ordered in principle, but redelivery, priorities, and multiple consumers can alter observed processing order.\\n- Scaling: Kafka scales throughput through partitions and consumer groups, but partition count and key selection affect parallelism. RabbitMQ scales consumers easily for work distribution, while very large backlogs and extreme sustained throughput require more careful queue topology.\\n- Routing: RabbitMQ provides rich exchange-based routing, including direct, topic, fanout, and header rules. Kafka routing is primarily topic-and-partition based.\\n- Failure handling: RabbitMQ has native acknowledgment, dead-lettering, expiration, and retry-oriented features. Kafka typically implements retries and dead-letter topics through consumer or stream-processing logic.\\n- Processing guarantees: Both commonly provide at-least-once delivery. Kafka can support effectively-once or transactional processing within compatible Kafka workflows, but end-to-end exactly-once behavior still depends on external systems and application design.\\n- Operational fit: Kafka brings durable history and a broad data-streaming ecosystem but requires deliberate partition, retention, and consumer-lag management. RabbitMQ is often simpler for conventional messaging but requires careful handling of queue depth, acknowledgments, and poison messages.\\n\\nFor data engineers, choose Kafka when events are reusable data products, replay matters, throughput is high, or analytics and stream-processing systems need independent consumption. Choose RabbitMQ when the primary need is reliable work assignment, sophisticated routing, low-latency commands, or explicit per-message retry behavior. Many platforms use both: Kafka as the durable event backbone and RabbitMQ for operational task or command delivery.\"}",
+      "response_sha256": "5eab148f2fb81826f89bffb3e91c0da01e6f98cefaab990efadd35d381aef6dc",
+      "recording_metadata": {
+        "worker": "codex",
+        "model": "gpt-5.6-sol",
+        "mode": "live-demonstration",
+        "sandbox_mode": "read-only",
+        "approval_mode": "never",
+        "codex_cli_version": "codex-cli 0.147.0",
+        "json_mode": true,
+        "usage_source": "codex_cli_json",
+        "usage_exact": true,
+        "usage": {
+          "codex_cli_input_tokens": 17835,
+          "codex_cli_cached_input_tokens": 0,
+          "codex_cli_output_tokens": 587
+        }
+      }
+    }
+  ]
+}
