@@ -150,7 +150,7 @@
       ],
       "native_scrollbars_mapped": 0,
       "capture": "H2-C-STANDARD-SIDECAR.png",
-      "capture_sha256": "332de5c8409595542bddca92307878a86772aa573c2a9de7a2cdbf9958c8bb02"
+      "capture_sha256": "b827eca2f302bdb7b45ab8ff66df171d49f0c27b10e8fc5f2c08218382b7a4c8"
     },
     "EXPANDED": {
       "layout": {
@@ -182,13 +182,13 @@
         "artifact": {
           "x": 8,
           "y": 48,
-          "width": 396,
+          "width": 397,
           "height": 350
         },
         "review_options": {
           "x": 8,
           "y": 408,
-          "width": 396,
+          "width": 397,
           "height": 398
         },
         "parent_width_fraction": 0.2575,
@@ -204,13 +204,13 @@
       "observed_artifact": {
         "x": 8,
         "y": 48,
-        "width": 396,
+        "width": 397,
         "height": 350
       },
       "observed_review_options": {
         "x": 8,
         "y": 408,
-        "width": 396,
+        "width": 397,
         "height": 398
       },
       "visible_controls": [
@@ -255,7 +255,7 @@
       ],
       "native_scrollbars_mapped": 0,
       "capture": "H2-C-EXPANDED-SIDECAR.png",
-      "capture_sha256": "36751e8ca3f1b13dfb51a9a3feda198a44d33409fc8260b280b5aaa68239c530"
+      "capture_sha256": "5d00bcae24a20ef0340f92a5000c0a64f7c995ddb56afb2ff99cf933b23a8add"
     }
   },
   "geometry_evidence": "geometry.json",

@@ -56,8 +56,8 @@ def test_expanded_layout_uses_locked_size_and_reference_vertical_composition() -
 
     assert (layout.window.width, layout.window.height) == EXPANDED_SIZE
     assert owner.right - layout.window.right == 24
-    assert layout.artifact == Rect(8, 48, 396, 350)
-    assert layout.review_options == Rect(8, 408, 396, 398)
+    assert layout.artifact == Rect(8, 48, 397, 350)
+    assert layout.review_options == Rect(8, 408, 397, 398)
     assert layout.artifact.bottom < layout.review_options.y
     assert layout.composition == "ARTIFACT_TOP_REVIEW_OPTIONS_BELOW"
 

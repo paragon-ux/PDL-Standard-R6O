@@ -104,13 +104,13 @@
       "artifact": {
         "x": 8,
         "y": 48,
-        "width": 396,
+        "width": 397,
         "height": 350
       },
       "review_options": {
         "x": 8,
         "y": 408,
-        "width": 396,
+        "width": 397,
         "height": 398
       },
       "parent_width_fraction": 0.2575,
@@ -126,13 +126,13 @@
     "observed_artifact": {
       "x": 8,
       "y": 48,
-      "width": 396,
+      "width": 397,
       "height": 350
     },
     "observed_review_options": {
       "x": 8,
       "y": 408,
-      "width": 396,
+      "width": 397,
       "height": 398
     }
   }

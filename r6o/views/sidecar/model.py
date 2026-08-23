@@ -113,8 +113,8 @@ def calculate_sidecar_layout(owner: Rect, composer: Rect, mode: SidecarMode) -> 
         if owner.width < window_width + 2 * margin or owner.height < window_height + 2 * margin:
             raise ValueError("qualification owner is too small for the EXPANDED Sidecar")
         window = Rect(owner.right - margin - window_width, owner.y + margin, window_width, window_height)
-        artifact = Rect(8, 48, 396, 350)
-        review_options = Rect(8, 408, 396, 398)
+        artifact = Rect(8, 48, 397, 350)
+        review_options = Rect(8, 408, 397, 398)
         composition = "ARTIFACT_TOP_REVIEW_OPTIONS_BELOW"
         chrome_height = 47
 

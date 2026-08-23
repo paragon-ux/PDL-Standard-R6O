@@ -23,14 +23,14 @@
   "captures": {
     "STANDARD": {
       "file": "H2-C-STANDARD-SIDECAR.png",
-      "sha256": "332de5c8409595542bddca92307878a86772aa573c2a9de7a2cdbf9958c8bb02",
+      "sha256": "b827eca2f302bdb7b45ab8ff66df171d49f0c27b10e8fc5f2c08218382b7a4c8",
       "width": 675,
       "height": 300,
       "capture_scope": "SIDECAR_WINDOW_ONLY"
     },
     "EXPANDED": {
       "file": "H2-C-EXPANDED-SIDECAR.png",
-      "sha256": "36751e8ca3f1b13dfb51a9a3feda198a44d33409fc8260b280b5aaa68239c530",
+      "sha256": "5d00bcae24a20ef0340f92a5000c0a64f7c995ddb56afb2ff99cf933b23a8add",
       "width": 412,
       "height": 806,
       "capture_scope": "SIDECAR_WINDOW_ONLY"

@@ -121,6 +121,8 @@ class SidecarWindow:
     BORDER = "#242a30"
     BORDER_SOFT = "#242a30"
     TEXT = "#eef2f5"
+    ACTION_TEXT = "#dde1e4"
+    ARTIFACT_TEXT = "#cbd1d5"
     MUTED = "#a8afb6"
     ACCENT = "#a891e9"
     ACTIVE = "#4bd477"
@@ -269,6 +271,22 @@ class SidecarWindow:
         self._hit_regions.append(_HitRegion(role, rect, command))
         self._visible_controls.add(role)
 
+    def _draw_surface_bands(self, rect: Rect, colors: tuple[str, ...]) -> None:
+        """Approximate the reference's quiet raster falloff with bounded primitives."""
+
+        band_height = max(1, rect.height // len(colors))
+        for index, color in enumerate(colors):
+            top = rect.y + index * band_height
+            bottom = rect.bottom if index == len(colors) - 1 else top + band_height
+            self.canvas.create_rectangle(
+                rect.x,
+                top,
+                rect.right,
+                bottom,
+                fill=color,
+                outline="",
+            )
+
     def _draw_expand_icon(self, rect: Rect) -> None:
         center_x = rect.x + rect.width // 2
         center_y = rect.y + rect.height // 2
@@ -329,9 +347,11 @@ class SidecarWindow:
         self._rounded_rect(
             Rect(1, 1, window_rect.width - 2, window_rect.height - 2),
             radius=12,
-            fill=self.BG,
+            fill="#10151b" if self.mode is SidecarMode.EXPANDED else "#12181e",
             outline="#34414a",
         )
+        if self.mode is SidecarMode.STANDARD:
+            self.canvas.create_rectangle(410, 44, 418, 299, fill="#0d1218", outline="")
         self._draw_header()
         self._draw_artifact()
         self._draw_options()
@@ -351,13 +371,13 @@ class SidecarWindow:
         expanded = self.mode is SidecarMode.EXPANDED
         self.canvas.create_text(
             18,
-            22,
+            23,
             text="PDLt Review",
             anchor="w",
             fill=self.TEXT,
-            font=("Segoe UI Semibold", 12),
+            font=("Segoe UI", 13, "bold"),
         )
-        badge = Rect(134, 15, 97, 19)
+        badge = Rect(132, 16, 98, 19) if expanded else Rect(135, 15, 98, 18)
         self._rounded_rect(badge, radius=4, fill="#2a2145", outline="#40325f")
         self.canvas.create_text(
             badge.x + badge.width // 2,
@@ -403,17 +423,24 @@ class SidecarWindow:
             fill="#0f161c" if expanded else self.CARD,
             outline=self.BORDER_SOFT,
         )
-        title_y = 71 if expanded else 63
+        self._draw_surface_bands(
+            Rect(panel.x + 1, panel.y + 9, panel.width - 2, panel.height - 18),
+            ("#11171d", "#10161c", "#0f151b", "#0e141a")
+            if expanded
+            else ("#12181e", "#11171d", "#10161c", "#0f161c"),
+        )
+        title_x = panel.x + (10 if expanded else 12)
+        title_y = 69 if expanded else 62
         artifact = (self.projection or {}).get("artifact") or {}
         self.canvas.create_text(
-            panel.x + 11,
+            title_x,
             title_y,
             text=str(artifact.get("title") or "Authoritative Artifact"),
             anchor="w",
             fill=self.TEXT,
             font=("Segoe UI Semibold", 10),
         )
-        open_rect = Rect(284, 52, 112, 31) if expanded else Rect(287, 51, 112, 28)
+        open_rect = Rect(284, 57, 112, 28) if expanded else Rect(287, 51, 112, 28)
         self._rounded_rect(open_rect, radius=6, fill=self.SURFACE, outline=self.BORDER)
         self.canvas.create_text(
             open_rect.x + 10,
@@ -442,14 +469,14 @@ class SidecarWindow:
                 line_positions[index],
                 text=line,
                 anchor="w",
-                fill=self.ACCENT if line.strip() == "# Prompt" else "#dce2e7",
+                fill=self.ACCENT if line.strip() == "# Prompt" else self.ARTIFACT_TEXT,
                 font=body_font,
             )
 
         if expanded:
             self.canvas.create_text(
                 27,
-                359,
+                358,
                 text=self._source_label,
                 anchor="w",
                 fill=self.MUTED,
@@ -457,7 +484,7 @@ class SidecarWindow:
             )
             self.canvas.create_text(
                 27,
-                379,
+                377,
                 text=self._source_value,
                 anchor="w",
                 fill=self.MUTED,
@@ -503,17 +530,13 @@ class SidecarWindow:
             # This is the open Sidecar surface, not a bordered or scrollable
             # options card.  The reference's lower-field sample is slightly
             # darker than the outer edge.
-            self.canvas.create_rectangle(
-                2,
-                panel.y,
-                self.layout.window.width - 2,
-                self.layout.window.height - 2,
-                fill="#0f161c",
-                outline="",
+            self._draw_surface_bands(
+                Rect(2, panel.y, self.layout.window.width - 4, panel.height - 2),
+                ("#0d141a", "#0e151b", "#0f161c", "#10171d", "#11171d"),
             )
         self.canvas.create_text(
-            18 if expanded else 431,
-            425 if expanded else 63,
+            18 if expanded else 430,
+            423 if expanded else 62,
             text="Review Options",
             anchor="w",
             fill=self.TEXT,
@@ -558,16 +581,17 @@ class SidecarWindow:
                 width=1,
             )
             self.canvas.create_text(
-                action.x + (6 if expanded else 7),
-                action.y + action.height // 2,
+                action.x + (8 if expanded else 5),
+                action.y + action.height // 2 + (0 if expanded else 1),
                 text=button.label,
                 anchor="w",
-                fill=self.TEXT if button.enabled else "#68727b",
+                fill=self.ACTION_TEXT if button.enabled else "#68727b",
                 font=("Segoe UI", 9 if not expanded else 10),
             )
             self._add_hit(button.action_id, action, button.invoke)
-        tip_y = 644 if expanded else 252
-        tip_x = 18 if expanded else 431
+        tip_y = 645 if expanded else 255
+        tip_x = 19 if expanded else 432
+        tip_font_size = 10 if expanded else 9
         self._semantic_rects["tip"] = Rect(tip_x, tip_y - 8, 378 if expanded else 226, 40)
         self.canvas.create_text(
             tip_x,
@@ -575,7 +599,7 @@ class SidecarWindow:
             text="Tip:",
             anchor="w",
             fill=self.TEXT,
-            font=("Segoe UI Semibold", 9),
+            font=("Segoe UI Semibold", tip_font_size),
         )
         self.canvas.create_text(
             tip_x + 24,
@@ -583,7 +607,7 @@ class SidecarWindow:
             text="Type directly in the chat below",
             anchor="w",
             fill=self.MUTED,
-            font=("Segoe UI", 9),
+            font=("Segoe UI", tip_font_size),
         )
         self.canvas.create_text(
             tip_x,
@@ -591,7 +615,7 @@ class SidecarWindow:
             text="to provide other feedback.",
             anchor="w",
             fill=self.MUTED,
-            font=("Segoe UI", 9),
+            font=("Segoe UI", tip_font_size),
         )
 
     def _apply_layout(self) -> SidecarLayout:
