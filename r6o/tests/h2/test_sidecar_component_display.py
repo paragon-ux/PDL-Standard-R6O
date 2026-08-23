@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import json
+import shutil
 import tkinter as tk
 from pathlib import Path
 
@@ -116,6 +117,8 @@ def test_evidence_rejects_overall_h2_or_real_codex_authority() -> None:
         "Host composer PASS",
         "H2-PASS",
         "Sidecar host attachment PASS",
+        "Overall H2 authorized",
+        "H2 authority",
     ],
 )
 def test_evidence_rejects_semantically_equivalent_forbidden_claims(claim: str) -> None:
@@ -145,6 +148,42 @@ def test_evidence_recomputes_layout_instead_of_accepting_mirrored_fabrication() 
     mutation["modes"]["STANDARD"]["observed_window"]["x"] += 777
     with pytest.raises(AssertionError, match="authoritative calculation"):
         validate_evidence(mutation)
+
+
+def test_evidence_rejects_unbound_self_consistent_report() -> None:
+    report = json.loads((DEFAULT_EVIDENCE_DIR / "component-result.json").read_text(encoding="utf-8"))
+    with pytest.raises(AssertionError, match="bound local evidence directory"):
+        validate_evidence(report)
+
+
+def test_evidence_binds_self_consistent_geometry_to_runtime_screenshot(
+    tmp_path: Path,
+) -> None:
+    for source in DEFAULT_EVIDENCE_DIR.iterdir():
+        if source.is_file():
+            shutil.copy2(source, tmp_path / source.name)
+    result_path = tmp_path / "component-result.json"
+    geometry_path = tmp_path / "geometry.json"
+    report = json.loads(result_path.read_text(encoding="utf-8"))
+    geometry = json.loads(geometry_path.read_text(encoding="utf-8"))
+    owner = Rect(0, 0, 1366, 768)
+    composer = Rect(34, 614, 1298, 120)
+    geometry["qualification_parent"] = owner.to_dict()
+    geometry["composer_anchor"] = composer.to_dict()
+    for mode in SidecarMode:
+        layout = calculate_sidecar_layout(owner, composer, mode).to_dict()
+        observed = {
+            "layout": layout,
+            "observed_window": layout["window"],
+            "observed_artifact": layout["artifact"],
+            "observed_review_options": layout["review_options"],
+        }
+        report["modes"][mode.value].update(observed)
+        geometry[mode.value] = observed
+    result_path.write_text(json.dumps(report), encoding="utf-8")
+    geometry_path.write_text(json.dumps(geometry), encoding="utf-8")
+    with pytest.raises(AssertionError, match="screenshot dimensions"):
+        validate_evidence_file(result_path)
 
 
 def test_evidence_rejects_deleted_behavior_and_non_object_root() -> None:

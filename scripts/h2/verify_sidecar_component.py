@@ -75,19 +75,30 @@ def _normalized_words(value: str) -> tuple[str, ...]:
     return tuple(re.findall(r"[a-z0-9]+", value.casefold()))
 
 
+def _is_forbidden_authority_claim(words: set[str]) -> bool:
+    scope_words = {"h2", "codex", "e2e", "attachment", "zorder", "focus", "composer"}
+    has_scope = bool(words & scope_words) or {"z", "order"} <= words
+    claim_words = {
+        "pass",
+        "authority",
+        "authorized",
+        "approved",
+        "complete",
+        "conforms",
+        "qualified",
+        "tested",
+        "verified",
+    }
+    return has_scope and (bool(words & claim_words) or ({"overall", "h2"} <= words))
+
+
 def _reject_forbidden_authority(value: Any, path: str = "result") -> None:
     """Reject component evidence that claims later-gate or overall authority anywhere."""
 
     if isinstance(value, dict):
         for key, nested in value.items():
             key_words = set(_normalized_words(str(key)))
-            if nested is True and "pass" in key_words and (
-                "h2" in key_words
-                or "codex" in key_words
-                or "e2e" in key_words
-                or key_words & {"attachment", "zorder", "focus", "composer"}
-                or ({"z", "order"} <= key_words)
-            ):
+            if nested is True and _is_forbidden_authority_claim(key_words):
                 raise AssertionError(f"H2-C evidence claims forbidden authority at {path}.{key}")
             _reject_forbidden_authority(nested, f"{path}.{key}")
         return
@@ -98,16 +109,7 @@ def _reject_forbidden_authority(value: Any, path: str = "result") -> None:
     if not isinstance(value, str):
         return
     words = set(_normalized_words(value))
-    if "pass" not in words:
-        return
-    forbidden = (
-        "h2" in words
-        or "codex" in words
-        or "e2e" in words
-        or words & {"attachment", "zorder", "focus", "composer"}
-        or ({"z", "order"} <= words)
-    )
-    if forbidden:
+    if _is_forbidden_authority_claim(words):
         raise AssertionError(f"H2-C evidence claims forbidden authority at {path}: {value!r}")
 
 
@@ -131,6 +133,13 @@ def _rect_from_evidence(value: Any, label: str) -> Rect:
         return Rect(**rectangle)
     except ValueError as exc:
         raise AssertionError(f"{label} is invalid: {exc}") from exc
+
+
+def _png_dimensions(path: Path) -> tuple[int, int]:
+    header = path.read_bytes()[:24]
+    if len(header) != 24 or header[:16] != b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR":
+        raise AssertionError(f"{path.name} is not a canonical PNG")
+    return int.from_bytes(header[16:20], "big"), int.from_bytes(header[20:24], "big")
 
 
 def validate_evidence(value: Any, *, evidence_dir: Path | None = None) -> dict[str, Any]:
@@ -167,6 +176,7 @@ def validate_evidence(value: Any, *, evidence_dir: Path | None = None) -> dict[s
     modes = require_object(report.get("modes"), "modes")
     if set(modes) != {"STANDARD", "EXPANDED"}:
         raise AssertionError("H2-C must contain STANDARD and EXPANDED evidence")
+    mode_inputs: dict[str, tuple[Rect, Rect]] = {}
     for mode_name, mode_value in modes.items():
         mode = require_object(mode_value, f"modes.{mode_name}")
         if set(mode) != MODE_KEYS:
@@ -186,6 +196,7 @@ def validate_evidence(value: Any, *, evidence_dir: Path | None = None) -> dict[s
             raise AssertionError(f"modes.{mode_name} layout inputs are invalid: {exc}") from exc
         if layout != expected_layout:
             raise AssertionError(f"modes.{mode_name} layout differs from authoritative calculation")
+        mode_inputs[mode_name] = (owner_rect, composer_rect)
         observed = require_object(mode.get("observed_window"), f"modes.{mode_name}.observed_window")
         if layout.get("mode") != mode_name or layout.get("window") != observed:
             raise AssertionError(f"modes.{mode_name} observed geometry differs from calculation")
@@ -228,6 +239,25 @@ def validate_evidence(value: Any, *, evidence_dir: Path | None = None) -> dict[s
             screenshot_path = evidence_dir / screenshot
             if not screenshot_path.is_file() or sha256_file(screenshot_path) != screenshot_hash:
                 raise AssertionError(f"modes.{mode_name} screenshot evidence differs")
+            if _png_dimensions(screenshot_path) != (owner_rect.width, owner_rect.height):
+                raise AssertionError(
+                    f"modes.{mode_name} screenshot dimensions differ from its qualification parent"
+                )
+    if mode_inputs["STANDARD"] != mode_inputs["EXPANDED"]:
+        raise AssertionError("STANDARD and EXPANDED must use the same qualification parent and composer")
+    owner_rect, composer_rect = mode_inputs["STANDARD"]
+    if (owner_rect.x, owner_rect.y) != (0, 0):
+        raise AssertionError("synthetic fullscreen qualification parent must use origin 0,0")
+    composer_margin = max(24, round(owner_rect.width * 0.025))
+    composer_height = max(120, round(owner_rect.height * 0.14))
+    expected_composer = Rect(
+        owner_rect.x + composer_margin,
+        owner_rect.y + owner_rect.height - composer_margin - composer_height,
+        owner_rect.width - 2 * composer_margin,
+        composer_height,
+    )
+    if composer_rect != expected_composer:
+        raise AssertionError("composer anchor differs from the frozen synthetic-parent relationship")
     if modes["STANDARD"]["screenshot_sha256"] == modes["EXPANDED"]["screenshot_sha256"]:
         raise AssertionError("STANDARD and EXPANDED screenshots must be visibly distinct")
     geometry_name = report.get("geometry_evidence")
@@ -248,6 +278,12 @@ def validate_evidence(value: Any, *, evidence_dir: Path | None = None) -> dict[s
             "EXPANDED",
         } or geometry.get("schema_version") != "r6o-h2-c-geometry-1":
             raise AssertionError("geometry evidence fields differ")
+        if _rect_from_evidence(
+            geometry.get("qualification_parent"), "geometry qualification_parent"
+        ) != owner_rect:
+            raise AssertionError("geometry qualification_parent differs from mode inputs")
+        if _rect_from_evidence(geometry.get("composer_anchor"), "geometry composer_anchor") != composer_rect:
+            raise AssertionError("geometry composer_anchor differs from mode inputs")
         for mode_name in ("STANDARD", "EXPANDED"):
             expected_geometry = {
                 "layout": modes[mode_name]["layout"],
@@ -257,6 +293,8 @@ def validate_evidence(value: Any, *, evidence_dir: Path | None = None) -> dict[s
             }
             if geometry.get(mode_name) != expected_geometry:
                 raise AssertionError(f"geometry evidence differs for {mode_name}")
+    else:
+        raise AssertionError("H2-C evidence validation requires a bound local evidence directory")
     return report
 
 
