@@ -63,7 +63,7 @@ def _failure_code(exc: BaseException) -> str:
         return "RESET_CONTRACT_KEY_MISSING"
     if isinstance(exc, OSError):
         return "HOST_IO_ERROR"
-    return type(exc).__name__
+    return "HOST_RESET_RUNTIME_ERROR"
 
 
 def main() -> int:
@@ -95,6 +95,7 @@ def main() -> int:
         deadline = time.monotonic() + args.timeout_seconds
         after: dict[str, object] | None = None
         fresh: dict[str, object] | None = None
+        composer_focused_after_reset = False
         last_observer_error: str | None = None
         while time.monotonic() < deadline:
             try:
@@ -107,7 +108,10 @@ def main() -> int:
                 fresh = fresh_chat_observation(region, selectors["reset_contract"]["fresh_chat"])
                 if after["empty"] and fresh["fresh"]:
                     composer.set_focus()
-                    break
+                    composer_focused_after_reset = bool(composer.has_keyboard_focus())
+                    if composer_focused_after_reset:
+                        break
+                    last_observer_error = "COMPOSER_FOCUS_UNVERIFIED"
             except Exception as exc:
                 last_observer_error = _failure_code(exc)
             time.sleep(0.2)
@@ -136,10 +140,10 @@ def main() -> int:
             "composer_before": before,
             "composer_after": after,
             "fresh_chat": fresh,
-            "composer_focused_after_reset": bool(composer.has_keyboard_focus()),
+            "composer_focused_after_reset": composer_focused_after_reset,
         }
         _write_log(args.output, record)
-    except (KeyError, HostDiscoveryError, UiaContractError, OSError) as exc:
+    except Exception as exc:
         return _fail(args, _failure_code(exc))
     print("CODEX_TEST_SESSION_READY")
     return 0

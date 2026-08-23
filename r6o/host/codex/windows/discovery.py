@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import math
 import platform
 import re
 import sys
@@ -256,11 +257,11 @@ def validate_environment_record(record: dict[str, Any]) -> None:
         for key in ("edition", "version", "architecture"):
             if not isinstance(windows[key], str) or not windows[key].strip():
                 raise ValueError
-        if not isinstance(windows["build"], int) or windows["build"] <= 0:
+        if isinstance(windows["build"], bool) or not isinstance(windows["build"], int) or windows["build"] <= 0:
             raise ValueError
-        if not isinstance(codex["hwnd"], int) or codex["hwnd"] <= 0:
+        if isinstance(codex["hwnd"], bool) or not isinstance(codex["hwnd"], int) or codex["hwnd"] <= 0:
             raise ValueError
-        if not isinstance(codex["pid"], int) or codex["pid"] <= 0:
+        if isinstance(codex["pid"], bool) or not isinstance(codex["pid"], int) or codex["pid"] <= 0:
             raise ValueError
         if not PureWindowsPath(codex["executable"]).is_absolute():
             raise ValueError
@@ -281,7 +282,7 @@ def validate_environment_record(record: dict[str, Any]) -> None:
         ):
             if set(rectangle) != {"left", "top", "right", "bottom", "width", "height"}:
                 raise ValueError
-            if any(not isinstance(rectangle[key], int) for key in rectangle):
+            if any(isinstance(rectangle[key], bool) or not isinstance(rectangle[key], int) for key in rectangle):
                 raise ValueError
             if rectangle["width"] <= 0 or rectangle["height"] <= 0:
                 raise ValueError
@@ -289,13 +290,18 @@ def validate_environment_record(record: dict[str, Any]) -> None:
                 raise ValueError
             if rectangle["bottom"] - rectangle["top"] != rectangle["height"]:
                 raise ValueError
-        if not isinstance(monitor["handle"], int) or monitor["handle"] <= 0:
+        if isinstance(monitor["handle"], bool) or not isinstance(monitor["handle"], int) or monitor["handle"] <= 0:
             raise ValueError
         if not isinstance(monitor["id"], str) or not monitor["id"].strip():
             raise ValueError
-        if not isinstance(codex["dpi"], int) or codex["dpi"] <= 0:
+        if isinstance(codex["dpi"], bool) or not isinstance(codex["dpi"], int) or codex["dpi"] <= 0:
             raise ValueError
-        if not isinstance(codex["scale"], (int, float)) or codex["scale"] <= 0:
+        if (
+            isinstance(codex["scale"], bool)
+            or not isinstance(codex["scale"], (int, float))
+            or not math.isfinite(float(codex["scale"]))
+            or codex["scale"] <= 0
+        ):
             raise ValueError
         if abs(float(codex["scale"]) - codex["dpi"] / 96.0) > 1e-9:
             raise ValueError

@@ -396,8 +396,15 @@ def test_evidence_identity_hashes_and_required_environment_fields_are_frozen() -
     [
         (("windows", "edition"), ""),
         (("windows", "build"), 0),
+        (("windows", "build"), True),
+        (("codex", "hwnd"), True),
         (("codex", "dpi"), 0),
+        (("codex", "dpi"), True),
+        (("codex", "scale"), float("nan")),
+        (("codex", "scale"), True),
         (("codex", "window_rectangle", "width"), 0),
+        (("codex", "window_rectangle", "width"), True),
+        (("codex", "monitor", "handle"), True),
         (("codex", "monitor", "id"), ""),
     ],
 )
@@ -466,6 +473,64 @@ def test_reset_failure_codes_preserve_contract_cause() -> None:
     )
     assert reset_module._failure_code(KeyError("controls")) == "RESET_CONTRACT_KEY_MISSING"
     assert reset_module._failure_code(OSError("private path")) == "HOST_IO_ERROR"
+    assert reset_module._failure_code(RuntimeError("private runtime detail")) == "HOST_RESET_RUNTIME_ERROR"
+
+
+def test_reset_runtime_failure_overwrites_stale_success_evidence(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    output = tmp_path / "reset-session.log"
+    output.write_text('{"status":"CODEX_TEST_SESSION_READY"}\n', encoding="utf-8")
+    monkeypatch.setattr(
+        reset_module,
+        "parse_args",
+        lambda: SimpleNamespace(selectors=SELECTORS_PATH, output=output, timeout_seconds=0.01),
+    )
+    monkeypatch.setattr(reset_module, "load_selectors", lambda path: (_ for _ in ()).throw(RuntimeError()))
+    assert reset_module.main() == 1
+    record = json.loads(output.read_text(encoding="utf-8"))
+    assert record["status"] == "FAIL"
+    assert record["code"] == "HOST_RESET_RUNTIME_ERROR"
+
+
+def test_reset_requires_verified_composer_focus(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    output = tmp_path / "reset-session.log"
+    selected = candidate(hwnd=100)
+    selectors = {
+        "host_compatibility": {
+            "product_name": selected.product_name,
+            "product_version": selected.product_version,
+            "file_version": selected.file_version,
+            "package_version": selected.package_version,
+        },
+        "controls": {"composer": {}, "new_chat": {}, "primary_content_region": {}},
+        "reset_contract": {"composer_empty": {}, "fresh_chat": {}},
+    }
+    composer = SimpleNamespace(set_focus=lambda: None, has_keyboard_focus=lambda: False)
+    new_chat = SimpleNamespace(invoke=lambda: None)
+    monkeypatch.setattr(
+        reset_module,
+        "parse_args",
+        lambda: SimpleNamespace(selectors=SELECTORS_PATH, output=output, timeout_seconds=0.001),
+    )
+    monkeypatch.setattr(reset_module, "load_selectors", lambda path: selectors)
+    monkeypatch.setattr(reset_module, "discover_codex_host", lambda: selected)
+    monkeypatch.setattr(reset_module, "connect_to_host", lambda hwnd: (object(), object()))
+    monkeypatch.setattr(reset_module, "activate_host", lambda root: None)
+    monkeypatch.setattr(
+        reset_module,
+        "resolve_control",
+        lambda root, selector, *, label: composer if label == "composer" else new_chat if label == "new_chat" else object(),
+    )
+    monkeypatch.setattr(reset_module, "composer_empty_observation", lambda wrapper, contract: {"empty": True})
+    monkeypatch.setattr(reset_module, "fresh_chat_observation", lambda wrapper, contract: {"fresh": True})
+    assert reset_module.main() == 1
+    record = json.loads(output.read_text(encoding="utf-8"))
+    assert record["status"] == "FAIL"
+    assert record["code"] == "FRESH_CHAT_NOT_PROVED"
+    assert record["details"]["last_observer_error"] == "COMPOSER_FOCUS_UNVERIFIED"
 
 
 def test_successful_reset_evidence_is_tracked_and_bound_to_current_host() -> None:
@@ -485,6 +550,7 @@ def test_successful_reset_evidence_is_tracked_and_bound_to_current_host() -> Non
     assert record["composer_before"]["empty"] is True
     assert record["composer_after"]["empty"] is True
     assert record["fresh_chat"]["fresh"] is True
+    assert record["composer_focused_after_reset"] is True
     for key in ("hwnd", "pid", "product_name", "product_version", "file_version", "package_version"):
         assert record["host"][key] == host[key]
 
