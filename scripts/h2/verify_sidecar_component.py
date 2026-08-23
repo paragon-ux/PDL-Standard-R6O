@@ -241,6 +241,8 @@ def _reject_overall_authority(value: Any, path: str = "result") -> None:
     }
     later_scope_words = {
         "overall",
+        "scope",
+        "authority",
         "h2",
         "codex",
         "e2e",

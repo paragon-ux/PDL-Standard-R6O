@@ -134,7 +134,19 @@ def test_component_evidence_rejects_later_gate_authority(key: str) -> None:
 
 @pytest.mark.parametrize(
     "claim",
-    ["H2 PASS", "CODEX TESTED", "H2-C AUTHORIZED", "E2E CONFORMS"],
+    [
+        "H2 PASS",
+        "CODEX TESTED",
+        "H2-C AUTHORIZED",
+        "E2E CONFORMS",
+        "SCOPE PASS",
+        "AUTHORITY APPROVED",
+        "SCOPE AUTHORIZED",
+        "AUTHORITY TESTED",
+        "SCOPE COMPLETE",
+        "SCOPE CONFORMS",
+        "SCOPE QUALIFIED",
+    ],
 )
 def test_component_evidence_rejects_textual_later_gate_authority(claim: str) -> None:
     report = json.loads((DEFAULT_EVIDENCE_DIR / "component-result.json").read_text(encoding="utf-8"))
