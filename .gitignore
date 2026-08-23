@@ -4,3 +4,4 @@ __pycache__/
 runs/
 mlflow.db
 *.log
+!r6o_evidence/H2-D1/reset-session.log

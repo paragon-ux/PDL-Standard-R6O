@@ -1,0 +1,226 @@
+{
+  "schema_version": "r6o-h2-d1-selectors-1",
+  "captured_from": {
+    "host_environment": {
+      "path": "r6o_evidence/H2-D1/host-environment.json",
+      "sha256": "7cf1b2219f38b2d7e1f610dd25467969c688b681b3ac0632041eff3978ce9db5"
+    },
+    "uia_tree": {
+      "path": "r6o_evidence/H2-D1/codex-uia.json",
+      "sha256": "2687e9c4eb0ad2291dd79bd0abafb2cbd45e029077204e890b3893d8b0e71f22"
+    }
+  },
+  "host_compatibility": {
+    "product_name": "Codex",
+    "product_version": "151.0.7922.170",
+    "file_version": "151.0.7922.170",
+    "package_version": "26.818.3698.0"
+  },
+  "controls": {
+    "new_chat": {
+      "control_type": "Button",
+      "automation_id": {
+        "match": "ABSENT"
+      },
+      "name": {
+        "match": "EXACT",
+        "value": "New chat"
+      },
+      "class_name": {
+        "match": "EXACT",
+        "value": "focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring sidebar-item flex min-w-0 flex-1 cursor-interaction items-center text-start focus-visible:outline-offset-0 disabled:cursor-not-allowed"
+      },
+      "visible": true,
+      "enabled": true,
+      "ancestor_chain": [
+        {
+          "relation": "DIRECT_PARENT",
+          "selector": {
+            "control_type": "Group",
+            "automation_id": {
+              "match": "ABSENT"
+            },
+            "name": {
+              "match": "EXACT",
+              "value": "Scheduled task folders"
+            },
+            "class_name": {
+              "match": "EXACT",
+              "value": "_Navigation_1ej6d_2"
+            }
+          }
+        },
+        {
+          "relation": "ANCESTOR",
+          "selector": {
+            "control_type": "Group",
+            "automation_id": {
+              "match": "EXACT",
+              "value": "root"
+            },
+            "name": {
+              "match": "ABSENT"
+            }
+          }
+        },
+        {
+          "relation": "ANCESTOR",
+          "selector": {
+            "control_type": "Document",
+            "automation_id": {
+              "match": "EXACT",
+              "value": "RootWebArea"
+            },
+            "name": {
+              "match": "EXACT",
+              "value": "Codex"
+            }
+          }
+        }
+      ],
+      "fallback": "PROHIBITED"
+    },
+    "composer": {
+      "control_type": "Edit",
+      "automation_id": {
+        "match": "ABSENT"
+      },
+      "name": {
+        "match": "IGNORED_DYNAMIC"
+      },
+      "class_name": {
+        "match": "TOKEN",
+        "value": "ProseMirror"
+      },
+      "visible": true,
+      "enabled": true,
+      "ancestor_chain": [
+        {
+          "relation": "ANCESTOR",
+          "selector": {
+            "control_type": "Group",
+            "automation_id": {
+              "match": "ABSENT"
+            },
+            "name": {
+              "match": "ABSENT"
+            },
+            "class_name": {
+              "match": "EXACT",
+              "value": "_MainContentSurface_1k2yc_2 border-l border-default"
+            }
+          }
+        },
+        {
+          "relation": "ANCESTOR",
+          "selector": {
+            "control_type": "Group",
+            "automation_id": {
+              "match": "EXACT",
+              "value": "root"
+            },
+            "name": {
+              "match": "ABSENT"
+            }
+          }
+        },
+        {
+          "relation": "ANCESTOR",
+          "selector": {
+            "control_type": "Document",
+            "automation_id": {
+              "match": "EXACT",
+              "value": "RootWebArea"
+            },
+            "name": {
+              "match": "EXACT",
+              "value": "Codex"
+            }
+          }
+        }
+      ],
+      "fallback": "PROHIBITED"
+    },
+    "host_submit": {
+      "usage": "PROHIBITED_BY_H2_A1_OPTION_A",
+      "selector": null,
+      "fallback": "PROHIBITED"
+    },
+    "primary_content_region": {
+      "control_type": "Group",
+      "automation_id": {
+        "match": "ABSENT"
+      },
+      "name": {
+        "match": "ABSENT"
+      },
+      "class_name": {
+        "match": "EXACT",
+        "value": "_MainContentSurface_1k2yc_2 border-l border-default"
+      },
+      "visible": true,
+      "enabled": true,
+      "ancestor_chain": [
+        {
+          "relation": "DIRECT_PARENT",
+          "selector": {
+            "control_type": "Group",
+            "automation_id": {
+              "match": "EXACT",
+              "value": "root"
+            },
+            "name": {
+              "match": "ABSENT"
+            }
+          }
+        },
+        {
+          "relation": "ANCESTOR",
+          "selector": {
+            "control_type": "Document",
+            "automation_id": {
+              "match": "EXACT",
+              "value": "RootWebArea"
+            },
+            "name": {
+              "match": "EXACT",
+              "value": "Codex"
+            }
+          }
+        }
+      ],
+      "fallback": "PROHIBITED"
+    }
+  },
+  "reset_contract": {
+    "new_chat_action": "UIA_INVOKE_PATTERN",
+    "composer_empty": {
+      "accessibility_name": "Do anything",
+      "uia_values": [
+        "\nDo anything"
+      ],
+      "actual_text_rule": "ZERO_VISIBLE_TEXT_DESCENDANTS"
+    },
+    "fresh_chat": {
+      "surface_selector": {
+        "control_type": "Group",
+        "automation_id": {
+          "match": "ABSENT"
+        },
+        "name": {
+          "match": "ABSENT"
+        },
+        "class_name": {
+          "match": "TOKEN",
+          "value": "[container-name:home-main-content]"
+        },
+        "visible": true,
+        "enabled": true,
+        "ancestor_chain": [],
+        "fallback": "PROHIBITED"
+      },
+      "visible_turn_group_class": "group flex min-w-0 flex-col",
+      "fresh_rule": "EXACTLY_ONE_VISIBLE_HOME_SURFACE_AND_ZERO_VISIBLE_TURN_GROUPS"
+    }
+  }
+}
