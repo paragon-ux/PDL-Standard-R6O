@@ -8,7 +8,13 @@ import pytest
 
 import r6o.views.tui.app as tui_module
 from r6o.views.tui.app import TerminalInput, TerminalReviewApp, TerminalViewClosed
-from scripts.h2.verify_tui_g06 import PLAN_SHA256, PROMPT_SHA256, RESULT_SHA256, run_qualification
+from scripts.h2.verify_tui_g06 import (
+    PLAN_SHA256,
+    PROMPT_SHA256,
+    RESULT_SHA256,
+    normalized_text_sha256,
+    run_qualification,
+)
 
 
 def test_public_tui_g06_process_reaches_closed_success(
@@ -23,7 +29,7 @@ def test_public_tui_g06_process_reaches_closed_success(
     assert report["terminal_behavior"] == "RESTORE_AND_RETURN_WITHOUT_TERMINAL_REVIEW_SCREEN"
     assert report["presentation_reference"] == {
         "path": "docs/h2/TUI-REFERENCE-v4-2026-08-22.md",
-        "sha256": "af74ce9fa9b09b8f7e4e555e9213c9e6a0574897718749c872f015da51c331b5",
+        "normalized_text_sha256": "af74ce9fa9b09b8f7e4e555e9213c9e6a0574897718749c872f015da51c331b5",
     }
     assert report["observed_operation_ids"] == [f"G06:000{index}" for index in range(1, 6)]
     assert report["final_stage"] == "CLOSED_SUCCESS"
@@ -143,6 +149,14 @@ def test_stream_input_preserves_non_ascii_review_text() -> None:
     event = TerminalInput(input_stream).read()
     assert event.name == "TEXT"
     assert event.text == "é"
+
+
+def test_reference_identity_is_stable_across_git_line_endings(tmp_path: Path) -> None:
+    lf = tmp_path / "lf.md"
+    crlf = tmp_path / "crlf.md"
+    lf.write_bytes(b"one\ntwo\n")
+    crlf.write_bytes(b"one\r\ntwo\r\n")
+    assert normalized_text_sha256(lf) == normalized_text_sha256(crlf)
 
 
 def test_reference_v4_normal_frame_has_single_hierarchy_and_fixed_footer() -> None:

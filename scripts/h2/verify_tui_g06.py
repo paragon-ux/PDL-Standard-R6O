@@ -83,6 +83,12 @@ def is_within(path: Path, root: Path) -> bool:
     return True
 
 
+def normalized_text_sha256(path: Path) -> str:
+    """Hash UTF-8 text after universal-newline normalization."""
+
+    return hashlib.sha256(path.read_text(encoding="utf-8").encode("utf-8")).hexdigest()
+
+
 class ProcessKeyboardDriver:
     """Drive the public process through its stdin keyboard boundary."""
 
@@ -248,7 +254,7 @@ def run_qualification(
     evidence_dir: Path = DEFAULT_EVIDENCE_DIR,
 ) -> dict[str, Any]:
     baseline = resolve_baseline(baseline_repo)
-    if not REFERENCE_PATH.is_file() or hashlib.sha256(REFERENCE_PATH.read_bytes()).hexdigest() != REFERENCE_SHA256:
+    if not REFERENCE_PATH.is_file() or normalized_text_sha256(REFERENCE_PATH) != REFERENCE_SHA256:
         raise AssertionError("H2-B1 TUI reference v4 identity differs")
     oracle_before = physical_inventory(baseline)
     evidence = evidence_dir.resolve()
@@ -320,7 +326,7 @@ def run_qualification(
         "terminal_behavior": "RESTORE_AND_RETURN_WITHOUT_TERMINAL_REVIEW_SCREEN",
         "presentation_reference": {
             "path": "docs/h2/TUI-REFERENCE-v4-2026-08-22.md",
-            "sha256": REFERENCE_SHA256,
+            "normalized_text_sha256": REFERENCE_SHA256,
         },
         "observed_operation_ids": [f"G06:000{index}" for index in range(1, 6)],
         "final_stage": "CLOSED_SUCCESS",
