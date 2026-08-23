@@ -74,7 +74,10 @@ class TerminalInput:
             return {"A": KeyEvent("UP"), "B": KeyEvent("DOWN"), "Z": KeyEvent("PREVIOUS")}[third]
         sequence = third
         while len(sequence) < 4 and not sequence.endswith("~"):
-            sequence += self._read_character()
+            continuation = self._read_character()
+            if not continuation:
+                break
+            sequence += continuation
         return {
             "5~": KeyEvent("PAGE_UP"),
             "6~": KeyEvent("PAGE_DOWN"),
@@ -212,7 +215,9 @@ class TerminalReviewApp:
     def _fit(value: str, width: int) -> str:
         if len(value) <= width:
             return value + " " * (width - len(value))
-        return value[: max(0, width - 1)] + ("…" if width else "")
+        if width <= 3:
+            return value[:width]
+        return value[: width - 3] + "..."
 
     @staticmethod
     def _wrap(value: str, width: int, *, subsequent_indent: str = "") -> list[str]:
@@ -230,14 +235,24 @@ class TerminalReviewApp:
 
     def _header(self, title: str, status: str, width: int, frame: FrameCharacters) -> str:
         inner = width - 2
-        prefix = f"{frame.horizontal} PDLt · {title} "
+        separator = "·" if frame is UNICODE_FRAME else "-"
+        prefix = f"{frame.horizontal} PDLt {separator} {title} "
         suffix = f" {status} {frame.horizontal}"
         if len(prefix) + len(suffix) > inner:
-            return frame.top_left + self._fit(f" PDLt · {title} · {status} ", inner) + frame.top_right
+            return frame.top_left + self._fit(f" PDLt {separator} {title} {separator} {status} ", inner) + frame.top_right
         return frame.top_left + prefix + frame.horizontal * (inner - len(prefix) - len(suffix)) + suffix + frame.top_right
 
     @staticmethod
     def _framed(content: str, width: int, frame: FrameCharacters) -> str:
+        if frame is ASCII_FRAME:
+            content = (
+                content.replace("·", "-")
+                .replace("…", "...")
+                .replace("–", "-")
+                .replace("↑↓", "Up/Down")
+                .encode("ascii", errors="replace")
+                .decode("ascii")
+            )
         return f"{frame.vertical} {TerminalReviewApp._fit(content, width - 4)} {frame.vertical}"
 
     def _render(self, projection: dict[str, Any]) -> None:
@@ -255,7 +270,7 @@ class TerminalReviewApp:
         visible_artifact = artifact_lines[self.artifact_offset : self.artifact_offset + self.artifact_page_size]
         artifact_label = artifact["title"] if artifact else "Authoritative Artifact"
         if len(artifact_lines) > self.artifact_page_size:
-            indicator = f"{self.artifact_offset + 1}–{self.artifact_offset + len(visible_artifact)} / {len(artifact_lines)}"
+            indicator = f"{self.artifact_offset + 1}-{self.artifact_offset + len(visible_artifact)} / {len(artifact_lines)}"
             artifact_label = self._fit(artifact_label, max(1, inner - len(indicator) - 1)).rstrip() + " " + indicator
 
         lines = [self._header(self._title(stage), "ACTIVE", width, frame)]

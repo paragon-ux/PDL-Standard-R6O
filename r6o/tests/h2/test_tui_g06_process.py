@@ -8,6 +8,7 @@ import pytest
 
 import r6o.views.tui.app as tui_module
 from r6o.views.tui.app import TerminalInput, TerminalReviewApp, TerminalViewClosed
+import scripts.h2.verify_tui_g06 as verifier_module
 from scripts.h2.verify_tui_g06 import (
     PLAN_SHA256,
     PROMPT_SHA256,
@@ -136,6 +137,8 @@ def projection(stage: str = "PROMPT_REVIEW") -> dict[str, object]:
         ("\x1b[5~", "PAGE_UP"),
         ("\x1b[6~", "PAGE_DOWN"),
         ("\x1b[15~", "REFRESH"),
+        ("\x1b[", "UNKNOWN"),
+        ("\x1b[1", "UNKNOWN"),
         ("\x11", "CLOSE"),
         ("\x7f", "BACKSPACE"),
     ],
@@ -179,6 +182,10 @@ def test_narrow_ascii_fallback_keeps_every_projected_action_reachable(monkeypatc
     class AsciiOutput(io.StringIO):
         encoding = "ascii"
 
+        def write(self, value: str) -> int:
+            value.encode("ascii", errors="strict")
+            return super().write(value)
+
     output = AsciiOutput()
     app = TerminalReviewApp(object(), "I-test", stdin=io.StringIO(), stdout=output)
     monkeypatch.setattr(app, "_terminal_size", lambda: (40, 20))
@@ -198,6 +205,12 @@ def test_narrow_ascii_fallback_keeps_every_projected_action_reachable(monkeypatc
     assert "   4  Something else with a" in wrapped
     assert "      deliberately long projection-" in wrapped
     assert "      driven action label" in wrapped
+
+
+def test_dirty_frozen_oracle_is_rejected_before_qualification(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(verifier_module, "git_status", lambda _repo: "?? injected.py")
+    with pytest.raises(RuntimeError, match="frozen oracle working tree is not clean"):
+        verifier_module.require_clean_oracle(Path("oracle"))
 
 
 def test_terminal_projection_returns_without_rendering_completion_screen() -> None:

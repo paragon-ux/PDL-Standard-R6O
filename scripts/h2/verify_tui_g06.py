@@ -30,7 +30,7 @@ RESULT_SHA256 = "47106d2d4689ef07820e0537511d0cbabdb50701ca0bef83d52dc1b617ea279
 EXPECTED_TRANSITIONS = (
     ("G06-T0-TUI", "G06-S1", "PROMPT_REVIEW", None, ("G06:0001",), "prompt", PROMPT_SHA256, "TUI_ACTION_CONFIRM_PROMPT"),
     ("G06-T1-TUI", "G06-S2", "PLAN_REVIEW", "confirm_prompt", ("G06:0002", "G06:0003"), "plan", PLAN_SHA256, "TUI_ACTION_CONFIRM_PLAN"),
-    ("G06-T2-TUI", "G06-S3", "CLOSED_SUCCESS", "confirm_plan", ("G06:0004", "G06:0005"), None, None, "INVOKING_SHELL"),
+    ("G06-T2-TUI", "G06-S3", "CLOSED_SUCCESS", "confirm_plan", ("G06:0004", "G06:0005"), None, None, "CALLING_SHELL"),
 )
 
 
@@ -48,6 +48,26 @@ def git_value(repo: Path, expression: str) -> str:
     return process.stdout.strip()
 
 
+def git_status(repo: Path) -> str:
+    process = subprocess.run(
+        ["git", "status", "--porcelain=v1", "--untracked-files=all"],
+        cwd=repo,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    if process.returncode != 0:
+        raise RuntimeError((process.stdout + process.stderr).strip())
+    return process.stdout.strip()
+
+
+def require_clean_oracle(repo: Path) -> None:
+    status = git_status(repo)
+    if status:
+        raise RuntimeError(f"frozen oracle working tree is not clean:\n{status}")
+
+
 def resolve_baseline(value: Path | None) -> Path:
     candidate = value or os.environ.get("PDL_R6S_BASELINE_REPO") or (ROOT.parent / "PDL-Standard-REPL-Harness")
     baseline = Path(candidate).resolve()
@@ -57,6 +77,7 @@ def resolve_baseline(value: Path | None) -> Path:
     tree = git_value(baseline, "HEAD^{tree}")
     if (commit, tree) != (FROZEN_ORACLE_COMMIT, FROZEN_ORACLE_TREE):
         raise RuntimeError(f"frozen oracle mismatch: {commit}/{tree}")
+    require_clean_oracle(baseline)
     return baseline
 
 

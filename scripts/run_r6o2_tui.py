@@ -119,7 +119,7 @@ class StateTransitionRecorder:
         transition = {
             ("START", None): ("G06-T0-TUI", "G06-S1", "TUI_ACTION_CONFIRM_PROMPT"),
             ("ACTION", "confirm_prompt"): ("G06-T1-TUI", "G06-S2", "TUI_ACTION_CONFIRM_PLAN"),
-            ("ACTION", "confirm_plan"): ("G06-T2-TUI", "G06-S3", "INVOKING_SHELL"),
+            ("ACTION", "confirm_plan"): ("G06-T2-TUI", "G06-S3", "CALLING_SHELL"),
         }.get((event, action_id))
         if transition is None:
             raise RuntimeError(f"unexpected G06 TUI transition: {event}/{action_id}")
