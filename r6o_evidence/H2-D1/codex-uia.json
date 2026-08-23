@@ -1,0 +1,5516 @@
+{
+  "captured_at_utc": "2026-08-23T01:34:16.858946Z",
+  "host_identity": {
+    "file_version": "151.0.7922.170",
+    "hwnd": 15009088,
+    "package_version": "26.818.3698.0",
+    "pid": 18644,
+    "product_name": "Codex",
+    "product_version": "151.0.7922.170"
+  },
+  "host_record_sha256": "7cf1b2219f38b2d7e1f610dd25467969c688b681b3ac0632041eff3978ce9db5",
+  "node_count": 289,
+  "nodes": [
+    {
+      "automation_id": "",
+      "class_name": "Chrome_WidgetWin_1",
+      "control_type": "Window",
+      "enabled": true,
+      "level": 0,
+      "name": null,
+      "name_length": 7,
+      "name_redacted": true,
+      "node_id": "N0000",
+      "parent_id": null,
+      "rectangle": {
+        "bottom": 908,
+        "left": -8,
+        "right": 1608,
+        "top": -8
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "Intermediate D3D Window",
+      "control_type": "Pane",
+      "enabled": false,
+      "level": 1,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0001",
+      "parent_id": "N0000",
+      "rectangle": {
+        "bottom": 899,
+        "left": -1,
+        "right": 1601,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "RootView",
+      "control_type": "Pane",
+      "enabled": true,
+      "level": 1,
+      "name": null,
+      "name_length": 7,
+      "name_redacted": true,
+      "node_id": "N0002",
+      "parent_id": "N0000",
+      "rectangle": {
+        "bottom": 899,
+        "left": -1,
+        "right": 1601,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "NonClientView",
+      "control_type": "Pane",
+      "enabled": true,
+      "level": 2,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0003",
+      "parent_id": "N0002",
+      "rectangle": {
+        "bottom": 899,
+        "left": -1,
+        "right": 1601,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "ChromeNodeFrameView",
+      "control_type": "Pane",
+      "enabled": true,
+      "level": 3,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0004",
+      "parent_id": "N0003",
+      "rectangle": {
+        "bottom": 899,
+        "left": -1,
+        "right": 1601,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "ChromeNodeClientView",
+      "control_type": "Pane",
+      "enabled": true,
+      "level": 4,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0005",
+      "parent_id": "N0004",
+      "rectangle": {
+        "bottom": 899,
+        "left": -1,
+        "right": 1601,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "View",
+      "control_type": "Pane",
+      "enabled": true,
+      "level": 5,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0006",
+      "parent_id": "N0005",
+      "rectangle": {
+        "bottom": 899,
+        "left": -1,
+        "right": 1601,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "Chrome_WidgetWin_1",
+      "control_type": "Pane",
+      "enabled": true,
+      "level": 6,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0007",
+      "parent_id": "N0006",
+      "rectangle": {
+        "bottom": 899,
+        "left": -1,
+        "right": 1601,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "RootWebArea",
+      "class_name": "",
+      "control_type": "Document",
+      "enabled": true,
+      "level": 7,
+      "name": "Codex",
+      "name_length": 5,
+      "name_redacted": false,
+      "node_id": "N0008",
+      "parent_id": "N0007",
+      "rectangle": {
+        "bottom": 899,
+        "left": -1,
+        "right": 1601,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 8,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0009",
+      "parent_id": "N0008",
+      "rectangle": {
+        "bottom": 899,
+        "left": -1,
+        "right": 1601,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "root",
+      "class_name": "",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 9,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0010",
+      "parent_id": "N0009",
+      "rectangle": {
+        "bottom": 899,
+        "left": -1,
+        "right": 1601,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "sr-only",
+      "control_type": "StatusBar",
+      "enabled": true,
+      "level": 10,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0011",
+      "parent_id": "N0010",
+      "rectangle": {
+        "bottom": -1,
+        "left": -2,
+        "right": -1,
+        "top": -2
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-token-button-composer px-2 py-0 text-base leading-[18px] focus-visible:ring-inset aspect-square shrink-0 items-center justify-center !px-0",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 10,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0012",
+      "parent_id": "N0010",
+      "rectangle": {
+        "bottom": 31,
+        "left": 5,
+        "right": 33,
+        "top": 3
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 11,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0013",
+      "parent_id": "N0012",
+      "rectangle": {
+        "bottom": 25,
+        "left": 11,
+        "right": 27,
+        "top": 9
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-token-button-composer px-2 py-0 text-base leading-[18px] focus-visible:ring-inset aspect-square shrink-0 items-center justify-center !px-0",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 10,
+      "name": null,
+      "name_length": 4,
+      "name_redacted": true,
+      "node_id": "N0014",
+      "parent_id": "N0010",
+      "rectangle": {
+        "bottom": 31,
+        "left": 37,
+        "right": 65,
+        "top": 3
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 11,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0015",
+      "parent_id": "N0014",
+      "rectangle": {
+        "bottom": 25,
+        "left": 43,
+        "right": 59,
+        "top": 9
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-token-button-composer px-2 py-0 text-base leading-[18px] focus-visible:ring-inset aspect-square shrink-0 items-center justify-center !px-0",
+      "control_type": "Button",
+      "enabled": false,
+      "level": 10,
+      "name": null,
+      "name_length": 7,
+      "name_redacted": true,
+      "node_id": "N0016",
+      "parent_id": "N0010",
+      "rectangle": {
+        "bottom": 31,
+        "left": 69,
+        "right": 97,
+        "top": 3
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs -scale-x-100",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 11,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0017",
+      "parent_id": "N0016",
+      "rectangle": {
+        "bottom": 25,
+        "left": 75,
+        "right": 91,
+        "top": 9
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "flex items-center gap-0.5 ps-1 pe-2",
+      "control_type": "MenuBar",
+      "enabled": true,
+      "level": 10,
+      "name": null,
+      "name_length": 16,
+      "name_redacted": true,
+      "node_id": "N0018",
+      "parent_id": "N0010",
+      "rectangle": {
+        "bottom": 29,
+        "left": 97,
+        "right": 306,
+        "top": 5
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "application-menu-trigger-file-menu",
+      "class_name": "no-drag rounded-md border border-transparent px-2.5 py-1 text-base font-normal leading-none outline-none text-tertiary hover:bg-text/5 hover:text-codex-description focus-visible:bg-text/5 focus-visible:text-codex-description",
+      "control_type": "MenuItem",
+      "enabled": true,
+      "level": 11,
+      "name": null,
+      "name_length": 4,
+      "name_redacted": true,
+      "node_id": "N0019",
+      "parent_id": "N0018",
+      "rectangle": {
+        "bottom": 29,
+        "left": 101,
+        "right": 144,
+        "top": 5
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "application-menu-trigger-edit-menu",
+      "class_name": "no-drag rounded-md border border-transparent px-2.5 py-1 text-base font-normal leading-none outline-none text-tertiary hover:bg-text/5 hover:text-codex-description focus-visible:bg-text/5 focus-visible:text-codex-description",
+      "control_type": "MenuItem",
+      "enabled": true,
+      "level": 11,
+      "name": null,
+      "name_length": 4,
+      "name_redacted": true,
+      "node_id": "N0020",
+      "parent_id": "N0018",
+      "rectangle": {
+        "bottom": 29,
+        "left": 145,
+        "right": 192,
+        "top": 5
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "application-menu-trigger-view-menu",
+      "class_name": "no-drag rounded-md border border-transparent px-2.5 py-1 text-base font-normal leading-none outline-none text-tertiary hover:bg-text/5 hover:text-codex-description focus-visible:bg-text/5 focus-visible:text-codex-description",
+      "control_type": "MenuItem",
+      "enabled": true,
+      "level": 11,
+      "name": null,
+      "name_length": 4,
+      "name_redacted": true,
+      "node_id": "N0021",
+      "parent_id": "N0018",
+      "rectangle": {
+        "bottom": 29,
+        "left": 193,
+        "right": 245,
+        "top": 5
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "application-menu-trigger-help-menu",
+      "class_name": "no-drag rounded-md border border-transparent px-2.5 py-1 text-base font-normal leading-none outline-none text-tertiary hover:bg-text/5 hover:text-codex-description focus-visible:bg-text/5 focus-visible:text-codex-description",
+      "control_type": "MenuItem",
+      "enabled": true,
+      "level": 11,
+      "name": null,
+      "name_length": 4,
+      "name_redacted": true,
+      "node_id": "N0022",
+      "parent_id": "N0018",
+      "rectangle": {
+        "bottom": 29,
+        "left": 246,
+        "right": 298,
+        "top": 5
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "app-shell-left-panel pointer-events-auto relative flex overflow-visible browser:bg-surface",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 10,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0023",
+      "parent_id": "N0010",
+      "rectangle": {
+        "bottom": 899,
+        "left": -1,
+        "right": 284,
+        "top": 35
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "_Navigation_1ej6d_2",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 11,
+      "name": "Scheduled task folders",
+      "name_length": 22,
+      "name_redacted": false,
+      "node_id": "N0024",
+      "parent_id": "N0023",
+      "rectangle": {
+        "bottom": 899,
+        "left": -1,
+        "right": 284,
+        "top": 43
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "radix-_r_4t0_",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full text-default enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent px-2 py-0.5 text-sm leading-[18px] focus-visible:ring-inset min-w-0 outline-hidden cursor-interaction -ms-2 h-8 min-w-0 rounded-xl px-2 !text-[17px] !leading-6 font-medium focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 32,
+      "name_redacted": true,
+      "node_id": "N0025",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 75,
+        "left": 7,
+        "right": 93,
+        "top": 43
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 6,
+      "name_redacted": true,
+      "node_id": "N0026",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 71,
+        "left": 220,
+        "right": 244,
+        "top": 47
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0027",
+      "parent_id": "N0026",
+      "rectangle": {
+        "bottom": 67,
+        "left": 224,
+        "right": 240,
+        "top": 51
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 13,
+      "name_redacted": true,
+      "node_id": "N0028",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 71,
+        "left": 248,
+        "right": 272,
+        "top": 47
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring sidebar-item flex min-w-0 flex-1 cursor-interaction items-center text-start focus-visible:outline-offset-0 disabled:cursor-not-allowed",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": "New chat",
+      "name_length": 8,
+      "name_redacted": false,
+      "node_id": "N0029",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 108,
+        "left": 15,
+        "right": 240,
+        "top": 87
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0030",
+      "parent_id": "N0029",
+      "rectangle": {
+        "bottom": 106,
+        "left": 15,
+        "right": 31,
+        "top": 89
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 10,
+      "name_redacted": true,
+      "node_id": "N0031",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 110,
+        "left": 248,
+        "right": 272,
+        "top": 85
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0032",
+      "parent_id": "N0031",
+      "rectangle": {
+        "bottom": 106,
+        "left": 252,
+        "right": 268,
+        "top": 89
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "sidebar-item relative h-[var(--height-token-row)] px-[var(--padding-row-cell-x,var(--padding-row-x))] py-row-y cursor-interaction shrink-0 items-center overflow-hidden text-start text-sm disabled:cursor-not-allowed disabled:opacity-50 gap-2 flex w-full hover:bg-primary-ghost-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-[-2px]",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 13,
+      "name_redacted": true,
+      "node_id": "N0033",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 143,
+        "left": 7,
+        "right": 261,
+        "top": 113
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0034",
+      "parent_id": "N0033",
+      "rectangle": {
+        "bottom": 136,
+        "left": 15,
+        "right": 31,
+        "top": 120
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "sidebar-item relative h-[var(--height-token-row)] px-[var(--padding-row-cell-x,var(--padding-row-x))] py-row-y cursor-interaction shrink-0 items-center overflow-hidden text-start text-sm disabled:cursor-not-allowed disabled:opacity-50 gap-2 flex w-full hover:bg-primary-ghost-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-[-2px]",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 5,
+      "name_redacted": true,
+      "node_id": "N0035",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 174,
+        "left": 7,
+        "right": 261,
+        "top": 144
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0036",
+      "parent_id": "N0035",
+      "rectangle": {
+        "bottom": 167,
+        "left": 15,
+        "right": 31,
+        "top": 151
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "sidebar-item relative h-[var(--height-token-row)] px-[var(--padding-row-cell-x,var(--padding-row-x))] py-row-y cursor-interaction shrink-0 items-center overflow-hidden text-start text-sm disabled:cursor-not-allowed disabled:opacity-50 gap-2 flex w-full hover:bg-primary-ghost-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-[-2px]",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 9,
+      "name_redacted": true,
+      "node_id": "N0037",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 205,
+        "left": 7,
+        "right": 261,
+        "top": 175
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0038",
+      "parent_id": "N0037",
+      "rectangle": {
+        "bottom": 198,
+        "left": 15,
+        "right": 31,
+        "top": 182
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "sidebar-item relative h-[var(--height-token-row)] px-[var(--padding-row-cell-x,var(--padding-row-x))] py-row-y cursor-interaction shrink-0 items-center overflow-hidden text-start text-sm disabled:cursor-not-allowed disabled:opacity-50 gap-2 flex w-full hover:bg-primary-ghost-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-[-2px]",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 7,
+      "name_redacted": true,
+      "node_id": "N0039",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 236,
+        "left": 7,
+        "right": 261,
+        "top": 206
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0040",
+      "parent_id": "N0039",
+      "rectangle": {
+        "bottom": 229,
+        "left": 15,
+        "right": 31,
+        "top": 213
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group/section-toggle flex min-w-0 flex-1 items-center gap-1 rounded-md py-0.5 pe-1 text-start focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring cursor-interaction",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 6,
+      "name_redacted": true,
+      "node_id": "N0041",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 277,
+        "left": 15,
+        "right": 227,
+        "top": 252
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "radix-_r_4t5_",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 outline-hidden cursor-interaction sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 14,
+      "name_redacted": true,
+      "node_id": "N0042",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 277,
+        "left": 235,
+        "right": 259,
+        "top": 252
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0043",
+      "parent_id": "N0042",
+      "rectangle": {
+        "bottom": 273,
+        "left": 239,
+        "right": 255,
+        "top": 256
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "flex flex-col",
+      "control_type": "List",
+      "enabled": true,
+      "level": 12,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0044",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 311,
+        "left": 7,
+        "right": 261,
+        "top": 281
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden after:!hidden touch-none",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 28,
+      "name_redacted": true,
+      "node_id": "N0045",
+      "parent_id": "N0044",
+      "rectangle": {
+        "bottom": 311,
+        "left": 7,
+        "right": 261,
+        "top": 281
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 14,
+      "name": null,
+      "name_length": 28,
+      "name_redacted": true,
+      "node_id": "N0046",
+      "parent_id": "N0045",
+      "rectangle": {
+        "bottom": 311,
+        "left": 7,
+        "right": 261,
+        "top": 281
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 10,
+      "name_redacted": true,
+      "node_id": "N0047",
+      "parent_id": "N0046",
+      "rectangle": {
+        "bottom": 306,
+        "left": 207,
+        "right": 226,
+        "top": 286
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 16,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0048",
+      "parent_id": "N0047",
+      "rectangle": {
+        "bottom": 304,
+        "left": 209,
+        "right": 226,
+        "top": 288
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0049",
+      "parent_id": "N0046",
+      "rectangle": {
+        "bottom": 306,
+        "left": 234,
+        "right": 253,
+        "top": 286
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 16,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0050",
+      "parent_id": "N0049",
+      "rectangle": {
+        "bottom": 304,
+        "left": 235,
+        "right": 252,
+        "top": 288
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "sr-only",
+      "control_type": "StatusBar",
+      "enabled": true,
+      "level": 12,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0051",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 281,
+        "left": 6,
+        "right": 7,
+        "top": 280
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group/section-toggle flex min-w-0 flex-1 items-center gap-1 rounded-md py-0.5 pe-1 text-start focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring cursor-default",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0052",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 352,
+        "left": 15,
+        "right": 199,
+        "top": 327
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "radix-_r_4te_",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 outline-hidden cursor-interaction sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 23,
+      "name_redacted": true,
+      "node_id": "N0053",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 352,
+        "left": 207,
+        "right": 231,
+        "top": 327
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0054",
+      "parent_id": "N0053",
+      "rectangle": {
+        "bottom": 348,
+        "left": 211,
+        "right": 227,
+        "top": 331
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 relative isolate sidebar-icon-button overflow-visible sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 15,
+      "name_redacted": true,
+      "node_id": "N0055",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 352,
+        "left": 235,
+        "right": 259,
+        "top": 327
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0056",
+      "parent_id": "N0055",
+      "rectangle": {
+        "bottom": 348,
+        "left": 240,
+        "right": 254,
+        "top": 331
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "flex flex-col",
+      "control_type": "List",
+      "enabled": true,
+      "level": 12,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0057",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 958,
+        "left": 7,
+        "right": 261,
+        "top": 356
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden touch-none",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 17,
+      "name_redacted": true,
+      "node_id": "N0058",
+      "parent_id": "N0057",
+      "rectangle": {
+        "bottom": 426,
+        "left": 7,
+        "right": 261,
+        "top": 356
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group/cwd relative flex flex-col",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 14,
+      "name": null,
+      "name_length": 9,
+      "name_redacted": true,
+      "node_id": "N0059",
+      "parent_id": "N0058",
+      "rectangle": {
+        "bottom": 425,
+        "left": 7,
+        "right": 261,
+        "top": 356
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "sidebar-item group/folder-row group relative flex h-[var(--height-token-row)] cursor-interaction items-center justify-between overflow-hidden text-sm text-default hover:bg-primary-ghost-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring text-codex-description opacity-70",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 9,
+      "name_redacted": true,
+      "node_id": "N0060",
+      "parent_id": "N0059",
+      "rectangle": {
+        "bottom": 386,
+        "left": 7,
+        "right": 261,
+        "top": 356
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs shrink-0",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 16,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0061",
+      "parent_id": "N0060",
+      "rectangle": {
+        "bottom": 379,
+        "left": 15,
+        "right": 31,
+        "top": 363
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 29,
+      "name_redacted": true,
+      "node_id": "N0062",
+      "parent_id": "N0060",
+      "rectangle": {
+        "bottom": 383,
+        "left": 227,
+        "right": 251,
+        "top": 359
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0063",
+      "parent_id": "N0062",
+      "rectangle": {
+        "bottom": 379,
+        "left": 231,
+        "right": 247,
+        "top": 363
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": false,
+      "level": 16,
+      "name": null,
+      "name_length": 27,
+      "name_redacted": true,
+      "node_id": "N0064",
+      "parent_id": "N0060",
+      "rectangle": {
+        "bottom": 383,
+        "left": 231,
+        "right": 255,
+        "top": 359
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0065",
+      "parent_id": "N0064",
+      "rectangle": {
+        "bottom": 379,
+        "left": 235,
+        "right": 251,
+        "top": 363
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Text",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0066",
+      "parent_id": "N0059",
+      "rectangle": {
+        "bottom": 412,
+        "left": 39,
+        "right": 94,
+        "top": 393
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden touch-none",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 79,
+      "name_redacted": true,
+      "node_id": "N0067",
+      "parent_id": "N0057",
+      "rectangle": {
+        "bottom": 528,
+        "left": 7,
+        "right": 261,
+        "top": 426
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group/cwd relative flex flex-col",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 14,
+      "name": null,
+      "name_length": 16,
+      "name_redacted": true,
+      "node_id": "N0068",
+      "parent_id": "N0067",
+      "rectangle": {
+        "bottom": 527,
+        "left": 7,
+        "right": 261,
+        "top": 426
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "sidebar-item group/folder-row group relative flex h-[var(--height-token-row)] cursor-interaction items-center justify-between overflow-hidden text-sm text-default hover:bg-primary-ghost-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring bg-primary-ghost-hover",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 16,
+      "name_redacted": true,
+      "node_id": "N0069",
+      "parent_id": "N0068",
+      "rectangle": {
+        "bottom": 456,
+        "left": 7,
+        "right": 261,
+        "top": 426
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs shrink-0",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 16,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0070",
+      "parent_id": "N0069",
+      "rectangle": {
+        "bottom": 449,
+        "left": 15,
+        "right": 31,
+        "top": 433
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 36,
+      "name_redacted": true,
+      "node_id": "N0071",
+      "parent_id": "N0069",
+      "rectangle": {
+        "bottom": 453,
+        "left": 227,
+        "right": 251,
+        "top": 429
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0072",
+      "parent_id": "N0071",
+      "rectangle": {
+        "bottom": 449,
+        "left": 231,
+        "right": 247,
+        "top": 433
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 34,
+      "name_redacted": true,
+      "node_id": "N0073",
+      "parent_id": "N0069",
+      "rectangle": {
+        "bottom": 453,
+        "left": 231,
+        "right": 255,
+        "top": 429
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0074",
+      "parent_id": "N0073",
+      "rectangle": {
+        "bottom": 449,
+        "left": 235,
+        "right": 251,
+        "top": 433
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "flex flex-col",
+      "control_type": "List",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 35,
+      "name_redacted": true,
+      "node_id": "N0075",
+      "parent_id": "N0068",
+      "rectangle": {
+        "bottom": 519,
+        "left": 7,
+        "right": 261,
+        "top": 458
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 30,
+      "name_redacted": true,
+      "node_id": "N0076",
+      "parent_id": "N0075",
+      "rectangle": {
+        "bottom": 489,
+        "left": 7,
+        "right": 261,
+        "top": 458
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0077",
+      "parent_id": "N0076",
+      "rectangle": {
+        "bottom": 488,
+        "left": 7,
+        "right": 261,
+        "top": 458
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 18,
+      "name": null,
+      "name_length": 30,
+      "name_redacted": true,
+      "node_id": "N0078",
+      "parent_id": "N0077",
+      "rectangle": {
+        "bottom": 488,
+        "left": 7,
+        "right": 261,
+        "top": 458
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0079",
+      "parent_id": "N0078",
+      "rectangle": {
+        "bottom": 483,
+        "left": 207,
+        "right": 226,
+        "top": 463
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0080",
+      "parent_id": "N0079",
+      "rectangle": {
+        "bottom": 481,
+        "left": 209,
+        "right": 226,
+        "top": 465
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0081",
+      "parent_id": "N0078",
+      "rectangle": {
+        "bottom": 483,
+        "left": 234,
+        "right": 253,
+        "top": 463
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0082",
+      "parent_id": "N0081",
+      "rectangle": {
+        "bottom": 481,
+        "left": 235,
+        "right": 252,
+        "top": 465
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-2xs block shrink-0 text-codex-description [--pr-status-dot-color:var(--color-chart-red)]",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 19,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0083",
+      "parent_id": "N0078",
+      "rectangle": {
+        "bottom": 480,
+        "left": 208,
+        "right": 222,
+        "top": 466
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs shrink-0",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 19,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0084",
+      "parent_id": "N0078",
+      "rectangle": {
+        "bottom": 481,
+        "left": 235,
+        "right": 251,
+        "top": 465
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden after:!hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 33,
+      "name_redacted": true,
+      "node_id": "N0085",
+      "parent_id": "N0075",
+      "rectangle": {
+        "bottom": 519,
+        "left": 7,
+        "right": 261,
+        "top": 489
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0086",
+      "parent_id": "N0085",
+      "rectangle": {
+        "bottom": 519,
+        "left": 7,
+        "right": 261,
+        "top": 489
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 18,
+      "name": null,
+      "name_length": 33,
+      "name_redacted": true,
+      "node_id": "N0087",
+      "parent_id": "N0086",
+      "rectangle": {
+        "bottom": 519,
+        "left": 7,
+        "right": 261,
+        "top": 489
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0088",
+      "parent_id": "N0087",
+      "rectangle": {
+        "bottom": 514,
+        "left": 207,
+        "right": 226,
+        "top": 494
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0089",
+      "parent_id": "N0088",
+      "rectangle": {
+        "bottom": 512,
+        "left": 209,
+        "right": 226,
+        "top": 496
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0090",
+      "parent_id": "N0087",
+      "rectangle": {
+        "bottom": 514,
+        "left": 234,
+        "right": 253,
+        "top": 494
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0091",
+      "parent_id": "N0090",
+      "rectangle": {
+        "bottom": 512,
+        "left": 235,
+        "right": 252,
+        "top": 496
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-2xs block shrink-0 text-codex-description [--pr-status-dot-color:var(--color-chart-red)]",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 19,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0092",
+      "parent_id": "N0087",
+      "rectangle": {
+        "bottom": 511,
+        "left": 236,
+        "right": 250,
+        "top": 497
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden touch-none",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 85,
+      "name_redacted": true,
+      "node_id": "N0093",
+      "parent_id": "N0057",
+      "rectangle": {
+        "bottom": 599,
+        "left": 7,
+        "right": 261,
+        "top": 528
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group/cwd relative flex flex-col",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 14,
+      "name": null,
+      "name_length": 25,
+      "name_redacted": true,
+      "node_id": "N0094",
+      "parent_id": "N0093",
+      "rectangle": {
+        "bottom": 598,
+        "left": 7,
+        "right": 261,
+        "top": 528
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "sidebar-item group/folder-row group relative flex h-[var(--height-token-row)] cursor-interaction items-center justify-between overflow-hidden text-sm text-default hover:bg-primary-ghost-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 25,
+      "name_redacted": true,
+      "node_id": "N0095",
+      "parent_id": "N0094",
+      "rectangle": {
+        "bottom": 558,
+        "left": 7,
+        "right": 261,
+        "top": 528
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs shrink-0",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 16,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0096",
+      "parent_id": "N0095",
+      "rectangle": {
+        "bottom": 551,
+        "left": 15,
+        "right": 31,
+        "top": 535
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 45,
+      "name_redacted": true,
+      "node_id": "N0097",
+      "parent_id": "N0095",
+      "rectangle": {
+        "bottom": 555,
+        "left": 227,
+        "right": 251,
+        "top": 531
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0098",
+      "parent_id": "N0097",
+      "rectangle": {
+        "bottom": 551,
+        "left": 231,
+        "right": 247,
+        "top": 535
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 43,
+      "name_redacted": true,
+      "node_id": "N0099",
+      "parent_id": "N0095",
+      "rectangle": {
+        "bottom": 555,
+        "left": 231,
+        "right": 255,
+        "top": 531
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0100",
+      "parent_id": "N0099",
+      "rectangle": {
+        "bottom": 551,
+        "left": 235,
+        "right": 251,
+        "top": 535
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "flex flex-col",
+      "control_type": "List",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 44,
+      "name_redacted": true,
+      "node_id": "N0101",
+      "parent_id": "N0094",
+      "rectangle": {
+        "bottom": 590,
+        "left": 7,
+        "right": 261,
+        "top": 560
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden after:!hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 60,
+      "name_redacted": true,
+      "node_id": "N0102",
+      "parent_id": "N0101",
+      "rectangle": {
+        "bottom": 590,
+        "left": 7,
+        "right": 261,
+        "top": 560
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0103",
+      "parent_id": "N0102",
+      "rectangle": {
+        "bottom": 590,
+        "left": 7,
+        "right": 261,
+        "top": 560
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 18,
+      "name": null,
+      "name_length": 60,
+      "name_redacted": true,
+      "node_id": "N0104",
+      "parent_id": "N0103",
+      "rectangle": {
+        "bottom": 590,
+        "left": 7,
+        "right": 261,
+        "top": 560
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0105",
+      "parent_id": "N0104",
+      "rectangle": {
+        "bottom": 585,
+        "left": 207,
+        "right": 226,
+        "top": 565
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0106",
+      "parent_id": "N0105",
+      "rectangle": {
+        "bottom": 583,
+        "left": 209,
+        "right": 226,
+        "top": 567
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0107",
+      "parent_id": "N0104",
+      "rectangle": {
+        "bottom": 585,
+        "left": 234,
+        "right": 253,
+        "top": 565
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0108",
+      "parent_id": "N0107",
+      "rectangle": {
+        "bottom": 583,
+        "left": 235,
+        "right": 252,
+        "top": 567
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden touch-none",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 138,
+      "name_redacted": true,
+      "node_id": "N0109",
+      "parent_id": "N0057",
+      "rectangle": {
+        "bottom": 763,
+        "left": 7,
+        "right": 261,
+        "top": 599
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group/cwd relative flex flex-col",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 14,
+      "name": null,
+      "name_length": 16,
+      "name_redacted": true,
+      "node_id": "N0110",
+      "parent_id": "N0109",
+      "rectangle": {
+        "bottom": 762,
+        "left": 7,
+        "right": 261,
+        "top": 599
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "sidebar-item group/folder-row group relative flex h-[var(--height-token-row)] cursor-interaction items-center justify-between overflow-hidden text-sm text-default hover:bg-primary-ghost-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 16,
+      "name_redacted": true,
+      "node_id": "N0111",
+      "parent_id": "N0110",
+      "rectangle": {
+        "bottom": 629,
+        "left": 7,
+        "right": 261,
+        "top": 599
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs shrink-0",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 16,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0112",
+      "parent_id": "N0111",
+      "rectangle": {
+        "bottom": 622,
+        "left": 15,
+        "right": 31,
+        "top": 606
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 36,
+      "name_redacted": true,
+      "node_id": "N0113",
+      "parent_id": "N0111",
+      "rectangle": {
+        "bottom": 626,
+        "left": 227,
+        "right": 251,
+        "top": 602
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0114",
+      "parent_id": "N0113",
+      "rectangle": {
+        "bottom": 622,
+        "left": 231,
+        "right": 247,
+        "top": 606
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 34,
+      "name_redacted": true,
+      "node_id": "N0115",
+      "parent_id": "N0111",
+      "rectangle": {
+        "bottom": 626,
+        "left": 231,
+        "right": 255,
+        "top": 602
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0116",
+      "parent_id": "N0115",
+      "rectangle": {
+        "bottom": 622,
+        "left": 235,
+        "right": 251,
+        "top": 606
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "flex flex-col",
+      "control_type": "List",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 35,
+      "name_redacted": true,
+      "node_id": "N0117",
+      "parent_id": "N0110",
+      "rectangle": {
+        "bottom": 754,
+        "left": 7,
+        "right": 261,
+        "top": 631
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 2,
+      "name_redacted": true,
+      "node_id": "N0118",
+      "parent_id": "N0117",
+      "rectangle": {
+        "bottom": 662,
+        "left": 7,
+        "right": 261,
+        "top": 631
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0119",
+      "parent_id": "N0118",
+      "rectangle": {
+        "bottom": 661,
+        "left": 7,
+        "right": 261,
+        "top": 631
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 18,
+      "name": null,
+      "name_length": 2,
+      "name_redacted": true,
+      "node_id": "N0120",
+      "parent_id": "N0119",
+      "rectangle": {
+        "bottom": 661,
+        "left": 7,
+        "right": 261,
+        "top": 631
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0121",
+      "parent_id": "N0120",
+      "rectangle": {
+        "bottom": 656,
+        "left": 207,
+        "right": 226,
+        "top": 636
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0122",
+      "parent_id": "N0121",
+      "rectangle": {
+        "bottom": 654,
+        "left": 209,
+        "right": 226,
+        "top": 638
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0123",
+      "parent_id": "N0120",
+      "rectangle": {
+        "bottom": 656,
+        "left": 234,
+        "right": 253,
+        "top": 636
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0124",
+      "parent_id": "N0123",
+      "rectangle": {
+        "bottom": 654,
+        "left": 235,
+        "right": 252,
+        "top": 638
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 59,
+      "name_redacted": true,
+      "node_id": "N0125",
+      "parent_id": "N0117",
+      "rectangle": {
+        "bottom": 693,
+        "left": 7,
+        "right": 261,
+        "top": 662
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0126",
+      "parent_id": "N0125",
+      "rectangle": {
+        "bottom": 692,
+        "left": 7,
+        "right": 261,
+        "top": 662
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 18,
+      "name": null,
+      "name_length": 59,
+      "name_redacted": true,
+      "node_id": "N0127",
+      "parent_id": "N0126",
+      "rectangle": {
+        "bottom": 692,
+        "left": 7,
+        "right": 261,
+        "top": 662
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0128",
+      "parent_id": "N0127",
+      "rectangle": {
+        "bottom": 687,
+        "left": 207,
+        "right": 226,
+        "top": 667
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0129",
+      "parent_id": "N0128",
+      "rectangle": {
+        "bottom": 685,
+        "left": 209,
+        "right": 226,
+        "top": 669
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0130",
+      "parent_id": "N0127",
+      "rectangle": {
+        "bottom": 687,
+        "left": 234,
+        "right": 253,
+        "top": 667
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0131",
+      "parent_id": "N0130",
+      "rectangle": {
+        "bottom": 685,
+        "left": 235,
+        "right": 252,
+        "top": 669
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 25,
+      "name_redacted": true,
+      "node_id": "N0132",
+      "parent_id": "N0117",
+      "rectangle": {
+        "bottom": 724,
+        "left": 7,
+        "right": 261,
+        "top": 693
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0133",
+      "parent_id": "N0132",
+      "rectangle": {
+        "bottom": 723,
+        "left": 7,
+        "right": 261,
+        "top": 693
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 18,
+      "name": null,
+      "name_length": 25,
+      "name_redacted": true,
+      "node_id": "N0134",
+      "parent_id": "N0133",
+      "rectangle": {
+        "bottom": 723,
+        "left": 7,
+        "right": 261,
+        "top": 693
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0135",
+      "parent_id": "N0134",
+      "rectangle": {
+        "bottom": 718,
+        "left": 207,
+        "right": 226,
+        "top": 698
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0136",
+      "parent_id": "N0135",
+      "rectangle": {
+        "bottom": 716,
+        "left": 209,
+        "right": 226,
+        "top": 700
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0137",
+      "parent_id": "N0134",
+      "rectangle": {
+        "bottom": 718,
+        "left": 234,
+        "right": 253,
+        "top": 698
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0138",
+      "parent_id": "N0137",
+      "rectangle": {
+        "bottom": 716,
+        "left": 235,
+        "right": 252,
+        "top": 700
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden after:!hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 36,
+      "name_redacted": true,
+      "node_id": "N0139",
+      "parent_id": "N0117",
+      "rectangle": {
+        "bottom": 754,
+        "left": 7,
+        "right": 261,
+        "top": 724
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0140",
+      "parent_id": "N0139",
+      "rectangle": {
+        "bottom": 754,
+        "left": 7,
+        "right": 261,
+        "top": 724
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 18,
+      "name": null,
+      "name_length": 36,
+      "name_redacted": true,
+      "node_id": "N0141",
+      "parent_id": "N0140",
+      "rectangle": {
+        "bottom": 754,
+        "left": 7,
+        "right": 261,
+        "top": 724
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0142",
+      "parent_id": "N0141",
+      "rectangle": {
+        "bottom": 749,
+        "left": 207,
+        "right": 226,
+        "top": 729
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0143",
+      "parent_id": "N0142",
+      "rectangle": {
+        "bottom": 747,
+        "left": 209,
+        "right": 226,
+        "top": 731
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0144",
+      "parent_id": "N0141",
+      "rectangle": {
+        "bottom": 749,
+        "left": 234,
+        "right": 253,
+        "top": 729
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0145",
+      "parent_id": "N0144",
+      "rectangle": {
+        "bottom": 747,
+        "left": 235,
+        "right": 252,
+        "top": 731
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden after:!hidden touch-none",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 167,
+      "name_redacted": true,
+      "node_id": "N0146",
+      "parent_id": "N0057",
+      "rectangle": {
+        "bottom": 926,
+        "left": 7,
+        "right": 261,
+        "top": 763
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group/cwd relative flex flex-col",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 14,
+      "name": null,
+      "name_length": 24,
+      "name_redacted": true,
+      "node_id": "N0147",
+      "parent_id": "N0146",
+      "rectangle": {
+        "bottom": 926,
+        "left": 7,
+        "right": 261,
+        "top": 763
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "sidebar-item group/folder-row group relative flex h-[var(--height-token-row)] cursor-interaction items-center justify-between overflow-hidden text-sm text-default hover:bg-primary-ghost-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 24,
+      "name_redacted": true,
+      "node_id": "N0148",
+      "parent_id": "N0147",
+      "rectangle": {
+        "bottom": 793,
+        "left": 7,
+        "right": 261,
+        "top": 763
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs shrink-0",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 16,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0149",
+      "parent_id": "N0148",
+      "rectangle": {
+        "bottom": 786,
+        "left": 15,
+        "right": 31,
+        "top": 770
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 44,
+      "name_redacted": true,
+      "node_id": "N0150",
+      "parent_id": "N0148",
+      "rectangle": {
+        "bottom": 790,
+        "left": 227,
+        "right": 251,
+        "top": 766
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0151",
+      "parent_id": "N0150",
+      "rectangle": {
+        "bottom": 786,
+        "left": 231,
+        "right": 247,
+        "top": 770
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 42,
+      "name_redacted": true,
+      "node_id": "N0152",
+      "parent_id": "N0148",
+      "rectangle": {
+        "bottom": 790,
+        "left": 231,
+        "right": 255,
+        "top": 766
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0153",
+      "parent_id": "N0152",
+      "rectangle": {
+        "bottom": 786,
+        "left": 235,
+        "right": 251,
+        "top": 770
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "flex flex-col",
+      "control_type": "List",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 43,
+      "name_redacted": true,
+      "node_id": "N0154",
+      "parent_id": "N0147",
+      "rectangle": {
+        "bottom": 918,
+        "left": 7,
+        "right": 261,
+        "top": 795
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 60,
+      "name_redacted": true,
+      "node_id": "N0155",
+      "parent_id": "N0154",
+      "rectangle": {
+        "bottom": 826,
+        "left": 7,
+        "right": 261,
+        "top": 795
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0156",
+      "parent_id": "N0155",
+      "rectangle": {
+        "bottom": 825,
+        "left": 7,
+        "right": 261,
+        "top": 795
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 18,
+      "name": null,
+      "name_length": 60,
+      "name_redacted": true,
+      "node_id": "N0157",
+      "parent_id": "N0156",
+      "rectangle": {
+        "bottom": 825,
+        "left": 7,
+        "right": 261,
+        "top": 795
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0158",
+      "parent_id": "N0157",
+      "rectangle": {
+        "bottom": 820,
+        "left": 207,
+        "right": 226,
+        "top": 800
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0159",
+      "parent_id": "N0158",
+      "rectangle": {
+        "bottom": 818,
+        "left": 209,
+        "right": 226,
+        "top": 802
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0160",
+      "parent_id": "N0157",
+      "rectangle": {
+        "bottom": 820,
+        "left": 234,
+        "right": 253,
+        "top": 800
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0161",
+      "parent_id": "N0160",
+      "rectangle": {
+        "bottom": 818,
+        "left": 235,
+        "right": 252,
+        "top": 802
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 30,
+      "name_redacted": true,
+      "node_id": "N0162",
+      "parent_id": "N0154",
+      "rectangle": {
+        "bottom": 857,
+        "left": 7,
+        "right": 261,
+        "top": 826
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0163",
+      "parent_id": "N0162",
+      "rectangle": {
+        "bottom": 856,
+        "left": 7,
+        "right": 261,
+        "top": 826
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 18,
+      "name": null,
+      "name_length": 30,
+      "name_redacted": true,
+      "node_id": "N0164",
+      "parent_id": "N0163",
+      "rectangle": {
+        "bottom": 856,
+        "left": 7,
+        "right": 261,
+        "top": 826
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0165",
+      "parent_id": "N0164",
+      "rectangle": {
+        "bottom": 851,
+        "left": 207,
+        "right": 226,
+        "top": 831
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0166",
+      "parent_id": "N0165",
+      "rectangle": {
+        "bottom": 849,
+        "left": 209,
+        "right": 226,
+        "top": 833
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0167",
+      "parent_id": "N0164",
+      "rectangle": {
+        "bottom": 851,
+        "left": 234,
+        "right": 253,
+        "top": 831
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0168",
+      "parent_id": "N0167",
+      "rectangle": {
+        "bottom": 849,
+        "left": 235,
+        "right": 252,
+        "top": 833
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 19,
+      "name_redacted": true,
+      "node_id": "N0169",
+      "parent_id": "N0154",
+      "rectangle": {
+        "bottom": 888,
+        "left": 7,
+        "right": 261,
+        "top": 857
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0170",
+      "parent_id": "N0169",
+      "rectangle": {
+        "bottom": 887,
+        "left": 7,
+        "right": 261,
+        "top": 857
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 18,
+      "name": null,
+      "name_length": 19,
+      "name_redacted": true,
+      "node_id": "N0171",
+      "parent_id": "N0170",
+      "rectangle": {
+        "bottom": 887,
+        "left": 7,
+        "right": 261,
+        "top": 857
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0172",
+      "parent_id": "N0171",
+      "rectangle": {
+        "bottom": 882,
+        "left": 207,
+        "right": 226,
+        "top": 862
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0173",
+      "parent_id": "N0172",
+      "rectangle": {
+        "bottom": 880,
+        "left": 209,
+        "right": 226,
+        "top": 864
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0174",
+      "parent_id": "N0171",
+      "rectangle": {
+        "bottom": 882,
+        "left": 234,
+        "right": 253,
+        "top": 862
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0175",
+      "parent_id": "N0174",
+      "rectangle": {
+        "bottom": 880,
+        "left": 235,
+        "right": 252,
+        "top": 864
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden after:!hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 34,
+      "name_redacted": true,
+      "node_id": "N0176",
+      "parent_id": "N0154",
+      "rectangle": {
+        "bottom": 918,
+        "left": 7,
+        "right": 261,
+        "top": 888
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0177",
+      "parent_id": "N0176",
+      "rectangle": {
+        "bottom": 918,
+        "left": 7,
+        "right": 261,
+        "top": 888
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 18,
+      "name": null,
+      "name_length": 34,
+      "name_redacted": true,
+      "node_id": "N0178",
+      "parent_id": "N0177",
+      "rectangle": {
+        "bottom": 918,
+        "left": 7,
+        "right": 261,
+        "top": 888
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0179",
+      "parent_id": "N0178",
+      "rectangle": {
+        "bottom": 913,
+        "left": 207,
+        "right": 226,
+        "top": 893
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0180",
+      "parent_id": "N0179",
+      "rectangle": {
+        "bottom": 911,
+        "left": 209,
+        "right": 226,
+        "top": 895
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 19,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0181",
+      "parent_id": "N0178",
+      "rectangle": {
+        "bottom": 913,
+        "left": 234,
+        "right": 253,
+        "top": 893
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 20,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0182",
+      "parent_id": "N0181",
+      "rectangle": {
+        "bottom": 911,
+        "left": 235,
+        "right": 252,
+        "top": 895
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "flex gap-1 py-1 after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 9,
+      "name_redacted": true,
+      "node_id": "N0183",
+      "parent_id": "N0057",
+      "rectangle": {
+        "bottom": 958,
+        "left": 7,
+        "right": 261,
+        "top": 926
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent px-2 py-0.5 text-sm leading-[18px] !text-base !text-tertiary !opacity-75 hover:!text-default",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 14,
+      "name": null,
+      "name_length": 9,
+      "name_redacted": true,
+      "node_id": "N0184",
+      "parent_id": "N0183",
+      "rectangle": {
+        "bottom": 954,
+        "left": 7,
+        "right": 95,
+        "top": 930
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "sr-only",
+      "control_type": "StatusBar",
+      "enabled": true,
+      "level": 12,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0185",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 356,
+        "left": 6,
+        "right": 7,
+        "top": 355
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group/section-toggle flex min-w-0 flex-1 items-center gap-1 rounded-md py-0.5 pe-1 text-start focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring cursor-default",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 7,
+      "name_redacted": true,
+      "node_id": "N0186",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 999,
+        "left": 15,
+        "right": 199,
+        "top": 974
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "radix-_r_4vn_",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 outline-hidden cursor-interaction sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 20,
+      "name_redacted": true,
+      "node_id": "N0187",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 999,
+        "left": 207,
+        "right": 231,
+        "top": 974
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0188",
+      "parent_id": "N0187",
+      "rectangle": {
+        "bottom": 995,
+        "left": 211,
+        "right": 227,
+        "top": 978
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent h-6 px-2 py-0 text-xs leading-4 aspect-square shrink-0 items-center justify-center !px-0 sidebar-icon-button sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": "New chat",
+      "name_length": 8,
+      "name_redacted": false,
+      "node_id": "N0189",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 999,
+        "left": 235,
+        "right": 259,
+        "top": 974
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0190",
+      "parent_id": "N0189",
+      "rectangle": {
+        "bottom": 995,
+        "left": 239,
+        "right": 255,
+        "top": 978
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "flex flex-col",
+      "control_type": "List",
+      "enabled": true,
+      "level": 12,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0191",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 1236,
+        "left": 7,
+        "right": 261,
+        "top": 1003
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 2,
+      "name_redacted": true,
+      "node_id": "N0192",
+      "parent_id": "N0191",
+      "rectangle": {
+        "bottom": 1034,
+        "left": 7,
+        "right": 261,
+        "top": 1003
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 14,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0193",
+      "parent_id": "N0192",
+      "rectangle": {
+        "bottom": 1033,
+        "left": 7,
+        "right": 261,
+        "top": 1003
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 2,
+      "name_redacted": true,
+      "node_id": "N0194",
+      "parent_id": "N0193",
+      "rectangle": {
+        "bottom": 1033,
+        "left": 7,
+        "right": 261,
+        "top": 1003
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0195",
+      "parent_id": "N0194",
+      "rectangle": {
+        "bottom": 1028,
+        "left": 207,
+        "right": 226,
+        "top": 1008
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0196",
+      "parent_id": "N0195",
+      "rectangle": {
+        "bottom": 1026,
+        "left": 209,
+        "right": 226,
+        "top": 1010
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0197",
+      "parent_id": "N0194",
+      "rectangle": {
+        "bottom": 1028,
+        "left": 234,
+        "right": 253,
+        "top": 1008
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0198",
+      "parent_id": "N0197",
+      "rectangle": {
+        "bottom": 1026,
+        "left": 235,
+        "right": 252,
+        "top": 1010
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 2,
+      "name_redacted": true,
+      "node_id": "N0199",
+      "parent_id": "N0191",
+      "rectangle": {
+        "bottom": 1065,
+        "left": 7,
+        "right": 261,
+        "top": 1034
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 14,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0200",
+      "parent_id": "N0199",
+      "rectangle": {
+        "bottom": 1064,
+        "left": 7,
+        "right": 261,
+        "top": 1034
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 2,
+      "name_redacted": true,
+      "node_id": "N0201",
+      "parent_id": "N0200",
+      "rectangle": {
+        "bottom": 1064,
+        "left": 7,
+        "right": 261,
+        "top": 1034
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0202",
+      "parent_id": "N0201",
+      "rectangle": {
+        "bottom": 1059,
+        "left": 207,
+        "right": 226,
+        "top": 1039
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0203",
+      "parent_id": "N0202",
+      "rectangle": {
+        "bottom": 1057,
+        "left": 209,
+        "right": 226,
+        "top": 1041
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0204",
+      "parent_id": "N0201",
+      "rectangle": {
+        "bottom": 1059,
+        "left": 234,
+        "right": 253,
+        "top": 1039
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0205",
+      "parent_id": "N0204",
+      "rectangle": {
+        "bottom": 1057,
+        "left": 235,
+        "right": 252,
+        "top": 1041
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 2,
+      "name_redacted": true,
+      "node_id": "N0206",
+      "parent_id": "N0191",
+      "rectangle": {
+        "bottom": 1096,
+        "left": 7,
+        "right": 261,
+        "top": 1065
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 14,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0207",
+      "parent_id": "N0206",
+      "rectangle": {
+        "bottom": 1095,
+        "left": 7,
+        "right": 261,
+        "top": 1065
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 2,
+      "name_redacted": true,
+      "node_id": "N0208",
+      "parent_id": "N0207",
+      "rectangle": {
+        "bottom": 1095,
+        "left": 7,
+        "right": 261,
+        "top": 1065
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0209",
+      "parent_id": "N0208",
+      "rectangle": {
+        "bottom": 1090,
+        "left": 207,
+        "right": 226,
+        "top": 1070
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0210",
+      "parent_id": "N0209",
+      "rectangle": {
+        "bottom": 1088,
+        "left": 209,
+        "right": 226,
+        "top": 1072
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0211",
+      "parent_id": "N0208",
+      "rectangle": {
+        "bottom": 1090,
+        "left": 234,
+        "right": 253,
+        "top": 1070
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0212",
+      "parent_id": "N0211",
+      "rectangle": {
+        "bottom": 1088,
+        "left": 235,
+        "right": 252,
+        "top": 1072
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 2,
+      "name_redacted": true,
+      "node_id": "N0213",
+      "parent_id": "N0191",
+      "rectangle": {
+        "bottom": 1127,
+        "left": 7,
+        "right": 261,
+        "top": 1096
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 14,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0214",
+      "parent_id": "N0213",
+      "rectangle": {
+        "bottom": 1126,
+        "left": 7,
+        "right": 261,
+        "top": 1096
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 2,
+      "name_redacted": true,
+      "node_id": "N0215",
+      "parent_id": "N0214",
+      "rectangle": {
+        "bottom": 1126,
+        "left": 7,
+        "right": 261,
+        "top": 1096
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0216",
+      "parent_id": "N0215",
+      "rectangle": {
+        "bottom": 1121,
+        "left": 207,
+        "right": 226,
+        "top": 1101
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0217",
+      "parent_id": "N0216",
+      "rectangle": {
+        "bottom": 1119,
+        "left": 209,
+        "right": 226,
+        "top": 1103
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0218",
+      "parent_id": "N0215",
+      "rectangle": {
+        "bottom": 1121,
+        "left": 234,
+        "right": 253,
+        "top": 1101
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0219",
+      "parent_id": "N0218",
+      "rectangle": {
+        "bottom": 1119,
+        "left": 235,
+        "right": 252,
+        "top": 1103
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 2,
+      "name_redacted": true,
+      "node_id": "N0220",
+      "parent_id": "N0191",
+      "rectangle": {
+        "bottom": 1158,
+        "left": 7,
+        "right": 261,
+        "top": 1127
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 14,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0221",
+      "parent_id": "N0220",
+      "rectangle": {
+        "bottom": 1157,
+        "left": 7,
+        "right": 261,
+        "top": 1127
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 2,
+      "name_redacted": true,
+      "node_id": "N0222",
+      "parent_id": "N0221",
+      "rectangle": {
+        "bottom": 1157,
+        "left": 7,
+        "right": 261,
+        "top": 1127
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0223",
+      "parent_id": "N0222",
+      "rectangle": {
+        "bottom": 1152,
+        "left": 207,
+        "right": 226,
+        "top": 1132
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0224",
+      "parent_id": "N0223",
+      "rectangle": {
+        "bottom": 1150,
+        "left": 209,
+        "right": 226,
+        "top": 1134
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0225",
+      "parent_id": "N0222",
+      "rectangle": {
+        "bottom": 1152,
+        "left": 234,
+        "right": 253,
+        "top": 1132
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0226",
+      "parent_id": "N0225",
+      "rectangle": {
+        "bottom": 1150,
+        "left": 235,
+        "right": 252,
+        "top": 1134
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "after:block after:h-px after:content-[''] last:after:hidden after:!hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 60,
+      "name_redacted": true,
+      "node_id": "N0227",
+      "parent_id": "N0191",
+      "rectangle": {
+        "bottom": 1188,
+        "left": 7,
+        "right": 261,
+        "top": 1158
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-grab active:cursor-grabbing",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 14,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0228",
+      "parent_id": "N0227",
+      "rectangle": {
+        "bottom": 1188,
+        "left": 7,
+        "right": 261,
+        "top": 1158
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "group relative cursor-interaction text-sm hover:bg-primary-ghost-hover data-[app-action-sidebar-thread-selected=true]:bg-primary-ghost-hover py-row-y h-[var(--height-token-row)] sidebar-item pe-row-y ps-[var(--padding-row-cell-x,var(--padding-row-x))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 60,
+      "name_redacted": true,
+      "node_id": "N0229",
+      "parent_id": "N0228",
+      "rectangle": {
+        "bottom": 1188,
+        "left": 7,
+        "right": 261,
+        "top": 1158
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0230",
+      "parent_id": "N0229",
+      "rectangle": {
+        "bottom": 1183,
+        "left": 207,
+        "right": 226,
+        "top": 1163
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "translate-x-px",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0231",
+      "parent_id": "N0230",
+      "rectangle": {
+        "bottom": 1181,
+        "left": 209,
+        "right": 226,
+        "top": 1165
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full electron:rounded-md enabled:hover:bg-transparent data-[state=open]:bg-transparent hover:text-default border-transparent electron:p-1 electron:[&>svg]:icon-sm flex items-center justify-center p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 !h-5 !w-5 !p-0 [&>svg]:!h-4 [&>svg]:!w-4 sidebar-hover-icon-button-tint",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 16,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0232",
+      "parent_id": "N0229",
+      "rectangle": {
+        "bottom": 1183,
+        "left": 234,
+        "right": 253,
+        "top": 1163
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 17,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0233",
+      "parent_id": "N0232",
+      "rectangle": {
+        "bottom": 1181,
+        "left": 235,
+        "right": 252,
+        "top": 1165
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "flex gap-1 py-1 after:block after:h-px after:content-[''] last:after:hidden",
+      "control_type": "ListItem",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0234",
+      "parent_id": "N0191",
+      "rectangle": {
+        "bottom": 1236,
+        "left": 7,
+        "right": 261,
+        "top": 1188
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs text-secondary",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 14,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0235",
+      "parent_id": "N0234",
+      "rectangle": {
+        "bottom": 1220,
+        "left": 126,
+        "right": 142,
+        "top": 1204
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "DndLiveRegion-14",
+      "class_name": "",
+      "control_type": "StatusBar",
+      "enabled": true,
+      "level": 12,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0236",
+      "parent_id": "N0024",
+      "rectangle": {
+        "bottom": 35,
+        "left": -2,
+        "right": -1,
+        "top": 34
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "radix-_r_50p_",
+      "class_name": "outline-hidden cursor-interaction flex h-[var(--height-token-row)] min-w-0 flex-1 cursor-interaction items-center gap-2 sidebar-item px-[var(--padding-row-cell-x,var(--padding-row-x))] text-start text-base text-default outline-none hover:bg-primary-ghost-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring browser:h-12 browser:gap-3",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 11,
+      "name": null,
+      "name_length": 17,
+      "name_redacted": true,
+      "node_id": "N0237",
+      "parent_id": "N0023",
+      "rectangle": {
+        "bottom": 891,
+        "left": 7,
+        "right": 248,
+        "top": 861
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag relative shrink-0 cursor-interaction rounded-full bg-chart-blue text-[10px] leading-3 font-semibold text-white shadow-sm contain-layout contain-style active:bg-chart-blue/80 enabled:hover:bg-[color-mix(in_srgb,var(--color-chart-blue)_92%,black_8%)] motion-reduce:transition-none group grid h-5 max-w-36 min-w-5 items-center justify-center overflow-visible px-2.5 transition-[grid-template-columns,background-color] duration-[220ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] [will-change:grid-template-columns] focus-visible:transition-none grid-cols-[0fr] hover:grid-cols-[1fr] focus-visible:grid-cols-[1fr]",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 11,
+      "name": null,
+      "name_length": 6,
+      "name_redacted": true,
+      "node_id": "N0238",
+      "parent_id": "N0023",
+      "rectangle": {
+        "bottom": 886,
+        "left": 256,
+        "right": 276,
+        "top": 866
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "group absolute flex touch-none select-none focus:outline-none z-20 -top-toolbar right-0 bottom-0 w-4 translate-x-2 cursor-col-resize active:cursor-col-resize",
+      "control_type": "Separator",
+      "enabled": true,
+      "level": 11,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0239",
+      "parent_id": "N0023",
+      "rectangle": {
+        "bottom": 899,
+        "left": 276,
+        "right": 292,
+        "top": -11
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "_MainContentSurface_1k2yc_2 border-l border-default",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 10,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0240",
+      "parent_id": "N0010",
+      "rectangle": {
+        "bottom": 899,
+        "left": 284,
+        "right": 1601,
+        "top": 35
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "pointer-events-none fixed z-30 flex h-toolbar min-w-0 items-center draggable bg-[var(--codex-titlebar-tint,transparent)] top-toolbar-sm right-0",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 11,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0241",
+      "parent_id": "N0240",
+      "rectangle": {
+        "bottom": 81,
+        "left": 284,
+        "right": 1601,
+        "top": 35
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "pointer-events-none relative ms-2 flex h-full min-w-0 flex-1 isolate items-center gap-1.5 overflow-hidden [contain:layout_paint] pe-1.5",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 12,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0242",
+      "parent_id": "N0241",
+      "rectangle": {
+        "bottom": 81,
+        "left": 292,
+        "right": 1531,
+        "top": 35
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-token-button-composer px-2 py-0 text-base leading-[18px] aspect-square shrink-0 items-center justify-center !px-0",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 19,
+      "name_redacted": true,
+      "node_id": "N0243",
+      "parent_id": "N0241",
+      "rectangle": {
+        "bottom": 72,
+        "left": 1531,
+        "right": 1559,
+        "top": 44
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0244",
+      "parent_id": "N0243",
+      "rectangle": {
+        "bottom": 66,
+        "left": 1537,
+        "right": 1553,
+        "top": 50
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-lg text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-token-button-composer px-2 py-0 text-base leading-[18px] aspect-square shrink-0 items-center justify-center !px-0",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 17,
+      "name_redacted": true,
+      "node_id": "N0245",
+      "parent_id": "N0241",
+      "rectangle": {
+        "bottom": 72,
+        "left": 1565,
+        "right": 1593,
+        "top": 44
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs rotate-180",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0246",
+      "parent_id": "N0245",
+      "rectangle": {
+        "bottom": 66,
+        "left": 1571,
+        "right": 1587,
+        "top": 50
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "[container-type:size] relative flex min-h-0 w-full flex-1 flex-col [container-name:home-main-content] overflow-y-auto [&:has([data-feature='game-surface'])_[data-feature='game-source']]:invisible [scrollbar-gutter:stable_both-edges]",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 11,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0247",
+      "parent_id": "N0240",
+      "rectangle": {
+        "bottom": 899,
+        "left": 285,
+        "right": 1601,
+        "top": 81
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "relative isolate flex w-full overflow-hidden rounded-2xl border bg-surface py-2 ps-3 pe-2 text-sm shadow-xs lg:mx-auto electron:border-0 electron:ring-[0.5px] electron:ring-border-strong border-primary-outline text-default items-center gap-4 max-[400px]:items-start max-[400px]:gap-2",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 12,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0248",
+      "parent_id": "N0247",
+      "rectangle": {
+        "bottom": 159,
+        "left": 575,
+        "right": 1311,
+        "top": 89
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-sm text-chart-yellow",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0249",
+      "parent_id": "N0248",
+      "rectangle": {
+        "bottom": 133,
+        "left": 602,
+        "right": 620,
+        "top": 114
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Text",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 16,
+      "name_redacted": true,
+      "node_id": "N0250",
+      "parent_id": "N0248",
+      "rectangle": {
+        "bottom": 117,
+        "left": 643,
+        "right": 755,
+        "top": 98
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Text",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 115,
+      "name_redacted": true,
+      "node_id": "N0251",
+      "parent_id": "N0248",
+      "rectangle": {
+        "bottom": 151,
+        "left": 643,
+        "right": 1136,
+        "top": 117
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full border-default bg-primary-solid enabled:hover:bg-text/80 data-[state=open]:bg-text/80 text-primary-solid h-token-button-composer-sm px-1.5 py-0 text-sm leading-[18px] px-3 max-[400px]:flex-1 max-[400px]:justify-center",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 10,
+      "name_redacted": true,
+      "node_id": "N0252",
+      "parent_id": "N0248",
+      "rectangle": {
+        "bottom": 138,
+        "left": 1174,
+        "right": 1267,
+        "top": 109
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-token-button-composer-sm px-1.5 py-0 text-sm leading-[18px] aspect-square shrink-0 items-center justify-center !px-0 border-transparent text-codex-description hover:text-default",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 24,
+      "name_redacted": true,
+      "node_id": "N0253",
+      "parent_id": "N0248",
+      "rectangle": {
+        "bottom": 138,
+        "left": 1275,
+        "right": 1303,
+        "top": 109
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 14,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0254",
+      "parent_id": "N0253",
+      "rectangle": {
+        "bottom": 132,
+        "left": 1281,
+        "right": 1297,
+        "top": 115
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Text",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 24,
+      "name_redacted": true,
+      "node_id": "N0255",
+      "parent_id": "N0247",
+      "rectangle": {
+        "bottom": 495,
+        "left": 665,
+        "right": 974,
+        "top": 457
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "inline-block max-w-full cursor-interaction break-words whitespace-normal underline decoration-text-tertiary decoration-dotted decoration-[1px] underline-offset-4 hover:text-secondary",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 17,
+      "name_redacted": true,
+      "node_id": "N0256",
+      "parent_id": "N0247",
+      "rectangle": {
+        "bottom": 493,
+        "left": 973,
+        "right": 1221,
+        "top": 459
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "z-0 relative -mb-2",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 12,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0257",
+      "parent_id": "N0247",
+      "rectangle": {
+        "bottom": 785,
+        "left": 575,
+        "right": 1311,
+        "top": 742
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "horizontal-scroll-fade-mask hide-scrollbar -m-0.5 min-w-0 flex-1 overflow-x-auto overflow-y-hidden",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 20,
+      "name_redacted": true,
+      "node_id": "N0258",
+      "parent_id": "N0257",
+      "rectangle": {
+        "bottom": 782,
+        "left": 592,
+        "right": 1294,
+        "top": 750
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-token-button-composer-sm px-1.5 py-0 text-sm leading-[18px] in-data-[composer-placement=home]:px-2 _ComposerFooterDropdown_1sqef_1",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 14,
+      "name": null,
+      "name_length": 32,
+      "name_redacted": true,
+      "node_id": "N0259",
+      "parent_id": "N0258",
+      "rectangle": {
+        "bottom": 780,
+        "left": 594,
+        "right": 743,
+        "top": 752
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs shrink-0",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 15,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0260",
+      "parent_id": "N0259",
+      "rectangle": {
+        "bottom": 774,
+        "left": 603,
+        "right": 619,
+        "top": 758
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "_ActiveProjectSelectorTriggerClearButton_1mtns_89",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 14,
+      "name": null,
+      "name_length": 23,
+      "name_redacted": true,
+      "node_id": "N0261",
+      "parent_id": "N0258",
+      "rectangle": {
+        "bottom": 780,
+        "left": 594,
+        "right": 622,
+        "top": 752
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "radix-_r_6fk_",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-token-button-composer-sm px-1.5 py-0 text-sm leading-[18px] in-data-[composer-placement=home]:px-2 _ComposerFooterDropdown_1sqef_1 outline-hidden cursor-interaction",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 14,
+      "name": null,
+      "name_length": 28,
+      "name_redacted": true,
+      "node_id": "N0262",
+      "parent_id": "N0258",
+      "rectangle": {
+        "bottom": 780,
+        "left": 746,
+        "right": 817,
+        "top": 752
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 15,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0263",
+      "parent_id": "N0262",
+      "rectangle": {
+        "bottom": 774,
+        "left": 755,
+        "right": 772,
+        "top": 758
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Text",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 5,
+      "name_redacted": true,
+      "node_id": "N0264",
+      "parent_id": "N0262",
+      "rectangle": {
+        "bottom": 774,
+        "left": 777,
+        "right": 808,
+        "top": 757
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "radix-_r_6g6_",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-token-button-composer-sm px-1.5 py-0 text-sm leading-[18px] in-data-[composer-placement=home]:px-2 _ComposerFooterDropdown_1sqef_1 outline-hidden cursor-interaction px-0",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 14,
+      "name": null,
+      "name_length": 13,
+      "name_redacted": true,
+      "node_id": "N0265",
+      "parent_id": "N0258",
+      "rectangle": {
+        "bottom": 780,
+        "left": 820,
+        "right": 1007,
+        "top": 752
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 15,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0266",
+      "parent_id": "N0265",
+      "rectangle": {
+        "bottom": 774,
+        "left": 829,
+        "right": 846,
+        "top": 758
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Text",
+      "enabled": true,
+      "level": 15,
+      "name": null,
+      "name_length": 24,
+      "name_redacted": true,
+      "node_id": "N0267",
+      "parent_id": "N0265",
+      "rectangle": {
+        "bottom": 774,
+        "left": 851,
+        "right": 998,
+        "top": 756
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-token-button-composer px-2 py-0 text-sm leading-[18px] aspect-square shrink-0 items-center justify-center !px-0",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 18,
+      "name_redacted": true,
+      "node_id": "N0268",
+      "parent_id": "N0247",
+      "rectangle": {
+        "bottom": 875,
+        "left": 583,
+        "right": 611,
+        "top": 847
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs text-default",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0269",
+      "parent_id": "N0268",
+      "rectangle": {
+        "bottom": 869,
+        "left": 589,
+        "right": 605,
+        "top": 853
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "radix-_r_6fq_",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-token-button-composer-sm px-1.5 py-0 text-sm leading-[18px] min-w-0 outline-hidden cursor-interaction",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 18,
+      "name_redacted": true,
+      "node_id": "N0270",
+      "parent_id": "N0247",
+      "rectangle": {
+        "bottom": 875,
+        "left": 616,
+        "right": 711,
+        "top": 847
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs shrink-0 text-warning",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0271",
+      "parent_id": "N0270",
+      "rectangle": {
+        "bottom": 869,
+        "left": 623,
+        "right": 639,
+        "top": 853
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Text",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 11,
+      "name_redacted": true,
+      "node_id": "N0272",
+      "parent_id": "N0270",
+      "rectangle": {
+        "bottom": 869,
+        "left": 643,
+        "right": 704,
+        "top": 852
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "ProseMirror ProseMirror-focused",
+      "control_type": "Edit",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 11,
+      "name_redacted": true,
+      "node_id": "N0273",
+      "parent_id": "N0247",
+      "rectangle": {
+        "bottom": 843,
+        "left": 587,
+        "right": 1299,
+        "top": 799
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "ProseMirror-trailingBreak",
+      "control_type": "Text",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 1,
+      "name_redacted": true,
+      "node_id": "N0274",
+      "parent_id": "N0273",
+      "rectangle": {
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "top": 0
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Text",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 11,
+      "name_redacted": true,
+      "node_id": "N0275",
+      "parent_id": "N0273",
+      "rectangle": {
+        "bottom": 818,
+        "left": 587,
+        "right": 663,
+        "top": 799
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "radix-_r_6ft_",
+      "class_name": "contents outline-hidden cursor-interaction",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 12,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0276",
+      "parent_id": "N0247",
+      "rectangle": {
+        "bottom": 875,
+        "left": 1149,
+        "right": 1239,
+        "top": 847
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-token-button-composer px-2 py-0 text-sm leading-[18px] min-w-0",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 13,
+      "name": null,
+      "name_length": 12,
+      "name_redacted": true,
+      "node_id": "N0277",
+      "parent_id": "N0276",
+      "rectangle": {
+        "bottom": 875,
+        "left": 1149,
+        "right": 1239,
+        "top": 847
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "no-drag cursor-interaction items-center gap-1 border whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-40 flex rounded-full text-tertiary enabled:hover:bg-primary-ghost-hover data-[state=open]:bg-primary-ghost-hover border-transparent h-token-button-composer px-2 py-0 text-sm leading-[18px] aspect-square shrink-0 items-center justify-center !px-0",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 7,
+      "name_redacted": true,
+      "node_id": "N0278",
+      "parent_id": "N0247",
+      "rectangle": {
+        "bottom": 875,
+        "left": 1239,
+        "right": 1267,
+        "top": 847
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs text-default",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0279",
+      "parent_id": "N0278",
+      "rectangle": {
+        "bottom": 869,
+        "left": 1245,
+        "right": 1261,
+        "top": 853
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "cursor-interaction size-token-button-composer flex items-center justify-center rounded-full transition-opacity focus-visible:outline-2 bg-primary-solid p-0.5 focus-visible:outline-background-primary-solid",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 12,
+      "name": null,
+      "name_length": 20,
+      "name_redacted": true,
+      "node_id": "N0280",
+      "parent_id": "N0247",
+      "rectangle": {
+        "bottom": 875,
+        "left": 1275,
+        "right": 1303,
+        "top": 847
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "icon-xs text-primary-solid",
+      "control_type": "Image",
+      "enabled": true,
+      "level": 13,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0281",
+      "parent_id": "N0280",
+      "rectangle": {
+        "bottom": 869,
+        "left": 1281,
+        "right": 1297,
+        "top": 853
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "DndLiveRegion-15",
+      "class_name": "",
+      "control_type": "StatusBar",
+      "enabled": true,
+      "level": 11,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0282",
+      "parent_id": "N0240",
+      "rectangle": {
+        "bottom": -1,
+        "left": -2,
+        "right": -1,
+        "top": -2
+      },
+      "visible": false
+    },
+    {
+      "automation_id": "",
+      "class_name": "",
+      "control_type": "Group",
+      "enabled": true,
+      "level": 9,
+      "name": null,
+      "name_length": 19,
+      "name_redacted": true,
+      "node_id": "N0283",
+      "parent_id": "N0009",
+      "rectangle": {
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "top": 0
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "RootView",
+      "control_type": "Pane",
+      "enabled": true,
+      "level": 2,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0284",
+      "parent_id": "N0002",
+      "rectangle": {
+        "bottom": 35,
+        "left": 1464,
+        "right": 1601,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "",
+      "class_name": "ChromeNodeCaptionButtonContainer",
+      "control_type": "Pane",
+      "enabled": true,
+      "level": 3,
+      "name": "",
+      "name_length": 0,
+      "name_redacted": false,
+      "node_id": "N0285",
+      "parent_id": "N0284",
+      "rectangle": {
+        "bottom": 35,
+        "left": 1464,
+        "right": 1601,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "view_1",
+      "class_name": "ChromeNodeCaptionButton",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 4,
+      "name": null,
+      "name_length": 8,
+      "name_redacted": true,
+      "node_id": "N0286",
+      "parent_id": "N0285",
+      "rectangle": {
+        "bottom": 35,
+        "left": 1464,
+        "right": 1509,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "view_3",
+      "class_name": "ChromeNodeCaptionButton",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 4,
+      "name": null,
+      "name_length": 7,
+      "name_redacted": true,
+      "node_id": "N0287",
+      "parent_id": "N0285",
+      "rectangle": {
+        "bottom": 35,
+        "left": 1509,
+        "right": 1555,
+        "top": -1
+      },
+      "visible": true
+    },
+    {
+      "automation_id": "view_4",
+      "class_name": "ChromeNodeCaptionButton",
+      "control_type": "Button",
+      "enabled": true,
+      "level": 4,
+      "name": null,
+      "name_length": 5,
+      "name_redacted": true,
+      "node_id": "N0288",
+      "parent_id": "N0285",
+      "rectangle": {
+        "bottom": 35,
+        "left": 1555,
+        "right": 1601,
+        "top": -1
+      },
+      "visible": true
+    }
+  ],
+  "redaction_policy": {
+    "dynamic_names_recorded": false,
+    "stable_chrome_name_allowlist": [
+      "Codex",
+      "New chat",
+      "Scheduled task folders"
+    ],
+    "uia_value_pattern_recorded": false
+  },
+  "schema_version": "r6o-h2-d1-codex-uia-1"
+}
