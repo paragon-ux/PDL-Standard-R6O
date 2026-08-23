@@ -121,6 +121,18 @@ def require_object(value: Any, label: str) -> dict[str, Any]:
     return value
 
 
+def _rect_from_evidence(value: Any, label: str) -> Rect:
+    rectangle = require_object(value, label)
+    if set(rectangle) != {"x", "y", "width", "height"} or any(
+        type(rectangle[key]) is not int for key in ("x", "y", "width", "height")
+    ):
+        raise AssertionError(f"{label} must be an exact integer rectangle")
+    try:
+        return Rect(**rectangle)
+    except ValueError as exc:
+        raise AssertionError(f"{label} is invalid: {exc}") from exc
+
+
 def validate_evidence(value: Any, *, evidence_dir: Path | None = None) -> dict[str, Any]:
     _reject_forbidden_authority(value)
     report = require_object(value, "H2-C result")
@@ -160,6 +172,20 @@ def validate_evidence(value: Any, *, evidence_dir: Path | None = None) -> dict[s
         if set(mode) != MODE_KEYS:
             raise AssertionError(f"modes.{mode_name} fields differ")
         layout = require_object(mode.get("layout"), f"modes.{mode_name}.layout")
+        owner_rect = _rect_from_evidence(layout.get("owner"), f"modes.{mode_name}.layout.owner")
+        composer_rect = _rect_from_evidence(
+            layout.get("composer"), f"modes.{mode_name}.layout.composer"
+        )
+        try:
+            expected_layout = calculate_sidecar_layout(
+                owner_rect,
+                composer_rect,
+                SidecarMode(mode_name),
+            ).to_dict()
+        except ValueError as exc:
+            raise AssertionError(f"modes.{mode_name} layout inputs are invalid: {exc}") from exc
+        if layout != expected_layout:
+            raise AssertionError(f"modes.{mode_name} layout differs from authoritative calculation")
         observed = require_object(mode.get("observed_window"), f"modes.{mode_name}.observed_window")
         if layout.get("mode") != mode_name or layout.get("window") != observed:
             raise AssertionError(f"modes.{mode_name} observed geometry differs from calculation")

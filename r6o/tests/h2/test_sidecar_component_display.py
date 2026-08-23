@@ -138,6 +138,15 @@ def test_evidence_rejects_nested_authority_booleans_and_external_screenshot_path
         validate_evidence(mutation)
 
 
+def test_evidence_recomputes_layout_instead_of_accepting_mirrored_fabrication() -> None:
+    report = json.loads((DEFAULT_EVIDENCE_DIR / "component-result.json").read_text(encoding="utf-8"))
+    mutation = copy.deepcopy(report)
+    mutation["modes"]["STANDARD"]["layout"]["window"]["x"] += 777
+    mutation["modes"]["STANDARD"]["observed_window"]["x"] += 777
+    with pytest.raises(AssertionError, match="authoritative calculation"):
+        validate_evidence(mutation)
+
+
 def test_evidence_rejects_deleted_behavior_and_non_object_root() -> None:
     report = json.loads((DEFAULT_EVIDENCE_DIR / "component-result.json").read_text(encoding="utf-8"))
     mutation = copy.deepcopy(report)
