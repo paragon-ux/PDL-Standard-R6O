@@ -3,6 +3,7 @@ from __future__ import annotations
 """Process-level H2-B1 qualification for the public G06 TUI."""
 
 import argparse
+import codecs
 import hashlib
 import json
 import os
@@ -118,6 +119,8 @@ class ProcessKeyboardDriver:
         self.output = bytearray()
         self.events: list[tuple[float, str, bytes]] = []
         self.condition = threading.Condition()
+        self._output_decoder = codecs.getincrementaldecoder("utf-8")(errors="strict")
+        self.reader_error: UnicodeDecodeError | None = None
         self.process = subprocess.Popen(
             command,
             cwd=cwd,
@@ -131,22 +134,37 @@ class ProcessKeyboardDriver:
 
     def _read_output(self) -> None:
         assert self.process.stdout is not None
-        while True:
-            chunk = self.process.stdout.read(1)
-            if not chunk:
-                break
+        try:
+            while True:
+                chunk = self.process.stdout.read(1)
+                if not chunk:
+                    break
+                with self.condition:
+                    self._record_output_chunk(chunk)
+                    self.condition.notify_all()
             with self.condition:
-                self.output.extend(chunk)
-                self.events.append((time.monotonic() - self.started, "o", chunk))
+                tail = self._output_decoder.decode(b"", final=True)
+                if tail:
+                    self.events.append((time.monotonic() - self.started, "o", tail.encode("utf-8")))
                 self.condition.notify_all()
-        with self.condition:
-            self.condition.notify_all()
+        except UnicodeDecodeError as exc:
+            with self.condition:
+                self.reader_error = exc
+                self.condition.notify_all()
+
+    def _record_output_chunk(self, chunk: bytes) -> None:
+        self.output.extend(chunk)
+        decoded = self._output_decoder.decode(chunk)
+        if decoded:
+            self.events.append((time.monotonic() - self.started, "o", decoded.encode("utf-8")))
 
     def wait_for(self, marker: str, *, after: int = 0, timeout: float = 30.0) -> int:
         encoded = marker.encode("utf-8")
         deadline = time.monotonic() + timeout
         with self.condition:
             while True:
+                if self.reader_error is not None:
+                    raise AssertionError("public TUI emitted invalid UTF-8") from self.reader_error
                 position = bytes(self.output).find(encoded, after)
                 if position >= 0:
                     return position
@@ -163,15 +181,19 @@ class ProcessKeyboardDriver:
         if self.process.stdin is None:
             raise AssertionError("public process stdin is unavailable")
         payload = b"\r"
-        self.process.stdin.write(payload)
-        self.process.stdin.flush()
-        self.events.append((time.monotonic() - self.started, "i", payload))
+        with self.condition:
+            self.process.stdin.write(payload)
+            self.process.stdin.flush()
+            self.events.append((time.monotonic() - self.started, "i", payload))
+            self.condition.notify_all()
 
     def finish(self, timeout: float = 30.0) -> tuple[int, str]:
         if self.process.stdin is not None:
             self.process.stdin.close()
         returncode = self.process.wait(timeout=timeout)
         self.reader.join(timeout=5.0)
+        if self.reader_error is not None:
+            raise AssertionError("public TUI emitted invalid UTF-8") from self.reader_error
         transcript = bytes(self.output).decode("utf-8", errors="replace")
         return returncode, transcript
 

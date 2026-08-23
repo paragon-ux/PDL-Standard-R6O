@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import codecs
 import io
 import json
+import time
 from pathlib import Path
 
 import pytest
@@ -12,10 +14,28 @@ import scripts.h2.verify_tui_g06 as verifier_module
 from scripts.h2.verify_tui_g06 import (
     PLAN_SHA256,
     PROMPT_SHA256,
+    ProcessKeyboardDriver,
     RESULT_SHA256,
     normalized_text_sha256,
     run_qualification,
 )
+
+
+def test_terminal_cast_framer_never_splits_utf8_around_input_event() -> None:
+    driver = ProcessKeyboardDriver.__new__(ProcessKeyboardDriver)
+    driver.started = time.monotonic()
+    driver.output = bytearray()
+    driver.events = []
+    driver._output_decoder = codecs.getincrementaldecoder("utf-8")(errors="strict")
+    encoded = "┌".encode("utf-8")
+
+    driver._record_output_chunk(encoded[:1])
+    driver.events.append((time.monotonic() - driver.started, "i", b"\r"))
+    driver._record_output_chunk(encoded[1:])
+
+    events = driver.cast_events()
+    assert [(event[1], event[2]) for event in events] == [("i", "\r"), ("o", "┌")]
+    assert bytes(driver.output) == encoded
 
 
 def test_public_tui_g06_process_reaches_closed_success(
