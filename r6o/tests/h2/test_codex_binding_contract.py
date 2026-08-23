@@ -417,6 +417,15 @@ def test_readme_d2_qualification_is_branch_bound_and_paste_safe() -> None:
     assert "Do not press Enter or click Codex Send" in normalized
 
 
+def test_d2_qualification_dependencies_are_exactly_pinned() -> None:
+    assert (ROOT / "requirements-h2-d2.txt").read_text(encoding="utf-8").splitlines() == [
+        "-r requirements-r6o2-host.txt",
+        "-r requirements-h2-sidecar.txt",
+        "Pillow==12.3.0",
+        "imageio-ffmpeg==0.6.0",
+    ]
+
+
 def test_d2_evidence_schema_and_required_observations_when_present() -> None:
     path = ROOT / "r6o_evidence" / "H2-D2" / "attachment-result.json"
     if not path.exists():
@@ -442,6 +451,24 @@ def test_d2_evidence_schema_and_required_observations_when_present() -> None:
     assert document["selectors_sha256"] == hashlib.sha256(
         (ROOT / "r6o" / "host" / "codex" / "windows" / "selectors.json").read_bytes()
     ).hexdigest()
+    expected_implementation = {
+        source: hashlib.sha256((ROOT / source).read_bytes()).hexdigest()
+        for source in (
+            "r6o/host/codex/windows/binding.py",
+            "r6o/host/codex/windows/placement.py",
+            "scripts/h2/verify_codex_attachment.py",
+        )
+    }
+    assert document["implementation_sha256"] == expected_implementation
+    assert document["runtime"]["qt_platform"] == "windows"
+    assert document["runtime"]["qt_quick_backend"] == "software"
+    assert document["runtime"]["dependencies"] == {
+        "Pillow": "12.3.0",
+        "PySide6": "6.11.2",
+        "imageio-ffmpeg": "0.6.0",
+        "pywin32": "312",
+        "pywinauto": "0.6.9",
+    }
 
     recording_hashes: list[str] = []
     for mode in ("standard", "expanded"):

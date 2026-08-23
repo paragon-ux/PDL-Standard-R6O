@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.metadata
 import json
 import os
+import platform
 import sys
 import threading
 import time
@@ -30,6 +32,11 @@ DEFAULT_HOST_RECORD = ROOT / "r6o_evidence" / "H2-D1" / "host-environment.json"
 DEFAULT_SELECTORS = ROOT / "r6o" / "host" / "codex" / "windows" / "selectors.json"
 DEFAULT_EVIDENCE_DIR = ROOT / "r6o_evidence" / "H2-D2"
 MARKER = "H2D2NONINTERFERENCE"
+IMPLEMENTATION_PATHS = (
+    "r6o/host/codex/windows/binding.py",
+    "r6o/host/codex/windows/placement.py",
+    "scripts/h2/verify_codex_attachment.py",
+)
 
 
 def utc_now() -> str:
@@ -38,6 +45,40 @@ def utc_now() -> str:
 
 def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def implementation_hashes() -> dict[str, str]:
+    return {path: sha256_file(ROOT / path) for path in IMPLEMENTATION_PATHS}
+
+
+def runtime_record() -> dict[str, Any]:
+    try:
+        from PySide6.QtCore import qVersion
+        from PySide6.QtGui import QGuiApplication
+    except ImportError as exc:
+        raise CodexBindingError("SIDECAR_DEPENDENCY_MISSING") from exc
+    app = QGuiApplication.instance()
+    if app is None:
+        raise CodexBindingError("SIDECAR_QT_APPLICATION_MISSING")
+    dependencies = {
+        distribution: importlib.metadata.version(distribution)
+        for distribution in (
+            "PySide6",
+            "pywinauto",
+            "pywin32",
+            "Pillow",
+            "imageio-ffmpeg",
+        )
+    }
+    return {
+        "python_version": platform.python_version(),
+        "platform": platform.platform(),
+        "machine": platform.machine(),
+        "qt_version": qVersion(),
+        "qt_platform": app.platformName(),
+        "qt_quick_backend": os.environ.get("QT_QUICK_BACKEND", ""),
+        "dependencies": dependencies,
+    }
 
 
 def parse_args() -> argparse.Namespace:
@@ -356,28 +397,53 @@ def run_non_interference(binding: CodexSidecarBinding, ledger: EventLedger) -> d
         from pywinauto.keyboard import send_keys
     except ImportError as exc:
         raise CodexBindingError("HOST_DEPENDENCY_MISSING") from exc
-    send_keys(MARKER, pause=0.025, with_spaces=False)
-    wait_until(
-        lambda: MARKER in safe_current_value(binding.refresh_controls().composer),
-        timeout=5.0,
-        code="NON_INTERFERENCE_MARKER_NOT_VISIBLE",
-    )
-    composer = binding.refresh_controls().composer
-    marker_value = safe_current_value(composer)
-    ledger.add(
-        "non_submitting_marker_visible",
-        marker_length=len(MARKER),
-        marker_sha256=hashlib.sha256(MARKER.encode("utf-8")).hexdigest(),
-        observed_value_length=len(marker_value),
-        submit_gesture_used=False,
-    )
-    send_keys("^a{BACKSPACE}", pause=0.025)
-    wait_until(
-        lambda: composer_empty_observation(binding.refresh_controls().composer, empty_contract).get("empty")
-        is True,
-        timeout=5.0,
-        code="NON_INTERFERENCE_MARKER_RESET_FAILED",
-    )
+    marker_may_be_present = False
+    try:
+        send_keys(MARKER, pause=0.025, with_spaces=False)
+        marker_may_be_present = True
+        wait_until(
+            lambda: MARKER in safe_current_value(binding.refresh_controls().composer),
+            timeout=5.0,
+            code="NON_INTERFERENCE_MARKER_NOT_VISIBLE",
+        )
+        composer = binding.refresh_controls().composer
+        marker_value = safe_current_value(composer)
+        ledger.add(
+            "non_submitting_marker_visible",
+            marker_length=len(MARKER),
+            marker_sha256=hashlib.sha256(MARKER.encode("utf-8")).hexdigest(),
+            observed_value_length=len(marker_value),
+            submit_gesture_used=False,
+        )
+        send_keys("^a{BACKSPACE}", pause=0.025)
+        wait_until(
+            lambda: composer_empty_observation(
+                binding.refresh_controls().composer, empty_contract
+            ).get("empty")
+            is True,
+            timeout=5.0,
+            code="NON_INTERFERENCE_MARKER_RESET_FAILED",
+        )
+        marker_may_be_present = False
+    except Exception:
+        if marker_may_be_present:
+            try:
+                current = binding.refresh_controls().composer
+                if MARKER in safe_current_value(current):
+                    current.set_focus()
+                    send_keys("^a{BACKSPACE}", pause=0.025)
+                    wait_until(
+                        lambda: composer_empty_observation(
+                            binding.refresh_controls().composer, empty_contract
+                        ).get("empty")
+                        is True,
+                        timeout=5.0,
+                        code="NON_INTERFERENCE_MARKER_CLEANUP_FAILED",
+                    )
+                ledger.add("failure_cleanup_marker_removed", marker_removed=True)
+            except Exception as cleanup_error:
+                raise CodexBindingError("NON_INTERFERENCE_MARKER_CLEANUP_FAILED") from cleanup_error
+        raise
     refreshed = binding.refresh_controls()
     turns_after = visible_turn_group_count(refreshed.primary_content_region, turn_class)
     rectangle_after = binding.native.rectangle(binding.sidecar_hwnd)
@@ -419,6 +485,7 @@ def write_failure(
     code: str,
     host_record: Path,
     selectors: Path,
+    real_codex_host_tested: bool,
 ) -> None:
     ledger.add("qualification_failed", code=code)
     ledger.write(evidence_dir / "win32-uia-events.jsonl")
@@ -431,7 +498,7 @@ def write_failure(
             "timestamp_utc": utc_now(),
             "host_record": host_record.resolve().as_posix(),
             "selectors": selectors.resolve().as_posix(),
-            "real_codex_host_tested": False,
+            "real_codex_host_tested": real_codex_host_tested,
             "synthetic_owner_used": False,
         },
     )
@@ -538,6 +605,8 @@ def main() -> int:
             },
             "host_record_sha256": sha256_file(args.host_record),
             "selectors_sha256": sha256_file(args.selectors),
+            "implementation_sha256": implementation_hashes(),
+            "runtime": runtime_record(),
             "composer_resolution": {
                 "selector_match_count": binding.controls.composer_selector_match_count,
                 "qualifying_geometry_match_count": 1,
@@ -584,6 +653,7 @@ def main() -> int:
             code=code,
             host_record=args.host_record,
             selectors=args.selectors,
+            real_codex_host_tested=binding is not None,
         )
         print(json.dumps({"status": "FAIL", "code": code}, sort_keys=True), file=sys.stderr)
         return 1
