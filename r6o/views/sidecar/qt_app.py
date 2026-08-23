@@ -105,7 +105,8 @@ class QtSidecarWindow:
         _process_until(
             lambda: self.window.isVisible()
             and self.window.isExposed()
-            and bool(self.window.property("assetsReady"))
+            and bool(self.window.property("assetsReady")),
+            timeout_ms=10000,
         )
 
     def render(self, projection: dict[str, object]) -> bool:

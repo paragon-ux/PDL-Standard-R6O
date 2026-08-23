@@ -75,6 +75,12 @@ jobs:
           xdpyinfo -display :99 >/dev/null
           openbox >"$RUNNER_TEMP/openbox.log" 2>&1 &
           xcompmgr -c -n >"$RUNNER_TEMP/xcompmgr.log" 2>&1 &
+          for attempt in {1..50}; do
+            xprop -root _NET_SUPPORTING_WM_CHECK 2>/dev/null | grep -q '# 0x' && break
+            sleep 0.1
+          done
+          xprop -root _NET_SUPPORTING_WM_CHECK | grep -q '# 0x'
+          pgrep -x xcompmgr >/dev/null
           python scripts/h2/verify_qt_sidecar_component.py --platform x11
           python -m pytest r6o/tests/h2/test_qt_sidecar_feasibility.py r6o/tests/h2/test_qt_sidecar_component.py -q -p no:cacheprovider
       - uses: actions/upload-artifact@v4
