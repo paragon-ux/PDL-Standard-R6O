@@ -8,12 +8,10 @@ FocusScope {
     required property string label
     required property color accent
     required property string uiFamily
+    required property bool showKeyboardFocus
     signal activated(string actionId)
-
-    readonly property bool keyboardFocusVisible: activeFocus
-        && (activeFocusReason === Qt.TabFocusReason
-            || activeFocusReason === Qt.BacktabFocusReason
-            || activeFocusReason === Qt.ShortcutFocusReason)
+    signal keyboardNavigationStarted
+    signal pointerActivated
 
     objectName: "reviewAction_" + actionId
     height: 31
@@ -47,7 +45,8 @@ FocusScope {
         height: 31
         radius: DesignTokens.actionRadius
         color: DesignTokens.controlSurface
-        border.color: control.keyboardFocusVisible ? control.accent : DesignTokens.cardBorder
+        border.color: control.showKeyboardFocus && control.activeFocus
+            ? control.accent : DesignTokens.cardBorder
         border.width: 1
 
         Text {
@@ -65,9 +64,14 @@ FocusScope {
         anchors.fill: parent
         enabled: control.enabled
         onClicked: {
+            control.pointerActivated()
             control.forceActiveFocus()
             control.activated(control.actionId)
         }
+    }
+    Keys.onPressed: event => {
+        if (event.key === Qt.Key_Tab || event.key === Qt.Key_Backtab)
+            control.keyboardNavigationStarted()
     }
     Keys.onReturnPressed: if (control.enabled) control.activated(control.actionId)
     Keys.onSpacePressed: if (control.enabled) control.activated(control.actionId)

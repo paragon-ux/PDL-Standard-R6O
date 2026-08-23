@@ -8,6 +8,7 @@ Item {
     required property string uiFamily
     required property var actions
     signal actionRequested(string actionId)
+    property bool keyboardFocusVisible: false
 
     Rectangle {
         anchors.fill: parent
@@ -48,11 +49,14 @@ Item {
                 label: String(modelData.label)
                 enabled: Boolean(modelData.enabled)
                 uiFamily: options.uiFamily
+                showKeyboardFocus: options.keyboardFocusVisible
                 accent: ordinal === 1 ? DesignTokens.active
                     : ordinal === 2 ? DesignTokens.actionBlue
                     : ordinal === 3 ? DesignTokens.actionAmber
                     : DesignTokens.actionNeutral
                 onActivated: actionId => options.actionRequested(actionId)
+                onKeyboardNavigationStarted: options.keyboardFocusVisible = true
+                onPointerActivated: options.keyboardFocusVisible = false
             }
         }
     }
@@ -71,6 +75,7 @@ Item {
     }
 
     function focusFirstAction() {
+        keyboardFocusVisible = false
         const first = actionsRepeater.itemAt(0)
         if (first) first.forceActiveFocus()
     }

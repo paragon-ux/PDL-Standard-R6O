@@ -301,5 +301,5 @@ def test_locked_tokens_and_forbidden_ui_are_structurally_enforced() -> None:
         assert forbidden not in component_source
     assert "QtQuick.Controls" not in component_source
     review_action = (QML_ROOT / "ReviewAction.qml").read_text(encoding="utf-8")
-    assert "keyboardFocusVisible" in review_action
-    assert "border.color: control.activeFocus" not in review_action
+    assert "showKeyboardFocus" in review_action
+    assert "control.showKeyboardFocus && control.activeFocus" in review_action

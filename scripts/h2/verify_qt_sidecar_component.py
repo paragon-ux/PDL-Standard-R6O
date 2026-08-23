@@ -269,6 +269,7 @@ def qualify(target: str, evidence_root: Path, hold_seconds: float) -> dict[str, 
                     raise AssertionError("EXPANDED composition is not artifact-top/options-below")
                 if sidecar.object("expandControl").property("visible") is not False:
                     raise AssertionError("EXPANDED mode exposes a visible collapse/expand control")
+            QTest.qWait(100)
             if hold_seconds:
                 QTest.qWait(round(hold_seconds * 1000))
             capture_path = platform_dir / CAPTURE_NAMES[mode]
