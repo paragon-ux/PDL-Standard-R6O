@@ -132,6 +132,11 @@ def qualify(target: str, evidence_root: Path, hold_seconds: float) -> dict[str, 
         sidecar.object("expandControl")
         sidecar.object("expandIcon")
 
+        sidecar.window.raise_()
+        sidecar.window.requestActivate()
+        wait_for(lambda: sidecar.window.isExposed())
+        QTest.qWait(250)
+        QTest.mouseMove(sidecar.window, QPoint(530, 131))
         QTest.mouseClick(sidecar.window, Qt.LeftButton, Qt.NoModifier, QPoint(530, 131))
         wait_for(lambda: sidecar.bridge.lastActionId == "change_task")
         if not QMetaObject.invokeMethod(sidecar.window, "focusFirstAction", Qt.DirectConnection):

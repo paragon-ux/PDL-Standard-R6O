@@ -8,7 +8,6 @@ FocusScope {
     required property string label
     required property color accent
     required property string uiFamily
-    property bool enabled: true
     signal activated(string actionId)
 
     objectName: "reviewAction_" + actionId

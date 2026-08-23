@@ -53,7 +53,7 @@ Install the pinned Qt dependency and run the Windows feasibility proof:
     $ErrorActionPreference = 'Stop'
     python -m pip install -r requirements-h2-sidecar.txt
     if ($LASTEXITCODE -ne 0) { throw 'H2-C Qt dependency installation failed' }
-    $env:QSG_RHI_BACKEND = 'software'
+    $env:QT_QUICK_BACKEND = 'software'
     $env:QT_SCALE_FACTOR = '1'
     $env:QT_FONT_DPI = '96'
     python scripts\h2\verify_qt_sidecar_feasibility.py --platform windows

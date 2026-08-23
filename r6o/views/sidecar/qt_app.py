@@ -6,7 +6,7 @@ import os
 import sys
 from pathlib import Path
 
-from PySide6.QtCore import QCoreApplication, QEventLoop, QObject, QTimer, QUrl
+from PySide6.QtCore import QCoreApplication, QEvent, QEventLoop, QObject, QTimer, QUrl
 from PySide6.QtGui import QGuiApplication, QImage
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtQuick import QQuickWindow
@@ -66,7 +66,11 @@ class QtSidecarWindow:
     def show(self) -> None:
         self.window.show()
         self.window.requestActivate()
-        _process_until(lambda: self.window.isVisible() and bool(self.window.property("assetsReady")))
+        _process_until(
+            lambda: self.window.isVisible()
+            and self.window.isExposed()
+            and bool(self.window.property("assetsReady"))
+        )
 
     def set_mode(self, mode: SidecarMode) -> None:
         expected = SidecarMode.parse(mode)
@@ -91,5 +95,7 @@ class QtSidecarWindow:
 
     def close(self) -> None:
         self.window.close()
-        ensure_application().processEvents()
+        self.window.deleteLater()
         self.engine.deleteLater()
+        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        ensure_application().processEvents()
