@@ -1,0 +1,169 @@
+{
+  "close_focus_return": {
+    "composer_keyboard_focus": true,
+    "expected_foreground_hwnd": 15009088,
+    "foreground_hwnd": 15009088,
+    "sidecar_visible": false
+  },
+  "composer_resolution": {
+    "actual_composer_rectangle": {
+      "bottom": 843,
+      "height": 44,
+      "left": 377,
+      "right": 1090,
+      "top": 799,
+      "width": 713
+    },
+    "qualifying_geometry_match_count": 1,
+    "selector_match_count": 2
+  },
+  "event_log": {
+    "event_count": 10,
+    "path": "r6o_evidence/H2-D2/win32-uia-events.jsonl",
+    "sha256": "ad3692231d16e16a79d70379a3acf8900faf70638dab290b1b8f79317c642ab6"
+  },
+  "expanded": {
+    "actual_rectangle": {
+      "bottom": 853,
+      "height": 806,
+      "left": 1165,
+      "right": 1577,
+      "top": 47,
+      "width": 412
+    },
+    "composer_selector_match_count": 2,
+    "expected_owner_hwnd": 15009088,
+    "expected_rectangle": {
+      "bottom": 853,
+      "height": 806,
+      "left": 1165,
+      "right": 1577,
+      "top": 47,
+      "width": 412
+    },
+    "foreground_hwnd": 15009088,
+    "global_topmost": false,
+    "mode": "EXPANDED",
+    "owner_hwnd": 15009088,
+    "placement_matches": true,
+    "sidecar_above_host": true,
+    "sidecar_hwnd": 19467126,
+    "visible": true,
+    "z_order_indices": {
+      "host": 25,
+      "sidecar": 24
+    }
+  },
+  "gate": "H2-D2",
+  "host": {
+    "dpi": 96,
+    "file_version": "151.0.7922.170",
+    "hwnd": 15009088,
+    "package_version": "26.818.3698.0",
+    "pid": 18644,
+    "product_name": "Codex",
+    "product_version": "151.0.7922.170"
+  },
+  "host_record_sha256": "7cf1b2219f38b2d7e1f610dd25467969c688b681b3ac0632041eff3978ce9db5",
+  "non_interference": {
+    "composer_clicked_outside_sidecar": true,
+    "composer_empty_before": true,
+    "composer_received_keyboard_focus": true,
+    "marker_removed": true,
+    "marker_submitted": false,
+    "marker_visible": true,
+    "normal_codex_dispatch_observed": false,
+    "placement_unchanged": true,
+    "sidecar_above_host_after": true,
+    "sidecar_visible_after": true,
+    "visible_turn_count_after": 1,
+    "visible_turn_count_before": 1
+  },
+  "observer_ordering_mutation": false,
+  "real_codex_host_tested": true,
+  "recording": {
+    "expanded": {
+      "crop_rectangle": {
+        "bottom": 853,
+        "height": 806,
+        "left": 1165,
+        "right": 1577,
+        "top": 47,
+        "width": 412
+      },
+      "fps": 8,
+      "frame_count": 9,
+      "observer_ordering_mutation": false,
+      "path": "r6o_evidence/H2-D2/attachment-expanded.mp4",
+      "sha256": "46e154ca32fb5b71b5eddd660967523e3b90d0f76e2cb7eb5bf0068b98059162"
+    },
+    "frame_count": 399,
+    "mandatory": true,
+    "sha256": "d72a1f7602dad16bc9f6f606a1c88e01063e0b753319d86a91128e7cf7d9f16b",
+    "standard": {
+      "crop_rectangle": {
+        "bottom": 843,
+        "height": 352,
+        "left": 376,
+        "right": 1052,
+        "top": 491,
+        "width": 676
+      },
+      "fps": 8,
+      "frame_count": 390,
+      "observer_ordering_mutation": false,
+      "path": "r6o_evidence/H2-D2/attachment-standard.mp4",
+      "sha256": "5fefa162f50c225bce5ef1d396b53342ee6c09ea5f08d56604d3e315a7f155f8"
+    }
+  },
+  "schema_version": "r6o-h2-d2-attachment-result-1",
+  "scope": {
+    "normal_codex_submit_gesture_used": false,
+    "r6o3_lease_implemented": false,
+    "semantic_workflow_exercised": false
+  },
+  "selectors_sha256": "cb5a1b5b3123c979c54ecd3ec2614aa1d7b3c927dec987cdcfbbddeae75a21ef",
+  "standard": {
+    "actual_rectangle": {
+      "bottom": 791,
+      "height": 300,
+      "left": 377,
+      "right": 1052,
+      "top": 491,
+      "width": 675
+    },
+    "composer_selector_match_count": 2,
+    "expected_owner_hwnd": 15009088,
+    "expected_rectangle": {
+      "bottom": 791,
+      "height": 300,
+      "left": 377,
+      "right": 1052,
+      "top": 491,
+      "width": 675
+    },
+    "foreground_hwnd": 19467126,
+    "global_topmost": false,
+    "mode": "STANDARD",
+    "owner_hwnd": 15009088,
+    "placement_matches": true,
+    "sidecar_above_host": true,
+    "sidecar_hwnd": 19467126,
+    "visible": true,
+    "z_order_indices": {
+      "host": 25,
+      "sidecar": 24
+    }
+  },
+  "status": "H2_D2_ATTACHMENT_PASS",
+  "synthetic_owner_used": false,
+  "timestamp_utc": "2026-08-23T12:23:05.174318Z",
+  "unrelated_window": {
+    "host_focus_router_ignored_probe_click": true,
+    "probe_above_sidecar": true,
+    "probe_foreground": true,
+    "probe_global_topmost": false,
+    "probe_hwnd": 4395822,
+    "probe_owner_hwnd": 0
+  }
+}

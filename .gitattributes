@@ -1,8 +1,11 @@
 r6o/host/codex/windows/selectors.json text eol=lf
 r6o_evidence/H2-D1/*.json text eol=lf
 r6o_evidence/H2-D1/reset-session.log text eol=lf
+r6o_evidence/H2-D2/*.json text eol=lf
+r6o_evidence/H2-D2/*.jsonl text eol=lf
 
 *.png binary
+*.mp4 binary
 *.ttf binary
 *.svg binary
 r6o/views/sidecar/assets/fonts/*.txt binary
