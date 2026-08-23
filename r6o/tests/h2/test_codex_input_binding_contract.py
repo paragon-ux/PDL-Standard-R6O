@@ -156,6 +156,26 @@ def test_sidecar_to_composer_focus_transaction_attaches_and_detaches_once() -> N
     assert binding.focus_transaction_count == 1
 
 
+def test_activate_revalidates_frozen_host_before_native_focus_mutation() -> None:
+    calls: list[str] = []
+
+    class StaleHost:
+        def refresh_controls(self) -> object:
+            calls.append("refresh_controls")
+            raise RuntimeError("stale frozen host")
+
+    binding = CodexComposerInputBinding(StaleHost(), lambda envelope: None)  # type: ignore[arg-type]
+    binding._hook_thread = object()  # type: ignore[assignment]
+    binding._transfer_focus_from_sidecar_to_host = lambda: calls.append(  # type: ignore[method-assign]
+        "native_focus_mutation"
+    )
+
+    with pytest.raises(RuntimeError, match="stale frozen host"):
+        binding.activate(projection())
+
+    assert calls == ["refresh_controls"]
+
+
 def test_unmodified_enter_is_suppressed_and_queued_exactly_once() -> None:
     binding = input_binding()
     api = FakeUser32()
@@ -171,6 +191,33 @@ def test_unmodified_enter_is_suppressed_and_queued_exactly_once() -> None:
     assert binding.suppressed_keyup_count == 1
     assert binding.armed is False
     assert binding._captures.empty()
+
+
+def test_second_enter_is_suppressed_until_captured_text_is_cleared() -> None:
+    binding = input_binding()
+    api = FakeUser32()
+
+    assert binding._handle_key_event(api, 0x0D, WM_KEYDOWN) is True
+    assert binding._handle_key_event(api, 0x0D, WM_KEYUP) is True
+    capture = binding._captures.get_nowait()
+    assert capture is not None
+
+    # A distinct second gesture after key-up must not escape while GUI-thread
+    # delivery has not yet cleared the captured text from the real composer.
+    assert binding._handle_key_event(api, 0x0D, WM_KEYDOWN) is True
+    assert binding._handle_key_event(api, 0x0D, WM_KEYUP) is True
+    assert binding.capture_count == 1
+    assert binding.suppressed_keydown_count == 2
+    assert binding.suppressed_keyup_count == 2
+    assert binding._captures.empty()
+
+    binding._clear_actual_composer = lambda: None  # type: ignore[method-assign]
+    binding._deliver_capture(capture)
+
+    # Once clearing succeeds, this one-shot binding is inactive and no longer
+    # consumes a later independent host gesture.
+    assert binding._handle_key_event(api, 0x0D, WM_KEYDOWN) is False
+    assert binding.delivery_count == 1
 
 
 def test_shift_enter_passes_through_as_editing_and_does_not_route() -> None:

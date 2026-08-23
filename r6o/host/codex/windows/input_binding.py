@@ -122,6 +122,7 @@ class CodexComposerInputBinding:
         self._state_lock = threading.Lock()
         self._active_projection: dict[str, Any] | None = None
         self._armed = False
+        self._delivery_pending = False
         self._enter_down = False
         self._pressed_modifiers: set[int] = set()
         self._captures: queue.Queue[CapturedComposerSubmission | None] = queue.Queue()
@@ -250,6 +251,9 @@ class CodexComposerInputBinding:
         if self._hook_thread is None:
             raise CodexInputBindingError("HOST_INPUT_HOOK_NOT_STARTED")
         context = validate_active_projection_context(projection)
+        # Revalidate the frozen D1 HWND before any native focus mutation. A
+        # stale HWND may have been reused since the D2 attachment completed.
+        self.host.refresh_controls()
         self._transfer_focus_from_sidecar_to_host()
         controls = self.host.refresh_controls()
         controls.composer.set_focus()
@@ -264,6 +268,8 @@ class CodexComposerInputBinding:
                 foreground = False
             if focused and foreground:
                 with self._state_lock:
+                    if self._delivery_pending:
+                        raise CodexInputBindingError("HOST_COMPOSER_DELIVERY_PENDING")
                     self._active_projection = context
                     self._armed = True
                     self._enter_down = False
@@ -322,6 +328,14 @@ class CodexComposerInputBinding:
             if message in KEY_DOWN_MESSAGES and self._enter_down:
                 return True
             armed = self._armed
+            delivery_pending = self._delivery_pending
+            if message in KEY_DOWN_MESSAGES and delivery_pending:
+                # The captured text is still present until the GUI-thread
+                # delivery clears the real composer. Swallow any later Enter
+                # gesture during that interval so it cannot escape to Codex.
+                self._enter_down = True
+                self.suppressed_keydown_count += 1
+                return True
         if message not in KEY_DOWN_MESSAGES or not armed:
             return False
         try:
@@ -363,6 +377,7 @@ class CodexComposerInputBinding:
             projection = dict(self._active_projection or {})
             self._armed = False
             self._active_projection = None
+            self._delivery_pending = True
         self.capture_count += 1
         capture = CapturedComposerSubmission(
             projection=projection,
@@ -413,6 +428,8 @@ class CodexComposerInputBinding:
                 raise CodexInputBindingError("CAPTURE_RECORD_INVALID")
             envelope = build_host_composer_envelope(capture.projection, capture.text)
             self._clear_actual_composer()
+            with self._state_lock:
+                self._delivery_pending = False
             self.on_envelope(dict(envelope))
             self.last_envelope = envelope
             self.delivery_count += 1
@@ -451,7 +468,9 @@ class CodexComposerInputBinding:
                 except Exception:
                     self._set_error("HOST_INPUT_HOOK_RUNTIME_FAILED")
                     with self._state_lock:
-                        suppress_fail_closed = self._armed or self._enter_down
+                        suppress_fail_closed = (
+                            self._armed or self._delivery_pending or self._enter_down
+                        )
                     suppressed = bool(suppress_fail_closed and message in KEY_DOWN_MESSAGES | KEY_UP_MESSAGES)
             if suppressed:
                 return 1
@@ -494,6 +513,8 @@ class CodexComposerInputBinding:
             if self._hook_thread.is_alive():
                 raise CodexInputBindingError("HOST_INPUT_HOOK_STOP_TIMEOUT")
             self._hook_thread = None
+        with self._state_lock:
+            self._delivery_pending = False
         self._dispatcher = None
         self.assert_healthy()
 
