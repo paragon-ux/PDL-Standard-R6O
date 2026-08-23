@@ -6,7 +6,7 @@ import os
 import subprocess
 import sys
 from copy import deepcopy
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from types import SimpleNamespace
 
 import pytest
@@ -385,7 +385,7 @@ def test_evidence_identity_hashes_and_required_environment_fields_are_frozen() -
     }
     assert set(host["codex"]) == required_codex
     assert host["codex"]["product_name"] == "Codex"
-    assert Path(host["codex"]["executable"]).is_absolute()
+    assert PureWindowsPath(host["codex"]["executable"]).is_absolute()
     assert host["codex"]["uia_connection"]["connected"] is True
     assert tree_host_hash() == _sha256(HOST_RECORD_PATH)
     validate_environment_record(host)

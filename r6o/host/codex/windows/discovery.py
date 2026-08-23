@@ -6,7 +6,7 @@ import re
 import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any, Callable, Iterable
 
 CODEX_PRODUCT_NAME = "Codex"
@@ -144,7 +144,7 @@ def is_codex_candidate(candidate: HostCandidate, *, current_pid: int) -> bool:
         and bool(candidate.product_version.strip())
         and bool(candidate.file_version.strip())
         and bool(candidate.title.strip())
-        and Path(candidate.executable).is_absolute()
+        and PureWindowsPath(candidate.executable).is_absolute()
     )
 
 
@@ -262,7 +262,7 @@ def validate_environment_record(record: dict[str, Any]) -> None:
             raise ValueError
         if not isinstance(codex["pid"], int) or codex["pid"] <= 0:
             raise ValueError
-        if not Path(codex["executable"]).is_absolute():
+        if not PureWindowsPath(codex["executable"]).is_absolute():
             raise ValueError
         for key in (
             "product_name",
