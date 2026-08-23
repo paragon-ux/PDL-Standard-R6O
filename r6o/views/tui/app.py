@@ -402,5 +402,7 @@ class TerminalReviewApp:
                     action_id = action["action_id"]
                     result = handle_input(self._action_envelope(projection, action_id), self.port)
                     projection = self._apply_result(result, projection)
-                    if result.get("ok") and result.get("projection"):
+                    if result.get("result_type") == "FOCUS_REQUIRED" and result.get("ok"):
+                        self.on_projection("FOCUS", action_id, projection)
+                    elif result.get("ok") and result.get("projection"):
                         self.on_projection("ACTION", action_id, projection)

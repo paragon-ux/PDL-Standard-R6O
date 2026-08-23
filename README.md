@@ -16,7 +16,35 @@ and its independently gated H2 presentation work.
 - H2 work proceeds through independent gates and dedicated pull requests.
 - A later H2 gate must not be inferred to have passed from an earlier gate.
 
-## Checkout under review for H2-D1
+## Checkout under review for H2-B2
+
+PR #8 is reviewed from branch `codex/h2-b2-tui-a02-full`. Before running
+qualification, verify that this checkout is at the current remote PR head:
+
+```powershell
+& {
+    $ErrorActionPreference = 'Stop'
+    $ExpectedReviewBranch = 'codex/h2-b2-tui-a02-full'
+    git fetch origin --prune
+    if ($LASTEXITCODE -ne 0) { throw 'Unable to fetch the H2-B2 review branch' }
+
+    $ActualBranch = (git branch --show-current).Trim()
+    if ($ActualBranch -ne $ExpectedReviewBranch) {
+        throw "Wrong H2-B2 branch: $ActualBranch. Run: git switch $ExpectedReviewBranch"
+    }
+    $LocalHead = (git rev-parse HEAD).Trim()
+    $RemoteHead = (git rev-parse "origin/$ExpectedReviewBranch").Trim()
+    if ($LocalHead -ne $RemoteHead) {
+        throw "Checkout is not at the current PR head. Run: git pull --ff-only origin $ExpectedReviewBranch"
+    }
+    "H2-B2 CHECKOUT VERIFIED: $ActualBranch@$LocalHead"
+}
+```
+
+After PR #8 is merged, merged `main` replaces this branch as the authoritative
+checkout for later gates.
+
+## Accepted H2-D1 review branch
 
 PR #7 is reviewed from branch `codex/h2-d1-codex-discovery`. Before running
 qualification, use this non-destructive identity check from the repository
@@ -139,6 +167,59 @@ Expected terminal status from the first command:
 The `--record` mode is not an ordinary qualification command. It replaces the
 frozen fixture using a live worker and therefore additionally requires the
 explicit `--approve-live-recording` acknowledgement.
+
+## H2-B2 qualification
+
+H2-B2 proves the complete A02-FULL workflow through the public TUI process and
+real stdin keyboard boundary. After binding and verifying the frozen oracle,
+run this fail-fast block from the H2-B2 checkout:
+
+```powershell
+& {
+    $ErrorActionPreference = 'Stop'
+    if ([string]::IsNullOrWhiteSpace($env:PDL_R6S_BASELINE_REPO)) {
+        throw 'Bind and verify PDL_R6S_BASELINE_REPO before H2-B2 qualification'
+    }
+    $OracleRoot = (Resolve-Path -LiteralPath $env:PDL_R6S_BASELINE_REPO -ErrorAction Stop).Path
+    $ExpectedCommit = '60d982f3328b45a351879d67dc4bb525172b65fd'
+    $ExpectedTree = 'b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6'
+    if ((git -C $OracleRoot rev-parse HEAD).Trim() -ne $ExpectedCommit) {
+        throw 'Wrong frozen-oracle commit before H2-B2'
+    }
+    if ((git -C $OracleRoot rev-parse 'HEAD^{tree}').Trim() -ne $ExpectedTree) {
+        throw 'Wrong frozen-oracle tree before H2-B2'
+    }
+
+    python scripts\h2\verify_tui_a02_full.py --baseline-repo $OracleRoot
+    if ($LASTEXITCODE -ne 0) { throw 'H2-B2 process qualification failed' }
+    python -m pytest r6o\tests\h2\test_tui_a02_full_process.py -q -p no:cacheprovider
+    if ($LASTEXITCODE -ne 0) { throw 'H2-B2 focused pytest failed' }
+}
+```
+
+Expected automated status:
+
+```text
+"status": "MECHANICAL_PASS_PENDING_HUMAN"
+```
+
+For the human-equivalent run, use:
+
+```powershell
+python scripts\run_r6o2_tui.py --recorded --case A02-FULL --baseline-repo $env:PDL_R6S_BASELINE_REPO
+```
+
+In the initial Prompt review, press Tab three times, press Enter on
+`Something else...`, type the following exact review text, and press Enter
+once:
+
+```text
+This is not confirmed. The audience should be data engineers, not backend engineers.
+```
+
+Confirm the revised Prompt with Enter, then confirm the Plan with Enter. The
+same process must return to PowerShell with `R6O TUI PASS: CLOSED_SUCCESS`.
+There is no relaunch and no qualification-harness Send step.
 
 ## H2-D1 qualification (Windows only)
 
