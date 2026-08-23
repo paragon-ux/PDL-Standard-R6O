@@ -220,6 +220,19 @@ def test_second_enter_is_suppressed_until_captured_text_is_cleared() -> None:
     assert binding.delivery_count == 1
 
 
+def test_pending_delivery_never_suppresses_enter_in_another_window() -> None:
+    binding = input_binding()
+    binding._armed = False
+    binding._delivery_pending = True
+    api = FakeUser32(foreground=999)
+
+    assert binding._handle_key_event(api, 0x0D, WM_KEYDOWN) is False
+    assert binding._handle_key_event(api, 0x0D, WM_KEYUP) is False
+    assert binding.suppressed_keydown_count == 0
+    assert binding.suppressed_keyup_count == 0
+    assert binding.capture_count == 0
+
+
 def test_shift_enter_passes_through_as_editing_and_does_not_route() -> None:
     binding = input_binding()
     api = FakeUser32(shift=True)

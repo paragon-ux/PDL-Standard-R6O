@@ -329,20 +329,10 @@ class CodexComposerInputBinding:
                 return True
             armed = self._armed
             delivery_pending = self._delivery_pending
-            if message in KEY_DOWN_MESSAGES and delivery_pending:
-                # The captured text is still present until the GUI-thread
-                # delivery clears the real composer. Swallow any later Enter
-                # gesture during that interval so it cannot escape to Codex.
-                self._enter_down = True
-                self.suppressed_keydown_count += 1
-                return True
-        if message not in KEY_DOWN_MESSAGES or not armed:
+        if message not in KEY_DOWN_MESSAGES or not (armed or delivery_pending):
             return False
         try:
             foreground_matches = int(user32.GetForegroundWindow() or 0) == self.host.host_hwnd
-            with self._state_lock:
-                tracked_modifier = bool(self._pressed_modifiers)
-            modified = tracked_modifier or self._modifier_active(user32)
         except Exception:
             self._set_error("HOST_KEY_STATE_UNAVAILABLE")
             self.deactivate()
@@ -350,6 +340,29 @@ class CodexComposerInputBinding:
         if not foreground_matches:
             # The active H2 binding never captures another application's Enter.
             return False
+        if delivery_pending:
+            with self._state_lock:
+                # Recheck after foreground observation because GUI-thread
+                # clearing may have completed while the hook was evaluating.
+                if self._delivery_pending:
+                    # The captured text is still present until the GUI-thread
+                    # delivery clears the real composer. Swallow any later
+                    # Enter gesture in Codex during that interval so it cannot
+                    # escape to the native request path.
+                    self._enter_down = True
+                    self.suppressed_keydown_count += 1
+                    return True
+                armed = self._armed
+            if not armed:
+                return False
+        try:
+            with self._state_lock:
+                tracked_modifier = bool(self._pressed_modifiers)
+            modified = tracked_modifier or self._modifier_active(user32)
+        except Exception:
+            self._set_error("HOST_KEY_STATE_UNAVAILABLE")
+            self.deactivate()
+            return True
         if modified:
             self.modified_enter_passthrough_count += 1
             return False
