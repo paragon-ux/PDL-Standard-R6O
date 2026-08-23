@@ -191,6 +191,34 @@ def reset_composer(binding: CodexSidecarBinding) -> None:
     )
 
 
+def close_qualification_resources(
+    host: CodexSidecarBinding | None,
+    input_binding: CodexComposerInputBinding | None,
+    *,
+    reset_required: bool,
+) -> None:
+    """Attempt every cleanup and fail the gate if any cleanup is unverified."""
+
+    failures: list[str] = []
+    if reset_required and host is not None:
+        try:
+            reset_composer(host)
+        except Exception as exc:
+            failures.append(f"COMPOSER_RESET:{getattr(exc, 'code', type(exc).__name__)}")
+    if input_binding is not None:
+        try:
+            input_binding.stop()
+        except Exception as exc:
+            failures.append(f"INPUT_BINDING_STOP:{getattr(exc, 'code', type(exc).__name__)}")
+    if host is not None:
+        try:
+            host.close()
+        except Exception as exc:
+            failures.append(f"HOST_CLOSE:{getattr(exc, 'code', type(exc).__name__)}")
+    if failures:
+        raise CodexInputBindingError("QUALIFICATION_CLEANUP_FAILED:" + "|".join(failures))
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--host-record", type=Path, default=DEFAULT_HOST_RECORD)
@@ -444,15 +472,11 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         injection_started = False
         return result
     finally:
-        if injection_started and host is not None:
-            try:
-                reset_composer(host)
-            except Exception:
-                pass
-        if input_binding is not None:
-            input_binding.stop()
-        if host is not None:
-            host.close()
+        close_qualification_resources(
+            host,
+            input_binding,
+            reset_required=injection_started,
+        )
 
 
 def main() -> int:

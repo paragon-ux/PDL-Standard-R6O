@@ -18,6 +18,7 @@ from r6o.host.codex.windows.input_binding import (
     build_host_composer_envelope,
     validate_active_projection_context,
 )
+from scripts.h2 import verify_codex_input_routing as verifier
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -244,6 +245,35 @@ def test_e1_verifier_has_portable_help() -> None:
         text=True,
     )
     assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_qualification_cleanup_attempts_reset_stop_and_host_close(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[str] = []
+    host = SimpleNamespace(close=lambda: calls.append("host_close"))
+    input_router = SimpleNamespace(stop=lambda: calls.append("input_stop"))
+    monkeypatch.setattr(verifier, "reset_composer", lambda value: calls.append("composer_reset"))
+    verifier.close_qualification_resources(host, input_router, reset_required=True)
+    assert calls == ["composer_reset", "input_stop", "host_close"]
+
+
+def test_cleanup_failure_never_skips_later_cleanup(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[str] = []
+    host = SimpleNamespace(close=lambda: calls.append("host_close"))
+
+    def fail_stop() -> None:
+        calls.append("input_stop")
+        raise RuntimeError("stop failed")
+
+    input_router = SimpleNamespace(stop=fail_stop)
+
+    def fail_reset(value: object) -> None:
+        calls.append("composer_reset")
+        raise RuntimeError("reset failed")
+
+    monkeypatch.setattr(verifier, "reset_composer", fail_reset)
+    with pytest.raises(CodexInputBindingError, match="QUALIFICATION_CLEANUP_FAILED"):
+        verifier.close_qualification_resources(host, input_router, reset_required=True)
+    assert calls == ["composer_reset", "input_stop", "host_close"]
 
 
 def test_readme_e1_command_is_branch_bound_and_sets_exact_qt_runtime() -> None:
