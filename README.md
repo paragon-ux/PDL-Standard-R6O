@@ -49,11 +49,19 @@ the authoritative checkout for later gates.
 
 ## Bind and verify the frozen oracle
 
-Run from this repository root in PowerShell. First set
-`PDL_R6S_BASELINE_REPO` to the real absolute path of the frozen oracle checkout
-in the current PowerShell session. Do not paste a sample or placeholder value.
-The qualification block deliberately has no interactive prompt, so pasting the
-whole block cannot consume its next command as the path.
+Run from this repository root in PowerShell. First run the following command by
+itself. At its prompt, type the real absolute path of the frozen oracle checkout
+and press Enter. Wait for the command to return before copying the next block.
+Because this is a separate one-line block, the prompt cannot consume a later
+qualification command as its response.
+
+```powershell
+$env:PDL_R6S_BASELINE_REPO = (Resolve-Path -LiteralPath (Read-Host 'Absolute path to the frozen PDL-Standard-REPL-Harness checkout') -ErrorAction Stop).Path
+```
+
+Do not enter a sample or placeholder path. The assignment overwrites any stale
+value from a previous PowerShell attempt. Then run the noninteractive
+qualification block:
 
 ```powershell
 & {
@@ -101,7 +109,21 @@ verifying the oracle above, run:
     if ([string]::IsNullOrWhiteSpace($env:PDL_R6S_BASELINE_REPO)) {
         throw 'Bind and verify PDL_R6S_BASELINE_REPO before H2-A2 qualification'
     }
-    python scripts\h2\verify_a02_full_fixture.py --baseline-repo $env:PDL_R6S_BASELINE_REPO
+    $OracleRoot = (Resolve-Path -LiteralPath $env:PDL_R6S_BASELINE_REPO -ErrorAction Stop).Path
+    $ExpectedCommit = '60d982f3328b45a351879d67dc4bb525172b65fd'
+    $ExpectedTree = 'b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6'
+    $ActualCommit = (git -C $OracleRoot rev-parse HEAD).Trim()
+    $ActualTree = (git -C $OracleRoot rev-parse 'HEAD^{tree}').Trim()
+    if ($ActualCommit -ne $ExpectedCommit) {
+        throw "Wrong frozen-oracle commit before H2-A2: $ActualCommit"
+    }
+    if ($ActualTree -ne $ExpectedTree) {
+        throw "Wrong frozen-oracle tree before H2-A2: $ActualTree"
+    }
+    if (-not (Test-Path -LiteralPath "$OracleRoot\scripts\verify_repl_baseline.py" -PathType Leaf)) {
+        throw "Not an R6S oracle checkout before H2-A2: $OracleRoot"
+    }
+    python scripts\h2\verify_a02_full_fixture.py --baseline-repo $OracleRoot
     if ($LASTEXITCODE -ne 0) { throw 'H2-A2 fixture verification failed' }
     python -m pytest r6o\tests\h2\test_a02_full_fixture.py -q -p no:cacheprovider
     if ($LASTEXITCODE -ne 0) { throw 'H2-A2 focused pytest failed' }
