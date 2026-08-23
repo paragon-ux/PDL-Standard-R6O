@@ -2,7 +2,7 @@
   "event_log": {
     "event_count": 6,
     "path": "r6o_evidence/H2-E1/input-routing-events.jsonl",
-    "sha256": "1b9f6b0e59969000d6e227775d4badb367944be42c2bd49a6238d06113f9ca7c"
+    "sha256": "09607712dbbf818b64454d74388ef915f1b61d72e4dd8978a887f259d6f6690a"
   },
   "fake_host_composer_used": false,
   "gate": "H2-E1",
@@ -15,7 +15,7 @@
   "host_record_sha256": "7cf1b2219f38b2d7e1f610dd25467969c688b681b3ac0632041eff3978ce9db5",
   "implementation_sha256": {
     "r6o/host/codex/windows/input_binding.py": "617f0b117a7a2ae53445b32b3a1712b94bdccaab0b82e334e82eb9a39efa1f0d",
-    "scripts/h2/verify_codex_input_routing.py": "4dd9435e120552da00405ffc9be6638dd9fd88b0502692ddcd3613c2dadd2dd2"
+    "scripts/h2/verify_codex_input_routing.py": "78f0597cd67e155f5e0283225c06223d235f7964be6e0438ccab7f59baccd1d9"
   },
   "interaction": {
     "actual_composer_focused": true,
@@ -62,8 +62,8 @@
   "selectors_sha256": "cb5a1b5b3123c979c54ecd3ec2614aa1d7b3c927dec987cdcfbbddeae75a21ef",
   "source": {
     "branch": "codex/h2-e1-input-routing",
-    "head": "9816c9b848101678e654bfc14abbb6db269737d3",
-    "tree": "8edf404795364a8d3dcc45cc008d11f267aa27f7"
+    "head": "5d33ca2048cd4c859eaeef53051a2dcf1fca975f",
+    "tree": "8a6b5724f65f872bf0f812cbaaa4f18cf9db667f"
   },
   "status": "H2_E1_INPUT_ROUTING_PASS",
   "steady_state": {
@@ -101,7 +101,7 @@
     "owner_hwnd": 15009088,
     "placement_matches": true,
     "sidecar_above_host": true,
-    "sidecar_hwnd": 10948464,
+    "sidecar_hwnd": 10097886,
     "visible": true,
     "work_area_rectangle": {
       "bottom": 900,
@@ -120,7 +120,7 @@
     "native_keydown_suppressed": true,
     "native_keyup_suppressed": true,
     "normal_codex_request_observed": false,
-    "visible_turn_count_after": 2,
-    "visible_turn_count_before": 2
+    "visible_turn_count_after": 1,
+    "visible_turn_count_before": 1
   }
 }
