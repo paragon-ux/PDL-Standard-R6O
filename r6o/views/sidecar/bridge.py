@@ -148,6 +148,7 @@ class SidecarBridge(QObject):
             label = action.get("label")
             ordinal = action.get("ordinal")
             kind = action.get("kind")
+            enabled = action.get("enabled", True)
             if not isinstance(action_id, str) or not action_id:
                 raise ValueError("projected action_id must be a non-empty string")
             if action_id in action_ids:
@@ -158,30 +159,51 @@ class SidecarBridge(QObject):
                 raise ValueError(f"projected action {action_id!r} requires a positive ordinal")
             if kind not in {"SEMANTIC_MESSAGE", "FREE_RESPONSE_FOCUS"}:
                 raise ValueError(f"projected action {action_id!r} has an unsupported kind")
+            if not isinstance(enabled, bool):
+                raise ValueError(f"projected action {action_id!r} enabled must be a boolean")
             action_ids.add(action_id)
             normalized_actions.append(
                 {
                     "action_id": action_id,
                     "label": label,
                     "ordinal": ordinal,
-                    "enabled": bool(action.get("enabled", True)),
+                    "enabled": enabled,
                     "kind": kind,
                 }
             )
+
+        artifact_ref = artifact.get("artifact_ref")
+        artifact_title = artifact.get("title")
+        artifact_body = artifact.get("body")
+        capabilities = artifact.get("capabilities")
+        if not isinstance(artifact_ref, str) or not artifact_ref:
+            raise ValueError("projected artifact requires a non-empty artifact_ref")
+        if not isinstance(artifact_title, str) or not artifact_title:
+            raise ValueError("projected artifact requires a non-empty title")
+        if artifact_body is not None and not isinstance(artifact_body, str):
+            raise ValueError("projected artifact body must be text or null")
+        if not isinstance(capabilities, dict):
+            raise ValueError("projected artifact capabilities must be an object")
+        copy_allowed = capabilities.get("copy", False)
+        open_allowed = capabilities.get("open_external", False)
+        if not isinstance(copy_allowed, bool) or not isinstance(open_allowed, bool):
+            raise ValueError("projected artifact capabilities must be booleans")
+        normalized_capabilities = {
+            "copy": copy_allowed,
+            "open_external": open_allowed,
+        }
+
         source_label, source_value = self._source_presenter(artifact)
         if not isinstance(source_label, str) or not isinstance(source_value, str):
             raise TypeError("source presenter must return two strings")
-        self._stage_label = str(stage or "REVIEW").replace("_", " ")
-        self._artifact_title = str(artifact.get("title") or "Authoritative Artifact")
-        self._artifact_body = str(artifact.get("body") or "")
-        self._artifact_ref = str(artifact.get("artifact_ref") or "")
-        capabilities = artifact.get("capabilities")
-        if not isinstance(capabilities, dict):
-            raise ValueError("projected artifact capabilities must be an object")
-        self._capabilities = {
-            "copy": bool(capabilities.get("copy", False)),
-            "open_external": bool(capabilities.get("open_external", False)),
-        }
+
+        # Commit validated presentation state atomically. A rejected projection
+        # must never inherit permissions from the previously accepted state.
+        self._stage_label = stage.replace("_", " ")
+        self._artifact_title = artifact_title
+        self._artifact_body = artifact_body or ""
+        self._artifact_ref = artifact_ref
+        self._capabilities = normalized_capabilities
         self._source_label = source_label
         self._source_value = source_value
         self._actions = normalized_actions

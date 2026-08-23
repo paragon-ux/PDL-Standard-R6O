@@ -102,7 +102,7 @@ Rectangle {
                     Text {
                         required property string modelData
                         width: artifactLinesColumn.width
-                        height: card.expanded ? 22 : 16
+                        height: Math.max(card.expanded ? 22 : 16, implicitHeight)
                         text: modelData.length === 0 ? " " : modelData
                         color: modelData === "# Prompt" ? DesignTokens.artifactAccent : DesignTokens.artifactText
                         font.family: card.monoFamily

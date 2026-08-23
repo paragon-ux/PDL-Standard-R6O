@@ -10,6 +10,11 @@ FocusScope {
     required property string uiFamily
     signal activated(string actionId)
 
+    readonly property bool keyboardFocusVisible: activeFocus
+        && (activeFocusReason === Qt.TabFocusReason
+            || activeFocusReason === Qt.BacktabFocusReason
+            || activeFocusReason === Qt.ShortcutFocusReason)
+
     objectName: "reviewAction_" + actionId
     height: 31
     activeFocusOnTab: enabled
@@ -42,7 +47,7 @@ FocusScope {
         height: 31
         radius: DesignTokens.actionRadius
         color: DesignTokens.controlSurface
-        border.color: control.activeFocus ? control.accent : DesignTokens.cardBorder
+        border.color: control.keyboardFocusVisible ? control.accent : DesignTokens.cardBorder
         border.width: 1
 
         Text {

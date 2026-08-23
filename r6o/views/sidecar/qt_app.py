@@ -73,6 +73,8 @@ class QtSidecarWindow:
         on_copy: CopyCallback | None = None,
     ) -> None:
         app = ensure_application()
+        self._close_notified = False
+        self._tearing_down = False
         copy_callback = on_copy or (lambda body: app.clipboard().setText(body))
         self.bridge = SidecarBridge(
             mode,
@@ -110,6 +112,7 @@ class QtSidecarWindow:
         active = self.bridge.render(projection)
         if not active:
             return False
+        self._close_notified = False
         self.show()
         self.focus_primary_action()
         return True
@@ -125,6 +128,9 @@ class QtSidecarWindow:
             raise RuntimeError("unable to focus the first projected Sidecar action")
 
     def close_view(self) -> None:
+        if self._tearing_down or self._close_notified:
+            return
+        self._close_notified = True
         self.window.hide()
         self.bridge.notify_closed()
 
@@ -147,7 +153,8 @@ class QtSidecarWindow:
         return found
 
     def close(self) -> None:
-        self.window.close()
+        self._tearing_down = True
+        self.window.hide()
         self.window.deleteLater()
         self.engine.deleteLater()
         QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)

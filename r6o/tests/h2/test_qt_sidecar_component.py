@@ -146,6 +146,9 @@ def test_projection_mapping_and_callbacks_remain_presentation_only() -> None:
         (lambda item: item.update(artifact=None), "artifact"),
         (lambda item: item.update(actions=[]), "actions"),
         (lambda item: item["actions"][0].update(kind="DIRECT_CONTROLLER"), "kind"),
+        (lambda item: item["actions"][0].update(enabled="false"), "enabled"),
+        (lambda item: item["artifact"].update(artifact_ref=""), "artifact_ref"),
+        (lambda item: item["artifact"].update(capabilities={"copy": "false", "open_external": False}), "booleans"),
     ],
 )
 def test_invalid_active_projection_fails_closed(mutation: object, message: str) -> None:
@@ -154,6 +157,25 @@ def test_invalid_active_projection_fails_closed(mutation: object, message: str) 
     mutation(item)
     with pytest.raises(ValueError, match=message):
         SidecarBridge().render(item)
+
+
+def test_rejected_projection_cannot_replace_payload_under_old_permissions() -> None:
+    opened: list[str] = []
+    copied: list[str] = []
+    bridge = SidecarBridge(on_open_editor=opened.append, on_copy=copied.append)
+    accepted = projection(body="accepted body")
+    bridge.render(accepted)
+
+    rejected = projection(body="rejected body")
+    rejected["artifact"]["artifact_ref"] = "prompt:rejected"
+    rejected["artifact"]["capabilities"] = {"copy": "false", "open_external": True}
+    with pytest.raises(ValueError, match="booleans"):
+        bridge.render(rejected)
+
+    bridge.requestOpen()
+    bridge.requestCopy()
+    assert opened == ["prompt:opaque-reference"]
+    assert copied == ["accepted body"]
 
 
 def test_disabled_and_unprojected_actions_do_not_cross_the_callback_boundary() -> None:
@@ -211,12 +233,13 @@ def test_real_qml_renders_projection_and_routes_local_controls() -> None:
         sidecar.close()
 
 
-def test_artifact_overflow_scrolls_without_a_visible_native_scrollbar() -> None:
-    long_body = "\n".join(f"line {number:02d}" for number in range(80))
+def test_single_long_artifact_line_wraps_and_scrolls_without_native_scrollbar() -> None:
+    long_body = "one-unbroken-projected-line " * 120
     sidecar = QtSidecarWindow(SidecarMode.EXPANDED)
     try:
         sidecar.render(projection(body=long_body))
         flickable = sidecar.object("artifactFlickable")
+        QTest.qWait(20)
         assert float(flickable.property("contentHeight")) > float(flickable.property("height"))
         assert QMetaObject.invokeMethod(sidecar.window, "scrollArtifactToBottom", Qt.DirectConnection)
         QTest.qWait(20)
@@ -224,6 +247,26 @@ def test_artifact_overflow_scrolls_without_a_visible_native_scrollbar() -> None:
         assert sidecar.window.findChild(type(flickable), "nativeScrollbar") is None
     finally:
         sidecar.close()
+
+
+def test_custom_repeated_and_native_close_paths_notify_exactly_once_per_render() -> None:
+    closed: list[bool] = []
+    sidecar = QtSidecarWindow(on_close_view=lambda: closed.append(True))
+    try:
+        sidecar.render(projection())
+        sidecar.bridge.requestClose()
+        sidecar.bridge.requestClose()
+        QTest.qWait(20)
+        assert closed == [True]
+
+        sidecar.render(projection())
+        sidecar.window.close()
+        QTest.qWait(20)
+        assert closed == [True, True]
+        assert sidecar.window.isVisible() is False
+    finally:
+        sidecar.close()
+    assert closed == [True, True]
 
 
 def test_terminal_projection_dismisses_without_emitting_view_close() -> None:
@@ -257,3 +300,6 @@ def test_locked_tokens_and_forbidden_ui_are_structurally_enforced() -> None:
     for forbidden in ("LOCK", "MOVE", "debug projection", "qualification", "Collapse"):
         assert forbidden not in component_source
     assert "QtQuick.Controls" not in component_source
+    review_action = (QML_ROOT / "ReviewAction.qml").read_text(encoding="utf-8")
+    assert "keyboardFocusVisible" in review_action
+    assert "border.color: control.activeFocus" not in review_action

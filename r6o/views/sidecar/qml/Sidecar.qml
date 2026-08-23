@@ -15,6 +15,10 @@ Window {
     color: "transparent"
     visible: false
     title: "PDLt Review Sidecar"
+    onClosing: close => {
+        close.accepted = false
+        sidecarBridge.requestClose()
+    }
 
     readonly property bool expanded: sidecarBridge.mode === "EXPANDED"
     readonly property bool assetsReady: interRegular.status === FontLoader.Ready

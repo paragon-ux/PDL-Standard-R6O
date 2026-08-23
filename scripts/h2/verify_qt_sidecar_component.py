@@ -84,7 +84,7 @@ Build a task manager with:
 
 Target tech stack: React + FastAPI + SQLite"""
     if long_body:
-        body = "\n".join(f"overflow line {number:02d}" for number in range(80))
+        body = "one-unbroken-projected-line " * 120
     return {
         "schema_version": "r6o-focus-projection-1",
         "session_id": "h2-c-qualification",
@@ -293,6 +293,15 @@ def qualify(target: str, evidence_root: Path, hold_seconds: float) -> dict[str, 
         wait_for(lambda: not sidecar.window.isVisible())
         if closed:
             raise AssertionError("terminal dismissal incorrectly emitted View close")
+        terminal_close_count = len(closed)
+
+        sidecar.render(canonical_projection())
+        sidecar.bridge.requestClose()
+        sidecar.bridge.requestClose()
+        wait_for(lambda: len(closed) == 1 and not sidecar.window.isVisible())
+        sidecar.render(canonical_projection())
+        sidecar.window.close()
+        wait_for(lambda: len(closed) == 2 and not sidecar.window.isVisible())
 
         q_status: dict[str, bool | str] = {
             f"Q{number:02d}": True for number in range(1, 22)
@@ -334,7 +343,8 @@ def qualify(target: str, evidence_root: Path, hold_seconds: float) -> dict[str, 
                 "keyboard_action_ids": actions,
                 "open_callback_refs": opened,
                 "copy_callback_count": len(copied),
-                "terminal_dismissal_view_close_count": len(closed),
+                "terminal_dismissal_view_close_count": terminal_close_count,
+                "close_callback_count": len(closed),
                 "q01_q24": q_status,
                 "q25_standard_human_comparison": "PENDING_SOL_SUBSTITUTE_REVIEW",
                 "q26_expanded_human_comparison": "PENDING_SOL_SUBSTITUTE_REVIEW",
