@@ -1,0 +1,257 @@
+{
+  "schema_version": "r6o-h2-c-design-conformance-1",
+  "gate": "H2-C-QUALIFICATION",
+  "status": "H2-C_IMPLEMENTATION_CONFORMS_FOR_HUMAN_VISUAL_REVIEW",
+  "human_design_approval": "PENDING",
+  "overall_h2_pass_authorized": false,
+  "real_codex_host_tested": false,
+  "approval_rule": "ZERO_KNOWN_SIDECAR_VISUAL_DIVERGENCES",
+  "references": {
+    "STANDARD": {
+      "file": "REFERENCE_SIDECAR_STANDARD.png",
+      "sha256": "f78361a61734848a47c26feca1be31c1f01e8a2ee21f4bd650e436053c5b140c",
+      "width": 675,
+      "height": 300
+    },
+    "EXPANDED": {
+      "file": "REFERENCE_SIDECAR_EXPANDED.png",
+      "sha256": "3939a378d12cf45c25aa5aa32bc0fb429ab044ca510aeb428049938ee3c61313",
+      "width": 412,
+      "height": 806
+    }
+  },
+  "captures": {
+    "STANDARD": {
+      "file": "H2-C-STANDARD-SIDECAR.png",
+      "sha256": "52e9db6eccac4d4f02db69641ba9d520af7bd25536f200d98b9a018950e11e52",
+      "width": 675,
+      "height": 300,
+      "capture_scope": "SIDECAR_WINDOW_ONLY"
+    },
+    "EXPANDED": {
+      "file": "H2-C-EXPANDED-SIDECAR.png",
+      "sha256": "7f5906b0cbfafc37e65e3d39150e4523d2d694480ead53824834a53a4c5f30fc",
+      "width": 412,
+      "height": 806,
+      "capture_scope": "SIDECAR_WINDOW_ONLY"
+    }
+  },
+  "requirements": [
+    {
+      "id": "V01",
+      "mode": "BOTH",
+      "reference_element": "Sidecar-only canonical capture",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V02",
+      "mode": "STANDARD",
+      "reference_element": "675x300 outer size",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V03",
+      "mode": "EXPANDED",
+      "reference_element": "412x806 outer size",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V04",
+      "mode": "BOTH",
+      "reference_element": "Rounded custom outer frame",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V05",
+      "mode": "BOTH",
+      "reference_element": "PDLt Review, stage badge, and green ACTIVE",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V06",
+      "mode": "STANDARD",
+      "reference_element": "Custom Expand and Close controls",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V07",
+      "mode": "EXPANDED",
+      "reference_element": "Close only; no visible Collapse, LOCK, or MOVE",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V08",
+      "mode": "STANDARD",
+      "reference_element": "Reference horizontal artifact/options split",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V09",
+      "mode": "EXPANDED",
+      "reference_element": "Dominant artifact and natural-height options content",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V10",
+      "mode": "BOTH",
+      "reference_element": "Rounded artifact card",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V11",
+      "mode": "BOTH",
+      "reference_element": "Authoritative Prompt title",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V12",
+      "mode": "BOTH",
+      "reference_element": "Open in Editor and external-link affordance",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V13",
+      "mode": "BOTH",
+      "reference_element": "Canonical prompt fixture",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V14",
+      "mode": "BOTH",
+      "reference_element": "Workspace source label and path",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V15",
+      "mode": "BOTH",
+      "reference_element": "Copy control",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V16",
+      "mode": "BOTH",
+      "reference_element": "Review Options heading",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V17",
+      "mode": "BOTH",
+      "reference_element": "Four exact canonical action rows",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V18",
+      "mode": "BOTH",
+      "reference_element": "Green, blue, amber, and neutral number badges",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V19",
+      "mode": "BOTH",
+      "reference_element": "Rounded action rows and primary emphasis",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V20",
+      "mode": "BOTH",
+      "reference_element": "Exact two-line Tip",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V21",
+      "mode": "BOTH",
+      "reference_element": "No native scrollbar in canonical state",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V22",
+      "mode": "EXPANDED",
+      "reference_element": "Options content is not a stretched scroll region",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V23",
+      "mode": "BOTH",
+      "reference_element": "Custom keyboard focus with no dotted native artifact",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V24",
+      "mode": "BOTH",
+      "reference_element": "No debug or qualification text",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V25",
+      "mode": "BOTH",
+      "reference_element": "Proportional UI and monospaced artifact roles",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V26",
+      "mode": "BOTH",
+      "reference_element": "Dark layered surfaces and compact spacing",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V27",
+      "mode": "BOTH",
+      "reference_element": "Projection-only presentation callbacks",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V28",
+      "mode": "BOTH",
+      "reference_element": "Expand, terminal dismissal, and overflow behavior preserved",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V29",
+      "mode": "BOTH",
+      "reference_element": "Design contract and reference identities frozen",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    },
+    {
+      "id": "V30",
+      "mode": "BOTH",
+      "reference_element": "Fail-closed structural design evidence",
+      "status": "CONFORMANT",
+      "evidence": "STRUCTURAL_ASSERTION_AND_CANONICAL_CAPTURE"
+    }
+  ],
+  "counts": {
+    "conformant": 30,
+    "nonconformant": 0,
+    "design_decision_required": 0
+  },
+  "known_sidecar_visual_divergences": []
+}

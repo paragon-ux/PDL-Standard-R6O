@@ -1,19 +1,32 @@
 {
-  "schema_version": "r6o-h2-c-component-result-1",
+  "schema_version": "r6o-h2-c-component-result-2",
   "gate": "H2-C-QUALIFICATION",
   "status": "MECHANICAL_PASS",
   "overall_h2_pass_authorized": false,
   "real_codex_host_tested": false,
-  "qualification_parent": "SYNTHETIC_FULLSCREEN_TK",
-  "visual_reference": {
-    "path": "references/REFERENCE_UI-HARNESS.png",
-    "sha256": "a4defa180dbcebbcc443cd486474a1e6869cbeeb1a58359abb00c07b22facb2e"
+  "qualification_parent": "SYNTHETIC_TK_FUNCTIONAL_FIXTURE_NOT_VISUAL_EVIDENCE",
+  "design_authority": {
+    "control_plane": {
+      "file": "R6O-H2C-SIDECAR-VERDICT-AND-RECONTINUATION-PROMPT-2026-08-23.md",
+      "sha256": "124d999c188f0013125153d877e1a28a10b754f69dfb80adbe82880ec7aa55fc"
+    },
+    "contract": {
+      "file": "R6O-SIDECAR-DESIGN-CONTRACT-v1-2026-08-23.json",
+      "sha256": "85f971d7f7af5d9779ae7559a7c5df0d316dba5494184ff72e4a75c6d8c29016"
+    },
+    "spec": {
+      "file": "R6O-SIDECAR-DESIGN-SPEC-v1-2026-08-23.md",
+      "sha256": "c9a4b245c8c767d1d9292079269a14381e45c6809d7f38bf83bb35fc4c469170"
+    },
+    "STANDARD": {
+      "file": "REFERENCE_SIDECAR_STANDARD.png",
+      "sha256": "f78361a61734848a47c26feca1be31c1f01e8a2ee21f4bd650e436053c5b140c"
+    },
+    "EXPANDED": {
+      "file": "REFERENCE_SIDECAR_EXPANDED.png",
+      "sha256": "3939a378d12cf45c25aa5aa32bc0fb429ab044ca510aeb428049938ee3c61313"
+    }
   },
-  "claims": [
-    "SIDECAR_COMPONENT_RENDERING",
-    "WINDOW_CHROME",
-    "SYNTHETIC_OWNER_GEOMETRY"
-  ],
   "behaviors": {
     "frameless": true,
     "synthetic_owner": true,
@@ -21,12 +34,16 @@
     "custom_chrome": true,
     "standard_geometry": true,
     "expanded_geometry": true,
-    "expand_collapse": true,
+    "expand_transition": true,
+    "collapse_without_visible_control": true,
     "close_view_only": true,
     "window_lock": true,
     "artifact_scroll": true,
     "primary_action_focus": true,
-    "terminal_dismissal": true
+    "terminal_dismissal": true,
+    "open_editor_callback": true,
+    "copy_callback": true,
+    "canonical_scrollbar_free": true
   },
   "modes": {
     "STANDARD": {
@@ -46,52 +63,94 @@
         },
         "window": {
           "x": 40,
-          "y": 418,
-          "width": 1520,
-          "height": 306
+          "y": 424,
+          "width": 675,
+          "height": 300
         },
         "chrome": {
           "x": 1,
           "y": 1,
-          "width": 1518,
-          "height": 50
+          "width": 673,
+          "height": 43
         },
         "artifact": {
-          "x": 13,
-          "y": 63,
-          "width": 950,
-          "height": 230
+          "x": 8,
+          "y": 44,
+          "width": 402,
+          "height": 256
         },
         "review_options": {
-          "x": 973,
-          "y": 63,
-          "width": 534,
-          "height": 230
+          "x": 418,
+          "y": 44,
+          "width": 249,
+          "height": 256
         },
-        "parent_width_fraction": 0.95,
+        "parent_width_fraction": 0.421875,
         "composition": "ARTIFACT_LEFT_REVIEW_OPTIONS_RIGHT",
         "composer_anchor_gap": 10
       },
       "observed_window": {
         "x": 40,
-        "y": 418,
-        "width": 1520,
-        "height": 306
+        "y": 424,
+        "width": 675,
+        "height": 300
       },
       "observed_artifact": {
-        "x": 13,
-        "y": 63,
-        "width": 950,
-        "height": 230
+        "x": 8,
+        "y": 44,
+        "width": 402,
+        "height": 256
       },
       "observed_review_options": {
-        "x": 973,
-        "y": 63,
-        "width": 534,
-        "height": 230
+        "x": 418,
+        "y": 44,
+        "width": 249,
+        "height": 256
       },
-      "screenshot": "sidecar-standard.png",
-      "screenshot_sha256": "f1c58e443edfcf3ed5bf125b3fa7a40fe41180f8a2f32e2fc9cb399033c11332"
+      "visible_controls": [
+        "change_approach",
+        "change_task",
+        "close",
+        "confirm_prompt",
+        "copy",
+        "expand",
+        "open_editor",
+        "something_else"
+      ],
+      "visible_text_inventory": [
+        "",
+        "# Prompt",
+        "- Due dates and reminders",
+        "- Project management",
+        "- Task tracking",
+        "- User authentication",
+        "/workspace/pdlt/PDL.md",
+        "1",
+        "2",
+        "3",
+        "4",
+        "ACTIVE",
+        "Authoritative Prompt (PDL.md)",
+        "Build a task manager with:",
+        "Change the approach",
+        "Change the task",
+        "Confirm this prompt",
+        "Copy",
+        "Open in Editor",
+        "PDLt Review",
+        "PROMPT REVIEW",
+        "Review Options",
+        "Something else...",
+        "Source: Workspace File",
+        "Target tech stack: React + FastAPI + SQLite",
+        "Tip:",
+        "Type directly in the chat below",
+        "to provide other feedback.",
+        "\u00d7"
+      ],
+      "native_scrollbars_mapped": 0,
+      "capture": "H2-C-STANDARD-SIDECAR.png",
+      "capture_sha256": "52e9db6eccac4d4f02db69641ba9d520af7bd25536f200d98b9a018950e11e52"
     },
     "EXPANDED": {
       "layout": {
@@ -109,54 +168,96 @@
           "height": 126
         },
         "window": {
-          "x": 1100,
+          "x": 1168,
           "y": 20,
-          "width": 480,
-          "height": 860
+          "width": 412,
+          "height": 806
         },
         "chrome": {
           "x": 1,
           "y": 1,
-          "width": 478,
-          "height": 50
+          "width": 410,
+          "height": 47
         },
         "artifact": {
-          "x": 13,
-          "y": 63,
-          "width": 454,
-          "height": 464
+          "x": 8,
+          "y": 48,
+          "width": 396,
+          "height": 350
         },
         "review_options": {
-          "x": 13,
-          "y": 537,
-          "width": 454,
-          "height": 310
+          "x": 8,
+          "y": 408,
+          "width": 396,
+          "height": 398
         },
-        "parent_width_fraction": 0.3,
+        "parent_width_fraction": 0.2575,
         "composition": "ARTIFACT_TOP_REVIEW_OPTIONS_BELOW",
         "composer_anchor_gap": null
       },
       "observed_window": {
-        "x": 1100,
+        "x": 1168,
         "y": 20,
-        "width": 480,
-        "height": 860
+        "width": 412,
+        "height": 806
       },
       "observed_artifact": {
-        "x": 13,
-        "y": 63,
-        "width": 454,
-        "height": 464
+        "x": 8,
+        "y": 48,
+        "width": 396,
+        "height": 350
       },
       "observed_review_options": {
-        "x": 13,
-        "y": 537,
-        "width": 454,
-        "height": 310
+        "x": 8,
+        "y": 408,
+        "width": 396,
+        "height": 398
       },
-      "screenshot": "sidecar-expanded.png",
-      "screenshot_sha256": "0be9da764f923cfec0ccff644c57f147a6f81f850b2630abaca6827864a53e1d"
+      "visible_controls": [
+        "change_approach",
+        "change_task",
+        "close",
+        "confirm_prompt",
+        "copy",
+        "open_editor",
+        "something_else"
+      ],
+      "visible_text_inventory": [
+        "",
+        "# Prompt",
+        "- Due dates and reminders",
+        "- Project management",
+        "- Task tracking",
+        "- User authentication",
+        "/workspace/pdlt/PDL.md",
+        "1",
+        "2",
+        "3",
+        "4",
+        "ACTIVE",
+        "Authoritative Prompt (PDL.md)",
+        "Build a task manager with:",
+        "Change the approach",
+        "Change the task",
+        "Confirm this prompt",
+        "Copy",
+        "Open in Editor",
+        "PDLt Review",
+        "PROMPT REVIEW",
+        "Review Options",
+        "Something else...",
+        "Source: Workspace File",
+        "Target tech stack: React + FastAPI + SQLite",
+        "Tip:",
+        "Type directly in the chat below",
+        "to provide other feedback.",
+        "\u00d7"
+      ],
+      "native_scrollbars_mapped": 0,
+      "capture": "H2-C-EXPANDED-SIDECAR.png",
+      "capture_sha256": "7f5906b0cbfafc37e65e3d39150e4523d2d694480ead53824834a53a4c5f30fc"
     }
   },
-  "geometry_evidence": "geometry.json"
+  "geometry_evidence": "geometry.json",
+  "design_conformance_evidence": "H2-C-DESIGN-CONFORMANCE.json"
 }

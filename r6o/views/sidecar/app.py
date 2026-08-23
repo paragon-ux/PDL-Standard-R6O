@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-"""Projection-only Tk Sidecar component for H2 component and host bindings."""
+"""Projection-only, design-locked Tk Sidecar for H2 component and host bindings."""
 
+import textwrap
 import tkinter as tk
 from collections.abc import Callable
+from dataclasses import dataclass
 from typing import Any
 
 from r6o.views.sidecar.model import Rect, SidecarLayout, SidecarMode, calculate_sidecar_layout
@@ -12,18 +14,116 @@ from r6o.views.sidecar.model import Rect, SidecarLayout, SidecarMode, calculate_
 TERMINAL_STAGES = frozenset({"CLOSED_SUCCESS", "CLOSED_CANCELLED"})
 
 
-class SidecarWindow:
-    """Render a FocusProjection in a disposable, owner-relative Sidecar."""
+@dataclass(frozen=True)
+class _HitRegion:
+    role: str
+    rect: Rect
+    command: Callable[[], None]
 
-    BG = "#111820"
-    PANEL = "#151e27"
-    PANEL_ALT = "#0d141b"
-    BORDER = "#33404d"
-    TEXT = "#edf3f8"
-    MUTED = "#9facb8"
-    ACCENT = "#7c5cff"
-    ACTIVE = "#48d477"
-    FOCUS = "#53a9ff"
+
+class _ArtifactScrollModel:
+    """Toolkit-neutral artifact scrolling without a mapped native scrollbar."""
+
+    def __init__(self, on_change: Callable[[], None]) -> None:
+        self._on_change = on_change
+        self._lines: list[str] = []
+        self._offset = 0
+        self._visible_lines = 1
+
+    def configure(self, *, body: str, width_chars: int, visible_lines: int) -> None:
+        self._visible_lines = max(1, visible_lines)
+        lines: list[str] = []
+        for source_line in body.splitlines() or [""]:
+            if not source_line:
+                lines.append("")
+                continue
+            lines.extend(
+                textwrap.wrap(
+                    source_line,
+                    width=max(8, width_chars),
+                    replace_whitespace=False,
+                    drop_whitespace=False,
+                    break_long_words=True,
+                    break_on_hyphens=False,
+                )
+                or [""]
+            )
+        self._lines = lines
+        self._offset = min(self._offset, self._max_offset)
+
+    @property
+    def visible(self) -> list[str]:
+        return self._lines[self._offset : self._offset + self._visible_lines]
+
+    @property
+    def _max_offset(self) -> int:
+        return max(0, len(self._lines) - self._visible_lines)
+
+    def yview(self) -> tuple[float, float]:
+        total = max(1, len(self._lines))
+        return (
+            self._offset / total,
+            min(1.0, (self._offset + self._visible_lines) / total),
+        )
+
+    def yview_scroll(self, units: int, _kind: str = "units") -> None:
+        self._offset = min(self._max_offset, max(0, self._offset + units))
+        self._on_change()
+
+    def yview_moveto(self, fraction: float) -> None:
+        self._offset = min(self._max_offset, max(0, round(self._max_offset * fraction)))
+        self._on_change()
+
+
+class _ActionHandle:
+    """Small compatibility surface for tests and host bindings."""
+
+    def __init__(
+        self,
+        sidecar: "SidecarWindow",
+        *,
+        action_id: str,
+        label: str,
+        ordinal: int,
+        enabled: bool,
+    ) -> None:
+        self.sidecar = sidecar
+        self.action_id = action_id
+        self.label = label
+        self.ordinal = ordinal
+        self.enabled = enabled
+
+    def cget(self, key: str) -> str:
+        if key == "text":
+            return self.label
+        if key == "state":
+            return "normal" if self.enabled else "disabled"
+        raise tk.TclError(f"unknown action option {key!r}")
+
+    def invoke(self) -> None:
+        if self.enabled:
+            self.sidecar._invoke_action(self.action_id)
+
+    def focus_force(self) -> None:
+        self.sidecar._set_focus(self.action_id)
+
+
+class SidecarWindow:
+    """Render a FocusProjection in a disposable, design-locked Sidecar."""
+
+    BG = "#081018"
+    SURFACE = "#0d151c"
+    CARD = "#10181f"
+    BODY = "#0a1218"
+    BORDER = "#26323b"
+    BORDER_SOFT = "#1d2932"
+    TEXT = "#eef2f5"
+    MUTED = "#a8afb6"
+    ACCENT = "#a891e9"
+    ACTIVE = "#4bd477"
+    BLUE = "#48a7e8"
+    AMBER = "#e58b25"
+    NEUTRAL = "#9aa4ad"
 
     def __init__(
         self,
@@ -31,8 +131,11 @@ class SidecarWindow:
         owner_rect: Rect,
         composer_rect: Rect,
         *,
+        source_presenter: Callable[[dict[str, Any]], tuple[str, str]],
         on_action: Callable[[str], None] | None = None,
         on_close_view: Callable[[], None] | None = None,
+        on_open_editor: Callable[[str], None] | None = None,
+        on_copy: Callable[[str], None] | None = None,
         global_topmost: bool = False,
     ) -> None:
         self.owner = owner
@@ -40,219 +143,464 @@ class SidecarWindow:
         self.composer_rect = composer_rect
         self.on_action = on_action or (lambda _action_id: None)
         self.on_close_view = on_close_view or (lambda: None)
+        self.on_open_editor = on_open_editor or (lambda _artifact_ref: None)
+        self.on_copy = on_copy
+        self.source_presenter = source_presenter
         self.mode = SidecarMode.STANDARD
         self.locked = True
         self.projection: dict[str, Any] | None = None
         self.layout: SidecarLayout | None = None
         self._drag_origin: tuple[int, int, int, int] | None = None
-        self._action_buttons: list[tk.Button] = []
+        self._action_buttons: list[_ActionHandle] = []
+        self._hit_regions: list[_HitRegion] = []
+        self._focus_order: list[str] = []
+        self._focused_role: str | None = None
+        self._source_label = "Source: Projected Artifact"
+        self._source_value = "Opaque reference"
+        self._artifact_body_text = ""
+        self._visible_controls: set[str] = set()
+        self._semantic_rects: dict[str, Rect] = {}
 
         self.window = tk.Toplevel(owner)
         self.window.withdraw()
-        self.window.configure(bg=self.BG, highlightbackground=self.BORDER, highlightthickness=1)
+        self.window.configure(bg=self.BG, highlightthickness=0, bd=0)
         self.window.overrideredirect(True)
         self.window.transient(owner)
         if global_topmost:
             self.window.attributes("-topmost", True)
         self.window.protocol("WM_DELETE_WINDOW", self.close_view)
 
-        self.chrome = tk.Frame(self.window, bg=self.BG, height=50)
-        self.chrome.pack(fill="x", side="top")
-        self.chrome.pack_propagate(False)
-        self.chrome.bind("<ButtonPress-1>", self._begin_drag)
-        self.chrome.bind("<B1-Motion>", self._drag)
-
-        self.title_label = tk.Label(
-            self.chrome,
-            text="PDLt Review",
+        self.canvas = tk.Canvas(
+            self.window,
             bg=self.BG,
-            fg=self.TEXT,
-            font=("Segoe UI Semibold", 12),
-        )
-        self.title_label.pack(side="left", padx=(12, 8))
-        self.stage_label = tk.Label(
-            self.chrome,
-            text="REVIEW",
-            bg="#2a2045",
-            fg="#d9ccff",
-            font=("Segoe UI Semibold", 8),
-            padx=8,
-            pady=3,
-        )
-        self.stage_label.pack(side="left")
-        self.active_label = tk.Label(
-            self.chrome,
-            text="● ACTIVE",
-            bg=self.BG,
-            fg=self.ACTIVE,
-            font=("Segoe UI Semibold", 8),
-        )
-        self.active_label.pack(side="left", padx=10)
-
-        self.close_button = self._chrome_button("×", self.close_view)
-        self.close_button.pack(side="right", padx=(0, 8), pady=8)
-        self.expand_button = self._chrome_button("↗", self.toggle_mode)
-        self.expand_button.pack(side="right", padx=4, pady=8)
-        self.lock_button = self._chrome_button("LOCK", self.toggle_lock)
-        self.lock_button.pack(side="right", padx=4, pady=8)
-
-        self.content = tk.Frame(self.window, bg=self.BG)
-        self.content.pack(fill="both", expand=True, padx=12, pady=12)
-        self.artifact_panel = tk.Frame(self.content, bg=self.PANEL, highlightbackground=self.BORDER, highlightthickness=1)
-        self.options_panel = tk.Frame(self.content, bg=self.PANEL, highlightbackground=self.BORDER, highlightthickness=1)
-        self._build_artifact_panel()
-        self._build_options_panel()
-        self._compose_panels()
-
-    def _chrome_button(self, text: str, command: Callable[[], None]) -> tk.Button:
-        return tk.Button(
-            self.chrome,
-            text=text,
-            command=command,
-            bg=self.PANEL,
-            fg=self.TEXT,
-            activebackground="#263341",
-            activeforeground=self.TEXT,
-            relief="flat",
-            bd=0,
-            padx=9,
-            pady=4,
-            cursor="hand2",
-            takefocus=True,
-        )
-
-    def _build_artifact_panel(self) -> None:
-        header = tk.Frame(self.artifact_panel, bg=self.PANEL)
-        header.pack(fill="x", padx=10, pady=(9, 5))
-        self.artifact_title = tk.Label(
-            header,
-            text="Authoritative Artifact",
-            bg=self.PANEL,
-            fg=self.TEXT,
-            anchor="w",
-            font=("Segoe UI Semibold", 9),
-        )
-        self.artifact_title.pack(side="left", fill="x", expand=True)
-        body_frame = tk.Frame(self.artifact_panel, bg=self.PANEL_ALT)
-        body_frame.pack(fill="both", expand=True, padx=10, pady=(0, 8))
-        self.artifact_body = tk.Text(
-            body_frame,
-            wrap="word",
-            bg=self.PANEL_ALT,
-            fg=self.TEXT,
-            insertbackground=self.TEXT,
-            selectbackground=self.ACCENT,
-            relief="flat",
-            bd=0,
-            padx=10,
-            pady=10,
-            font=("Consolas", 9),
-            takefocus=True,
-        )
-        self.artifact_scrollbar = tk.Scrollbar(
-            body_frame,
-            orient="vertical",
-            command=self.artifact_body.yview,
-        )
-        self.artifact_body.configure(yscrollcommand=self.artifact_scrollbar.set)
-        self.artifact_scrollbar.pack(side="right", fill="y")
-        self.artifact_body.pack(side="left", fill="both", expand=True)
-        self.artifact_source = tk.Label(
-            self.artifact_panel,
-            text="Projection snapshot · opaque artifact reference",
-            bg=self.PANEL,
-            fg=self.MUTED,
-            anchor="w",
-            font=("Segoe UI", 8),
-        )
-        self.artifact_source.pack(fill="x", padx=10, pady=(0, 8))
-
-    def _build_options_panel(self) -> None:
-        tk.Label(
-            self.options_panel,
-            text="Review Options",
-            bg=self.PANEL,
-            fg=self.TEXT,
-            anchor="w",
-            font=("Segoe UI Semibold", 9),
-        ).pack(fill="x", padx=10, pady=(9, 5))
-        options_container = tk.Frame(self.options_panel, bg=self.PANEL)
-        options_container.pack(fill="both", expand=True, padx=10)
-        self.options_canvas = tk.Canvas(
-            options_container,
-            bg=self.PANEL,
             highlightthickness=0,
             bd=0,
+            relief="flat",
+            takefocus=True,
         )
-        self.options_scrollbar = tk.Scrollbar(
-            options_container,
-            orient="vertical",
-            command=self.options_canvas.yview,
+        self.canvas.pack(fill="both", expand=True)
+        self.canvas.bind("<Button-1>", self._on_click)
+        self.canvas.bind("<Tab>", self._on_tab)
+        self.canvas.bind("<Shift-Tab>", self._on_shift_tab)
+        try:
+            self.canvas.bind("<ISO_Left_Tab>", self._on_shift_tab)
+        except tk.TclError:
+            pass
+        self.canvas.bind("<Return>", self._on_activate)
+        self.canvas.bind("<space>", self._on_activate)
+        self.canvas.bind("<Escape>", self._on_escape)
+        self.canvas.bind("<MouseWheel>", self._on_mousewheel)
+        self.canvas.bind("<Button-4>", lambda _event: self.scroll_artifact(-3))
+        self.canvas.bind("<Button-5>", lambda _event: self.scroll_artifact(3))
+
+        self.artifact_body = _ArtifactScrollModel(self._draw)
+
+    @property
+    def focused_action_id(self) -> str | None:
+        action_ids = {item.action_id for item in self._action_buttons}
+        return self._focused_role if self._focused_role in action_ids else None
+
+    @property
+    def visible_controls(self) -> frozenset[str]:
+        return frozenset(self._visible_controls)
+
+    @property
+    def visible_text(self) -> tuple[str, ...]:
+        return tuple(
+            str(self.canvas.itemcget(item, "text"))
+            for item in self.canvas.find_all()
+            if self.canvas.type(item) == "text"
         )
-        self.options_canvas.configure(yscrollcommand=self.options_scrollbar.set)
-        self.options_scrollbar.pack(side="right", fill="y")
-        self.options_canvas.pack(side="left", fill="both", expand=True)
-        self.options_inner = tk.Frame(self.options_canvas, bg=self.PANEL)
-        self.options_window = self.options_canvas.create_window((0, 0), window=self.options_inner, anchor="nw")
-        self.options_inner.bind("<Configure>", self._sync_options_scrollregion)
-        self.options_canvas.bind("<Configure>", self._sync_options_width)
-        tk.Label(
-            self.options_panel,
-            text="Tip: choose Something else... to focus the host free-response surface.",
-            bg=self.PANEL,
-            fg=self.MUTED,
+
+    @property
+    def semantic_rects(self) -> dict[str, Rect]:
+        return dict(self._semantic_rects)
+
+    def _rounded_rect(
+        self,
+        rect: Rect,
+        *,
+        radius: int,
+        fill: str,
+        outline: str | None = None,
+        width: int = 1,
+    ) -> int:
+        x1, y1, x2, y2 = rect.x, rect.y, rect.right, rect.bottom
+        r = min(radius, rect.width // 2, rect.height // 2)
+        points = (
+            x1 + r,
+            y1,
+            x2 - r,
+            y1,
+            x2,
+            y1,
+            x2,
+            y1 + r,
+            x2,
+            y2 - r,
+            x2,
+            y2,
+            x2 - r,
+            y2,
+            x1 + r,
+            y2,
+            x1,
+            y2,
+            x1,
+            y2 - r,
+            x1,
+            y1 + r,
+            x1,
+            y1,
+        )
+        return self.canvas.create_polygon(
+            points,
+            smooth=True,
+            splinesteps=24,
+            fill=fill,
+            outline=outline or fill,
+            width=width,
+        )
+
+    def _add_hit(self, role: str, rect: Rect, command: Callable[[], None]) -> None:
+        self._hit_regions.append(_HitRegion(role, rect, command))
+        self._visible_controls.add(role)
+
+    def _draw_expand_icon(self, rect: Rect) -> None:
+        center_x = rect.x + rect.width // 2
+        center_y = rect.y + rect.height // 2
+        color = self.TEXT
+        for points in (
+            (center_x - 7, center_y - 2, center_x - 7, center_y - 7, center_x - 2, center_y - 7),
+            (center_x + 2, center_y - 7, center_x + 7, center_y - 7, center_x + 7, center_y - 2),
+            (center_x - 7, center_y + 2, center_x - 7, center_y + 7, center_x - 2, center_y + 7),
+            (center_x + 2, center_y + 7, center_x + 7, center_y + 7, center_x + 7, center_y + 2),
+        ):
+            self.canvas.create_line(*points, fill=color, width=1)
+        self._semantic_rects["expand_icon"] = Rect(center_x - 7, center_y - 7, 14, 14)
+
+    def _draw_external_link_icon(self, rect: Rect) -> None:
+        center_x = rect.x + rect.width // 2
+        center_y = rect.y + rect.height // 2
+        color = self.MUTED
+        self.canvas.create_line(
+            center_x - 4,
+            center_y - 3,
+            center_x - 4,
+            center_y + 4,
+            center_x + 3,
+            center_y + 4,
+            center_x + 3,
+            center_y + 1,
+            fill=color,
+            width=1,
+        )
+        self.canvas.create_line(
+            center_x,
+            center_y - 4,
+            center_x + 4,
+            center_y - 4,
+            center_x + 4,
+            center_y,
+            fill=color,
+            width=1,
+        )
+        self.canvas.create_line(
+            center_x + 4,
+            center_y - 4,
+            center_x - 1,
+            center_y + 1,
+            fill=color,
+            width=1,
+        )
+        self._semantic_rects["external_link_icon"] = Rect(center_x - 4, center_y - 4, 8, 8)
+
+    def _draw(self) -> None:
+        if not self.window.winfo_exists() or self.layout is None or self.projection is None:
+            return
+        self.canvas.delete("all")
+        self._hit_regions.clear()
+        self._visible_controls.clear()
+        self._semantic_rects.clear()
+        window_rect = Rect(0, 0, self.layout.window.width, self.layout.window.height)
+        self._rounded_rect(
+            Rect(1, 1, window_rect.width - 2, window_rect.height - 2),
+            radius=12,
+            fill=self.BG,
+            outline="#34414a",
+        )
+        self._draw_header()
+        self._draw_artifact()
+        self._draw_options()
+        self._focus_order = [
+            item
+            for item in (
+                "open_editor",
+                "copy",
+                *(button.action_id for button in self._action_buttons),
+                "expand" if self.mode is SidecarMode.STANDARD else None,
+                "close",
+            )
+            if item is not None
+        ]
+
+    def _draw_header(self) -> None:
+        expanded = self.mode is SidecarMode.EXPANDED
+        self.canvas.create_text(
+            18,
+            22,
+            text="PDLt Review",
             anchor="w",
-            justify="left",
-            wraplength=280,
+            fill=self.TEXT,
+            font=("Segoe UI Semibold", 12),
+        )
+        badge = Rect(134, 14, 99, 21)
+        self._rounded_rect(badge, radius=5, fill="#2a2145", outline="#40325f")
+        self.canvas.create_text(
+            badge.x + badge.width // 2,
+            badge.y + badge.height // 2,
+            text=str(self.projection.get("stage") or "REVIEW").replace("_", " "),
+            fill="#ded2ff",
+            font=("Segoe UI Semibold", 7),
+        )
+        active_x = 245 if expanded else 506
+        self.canvas.create_oval(active_x, 20, active_x + 7, 27, fill=self.ACTIVE, outline="")
+        self.canvas.create_text(
+            active_x + 13,
+            24,
+            text="ACTIVE",
+            anchor="w",
+            fill=self.ACTIVE,
+            font=("Segoe UI Semibold", 8),
+        )
+        if not expanded:
+            expand = Rect(587, 8, 32, 30)
+            self._rounded_rect(expand, radius=6, fill=self.SURFACE, outline=self.BORDER)
+            self._draw_expand_icon(expand)
+            self._add_hit("expand", expand, self.toggle_mode)
+        close = Rect(371, 8, 32, 30) if expanded else Rect(629, 8, 32, 30)
+        self._rounded_rect(close, radius=6, fill=self.SURFACE, outline=self.BORDER)
+        self.canvas.create_text(
+            close.x + 16,
+            close.y + 15,
+            text="×",
+            fill=self.TEXT,
+            font=("Segoe UI", 16),
+        )
+        self._add_hit("close", close, self.close_view)
+
+    def _draw_artifact(self) -> None:
+        assert self.layout is not None
+        expanded = self.mode is SidecarMode.EXPANDED
+        panel = self.layout.artifact
+        self._semantic_rects["artifact"] = panel
+        self._rounded_rect(panel, radius=9, fill=self.CARD, outline=self.BORDER_SOFT)
+        title_y = 71 if expanded else 63
+        artifact = (self.projection or {}).get("artifact") or {}
+        self.canvas.create_text(
+            panel.x + 11,
+            title_y,
+            text=str(artifact.get("title") or "Authoritative Artifact"),
+            anchor="w",
+            fill=self.TEXT,
+            font=("Segoe UI Semibold", 9),
+        )
+        open_rect = Rect(284, 56, 112, 30) if expanded else Rect(287, 51, 112, 28)
+        self._rounded_rect(open_rect, radius=6, fill=self.SURFACE, outline=self.BORDER)
+        self.canvas.create_text(
+            open_rect.x + 10,
+            open_rect.y + open_rect.height // 2,
+            text="Open in Editor",
+            anchor="w",
+            fill=self.TEXT,
             font=("Segoe UI", 8),
-        ).pack(fill="x", padx=10, pady=8)
+        )
+        self._draw_external_link_icon(
+            Rect(open_rect.right - 20, open_rect.y + (open_rect.height - 16) // 2, 16, 16)
+        )
+        self._add_hit("open_editor", open_rect, self._open_artifact)
 
-    def _sync_options_scrollregion(self, _event: tk.Event[Any] | None = None) -> None:
-        self.options_canvas.configure(scrollregion=self.options_canvas.bbox("all"))
+        body_rect = Rect(18, 92, 378, 246) if expanded else Rect(19, 82, 381, 159)
+        self._rounded_rect(body_rect, radius=6, fill=self.BODY, outline=self.BORDER_SOFT)
+        line_positions = (
+            (114, 132, 155, 178, 202, 225, 249, 272, 298, 321)
+            if expanded
+            else (97, 106, 122, 140, 156, 172, 185, 202, 217)
+        )
+        body_font = ("Consolas", 9 if expanded else 8)
+        for index, line in enumerate(self.artifact_body.visible):
+            self.canvas.create_text(
+                body_rect.x + 11,
+                line_positions[index],
+                text=line,
+                anchor="w",
+                fill=self.ACCENT if line.strip() == "# Prompt" else "#dce2e7",
+                font=body_font,
+            )
 
-    def _sync_options_width(self, event: tk.Event[Any]) -> None:
-        self.options_canvas.itemconfigure(self.options_window, width=event.width)
-
-    def _compose_panels(self) -> None:
-        self.artifact_panel.pack_forget()
-        self.options_panel.pack_forget()
-        if self.mode is SidecarMode.STANDARD:
-            self.artifact_panel.pack(side="left", fill="both", expand=True)
-            self.options_panel.pack(side="left", fill="both", padx=(10, 0))
-            self.options_panel.pack_propagate(False)
+        if expanded:
+            self.canvas.create_text(
+                27,
+                359,
+                text=self._source_label,
+                anchor="w",
+                fill=self.MUTED,
+                font=("Segoe UI", 8),
+            )
+            self.canvas.create_text(
+                27,
+                379,
+                text=self._source_value,
+                anchor="w",
+                fill=self.MUTED,
+                font=("Segoe UI", 8),
+            )
+            copy_rect = Rect(337, 352, 58, 31)
         else:
-            self.options_panel.pack_propagate(False)
-            self.artifact_panel.pack(side="top", fill="both", expand=True)
-            self.options_panel.pack(side="top", fill="both", pady=(10, 0))
+            self.canvas.create_text(
+                21,
+                273,
+                text=self._source_label,
+                anchor="w",
+                fill=self.MUTED,
+                font=("Segoe UI", 8),
+            )
+            self.canvas.create_text(
+                149,
+                273,
+                text=self._source_value,
+                anchor="w",
+                fill=self.MUTED,
+                font=("Segoe UI", 8),
+            )
+            copy_rect = Rect(343, 259, 56, 30)
+        self._rounded_rect(copy_rect, radius=6, fill=self.SURFACE, outline=self.BORDER)
+        self.canvas.create_text(
+            copy_rect.x + copy_rect.width // 2,
+            copy_rect.y + copy_rect.height // 2,
+            text="Copy",
+            fill=self.TEXT,
+            font=("Segoe UI", 8),
+        )
+        self._add_hit("copy", copy_rect, self._copy_artifact)
+
+    def _draw_options(self) -> None:
+        assert self.layout is not None
+        expanded = self.mode is SidecarMode.EXPANDED
+        panel = self.layout.review_options
+        self._semantic_rects["review_options"] = panel
+        if not expanded:
+            self._rounded_rect(panel, radius=9, fill=self.CARD, outline=self.BORDER_SOFT)
+        self.canvas.create_text(
+            18 if expanded else 431,
+            425 if expanded else 63,
+            text="Review Options",
+            anchor="w",
+            fill=self.TEXT,
+            font=("Segoe UI Semibold", 9),
+        )
+        row_y = 449 if expanded else 80
+        badge_x = 20 if expanded else 432
+        action_x = 56 if expanded else 467
+        action_width = 340 if expanded else 190
+        self._semantic_rects["actions_content"] = Rect(
+            18 if expanded else 431,
+            row_y,
+            378 if expanded else 226,
+            151 if expanded else 139,
+        )
+        accents = (self.ACTIVE, self.BLUE, self.AMBER, self.NEUTRAL)
+        for index, button in enumerate(self._action_buttons):
+            y = row_y + index * (40 if expanded else 36)
+            badge = Rect(badge_x, y, 31 if expanded else 29, 31)
+            action = Rect(action_x, y, action_width, 31)
+            accent = accents[index] if index < len(accents) else self.NEUTRAL
+            focused = self._focused_role == button.action_id
+            self._rounded_rect(badge, radius=5, fill=self.SURFACE, outline=accent)
+            self.canvas.create_text(
+                badge.x + badge.width // 2,
+                badge.y + badge.height // 2,
+                text=str(button.ordinal),
+                fill=accent,
+                font=("Segoe UI Semibold", 9),
+            )
+            self._rounded_rect(
+                action,
+                radius=5,
+                fill=self.SURFACE,
+                outline=accent if focused else self.BORDER,
+                width=1,
+            )
+            self.canvas.create_text(
+                action.x + 10,
+                action.y + action.height // 2,
+                text=button.label,
+                anchor="w",
+                fill=self.TEXT if button.enabled else "#68727b",
+                font=("Segoe UI", 8 if not expanded else 9),
+            )
+            self._add_hit(button.action_id, action, button.invoke)
+        tip_y = 644 if expanded else 252
+        tip_x = 18 if expanded else 431
+        self._semantic_rects["tip"] = Rect(tip_x, tip_y - 8, 378 if expanded else 226, 40)
+        self.canvas.create_text(
+            tip_x,
+            tip_y,
+            text="Tip:",
+            anchor="w",
+            fill=self.TEXT,
+            font=("Segoe UI Semibold", 8),
+        )
+        self.canvas.create_text(
+            tip_x + 24,
+            tip_y,
+            text="Type directly in the chat below",
+            anchor="w",
+            fill=self.MUTED,
+            font=("Segoe UI", 8),
+        )
+        self.canvas.create_text(
+            tip_x,
+            tip_y + 20,
+            text="to provide other feedback.",
+            anchor="w",
+            fill=self.MUTED,
+            font=("Segoe UI", 8),
+        )
 
     def _apply_layout(self) -> SidecarLayout:
         self.layout = calculate_sidecar_layout(self.owner_rect, self.composer_rect, self.mode)
         rect = self.layout.window
         self.window.geometry(f"{rect.width}x{rect.height}+{rect.x}+{rect.y}")
-        if self.mode is SidecarMode.STANDARD:
-            self.options_panel.configure(width=self.layout.review_options.width)
-        else:
-            self.options_panel.configure(height=self.layout.review_options.height)
+        self.canvas.configure(width=rect.width, height=rect.height)
+        self.artifact_body.configure(
+            body=self._artifact_body_text,
+            width_chars=43 if self.mode is SidecarMode.STANDARD else 45,
+            visible_lines=9 if self.mode is SidecarMode.STANDARD else 10,
+        )
         self.window.update_idletasks()
         return self.layout
 
     def update_anchor(self, owner_rect: Rect, composer_rect: Rect) -> SidecarLayout:
         self.owner_rect = owner_rect
         self.composer_rect = composer_rect
-        return self._apply_layout()
+        layout = self._apply_layout()
+        self._draw()
+        return layout
 
     def toggle_mode(self) -> SidecarMode:
         self.mode = SidecarMode.EXPANDED if self.mode is SidecarMode.STANDARD else SidecarMode.STANDARD
-        self.expand_button.configure(text="↙" if self.mode is SidecarMode.EXPANDED else "↗")
-        self._compose_panels()
         self._apply_layout()
+        self._draw()
         return self.mode
 
     def toggle_lock(self) -> bool:
+        """Retain the nonvisual movement diagnostic without public chrome."""
+
         self.locked = not self.locked
-        self.lock_button.configure(text="LOCK" if self.locked else "MOVE")
         if self.locked:
             self._apply_layout()
+            self._draw()
         return self.locked
 
     def _begin_drag(self, event: tk.Event[Any]) -> None:
@@ -266,45 +614,16 @@ class SidecarWindow:
         self.window.geometry(f"+{window_x + event.x_root - start_x}+{window_y + event.y_root - start_y}")
 
     def _render_actions(self, actions: list[dict[str, Any]]) -> None:
-        for child in self.options_inner.winfo_children():
-            child.destroy()
-        self._action_buttons.clear()
-        for action in actions:
-            action_id = str(action["action_id"])
-            row = tk.Frame(self.options_inner, bg=self.PANEL)
-            row.pack(fill="x", pady=3)
-            ordinal = tk.Label(
-                row,
-                text=str(action["ordinal"]),
-                width=2,
-                bg="#162331",
-                fg=self.ACTIVE if action.get("emphasis") == "PRIMARY" else self.FOCUS,
-                relief="solid",
-                bd=1,
-                font=("Segoe UI Semibold", 9),
+        self._action_buttons = [
+            _ActionHandle(
+                self,
+                action_id=str(action["action_id"]),
+                label=str(action["label"]),
+                ordinal=int(action["ordinal"]),
+                enabled=bool(action.get("enabled", True)),
             )
-            ordinal.pack(side="left", padx=(0, 7), ipady=5)
-            button = tk.Button(
-                row,
-                text=str(action["label"]),
-                command=lambda selected=action_id: self.on_action(selected),
-                state="normal" if action.get("enabled", True) else "disabled",
-                bg=self.PANEL_ALT,
-                fg=self.TEXT,
-                activebackground="#263341",
-                activeforeground=self.TEXT,
-                disabledforeground="#66717c",
-                relief="solid",
-                bd=1,
-                anchor="w",
-                padx=9,
-                pady=6,
-                takefocus=True,
-            )
-            button.pack(side="left", fill="x", expand=True)
-            self._action_buttons.append(button)
-        self.options_inner.update_idletasks()
-        self._sync_options_scrollregion()
+            for action in actions
+        ]
 
     def render(self, projection: dict[str, Any]) -> SidecarLayout | None:
         stage = projection.get("stage")
@@ -317,23 +636,85 @@ class SidecarWindow:
         if not isinstance(artifact, dict) or not isinstance(actions, list) or not actions:
             raise ValueError("active Sidecar projection requires an artifact and projected actions")
         self.projection = projection
-        self.stage_label.configure(text=str(stage or "REVIEW").replace("_", " "))
-        self.artifact_title.configure(text=str(artifact.get("title") or "Authoritative Artifact"))
-        self.artifact_body.configure(state="normal")
-        self.artifact_body.delete("1.0", "end")
-        self.artifact_body.insert("1.0", str(artifact.get("body") or ""))
-        self.artifact_body.configure(state="disabled")
-        self.artifact_source.configure(text=f"Projection snapshot · {artifact.get('artifact_ref', 'opaque reference')}")
+        self._artifact_body_text = str(artifact.get("body") or "")
+        self._source_label, self._source_value = self.source_presenter(artifact)
         self._render_actions(actions)
         layout = self._apply_layout()
         self.window.deiconify()
         self.window.lift()
         self.focus_primary_action()
+        self._draw()
         return layout
+
+    def _set_focus(self, role: str) -> None:
+        self._focused_role = role
+        self.canvas.focus_force()
+        self._draw()
 
     def focus_primary_action(self) -> None:
         if self._action_buttons:
-            self._action_buttons[0].focus_force()
+            self._set_focus(self._action_buttons[0].action_id)
+
+    def _invoke_action(self, action_id: str) -> None:
+        self._set_focus(action_id)
+        self.on_action(action_id)
+
+    def _open_artifact(self) -> None:
+        artifact = (self.projection or {}).get("artifact") or {}
+        if (artifact.get("capabilities") or {}).get("open_external", False):
+            self.on_open_editor(str(artifact.get("artifact_ref") or ""))
+
+    def _copy_artifact(self) -> None:
+        artifact = (self.projection or {}).get("artifact") or {}
+        if not (artifact.get("capabilities") or {}).get("copy", False):
+            return
+        body = str(artifact.get("body") or "")
+        if self.on_copy is not None:
+            self.on_copy(body)
+        else:
+            self.window.clipboard_clear()
+            self.window.clipboard_append(body)
+
+    def _on_click(self, event: tk.Event[Any]) -> None:
+        for hit in reversed(self._hit_regions):
+            if hit.rect.x <= event.x < hit.rect.right and hit.rect.y <= event.y < hit.rect.bottom:
+                self._set_focus(hit.role)
+                hit.command()
+                return
+
+    def _on_tab(self, _event: tk.Event[Any]) -> str:
+        self._advance_focus(1)
+        return "break"
+
+    def _on_shift_tab(self, _event: tk.Event[Any]) -> str:
+        self._advance_focus(-1)
+        return "break"
+
+    def _advance_focus(self, delta: int) -> None:
+        if not self._focus_order:
+            return
+        try:
+            index = self._focus_order.index(self._focused_role or "")
+        except ValueError:
+            index = -1 if delta > 0 else 0
+        self._set_focus(self._focus_order[(index + delta) % len(self._focus_order)])
+
+    def _on_activate(self, _event: tk.Event[Any]) -> str:
+        for hit in self._hit_regions:
+            if hit.role == self._focused_role:
+                hit.command()
+                break
+        return "break"
+
+    def _on_escape(self, _event: tk.Event[Any]) -> str:
+        if self.mode is SidecarMode.EXPANDED:
+            self.toggle_mode()
+        return "break"
+
+    def _on_mousewheel(self, event: tk.Event[Any]) -> str:
+        delta = getattr(event, "delta", 0)
+        self.scroll_artifact(-3 if delta > 0 else 3)
+        return "break"
 
     def scroll_artifact(self, units: int) -> None:
         self.artifact_body.yview_scroll(units, "units")

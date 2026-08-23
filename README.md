@@ -239,9 +239,19 @@ There is no relaunch and no qualification-harness Send step.
 
 ## H2-C Sidecar component qualification
 
-H2-C qualifies only the reusable Sidecar window against a visibly labeled
-synthetic fullscreen Tk owner. It does not test Codex and cannot authorize
-overall H2 PASS.
+H2-C qualifies only the reusable Sidecar component. The synthetic Tk owner is
+retained for functional ownership, placement, lifecycle, and overflow tests;
+it is not visual-approval evidence. Canonical visual approval compares only the
+Sidecar window against the vendored design references:
+
+```text
+docs/h2/sidecar-design/REFERENCE_SIDECAR_STANDARD.png  675 x 300
+docs/h2/sidecar-design/REFERENCE_SIDECAR_EXPANDED.png  412 x 806
+```
+
+The controlling machine-readable contract is
+`docs/h2/sidecar-design/R6O-SIDECAR-DESIGN-CONTRACT-v1-2026-08-23.json`.
+H2-C does not test Codex and cannot authorize overall H2 PASS.
 
 Install the pinned display/screenshot dependencies, then run the exact gate
 command:
@@ -262,7 +272,16 @@ command:
 
 The display command briefly shows and captures STANDARD and EXPANDED modes. To
 hold each mode longer for visual inspection, rerun it with
-`--hold-seconds 5`. The expected authority fields are exactly:
+`--hold-seconds 5`. It produces only these canonical visual-approval captures:
+
+```text
+r6o_evidence/H2-C-QUALIFICATION/H2-C-STANDARD-SIDECAR.png
+r6o_evidence/H2-C-QUALIFICATION/H2-C-EXPANDED-SIDECAR.png
+```
+
+It also produces the finite structural matrix in
+`H2-C-DESIGN-CONFORMANCE.json`. The expected component authority fields remain
+exactly:
 
 ```json
 {
@@ -275,6 +294,16 @@ hold each mode longer for visual inspection, rerun it with
 
 The verifier rejects evidence that claims Codex attachment, Codex z-order,
 Codex focus, Codex composer behavior, Sidecar E2E, or overall H2 PASS.
+Before human approval, compare each implementation capture directly with its
+same-sized reference. The automated readiness status is only:
+
+```text
+H2-C_IMPLEMENTATION_CONFORMS_FOR_HUMAN_VISUAL_REVIEW
+KNOWN_SIDECAR_VISUAL_DIVERGENCES = 0
+H2-C HUMAN DESIGN APPROVAL = PENDING
+```
+
+No fuzzy image-similarity score can authorize the gate.
 
 ## H2-D1 qualification (Windows only)
 

@@ -7,6 +7,10 @@ from enum import Enum
 from typing import Any
 
 
+STANDARD_SIZE = (675, 300)
+EXPANDED_SIZE = (412, 806)
+
+
 class SidecarMode(str, Enum):
     STANDARD = "STANDARD"
     EXPANDED = "EXPANDED"
@@ -79,7 +83,7 @@ def _validate_anchor(owner: Rect, composer: Rect) -> None:
 
 
 def calculate_sidecar_layout(owner: Rect, composer: Rect, mode: SidecarMode) -> SidecarLayout:
-    """Calculate the frozen H2-C STANDARD or EXPANDED relationship.
+    """Place the design-locked Sidecar relative to its presentation owner.
 
     Pane rectangles are local to the Sidecar window. Owner, composer, and
     window rectangles use screen coordinates.
@@ -88,47 +92,31 @@ def calculate_sidecar_layout(owner: Rect, composer: Rect, mode: SidecarMode) -> 
     _validate_anchor(owner, composer)
     margin = max(12, round(owner.width * 0.0125))
     window_border = 1
-    chrome_height = 50
-    padding = 12
-    pane_gap = 10
 
     if mode is SidecarMode.STANDARD:
         anchor_gap = 10
+        window_width, window_height = STANDARD_SIZE
         available_height = composer.y - owner.y - margin - anchor_gap
-        if available_height < 220:
+        if available_height < window_height:
             raise ValueError("qualification owner has insufficient space above the composer")
-        window_height = min(max(260, round(owner.height * 0.34)), available_height)
-        window = Rect(composer.x, composer.y - anchor_gap - window_height, composer.width, window_height)
-        content_y = window_border + chrome_height + padding
-        content_height = window.height - content_y - window_border - padding
-        content_width = window.width - 2 * (window_border + padding)
-        artifact_width = round((content_width - pane_gap) * 0.64)
-        content_x = window_border + padding
-        artifact = Rect(content_x, content_y, artifact_width, content_height)
-        review_options = Rect(
-            artifact.right + pane_gap,
-            content_y,
-            content_width - artifact_width - pane_gap,
-            content_height,
-        )
+        window_x = min(max(composer.x, owner.x + margin), owner.right - margin - window_width)
+        if window_x < owner.x + margin:
+            raise ValueError("qualification owner is too narrow for the STANDARD Sidecar")
+        window = Rect(window_x, composer.y - anchor_gap - window_height, window_width, window_height)
+        artifact = Rect(8, 44, 402, 256)
+        review_options = Rect(418, 44, 249, 256)
         composition = "ARTIFACT_LEFT_REVIEW_OPTIONS_RIGHT"
+        chrome_height = 43
     else:
         anchor_gap = None
-        window_width = round(owner.width * 0.30)
-        window = Rect(owner.right - margin - window_width, owner.y + margin, window_width, owner.height - 2 * margin)
-        content_y = window_border + chrome_height + padding
-        content_height = window.height - content_y - window_border - padding
-        content_width = window.width - 2 * (window_border + padding)
-        artifact_height = round((content_height - pane_gap) * 0.60)
-        content_x = window_border + padding
-        artifact = Rect(content_x, content_y, content_width, artifact_height)
-        review_options = Rect(
-            content_x,
-            artifact.bottom + pane_gap,
-            content_width,
-            content_height - artifact_height - pane_gap,
-        )
+        window_width, window_height = EXPANDED_SIZE
+        if owner.width < window_width + 2 * margin or owner.height < window_height + 2 * margin:
+            raise ValueError("qualification owner is too small for the EXPANDED Sidecar")
+        window = Rect(owner.right - margin - window_width, owner.y + margin, window_width, window_height)
+        artifact = Rect(8, 48, 396, 350)
+        review_options = Rect(8, 408, 396, 398)
         composition = "ARTIFACT_TOP_REVIEW_OPTIONS_BELOW"
+        chrome_height = 47
 
     return SidecarLayout(
         mode=mode,
