@@ -56,7 +56,7 @@
   },
   "schema_version": "r6o-h2-d1-host-environment-1",
   "status": "HOST_DISCOVERED",
-  "timestamp_utc": "2026-08-24T18:22:39.441411Z",
+  "timestamp_utc": "2026-08-24T21:32:49.549332Z",
   "windows": {
     "architecture": "AMD64",
     "build": 22000,

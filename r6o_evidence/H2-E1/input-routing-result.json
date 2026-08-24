@@ -14,8 +14,8 @@
   },
   "host_record_sha256": "8ceaf31da367dc6efe938d8f129a9d125e4f6ba0b19a991643b69680d87748c7",
   "implementation_sha256": {
-    "r6o/host/codex/windows/input_binding.py": "d646a400c0b9749cbc21086ecac9bc4410e51fac1d8996b1e184f7eb775d916f",
-    "scripts/h2/verify_codex_input_routing.py": "a7be0d2948345989c648ade42124012cc71a14cc87399778f342f072632d023a"
+    "r6o/host/codex/windows/input_binding.py": "cae01174e33879498b206d947365eec29f967219b67011981a929324e3c39221",
+    "scripts/h2/verify_codex_input_routing.py": "afef0743f250173a8b2022c47caad7aef013083dded66e96d1aa30e2b75d2082"
   },
   "interaction": {
     "actual_composer_focused": true,
@@ -62,8 +62,8 @@
   "selectors_sha256": "f45bc99891a8d6d07344519274baded3c601203e48ba612246bcdea6f4c34386",
   "source": {
     "branch": "codex/h2-e1-input-routing",
-    "head": "55c70d10a018b8b688e7f81b4cedea6f2e0fda5a",
-    "tree": "cba1f18a627aef263c2cc17b00338716c6e95e7b"
+    "head": "c488a8173d2bc5ca2251470c3cad24db7fcb4a95",
+    "tree": "dd65095aeef9ec406a14b4890346fbed92d13c1b"
   },
   "status": "H2_E1_INPUT_ROUTING_PASS",
   "steady_state": {
@@ -101,7 +101,7 @@
     "owner_hwnd": 2758514,
     "placement_matches": true,
     "sidecar_above_host": true,
-    "sidecar_hwnd": 3151826,
+    "sidecar_hwnd": 5969874,
     "visible": true,
     "work_area_rectangle": {
       "bottom": 900,
