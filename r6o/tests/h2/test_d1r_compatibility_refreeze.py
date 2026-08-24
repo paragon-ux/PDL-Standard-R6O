@@ -32,8 +32,8 @@ HOST_RECORD_PATH = ROOT / "r6o_evidence" / "H2-D1" / "host-environment.json"
 UIA_TREE_PATH = ROOT / "r6o_evidence" / "H2-D1" / "codex-uia.json"
 ACCEPTED_SELECTOR_CANONICAL_SHA256 = "7a6ba40dbaef5d7528047858548bab08bec2cd3fb4a2a86be093d17920eb375c"
 ACCEPTED_PYTHON_SHA256 = {
-    "r6o/host/codex/windows/discovery.py": "3ce15e6b74cba4f57434b2ace1506a2218d6d6276e753e00389ed2f52fc4c602",
-    "r6o/host/codex/windows/uia.py": "d63c203302850a1993eddbf32dac3d043d29e863fd9720dbee97dffbc229e2b4",
+    "r6o/host/codex/windows/discovery.py": "77d2af8e4c853d182752177b9c6f51402f8f5e8355553fbb1f1ff1d6a7670fa2",
+    "r6o/host/codex/windows/uia.py": "79cfb3cff0b206f27b589f366a3fc73d32083b9d4cabbe2b4f74d68119333841",
     "r6o/host/codex/windows/binding.py": "eed2c7db45ff56ebad2ccec542dc795ce86a02652ac6ed1d33e38e7ab295413c",
     "r6o/host/codex/windows/placement.py": "8d01b1b2d2e6c77965decadcf2b34f27ee90728f72b8f0ce8ad770d0d1b43ddb",
 }
@@ -121,7 +121,10 @@ def test_refreeze_rejects_d1_or_d2_python_production_delta() -> None:
 def test_d1_d2_python_production_files_match_the_accepted_base() -> None:
     assert set(READ_ONLY_D1_D2_PYTHON) == set(ACCEPTED_PYTHON_SHA256)
     for relative_path, expected in ACCEPTED_PYTHON_SHA256.items():
-        assert hashlib.sha256((ROOT / relative_path).read_bytes()).hexdigest() == expected
+        # Hash Git's canonical text identity so Windows CRLF checkout policy
+        # cannot make unchanged production sources appear different on CI.
+        canonical_bytes = (ROOT / relative_path).read_bytes().replace(b"\r\n", b"\n")
+        assert hashlib.sha256(canonical_bytes).hexdigest() == expected
 
 
 def test_refreeze_identity_is_closed_to_the_authorized_transition() -> None:
