@@ -1,0 +1,114 @@
+{
+  "schema_version": "r6o-h2-pre-review-completion-checklist-1",
+  "gate": "H2-D1R",
+  "agent": "SOL-H2-D1R",
+  "code_freeze_head": "55ac83d3911f4ee299d73364256e4696a251053b",
+  "code_freeze_tree": "2a2ddf33e87b1e7cee4579e97ead1424a634f365",
+  "status": "COMPLETE",
+  "sections": {
+    "A_SCOPE_CLOSURE": {
+      "status": "PASS",
+      "evidence": [
+        "Objective: requalify accepted D1/D2 host compatibility for Codex package 26.818.5229.0 without changing selector/reset semantics or D1/D2 production Python.",
+        "Every gate requirement is traced in qualification.json and compatibility-refreeze.json.",
+        "No TODO, placeholder, mock, skipped required path, future H2 feature, protected-path change, or sibling production change exists.",
+        "Exactly the three authorized selector leaves changed; controls and reset_contract canonical hashes are identical.",
+        "The only supplemental path is the HUMAN-H2/H2-COORD-authorized D2 test file."
+      ]
+    },
+    "B_POSITIVE_PATH_COMPLETENESS": {
+      "status": "PASS",
+      "evidence": [
+        "Actual Codex reset reached CODEX_TEST_SESSION_READY from a clean composer.",
+        "Actual D2 production host binding reached H2_D2_ATTACHMENT_PASS for Standard and Expanded modes.",
+        "Host ownership, placement, focus, non-interference, and terminal close-focus observations passed.",
+        "Worker-operation ordering is N/A: D1R is a compatibility refreeze and implements no semantic worker workflow."
+      ]
+    },
+    "C_NEGATIVE_FAIL_CLOSED_COMPLETENESS": {
+      "status": "PASS",
+      "evidence": [
+        "D1R, D1, and D2 negative contract tests pass.",
+        "Wrong version, provenance, selector delta, stale host identity, timeout, partial initialization, and cleanup paths remain fail-closed.",
+        "Duplicate semantic submission and captured input gesture leakage are N/A to D1R; no E-series input semantics were added."
+      ]
+    },
+    "D_LIFECYCLE_RESOURCE_COMPLETENESS": {
+      "status": "PASS",
+      "evidence": [
+        "Actual D2 verifier exited without a dangling Sidecar/probe and returned focus to the current Codex composer.",
+        "Normal/error/idempotent cleanup contracts pass in the D2 focused suite.",
+        "No production lifecycle code changed."
+      ]
+    },
+    "E_TEST_COMPLETENESS": {
+      "status": "PASS",
+      "evidence": [
+        "D1R plus D1 focused: 55 passed.",
+        "D2 focused: 38 passed, including historical and current binding tests.",
+        "Full r6o/tests: 241 passed.",
+        "verify_r6o1.py: PASS; baseline pytest 9 passed; nested R6O pytest 241 passed.",
+        "Actual-host reset and attachment both passed; qualification is not synthetic-only.",
+        "GitHub required CI run 32717182668 passed Ubuntu and Windows.",
+        "Linux X11/Wayland are NOT_REQUIRED for unchanged D1/D2 production; ancillary run 32717182663 nevertheless passed Windows, X11, and Wayland."
+      ]
+    },
+    "F_WARNING_DIAGNOSTIC_COMPLETENESS": {
+      "status": "PASS",
+      "evidence": [
+        "All observed warnings are classified in qualification.json.",
+        "No warning hides a required failure.",
+        "No debug prints or temporary qualification logging were added to production."
+      ]
+    },
+    "G_REPOSITORY_HYGIENE": {
+      "status": "PASS",
+      "evidence": [
+        "git diff --check passed; no merge markers, TODO/FIXME placeholders, caches, disabled tests, or unintended files exist.",
+        "Changed-file inventory matches base authority plus the supplemental test-only authorization.",
+        "Protected-path and historical H2-D2 diffs are empty.",
+        "Frozen oracle remains clean at 60d982f3328b45a351879d67dc4bb525172b65fd / b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6."
+      ]
+    },
+    "H_CODE_FREEZE": {
+      "status": "PASS",
+      "evidence": [
+        "Implementation finished before freeze.",
+        "CODE_FREEZE_HEAD=55ac83d3911f4ee299d73364256e4696a251053b.",
+        "CODE_FREEZE_TREE=2a2ddf33e87b1e7cee4579e97ead1424a634f365.",
+        "All post-freeze modifications are evidence-only."
+      ]
+    },
+    "I_EVIDENCE_COMPLETENESS": {
+      "status": "PASS",
+      "evidence": [
+        "Reset and D2 evidence were regenerated from the exact code freeze.",
+        "qualification.json records exact commands, exit results, host identity, hashes, CI runs, and warning classifications.",
+        "Actual recordings/logs are direct verifier outputs and unmodified.",
+        "Evidence claims no human approval; EVIDENCE_HEAD is SELF and is resolved by the terminal handoff."
+      ]
+    },
+    "J_IMPLEMENTER_SELF_AUDIT": {
+      "status": "PASS",
+      "evidence": [
+        "The D1R packet and checklist 13 were reread after implementation.",
+        "Every numbered D1R requirement was checked against frozen code/evidence.",
+        "The one known nonblocking P2 evidence-label finding is explicit.",
+        "No unfinished implementation is deferred to Luna; the prescribed human exercise is expected to succeed without code edits."
+      ]
+    },
+    "K_STATE_STOP_CODE_HYGIENE": {
+      "status": "PASS",
+      "evidence": [
+        "state=IMPLEMENTATION_COMPLETE is canonical.",
+        "stop_code=null; the prior dependency stop was resolved by supplemental authority.",
+        "No human disposition is prefilled or inferred."
+      ]
+    }
+  },
+  "attestation": {
+    "implementation_complete": true,
+    "ready_for_luna": true,
+    "human_pass_claimed": false
+  }
+}

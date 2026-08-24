@@ -20,7 +20,7 @@
   "event_log": {
     "event_count": 10,
     "path": "r6o_evidence/H2-D2/win32-uia-events.jsonl",
-    "sha256": "56d40680c400c1c29d48232518be582f22aa3933235a1b672eb1a0923cbe89a2"
+    "sha256": "cba39a190a6182dcee9d1e531603170c3929ddcf08c718df010dfade2f06e535"
   },
   "expanded": {
     "actual_rectangle": {
@@ -57,7 +57,7 @@
     "owner_hwnd": 2758514,
     "placement_matches": true,
     "sidecar_above_host": true,
-    "sidecar_hwnd": 11273278,
+    "sidecar_hwnd": 2233720,
     "visible": true,
     "work_area_rectangle": {
       "bottom": 900,
@@ -68,8 +68,8 @@
       "width": 1600
     },
     "z_order_indices": {
-      "host": 31,
-      "sidecar": 30
+      "host": 33,
+      "sidecar": 32
     }
   },
   "gate": "H2-D2",
@@ -137,9 +137,9 @@
       "path": "r6o_evidence/H2-D1R/d2-actual-host/attachment-expanded.mp4",
       "sha256": "4f4c49873838c851b70861f2bf76ec93e209e9da6f5924ef6c236549d7649063"
     },
-    "frame_count": 419,
+    "frame_count": 375,
     "mandatory": true,
-    "sha256": "3e5a3aea9249a9301d1946f19e4c8779cd100af99f362925cfc8b371cbf7f143",
+    "sha256": "15bc1b59c479e11a6d6dd960265c43df500223eabdede6bbef1b4e2c5e2ae56b",
     "standard": {
       "crop_rectangle": {
         "bottom": 843,
@@ -150,10 +150,10 @@
         "width": 676
       },
       "fps": 8,
-      "frame_count": 410,
+      "frame_count": 366,
       "observer_ordering_mutation": false,
       "path": "r6o_evidence/H2-D1R/d2-actual-host/attachment-standard.mp4",
-      "sha256": "d0d5c88c4edab6f4e4262cf6fed9abbc6954be92717a46192bb24889d3ef93f4"
+      "sha256": "5fe22d4551ba3e7a7b8fcb8e97c5a9dcc3877ab4267702281957a991bdf7a213"
     }
   },
   "runtime": {
@@ -198,7 +198,7 @@
       "top": 491,
       "width": 675
     },
-    "foreground_hwnd": 11273278,
+    "foreground_hwnd": 2233720,
     "global_topmost": false,
     "host_client_rectangle": {
       "bottom": 899,
@@ -213,7 +213,7 @@
     "owner_hwnd": 2758514,
     "placement_matches": true,
     "sidecar_above_host": true,
-    "sidecar_hwnd": 11273278,
+    "sidecar_hwnd": 2233720,
     "visible": true,
     "work_area_rectangle": {
       "bottom": 900,
@@ -224,19 +224,19 @@
       "width": 1600
     },
     "z_order_indices": {
-      "host": 34,
-      "sidecar": 30
+      "host": 36,
+      "sidecar": 32
     }
   },
   "status": "H2_D2_ATTACHMENT_PASS",
   "synthetic_owner_used": false,
-  "timestamp_utc": "2026-08-24T09:46:37.109428Z",
+  "timestamp_utc": "2026-08-24T10:27:19.720551Z",
   "unrelated_window": {
     "host_focus_router_ignored_probe_click": true,
     "probe_above_sidecar": true,
     "probe_foreground": true,
     "probe_global_topmost": false,
-    "probe_hwnd": 2884898,
+    "probe_hwnd": 15142608,
     "probe_owner_hwnd": 0
   }
 }
