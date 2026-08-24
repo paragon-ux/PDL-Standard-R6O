@@ -1,0 +1,32 @@
+{
+  "actual_selector_delta": [
+    "/captured_from/host_environment/sha256",
+    "/captured_from/uia_tree/sha256",
+    "/host_compatibility/package_version"
+  ],
+  "allowed_delta_only": true,
+  "allowed_selector_delta": [
+    "/captured_from/host_environment/sha256",
+    "/captured_from/uia_tree/sha256",
+    "/host_compatibility/package_version"
+  ],
+  "base_commit": "9816c9b848101678e654bfc14abbb6db269737d3",
+  "controls_sha256_after": "167b8d64449ccc8912320e3612167cb88a9ec8c52f9d708c00a1fef56141688f",
+  "controls_sha256_before": "167b8d64449ccc8912320e3612167cb88a9ec8c52f9d708c00a1fef56141688f",
+  "controls_unchanged": true,
+  "current_package_version": "26.818.5229.0",
+  "d1_python_production_diff_empty": true,
+  "d2_python_production_diff_empty": true,
+  "file_version": "151.0.7922.170",
+  "new_host_environment_sha256": "8ceaf31da367dc6efe938d8f129a9d125e4f6ba0b19a991643b69680d87748c7",
+  "new_uia_tree_sha256": "f69cc0ba53e7860a651969948645b9e4efb92aeeba250b9b3664ad81ecdb6aaf",
+  "previous_package_version": "26.818.3698.0",
+  "product_version": "151.0.7922.170",
+  "reset_contract_sha256_after": "29dc95bb2065b817032f42c89f73d508d0923097a8fb80ee667ff4a7329fe88c",
+  "reset_contract_sha256_before": "29dc95bb2065b817032f42c89f73d508d0923097a8fb80ee667ff4a7329fe88c",
+  "reset_contract_unchanged": true,
+  "schema_version": "r6o-h2-d1r-compatibility-refreeze-1",
+  "selector_provenance_valid": true,
+  "selector_semantics_unchanged": true,
+  "status": "D1R_COMPATIBILITY_REFREEZE_PASS"
+}
