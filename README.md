@@ -154,6 +154,37 @@ The E1 binding is presentation-only. It emits one `HOST_COMPOSER_TEXT`
 fixture text, ViewModel call, controller call, host-model lease, automatic
 invocation, or terminal handoff behavior.
 
+## H2-E2 actual Codex G06 structured-action checkout
+
+Run H2-E2 only from the code-frozen integration branch:
+
+```text
+codex/h2-e2-g06-integration
+```
+
+The runner rejects the wrong branch, a head that does not descend from accepted
+H2-E1 head `8a85ac4214e7b3386c3c8079b0d45fb79a97e9ff`, and uncommitted changes outside
+`r6o_evidence/H2-E2/`. Before invoking it, use the accepted D1 reset command to
+prepare one fresh Codex test session with an empty composer. Then run exactly:
+
+```powershell
+python scripts\h2\run_codex_h2_e2.py --case G06 --record
+```
+
+Click `Confirm prompt`, then click `Confirm plan`. The Sidecar must move from
+`PROMPT_REVIEW` to `PLAN_REVIEW`, dismiss at `CLOSED_SUCCESS`, and return focus
+to the actual Codex composer. Both clicks emit only `STRUCTURED_ACTION`
+envelopes; the E1 composer input binding is not armed and no native Codex
+submission is part of this gate. Machine-readable projections, transition
+records, Sidecar-only captures, host observations, and the exact live-attempt
+count are written only under `r6o_evidence/H2-E2/actual-host/`.
+
+Expected live status:
+
+```text
+H2_E2_G06_PASS
+```
+
 ## H2-D2 actual Codex attachment checkout
 
 Review and run H2-D2 only from this branch:
