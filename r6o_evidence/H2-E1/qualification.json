@@ -1,0 +1,246 @@
+{
+  "schema_version": "r6o-h2-e1-repair-qualification-1",
+  "gate": "H2-E1",
+  "agent": "SOL-H2-E1",
+  "repair": "LUNA_P1_DELTA",
+  "state": "IMPLEMENTATION_COMPLETE",
+  "stop_code": null,
+  "recorded_at_utc": "2026-08-24T21:33:26.1984568Z",
+  "accepted_d1r_base": {
+    "head": "ab5282ab4adfa838e0a95980c7b395f8f8196623",
+    "tree": "8bd1dd8aff2148f4c738608f3d80ef4aeb28c374"
+  },
+  "luna_review": {
+    "verdict": "REQUEST_CHANGES",
+    "reviewed_code_freeze_head": "55c70d10a018b8b688e7f81b4cedea6f2e0fda5a",
+    "reviewed_code_freeze_tree": "cba1f18a627aef263c2cc17b00338716c6e95e7b",
+    "request_changes_base": "1e0eb8790e535fc7674ed27ab8e9ff8696ae73e8",
+    "request_changes_addressed": true,
+    "rereviewed": false
+  },
+  "repair_code_freeze": {
+    "head": "c488a8173d2bc5ca2251470c3cad24db7fcb4a95",
+    "tree": "dd65095aeef9ec406a14b4890346fbed92d13c1b"
+  },
+  "repair_evidence_head": "SELF (commit containing this record)",
+  "pull_request": {
+    "number": 12,
+    "url": "https://github.com/paragon-ux/PDL-Standard-R6O/pull/12",
+    "base": "main",
+    "head": "codex/h2-e1-input-routing"
+  },
+  "repairs": {
+    "P1_F1_MARKER_CLEANUP": {
+      "status": "FIXED",
+      "invariant": "Ctrl+A/Backspace is reachable only after the current composer value exactly equals the verifier-owned expected value; empty is a no-op and all unowned, nonexact, or unreadable states fail closed without keyboard mutation.",
+      "regressions": [
+        "empty composer is nondestructive",
+        "exact marker permits one clear",
+        "arbitrary user text is preserved",
+        "marker plus extra text is preserved",
+        "unreadable value is preserved",
+        "missing expected ownership is refused",
+        "repeated cleanup is idempotent"
+      ]
+    },
+    "P1_F2_ENTER_PAIRING": {
+      "status": "FIXED",
+      "invariant": "Every suppressed Enter keydown owns and suppresses its matching keyup, including modifier-probe failure and intervening deactivation; teardown waits boundedly for an outstanding pair.",
+      "regressions": [
+        "normal captured keydown and keyup remain suppressed",
+        "modifier-probe failure suppresses both events and dispatches nothing",
+        "deactivation preserves the outstanding pair",
+        "matching keyup completes pairing before teardown",
+        "unrelated keys remain unsuppressed",
+        "modified Enter remains passthrough",
+        "noncomposer Enter remains passthrough"
+      ]
+    }
+  },
+  "host": {
+    "package_version": "26.818.5229.0",
+    "product_name": "Codex",
+    "product_version": "151.0.7922.170",
+    "file_version": "151.0.7922.170",
+    "hwnd": 2758514,
+    "pid": 11512,
+    "current_host_preflight_sha256": "861882143918d5ea90fcfb2b7b4d16aa801af2f8076cba5e9e3b025f14bf2183",
+    "accepted_host_record_sha256": "8ceaf31da367dc6efe938d8f129a9d125e4f6ba0b19a991643b69680d87748c7",
+    "repair_reset_session_sha256": "3911396a40f959ce63cbc96fcee71b74e68a92c8a5f5da069c7393d87b99bad2",
+    "selectors_sha256": "f45bc99891a8d6d07344519274baded3c601203e48ba612246bcdea6f4c34386"
+  },
+  "actual_host_reset": {
+    "run_count": 2,
+    "final_status": "CODEX_TEST_SESSION_READY",
+    "composer_before_empty": true,
+    "composer_after_empty": true,
+    "visible_turn_group_count": 0,
+    "user_draft_discarded": false,
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "FAIL",
+        "code": "FRESH_CHAT_NOT_PROVED",
+        "classification": "ENVIRONMENTAL_UIA_RELOAD_STALL",
+        "detail": "The fail-closed reset proved the composer empty before invoking New Chat, but the replacement document did not expose the composer selector inside 15 seconds. A later read-only probe proved empty/fresh/focused before the justified replacement reset."
+      },
+      {
+        "attempt": 2,
+        "status": "CODEX_TEST_SESSION_READY",
+        "code": null
+      }
+    ]
+  },
+  "actual_e1": {
+    "status": "H2_E1_INPUT_ROUTING_PASS",
+    "live_run_count": 1,
+    "source_head": "c488a8173d2bc5ca2251470c3cad24db7fcb4a95",
+    "source_tree": "dd65095aeef9ec406a14b4890346fbed92d13c1b",
+    "result_sha256": "64281d2466e86d59574ded220605bd2ce7abac18de64810319848f7438b17a91",
+    "event_log_sha256": "b5aa5cf2ca395049c729d2e5acd18763bb263978943e086b1f198cc6b2083d42",
+    "visible_turn_count_before": 0,
+    "visible_turn_count_after": 0,
+    "capture_count": 1,
+    "delivery_count": 1,
+    "native_keydown_suppressed": true,
+    "native_keyup_suppressed": true,
+    "composer_cleared": true,
+    "normal_codex_request_observed": false,
+    "command": "python scripts\\h2\\verify_codex_input_routing.py --host-record r6o_evidence\\H2-D1\\host-environment.json --selectors r6o\\host\\codex\\windows\\selectors.json --evidence-dir r6o_evidence\\H2-E1",
+    "environment": {
+      "QT_QUICK_BACKEND": "software",
+      "QT_SCALE_FACTOR": "1",
+      "QT_FONT_DPI": "96"
+    },
+    "terminal_capture": {
+      "record": "r6o_evidence/H2-E1/repair-live-e1-terminal-capture.json",
+      "stdout_path": "r6o_evidence/H2-E1/repair-live-e1-terminal.stdout.log",
+      "stdout_sha256": "f5b36d70202d93fa4746d1d21325bda447919f7d9b32db938f6431a19b86cb9d",
+      "stdout_bytes": 3826,
+      "stderr_path": "r6o_evidence/H2-E1/repair-live-e1-terminal.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "stdout_captured": true,
+      "stderr_captured": true,
+      "warnings_classified": true,
+      "observed_warnings": []
+    }
+  },
+  "qualification_results": [
+    {
+      "id": "FOCUSED_F1_F2",
+      "command": "python -m pytest r6o/tests/h2/test_codex_input_binding_contract.py -q -k 'enter or composer_cleanup or composer_content or qualification_cleanup or cleanup_failure'",
+      "exit_code": 0,
+      "status": "PASS",
+      "detail": "14 passed, 27 deselected in 0.27s"
+    },
+    {
+      "id": "FOCUSED_E1",
+      "command": "python -m pytest r6o/tests/h2/test_codex_input_binding_contract.py -q -p no:cacheprovider",
+      "exit_code": 0,
+      "status": "PASS",
+      "detail": "41 passed in 0.93s",
+      "stdout_sha256": "71de13600f68149cce8d4a6d109331ea50a5bb892c17c9cf86d10e54c80616d6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "D1_D1R_D2_REGRESSION",
+      "command": "python -m pytest r6o/tests/h2/test_d1r_compatibility_refreeze.py r6o/tests/h2/test_codex_discovery_contract.py r6o/tests/h2/test_codex_binding_contract.py -q -p no:cacheprovider",
+      "exit_code": 0,
+      "status": "PASS",
+      "detail": "93 passed in 2.92s",
+      "actual_d2_executed": false,
+      "stdout_sha256": "78471cbe852caa65cc2680dac936084c07039a1a7c28296282affc1531b9a768",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "FULL_R6O_SUITE",
+      "command": "python -m pytest r6o/tests -q -p no:cacheprovider",
+      "exit_code": 0,
+      "status": "PASS",
+      "detail": "282 passed in 68.17s",
+      "stdout_sha256": "6503cb89a8609c13d418c446626c551844d0e5d7ff1495dfbe6bdb620b8aebcb",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "R6O1_VERIFIER",
+      "command": "python scripts/verify_r6o1.py",
+      "exit_code": 0,
+      "status": "R6O-1 VERIFICATION PASS",
+      "detail": "baseline verifier PASS; baseline pytest 9 passed in 55.65s; mandatory nested R6O pytest 282 passed in 65.18s",
+      "stdout_sha256": "fb4bf563068d7deaaa1c51891bcc9a7d85d3105a43ba7bb8a36cacb1b7673ba2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "required_ci": {
+    "binding": "SELF (the repaired evidence head containing this record; never an older head)",
+    "workflow_file": ".github/workflows/r6o1.yml",
+    "workflow_name": "R6O-1 qualification",
+    "status": "PASS",
+    "jobs": [
+      {
+        "name": "qualify (ubuntu-latest)",
+        "runner": "ubuntu-latest",
+        "status": "PASS"
+      },
+      {
+        "name": "qualify (windows-latest)",
+        "runner": "windows-latest",
+        "status": "PASS"
+      }
+    ],
+    "identity_note": "Run and job database IDs are resolved from PR #12's check suite for SELF in the final handoff; no stale run ID is copied into this record."
+  },
+  "execution_counts": {
+    "repair_live_e1_run_count": 1,
+    "repair_host_reset_run_count": 2,
+    "repair_actual_d2_run_count": 0,
+    "repair_standalone_full_suite_run_count": 1,
+    "repair_verify_r6o1_run_count": 1,
+    "mandatory_nested_full_suite_run_count": 1,
+    "new_repair_commit_count_including_evidence_freeze": 2
+  },
+  "boundary_results": {
+    "repair_changed_files": [
+      "r6o/host/codex/windows/input_binding.py",
+      "r6o/tests/h2/test_codex_input_binding_contract.py",
+      "scripts/h2/verify_codex_input_routing.py"
+    ],
+    "protected_path_diff_empty": true,
+    "d1_d1r_d2_evidence_diff_empty": true,
+    "predecessor_production_diff_empty": true,
+    "actual_d2_rerun_performed": false,
+    "oracle_commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+    "oracle_tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+    "oracle_tracked_worktree_clean": true,
+    "oracle_unchanged": true
+  },
+  "warnings": [
+    {
+      "classification": "EXPECTED_EXTERNAL",
+      "source": "frozen R6S baseline verifier",
+      "detail": "The immutable oracle warns about the historical forbidden-term inventory item architecture-decisions while returning REPL BASELINE VERIFICATION PASS."
+    },
+    {
+      "classification": "ENVIRONMENTAL",
+      "source": "repair reset attempt 1",
+      "detail": "Chromium's New Chat document replacement missed the 15-second UIA selector window; a read-only settled-state probe justified one replacement reset, which passed. No user draft was present or discarded."
+    },
+    {
+      "classification": "NONBLOCKING_P2",
+      "source": "accepted D1R predecessor evidence",
+      "detail": "The accepted alternate-evidence path-label issue remains predecessor-owned and does not affect E1 provenance."
+    }
+  ],
+  "known_implementer_findings": [
+    {
+      "severity": "P2",
+      "status": "HUMAN_ACCEPTED_PREDECESSOR_FINDING",
+      "summary": "Accepted D1R alternate-evidence path-label issue; E1 provenance is independently bound and unaffected."
+    }
+  ],
+  "implementation_complete": true,
+  "ready_for_luna_delta_rereview": true,
+  "luna_pass_claimed": false,
+  "human_approval_claimed": false
+}

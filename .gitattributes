@@ -8,6 +8,13 @@ r6o/host/codex/windows/placement.py text eol=lf
 r6o/tests/h2/test_codex_binding_contract.py text eol=lf
 scripts/h2/verify_codex_attachment.py text eol=lf
 requirements-h2-d2.txt text eol=lf
+r6o/host/codex/windows/input_binding.py text eol=lf
+r6o/tests/h2/test_codex_input_binding_contract.py text eol=lf
+scripts/h2/verify_codex_input_routing.py text eol=lf
+r6o_evidence/H2-E1/*.json text eol=lf
+r6o_evidence/H2-E1/*.jsonl text eol=lf
+r6o_evidence/H2-E1/*.log text eol=lf
+r6o_evidence/H2-E1/repair-*.log binary -eol
 
 *.png binary
 *.mp4 binary

@@ -92,6 +92,68 @@ H2_D2_ATTACHMENT_PASS
 D1R COMPATIBILITY REFREEZE VERIFIED
 ```
 
+## H2-E1 actual Codex input-routing checkout
+
+Review and run H2-E1 only from this branch:
+
+```text
+codex/h2-e1-input-routing
+```
+
+Verify the branch and remote PR head before running the actual-host gate:
+
+```powershell
+& {
+    $ErrorActionPreference = 'Stop'
+    $ExpectedReviewBranch = 'codex/h2-e1-input-routing'
+    git fetch origin --prune
+    if ($LASTEXITCODE -ne 0) { throw 'Unable to fetch the H2-E1 review branch' }
+    $ActualBranch = (git branch --show-current).Trim()
+    if ($ActualBranch -ne $ExpectedReviewBranch) {
+        throw "Wrong H2-E1 branch: $ActualBranch. Run: git switch $ExpectedReviewBranch"
+    }
+    $LocalHead = (git rev-parse HEAD).Trim()
+    $RemoteHead = (git rev-parse "origin/$ExpectedReviewBranch").Trim()
+    if ($LocalHead -ne $RemoteHead) {
+        throw "Checkout is not at the current PR head. Run: git pull --ff-only origin $ExpectedReviewBranch"
+    }
+    "H2-E1 CHECKOUT VERIFIED: $ActualBranch@$LocalHead"
+}
+```
+
+Keep the frozen H2-D1 Codex window open, visible, and not minimized. Its actual
+composer must be empty. Do not type, press Enter, or click native Codex Send
+while the verifier is running. The verifier clicks the actual Sidecar
+`Something else...` action, proves Shift+Enter remains editing, then routes one
+known nonsemantic string through one unmodified native Enter. The hook suppresses
+that Enter before normal Codex dispatch and clears the actual composer.
+
+```powershell
+& {
+    $ErrorActionPreference = 'Stop'
+    python -m pip install -r requirements-h2-d2.txt
+    if ($LASTEXITCODE -ne 0) { throw 'H2-E1 dependency installation failed' }
+    $env:QT_QUICK_BACKEND = 'software'
+    $env:QT_SCALE_FACTOR = '1'
+    $env:QT_FONT_DPI = '96'
+    python scripts\h2\verify_codex_input_routing.py --host-record r6o_evidence\H2-D1\host-environment.json --selectors r6o\host\codex\windows\selectors.json
+    if ($LASTEXITCODE -ne 0) { throw 'H2-E1 actual Codex input routing failed' }
+    python -m pytest r6o\tests\h2\test_codex_input_binding_contract.py -q -p no:cacheprovider
+    if ($LASTEXITCODE -ne 0) { throw 'H2-E1 focused pytest failed' }
+}
+```
+
+Expected live status:
+
+```text
+H2_E1_INPUT_ROUTING_PASS
+```
+
+The E1 binding is presentation-only. It emits one `HOST_COMPOSER_TEXT`
+`InputEnvelope` to a caller-supplied presentation boundary and contains no
+fixture text, ViewModel call, controller call, host-model lease, automatic
+invocation, or terminal handoff behavior.
+
 ## H2-D2 actual Codex attachment checkout
 
 Review and run H2-D2 only from this branch:

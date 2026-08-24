@@ -1,0 +1,54 @@
+{
+  "schema_version": "r6o-h2-e1-terminal-capture-1",
+  "gate": "H2-E1",
+  "agent": "SOL-H2-E1",
+  "repair": "LUNA_P1_DELTA",
+  "source": {
+    "branch": "codex/h2-e1-input-routing",
+    "head": "c488a8173d2bc5ca2251470c3cad24db7fcb4a95",
+    "tree": "dd65095aeef9ec406a14b4890346fbed92d13c1b"
+  },
+  "host": {
+    "package_version": "26.818.5229.0",
+    "product_version": "151.0.7922.170",
+    "file_version": "151.0.7922.170",
+    "hwnd": 2758514,
+    "pid": 11512
+  },
+  "environment": {
+    "QT_QUICK_BACKEND": "software",
+    "QT_SCALE_FACTOR": "1",
+    "QT_FONT_DPI": "96"
+  },
+  "command": "python scripts\\h2\\verify_codex_input_routing.py --host-record r6o_evidence\\H2-D1\\host-environment.json --selectors r6o\\host\\codex\\windows\\selectors.json --evidence-dir r6o_evidence\\H2-E1",
+  "capture_method": "PowerShell Start-Process with separate RedirectStandardOutput and RedirectStandardError files",
+  "exit_code": 0,
+  "status": "H2_E1_INPUT_ROUTING_PASS",
+  "live_run_number": 1,
+  "stdout": {
+    "path": "r6o_evidence/H2-E1/repair-live-e1-terminal.stdout.log",
+    "bytes": 3826,
+    "sha256": "f5b36d70202d93fa4746d1d21325bda447919f7d9b32db938f6431a19b86cb9d",
+    "status_line_present": true
+  },
+  "stderr": {
+    "path": "r6o_evidence/H2-E1/repair-live-e1-terminal.stderr.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "captured": true,
+    "empty": true,
+    "manufactured": false
+  },
+  "warnings": {
+    "classified": true,
+    "observed": []
+  },
+  "result": {
+    "path": "r6o_evidence/H2-E1/input-routing-result.json",
+    "sha256": "64281d2466e86d59574ded220605bd2ce7abac18de64810319848f7438b17a91"
+  },
+  "event_log": {
+    "path": "r6o_evidence/H2-E1/input-routing-events.jsonl",
+    "sha256": "b5aa5cf2ca395049c729d2e5acd18763bb263978943e086b1f198cc6b2083d42"
+  }
+}

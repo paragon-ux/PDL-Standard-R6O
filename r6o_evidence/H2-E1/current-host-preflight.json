@@ -1,0 +1,66 @@
+{
+  "codex": {
+    "client_rectangle": {
+      "bottom": 899,
+      "height": 900,
+      "left": -1,
+      "right": 1601,
+      "top": -1,
+      "width": 1602
+    },
+    "dpi": 96,
+    "executable": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.818.5229.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe",
+    "file_version": "151.0.7922.170",
+    "hwnd": 2758514,
+    "monitor": {
+      "handle": 65537,
+      "id": "\\\\.\\DISPLAY1",
+      "rectangle": {
+        "bottom": 900,
+        "height": 900,
+        "left": 0,
+        "right": 1600,
+        "top": 0,
+        "width": 1600
+      },
+      "work_area": {
+        "bottom": 900,
+        "height": 900,
+        "left": 0,
+        "right": 1600,
+        "top": 0,
+        "width": 1600
+      }
+    },
+    "package_version": "26.818.5229.0",
+    "pid": 11512,
+    "product_name": "Codex",
+    "product_version": "151.0.7922.170",
+    "scale": 1.0,
+    "uia_connection": {
+      "backend": "uia",
+      "connected": true,
+      "root_automation_id": "",
+      "root_control_type": "Window"
+    },
+    "window_class": "Chrome_WidgetWin_1",
+    "window_rectangle": {
+      "bottom": 908,
+      "height": 916,
+      "left": -8,
+      "right": 1608,
+      "top": -8,
+      "width": 1616
+    },
+    "window_title": "ChatGPT"
+  },
+  "schema_version": "r6o-h2-d1-host-environment-1",
+  "status": "HOST_DISCOVERED",
+  "timestamp_utc": "2026-08-24T21:32:49.549332Z",
+  "windows": {
+    "architecture": "AMD64",
+    "build": 22000,
+    "edition": "Professional",
+    "version": "10.0.22000"
+  }
+}

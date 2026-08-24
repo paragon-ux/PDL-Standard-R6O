@@ -1,0 +1,127 @@
+{
+  "event_log": {
+    "event_count": 6,
+    "path": "r6o_evidence/H2-E1/input-routing-events.jsonl",
+    "sha256": "b5aa5cf2ca395049c729d2e5acd18763bb263978943e086b1f198cc6b2083d42"
+  },
+  "fake_host_composer_used": false,
+  "gate": "H2-E1",
+  "host": {
+    "hwnd": 2758514,
+    "package_version": "26.818.5229.0",
+    "pid": 11512,
+    "product_version": "151.0.7922.170"
+  },
+  "host_record_sha256": "8ceaf31da367dc6efe938d8f129a9d125e4f6ba0b19a991643b69680d87748c7",
+  "implementation_sha256": {
+    "r6o/host/codex/windows/input_binding.py": "cae01174e33879498b206d947365eec29f967219b67011981a929324e3c39221",
+    "scripts/h2/verify_codex_input_routing.py": "afef0743f250173a8b2022c47caad7aef013083dded66e96d1aa30e2b75d2082"
+  },
+  "interaction": {
+    "actual_composer_focused": true,
+    "composer_text_cleared": true,
+    "hook_cleanup_verified_on_success": true,
+    "native_send_button_used": false,
+    "shift_enter_editing_only": true,
+    "something_else_kind": "FREE_RESPONSE_FOCUS",
+    "something_else_semantic_text": null,
+    "unmodified_enter_captured": true
+  },
+  "qualification_specific_behavior_in_production_binding": false,
+  "real_codex_host_tested": true,
+  "routing": {
+    "action_id": null,
+    "capture_count": 1,
+    "delivery_count": 1,
+    "duplicate_send_observed": false,
+    "projection_id": null,
+    "source": "HOST_COMPOSER_TEXT",
+    "text_equals_composer_at_gesture": true,
+    "text_length": 19,
+    "text_sha256": "3359b63ccbf48f79b87873cd36635ba22cbc0af5d60df206a256b42d50928426"
+  },
+  "runtime": {
+    "dependencies": {
+      "PySide6": "6.11.2",
+      "pywin32": "312",
+      "pywinauto": "0.6.9"
+    },
+    "platform": "Windows-10-10.0.22000-SP0",
+    "python": "3.11.9",
+    "qt_platform": "windows",
+    "qt_quick_backend": "software"
+  },
+  "schema_version": "r6o-h2-e1-input-routing-1",
+  "scope": {
+    "automatic_invocation_implemented": false,
+    "controller_called": false,
+    "r6o3_host_model_lease_implemented": false,
+    "terminal_handoff_implemented": false,
+    "viewmodel_semantics_exercised": false
+  },
+  "selectors_sha256": "f45bc99891a8d6d07344519274baded3c601203e48ba612246bcdea6f4c34386",
+  "source": {
+    "branch": "codex/h2-e1-input-routing",
+    "head": "c488a8173d2bc5ca2251470c3cad24db7fcb4a95",
+    "tree": "dd65095aeef9ec406a14b4890346fbed92d13c1b"
+  },
+  "status": "H2_E1_INPUT_ROUTING_PASS",
+  "steady_state": {
+    "actual_rectangle": {
+      "bottom": 791,
+      "height": 300,
+      "left": 587,
+      "right": 1262,
+      "top": 491,
+      "width": 675
+    },
+    "composer_selector_match_count": 1,
+    "dpi": 96,
+    "expected_owner_hwnd": 2758514,
+    "expected_rectangle": {
+      "bottom": 791,
+      "height": 300,
+      "left": 587,
+      "right": 1262,
+      "top": 491,
+      "width": 675
+    },
+    "foreground_hwnd": 2758514,
+    "global_topmost": false,
+    "host_client_rectangle": {
+      "bottom": 899,
+      "height": 900,
+      "left": -1,
+      "right": 1601,
+      "top": -1,
+      "width": 1602
+    },
+    "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
+    "mode": "STANDARD",
+    "owner_hwnd": 2758514,
+    "placement_matches": true,
+    "sidecar_above_host": true,
+    "sidecar_hwnd": 5969874,
+    "visible": true,
+    "work_area_rectangle": {
+      "bottom": 900,
+      "height": 900,
+      "left": 0,
+      "right": 1600,
+      "top": 0,
+      "width": 1600
+    },
+    "z_order_indices": {
+      "host": 34,
+      "sidecar": 33
+    }
+  },
+  "suppression": {
+    "native_keydown_suppressed": true,
+    "native_keyup_suppressed": true,
+    "normal_codex_request_observed": false,
+    "visible_turn_count_after": 0,
+    "visible_turn_count_before": 0
+  }
+}
+H2_E1_INPUT_ROUTING_PASS

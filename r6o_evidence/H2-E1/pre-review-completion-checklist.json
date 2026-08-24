@@ -1,0 +1,114 @@
+{
+  "schema_version": "r6o-h2-pre-review-completion-checklist-1",
+  "gate": "H2-E1",
+  "agent": "SOL-H2-E1",
+  "repair": "LUNA_P1_DELTA",
+  "code_freeze_head": "c488a8173d2bc5ca2251470c3cad24db7fcb4a95",
+  "code_freeze_tree": "dd65095aeef9ec406a14b4890346fbed92d13c1b",
+  "evidence_head": "SELF (commit containing this checklist)",
+  "status": "COMPLETE",
+  "required_repair_checks": {
+    "MARKER_CLEANUP_SAFETY": "PASS",
+    "ENTER_SUPPRESSION_AND_PAIRING": "PASS",
+    "TERMINAL_STDERR_WARNING_CAPTURE": "PRESENT"
+  },
+  "sections": {
+    "A_SCOPE_CLOSURE": {
+      "status": "PASS",
+      "evidence": [
+        "The bounded repair changes only the two authorized behaviors and their focused contract tests.",
+        "The repair-code delta from 1e0eb8790e535fc7674ed27ab8e9ff8696ae73e8 contains exactly input_binding.py, verify_codex_input_routing.py, and test_codex_input_binding_contract.py.",
+        "No selector, discovery, UIA, binding, placement, protected R6O-1, E2/E3, or R6O-3 behavior changed."
+      ]
+    },
+    "B_POSITIVE_PATH_COMPLETENESS": {
+      "status": "PASS",
+      "evidence": [
+        "Actual E1 run 1 returned H2_E1_INPUT_ROUTING_PASS at the repair code freeze.",
+        "The actual Sidecar action focused the exact Codex composer; Shift+Enter remained editing; unmodified Enter delivered exactly one HOST_COMPOSER_TEXT envelope.",
+        "Visible turns remained 0 before and after, proving normal Codex dispatch stayed suppressed."
+      ]
+    },
+    "C_NEGATIVE_FAIL_CLOSED_COMPLETENESS": {
+      "status": "PASS",
+      "evidence": [
+        "MARKER_CLEANUP_SAFETY=PASS: empty is a no-op; exact verifier content alone may be cleared; arbitrary text, marker-plus-extra text, missing ownership, and unreadable values never execute Ctrl+A/Backspace.",
+        "ENTER_SUPPRESSION_AND_PAIRING=PASS: modifier-probe failure suppresses keydown and matching keyup with no dispatch; deactivation preserves the pair until keyup.",
+        "Existing tests retain modified-Enter and noncomposer passthrough, pending-delivery suppression, empty-text handling, focus failure, and unavailable-text behavior."
+      ]
+    },
+    "D_LIFECYCLE_RESOURCE_COMPLETENESS": {
+      "status": "PASS",
+      "evidence": [
+        "A pending swallowed Enter pair survives deactivate and activate refuses to overwrite it.",
+        "Stop performs a bounded keyup drain before removing the native hook; after matching keyup the hook/dispatcher teardown completes.",
+        "Verifier cleanup is idempotent and refuses destructive recovery when exact marker ownership cannot be proved."
+      ]
+    },
+    "E_TEST_COMPLETENESS": {
+      "status": "PASS",
+      "evidence": [
+        "Focused F1/F2 inner-loop selection: 14 passed.",
+        "Final focused E1: 41 passed.",
+        "D1/D1R/D2 deterministic regression: 93 passed; actual D2 run count is 0.",
+        "Standalone full r6o/tests: 282 passed.",
+        "verify_r6o1.py: PASS; baseline pytest 9 passed; mandatory nested R6O pytest 282 passed.",
+        "Required R6O-1 qualification jobs qualify (ubuntu-latest) and qualify (windows-latest) are bound to evidence HEAD SELF."
+      ]
+    },
+    "F_WARNING_DIAGNOSTIC_COMPLETENESS": {
+      "status": "PASS",
+      "evidence": [
+        "TERMINAL_STDERR_WARNING_CAPTURE=PRESENT: live E1 stdout and stderr were separately redirected and hashed; captured stderr is genuinely zero bytes.",
+        "The frozen-oracle architecture-decisions warning is classified EXPECTED_EXTERNAL.",
+        "Reset attempt 1's FRESH_CHAT_NOT_PROVED is classified ENVIRONMENTAL_UIA_RELOAD_STALL and justified exactly one replacement reset; no replacement live E1 was required."
+      ]
+    },
+    "G_REPOSITORY_HYGIENE": {
+      "status": "PASS",
+      "evidence": [
+        "git diff --check and merge-marker/TODO/FIXME scans pass.",
+        "D1/D1R/D2 evidence diff, predecessor production diff, and protected path diff are empty.",
+        "Frozen R6S oracle remains clean at commit 60d982f3328b45a351879d67dc4bb525172b65fd and tree b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6."
+      ]
+    },
+    "H_CODE_FREEZE": {
+      "status": "PASS",
+      "evidence": [
+        "REPAIR_CODE_FREEZE_HEAD=c488a8173d2bc5ca2251470c3cad24db7fcb4a95.",
+        "REPAIR_CODE_FREEZE_TREE=dd65095aeef9ec406a14b4890346fbed92d13c1b.",
+        "All post-freeze changes are confined to r6o_evidence/H2-E1."
+      ]
+    },
+    "I_EVIDENCE_COMPLETENESS": {
+      "status": "PASS",
+      "evidence": [
+        "Actual result/event evidence binds the repair code-freeze head/tree, implementation hashes, current host, selectors, and zero-turn trace.",
+        "repair-live-e1-terminal-capture.json binds the exact command, environment, stdout, stderr, host identity, exit code, result, and warnings.",
+        "qualification.json records repair findings, commands, execution counts, reset retry, boundaries, CI identities, and the accepted predecessor P2."
+      ]
+    },
+    "J_IMPLEMENTER_SELF_AUDIT": {
+      "status": "PASS",
+      "evidence": [
+        "The repair was limited to Luna findings F1 and F2; no architecture was reopened and no full implementation pass occurred.",
+        "The prior evidence hash mismatch was allowed only during the deterministic inner loop and resolved by the single new actual E1 qualification.",
+        "No Luna PASS or HUMAN_PASS is claimed; readiness is only for Luna delta rereview."
+      ]
+    },
+    "K_STATE_STOP_CODE_HYGIENE": {
+      "status": "PASS",
+      "evidence": [
+        "state=IMPLEMENTATION_COMPLETE and stop_code=null.",
+        "Luna REQUEST_CHANGES is recorded as addressed but not rereviewed.",
+        "Implementation complete and ready-for-delta-rereview are distinct from reviewer or human approval."
+      ]
+    }
+  },
+  "attestation": {
+    "implementation_complete": true,
+    "ready_for_luna_delta_rereview": true,
+    "luna_pass_claimed": false,
+    "human_pass_claimed": false
+  }
+}

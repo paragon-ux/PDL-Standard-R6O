@@ -1,0 +1,26 @@
+--- baseline_verifier ---
+WARN forbidden-term 'architecture-decisions' in scripts/verify_repl_baseline.py
+REPL BASELINE VERIFICATION PASS
+{
+  "final_stage": "CLOSED_SUCCESS",
+  "fresh_workspace": true,
+  "resume_stage": "CLOSED_SUCCESS",
+  "stages": [
+    "PROMPT_REVIEW",
+    "PLAN_REVIEW",
+    "CLOSED_SUCCESS"
+  ]
+}
+exit=0
+--- baseline_pytest ---
+.........                                                                [100%]
+9 passed in 55.65s
+exit=0
+--- r6o1_pytest ---
+........................................................................ [ 25%]
+........................................................................ [ 51%]
+........................................................................ [ 76%]
+..................................................................       [100%]
+282 passed in 65.18s (0:01:05)
+exit=0
+R6O-1 VERIFICATION PASS
