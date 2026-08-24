@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import inspect
+import json
 import subprocess
 import sys
 from copy import deepcopy
@@ -9,6 +10,7 @@ from typing import Any
 
 import pytest
 
+import scripts.h2.run_codex_h2_e2 as e2_runner
 from r6o.model_binding.base import ModelSessionRequest
 from r6o.model_binding.local_runtime import LocalRuntimeModelBinding
 from r6o.h2.codex_e2 import (
@@ -461,3 +463,63 @@ def test_readme_e2_command_is_branch_bound_and_excludes_composer_submission() ->
     assert "python scripts\\h2\\run_codex_h2_e2.py --case G06 --record" in section
     assert "E1 composer input binding is not armed" in section
     assert "H2_E2_G06_PASS" in section
+
+
+def test_checkout_verification_binds_to_manifest_and_rejects_post_freeze_code(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+
+    def git(*arguments: str) -> str:
+        completed = subprocess.run(
+            ["git", *arguments],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        return completed.stdout.strip()
+
+    git("init", "-q")
+    git("config", "user.name", "H2 E2 Test")
+    git("config", "user.email", "h2-e2@example.invalid")
+    (repo / "production.py").write_text("VALUE = 1\n", encoding="utf-8")
+    git("add", "production.py")
+    git("commit", "-q", "-m", "accepted e1")
+    accepted_e1 = git("rev-parse", "HEAD")
+    git("branch", "-M", e2_runner.EXPECTED_BRANCH)
+    (repo / "e2.py").write_text("VALUE = 2\n", encoding="utf-8")
+    git("add", "e2.py")
+    git("commit", "-q", "-m", "e2 freeze")
+    freeze_head = git("rev-parse", "HEAD")
+    freeze_tree = git("rev-parse", "HEAD^{tree}")
+    manifest = repo / "r6o_evidence" / "H2-E2" / "code-freeze.json"
+    manifest.parent.mkdir(parents=True)
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema_version": "r6o-h2-e2-code-freeze-1",
+                "branch": e2_runner.EXPECTED_BRANCH,
+                "accepted_e1_head": accepted_e1,
+                "code_freeze_head": freeze_head,
+                "code_freeze_tree": freeze_tree,
+            }
+        ),
+        encoding="utf-8",
+    )
+    git("add", "r6o_evidence/H2-E2/code-freeze.json")
+    git("commit", "-q", "-m", "record freeze")
+
+    monkeypatch.setattr(e2_runner, "ROOT", repo)
+    monkeypatch.setattr(e2_runner, "FREEZE_MANIFEST", manifest)
+    monkeypatch.setattr(e2_runner, "ACCEPTED_E1_HEAD", accepted_e1)
+    checkout = e2_runner.verify_checkout()
+    assert checkout["code_freeze_head"] == freeze_head
+    assert checkout["code_freeze_tree"] == freeze_tree
+
+    (repo / "e2.py").write_text("VALUE = 3\n", encoding="utf-8")
+    git("add", "e2.py")
+    git("commit", "-q", "-m", "unauthorized post-freeze code")
+    with pytest.raises(H2E2IntegrationError, match="POST_FREEZE_NON_EVIDENCE_DIFF"):
+        e2_runner.verify_checkout()

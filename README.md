@@ -163,9 +163,11 @@ codex/h2-e2-g06-integration
 ```
 
 The runner rejects the wrong branch, a head that does not descend from accepted
-H2-E1 head `8a85ac4214e7b3386c3c8079b0d45fb79a97e9ff`, and uncommitted changes outside
-`r6o_evidence/H2-E2/`. Before invoking it, use the accepted D1 reset command to
-prepare one fresh Codex test session with an empty composer. Then run exactly:
+H2-E1 head `8a85ac4214e7b3386c3c8079b0d45fb79a97e9ff`, a missing or mismatched committed
+`r6o_evidence/H2-E2/code-freeze.json`, any post-freeze non-evidence change, and
+uncommitted changes outside `r6o_evidence/H2-E2/`. Before invoking it, use the
+accepted D1 reset command to prepare one fresh Codex test session with an empty
+composer. Then run exactly:
 
 ```powershell
 python scripts\h2\run_codex_h2_e2.py --case G06 --record

@@ -42,6 +42,7 @@ ACCEPTED_E1_HEAD = "8a85ac4214e7b3386c3c8079b0d45fb79a97e9ff"
 DEFAULT_HOST_RECORD = ROOT / "r6o_evidence" / "H2-D1" / "host-environment.json"
 DEFAULT_SELECTORS = ROOT / "r6o" / "host" / "codex" / "windows" / "selectors.json"
 DEFAULT_EVIDENCE = ROOT / "r6o_evidence" / "H2-E2" / "actual-host"
+FREEZE_MANIFEST = ROOT / "r6o_evidence" / "H2-E2" / "code-freeze.json"
 EXPECTED_BY_TRANSITION = {
     "G06-T0-CODEX": [G06_OPERATIONS[0]],
     "G06-T1-CODEX": list(G06_OPERATIONS[1:3]),
@@ -82,6 +83,43 @@ def verify_checkout() -> dict[str, str]:
     )
     if ancestor.returncode != 0:
         raise H2E2IntegrationError("ACCEPTED_E1_HEAD_NOT_ANCESTOR")
+    try:
+        freeze = json.loads(FREEZE_MANIFEST.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise H2E2IntegrationError("E2_CODE_FREEZE_MANIFEST_UNREADABLE") from exc
+    if not isinstance(freeze, dict) or set(freeze) != {
+        "schema_version",
+        "branch",
+        "accepted_e1_head",
+        "code_freeze_head",
+        "code_freeze_tree",
+    }:
+        raise H2E2IntegrationError("E2_CODE_FREEZE_MANIFEST_INVALID")
+    if (
+        freeze.get("schema_version") != "r6o-h2-e2-code-freeze-1"
+        or freeze.get("branch") != EXPECTED_BRANCH
+        or freeze.get("accepted_e1_head") != ACCEPTED_E1_HEAD
+    ):
+        raise H2E2IntegrationError("E2_CODE_FREEZE_MANIFEST_INVALID")
+    freeze_head = freeze.get("code_freeze_head")
+    freeze_tree = freeze.get("code_freeze_tree")
+    if not isinstance(freeze_head, str) or not isinstance(freeze_tree, str):
+        raise H2E2IntegrationError("E2_CODE_FREEZE_MANIFEST_INVALID")
+    actual_freeze_tree = _git("rev-parse", f"{freeze_head}^{{tree}}", check=False)
+    if actual_freeze_tree.returncode != 0 or actual_freeze_tree.stdout.strip() != freeze_tree:
+        raise H2E2IntegrationError("E2_CODE_FREEZE_IDENTITY_MISMATCH")
+    if _git("merge-base", "--is-ancestor", freeze_head, "HEAD", check=False).returncode != 0:
+        raise H2E2IntegrationError("E2_CODE_FREEZE_NOT_ANCESTOR")
+    post_freeze_paths = _git("diff", "--name-only", f"{freeze_head}..HEAD").stdout.splitlines()
+    unauthorized_post_freeze = [
+        path
+        for path in post_freeze_paths
+        if not path.replace("\\", "/").startswith("r6o_evidence/H2-E2/")
+    ]
+    if unauthorized_post_freeze:
+        raise H2E2IntegrationError(
+            "POST_FREEZE_NON_EVIDENCE_DIFF:" + "|".join(unauthorized_post_freeze)
+        )
     status = _git("status", "--porcelain=v1").stdout.splitlines()
     unauthorized = []
     for line in status:
@@ -98,6 +136,8 @@ def verify_checkout() -> dict[str, str]:
         "branch": branch,
         "head": _git("rev-parse", "HEAD").stdout.strip(),
         "tree": _git("rev-parse", "HEAD^{tree}").stdout.strip(),
+        "code_freeze_head": freeze_head,
+        "code_freeze_tree": freeze_tree,
     }
 
 
@@ -119,6 +159,31 @@ def _require_safe_host_session(observation: dict[str, Any], *, phase: str) -> No
         raise H2E2IntegrationError(f"{phase}_COMPOSER_NOT_EMPTY")
     if observation["conversation"].get("fresh") is not True:
         raise H2E2IntegrationError(f"{phase}_CODEX_SESSION_NOT_FRESH")
+
+
+def _post_terminal_no_submission_ledger(
+    binding: Any, *, duration_seconds: float = 3.0
+) -> list[dict[str, Any]]:
+    from PySide6.QtCore import QCoreApplication, QEventLoop
+
+    started = time.monotonic()
+    deadline = started + duration_seconds
+    samples: list[dict[str, Any]] = []
+    while not samples or time.monotonic() < deadline:
+        app = QCoreApplication.instance()
+        if app is not None:
+            app.processEvents(QEventLoop.AllEvents, 25)
+        observation = _host_session_observation(binding)
+        _require_safe_host_session(observation, phase="POST_TERMINAL_SETTLE")
+        samples.append(
+            {
+                "elapsed_ms": round((time.monotonic() - started) * 1000),
+                "composer": observation["composer"],
+                "conversation": observation["conversation"],
+            }
+        )
+        time.sleep(0.1)
+    return samples
 
 
 class EvidenceRecorder:
@@ -158,6 +223,10 @@ class EvidenceRecorder:
             )
 
         projection = event["projection"]
+        host_session = _host_session_observation(self.binding)
+        _require_safe_host_session(
+            host_session, phase=f"TRANSITION_{transition_id.replace('-', '_')}"
+        )
         projection_path = (
             self.evidence_dir / "projections" / f"{transition_id}.json"
         )
@@ -188,6 +257,7 @@ class EvidenceRecorder:
                 else None
             ),
             "presentation": event["presentation"],
+            "host_session_observation": host_session,
             "capture_path": (
                 str(capture_path.relative_to(ROOT)).replace("\\", "/")
                 if capture_path
@@ -237,6 +307,8 @@ def _start_attempt(evidence_dir: Path, checkout: dict[str, str]) -> tuple[Path, 
             "status": "RUNNING",
             "head": checkout["head"],
             "tree": checkout["tree"],
+            "code_freeze_head": checkout["code_freeze_head"],
+            "code_freeze_tree": checkout["code_freeze_tree"],
             "failure": None,
         }
     )
@@ -330,8 +402,11 @@ def run(args: argparse.Namespace, checkout: dict[str, str], live_run_count: int)
         if callback_errors:
             raise callback_errors[0]
 
-        postflight = _host_session_observation(host)
-        _require_safe_host_session(postflight, phase="TERMINAL")
+        post_terminal_ledger = _post_terminal_no_submission_ledger(host)
+        postflight = {
+            "composer": post_terminal_ledger[-1]["composer"],
+            "conversation": post_terminal_ledger[-1]["conversation"],
+        }
         expected_calls = [
             {"operation_id": operation_id, "operation": operation}
             for operation_id, operation in G06_OPERATIONS
@@ -359,8 +434,10 @@ def run(args: argparse.Namespace, checkout: dict[str, str], live_run_count: int)
             "public_command": "python scripts\\h2\\run_codex_h2_e2.py --case G06 --record",
             "case_id": "G06",
             "branch": checkout["branch"],
-            "code_freeze_head": checkout["head"],
-            "code_freeze_tree": checkout["tree"],
+            "code_freeze_head": checkout["code_freeze_head"],
+            "code_freeze_tree": checkout["code_freeze_tree"],
+            "evidence_head_at_run": checkout["head"],
+            "evidence_tree_at_run": checkout["tree"],
             "accepted_e1_head": ACCEPTED_E1_HEAD,
             "live_run_count": live_run_count,
             "actual_codex_host": _host_identity(host),
@@ -371,6 +448,7 @@ def run(args: argparse.Namespace, checkout: dict[str, str], live_run_count: int)
             },
             "host_preflight": preflight,
             "host_postflight": postflight,
+            "post_terminal_no_submission_ledger": post_terminal_ledger,
             "transitions": transitions,
             "structured_action_envelopes": session.envelopes,
             "worker_operations": worker.calls,

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 """H2-E2 G06 coordination over accepted Model, ViewModel, and Sidecar ports."""
 
+import time
 from collections.abc import Callable
 from typing import Any, Protocol
 
@@ -145,13 +146,81 @@ class AttachedCodexSidecarPresentation:
         raise H2E2IntegrationError("SIDECAR_PRIMARY_ACTION_FOCUS_UNVERIFIED")
 
     def _verify_primary_focus(self, action_id: str) -> None:
-        try:
+        bridge = getattr(self.binding.sidecar, "bridge", None)
+        expected_actions = getattr(bridge, "actions", None)
+        if not isinstance(expected_actions, list):
             action = self._action_item(action_id)
-            focused = bool(action.property("activeFocus"))
+            if not bool(action.property("activeFocus")):
+                raise H2E2IntegrationError("SIDECAR_PRIMARY_ACTION_FOCUS_UNVERIFIED")
+            return
+        expected_ids = tuple(item.get("action_id") for item in expected_actions)
+        if not expected_ids or expected_ids[0] != action_id or any(
+            not isinstance(item, str) or not item for item in expected_ids
+        ):
+            raise H2E2IntegrationError("SIDECAR_PRIMARY_ACTION_FOCUS_UNVERIFIED")
+        try:
+            from PySide6.QtCore import QCoreApplication, QEventLoop
         except Exception as exc:
             raise H2E2IntegrationError("SIDECAR_PRIMARY_ACTION_FOCUS_UNVERIFIED") from exc
-        if not focused:
-            raise H2E2IntegrationError("SIDECAR_PRIMARY_ACTION_FOCUS_UNVERIFIED")
+
+        previous: tuple[tuple[Any, ...], ...] | None = None
+        stable_observations = 0
+        deadline = time.monotonic() + 5.0
+        while time.monotonic() < deadline:
+            app = QCoreApplication.instance()
+            if app is not None:
+                app.processEvents(QEventLoop.AllEvents, 25)
+            pending = [self.binding.sidecar.window.contentItem()]
+            found: dict[str, Any] = {}
+            duplicate = False
+            while pending:
+                item = pending.pop()
+                name = str(item.objectName())
+                if name.startswith("reviewAction_"):
+                    found_id = name.removeprefix("reviewAction_")
+                    if found_id in found:
+                        duplicate = True
+                    found[found_id] = item
+                pending.extend(item.childItems())
+            snapshot: tuple[tuple[Any, ...], ...] | None = None
+            if not duplicate and set(found) == set(expected_ids):
+                ordered_ids = tuple(
+                    item_id
+                    for item_id, _item in sorted(
+                        found.items(), key=lambda pair: float(pair[1].y())
+                    )
+                )
+                primary = found[action_id]
+                if (
+                    ordered_ids == expected_ids
+                    and bool(primary.property("activeFocus"))
+                    and all(
+                        bool(item.isEnabled())
+                        and bool(item.isVisible())
+                        and float(item.width()) > 0
+                        and float(item.height()) > 0
+                        for item in found.values()
+                    )
+                ):
+                    snapshot = tuple(
+                        (
+                            item_id,
+                            float(found[item_id].x()),
+                            float(found[item_id].y()),
+                            float(found[item_id].width()),
+                            float(found[item_id].height()),
+                        )
+                        for item_id in expected_ids
+                    )
+            if snapshot is not None and snapshot == previous:
+                stable_observations += 1
+                if stable_observations >= 2:
+                    return
+            else:
+                stable_observations = 0
+            previous = snapshot
+            time.sleep(0.01)
+        raise H2E2IntegrationError("SIDECAR_PRIMARY_ACTION_FOCUS_UNVERIFIED")
 
     def present(self, projection: dict[str, Any], *, initial: bool = False) -> dict[str, Any]:
         stage = projection.get("stage")
