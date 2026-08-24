@@ -34,6 +34,10 @@ DEFAULT_EVIDENCE = ROOT / "r6o_evidence" / "H2-E1"
 ROUTING_MARKER = "H2E1ROUTINGBOUNDARY"
 SHIFT_PREFIX = "H2E1SHIFT"
 SHIFT_SUFFIX = "EDIT"
+SHIFT_MARKER_VALUES = (
+    f"{SHIFT_PREFIX}\n{SHIFT_SUFFIX}",
+    f"{SHIFT_PREFIX}\r\n{SHIFT_SUFFIX}",
+)
 IMPLEMENTATION_PATHS = (
     "r6o/host/codex/windows/input_binding.py",
     "scripts/h2/verify_codex_input_routing.py",
@@ -197,12 +201,25 @@ def sidecar_action_ready(binding: CodexSidecarBinding, object_name: str) -> bool
         return False
 
 
-def reset_composer(binding: CodexSidecarBinding) -> None:
-    try:
-        from pywinauto.keyboard import send_keys
-    except ImportError as exc:
-        raise CodexInputBindingError("HOST_DEPENDENCY_MISSING") from exc
+def reset_composer(
+    binding: CodexSidecarBinding,
+    *,
+    expected_text: str | None,
+    send_keys_fn: Callable[..., None] | None = None,
+) -> None:
+    """Clear only an exact verifier-owned value; otherwise preserve the composer."""
+
     controls = binding.refresh_controls()
+    actual_text = current_value(controls.composer)
+    if actual_text == "":
+        return
+    if expected_text is None or actual_text != expected_text:
+        raise CodexInputBindingError("COMPOSER_RESET_CONTENT_REFUSED")
+    if send_keys_fn is None:
+        try:
+            from pywinauto.keyboard import send_keys as send_keys_fn
+        except ImportError as exc:
+            raise CodexInputBindingError("HOST_DEPENDENCY_MISSING") from exc
     controls.composer.set_focus()
     wait_until(
         lambda: bool(binding.refresh_controls().composer.has_keyboard_focus())
@@ -210,7 +227,7 @@ def reset_composer(binding: CodexSidecarBinding) -> None:
         timeout=5.0,
         code="COMPOSER_RESET_FOCUS_UNVERIFIED",
     )
-    send_keys("^a{BACKSPACE}", pause=0.025)
+    send_keys_fn("^a{BACKSPACE}", pause=0.025)
     empty_contract = binding.selectors["reset_contract"]["composer_empty"]
     wait_until(
         lambda: composer_empty_observation(
@@ -227,13 +244,14 @@ def close_qualification_resources(
     input_binding: CodexComposerInputBinding | None,
     *,
     reset_required: bool,
+    expected_composer_text: str | None = None,
 ) -> None:
     """Attempt every cleanup and fail the gate if any cleanup is unverified."""
 
     failures: list[str] = []
     if reset_required and host is not None:
         try:
-            reset_composer(host)
+            reset_composer(host, expected_text=expected_composer_text)
         except Exception as exc:
             failures.append(f"COMPOSER_RESET:{getattr(exc, 'code', type(exc).__name__)}")
     if input_binding is not None:
@@ -290,6 +308,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     host: CodexSidecarBinding | None = None
     input_binding: CodexComposerInputBinding | None = None
     injection_started = False
+    cleanup_expected_text: str | None = None
     try:
         host = CodexSidecarBinding(
             args.host_record,
@@ -336,24 +355,29 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         send_keys("+{ENTER}", pause=0.025)
         send_keys(SHIFT_SUFFIX, pause=0.025, with_spaces=False)
         wait_until(
-            lambda: SHIFT_PREFIX in current_value(host.refresh_controls().composer)
-            and SHIFT_SUFFIX in current_value(host.controls.composer),
+            lambda: current_value(host.refresh_controls().composer) in SHIFT_MARKER_VALUES,
             timeout=5.0,
             code="SHIFT_ENTER_EDITING_UNVERIFIED",
         )
+        shift_marker = current_value(host.controls.composer)
+        if shift_marker not in SHIFT_MARKER_VALUES:
+            raise CodexInputBindingError("SHIFT_ENTER_EDITING_UNVERIFIED")
+        cleanup_expected_text = shift_marker
         if input_binding.capture_count or input_binding.delivery_count or routed:
             raise CodexInputBindingError("SHIFT_ENTER_WAS_CAPTURED")
         turns_after_shift = visible_turn_count(host)
         if turns_after_shift != turns_before:
             raise CodexInputBindingError("SHIFT_ENTER_INITIATED_CODEX_REQUEST")
-        reset_composer(host)
+        reset_composer(host, expected_text=cleanup_expected_text)
+        cleanup_expected_text = None
 
         send_keys(ROUTING_MARKER, pause=0.025, with_spaces=False)
         wait_until(
-            lambda: ROUTING_MARKER in current_value(host.refresh_controls().composer),
+            lambda: current_value(host.refresh_controls().composer) == ROUTING_MARKER,
             timeout=5.0,
             code="ROUTING_MARKER_NOT_VISIBLE",
         )
+        cleanup_expected_text = ROUTING_MARKER
         composer_text_at_gesture = current_value(host.controls.composer)
         send_keys("{ENTER}", pause=0.025)
         envelope = input_binding.wait_for_delivery(timeout=7.0)
@@ -365,6 +389,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             timeout=5.0,
             code="CAPTURED_COMPOSER_NOT_CLEARED",
         )
+        cleanup_expected_text = None
         time.sleep(2.0)
         turns_after = visible_turn_count(host)
         if turns_after != turns_before:
@@ -515,6 +540,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             host,
             input_binding,
             reset_required=injection_started,
+            expected_composer_text=cleanup_expected_text,
         )
 
 

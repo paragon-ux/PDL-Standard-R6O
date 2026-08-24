@@ -124,6 +124,8 @@ class CodexComposerInputBinding:
         self._armed = False
         self._delivery_pending = False
         self._enter_down = False
+        self._enter_pair_complete = threading.Event()
+        self._enter_pair_complete.set()
         self._pressed_modifiers: set[int] = set()
         self._captures: queue.Queue[CapturedComposerSubmission | None] = queue.Queue()
         self._delivery_event = threading.Event()
@@ -251,6 +253,9 @@ class CodexComposerInputBinding:
         if self._hook_thread is None:
             raise CodexInputBindingError("HOST_INPUT_HOOK_NOT_STARTED")
         context = validate_active_projection_context(projection)
+        with self._state_lock:
+            if self._enter_down:
+                raise CodexInputBindingError("HOST_ENTER_KEYUP_PENDING")
         # Revalidate the frozen D1 HWND before any native focus mutation. A
         # stale HWND may have been reused since the D2 attachment completed.
         self.host.refresh_controls()
@@ -270,20 +275,24 @@ class CodexComposerInputBinding:
                 with self._state_lock:
                     if self._delivery_pending:
                         raise CodexInputBindingError("HOST_COMPOSER_DELIVERY_PENDING")
+                    if self._enter_down:
+                        raise CodexInputBindingError("HOST_ENTER_KEYUP_PENDING")
                     self._active_projection = context
                     self._armed = True
-                    self._enter_down = False
                 self._delivery_event.clear()
                 return
             time.sleep(0.025)
         raise CodexInputBindingError("ACTUAL_COMPOSER_FOCUS_UNVERIFIED")
 
-    def deactivate(self, *, preserve_enter_pairing: bool = False) -> None:
+    def deactivate(self) -> None:
         with self._state_lock:
             self._armed = False
             self._active_projection = None
-            if not preserve_enter_pairing:
-                self._enter_down = False
+            # A swallowed keydown owns its matching keyup even after the
+            # binding is deactivated. Only the keyup handler may complete the
+            # pair; clearing it here would leak that keyup to the native host.
+            if not self._enter_down:
+                self._enter_pair_complete.set()
 
     def wait_for_delivery(self, timeout: float = 5.0) -> dict[str, Any]:
         deadline = time.monotonic() + timeout
@@ -324,6 +333,7 @@ class CodexComposerInputBinding:
         with self._state_lock:
             if message in KEY_UP_MESSAGES and self._enter_down:
                 self._enter_down = False
+                self._enter_pair_complete.set()
                 self.suppressed_keyup_count += 1
                 return True
             if message in KEY_DOWN_MESSAGES and self._enter_down:
@@ -338,7 +348,9 @@ class CodexComposerInputBinding:
             self._set_error("HOST_KEY_STATE_UNAVAILABLE")
             with self._state_lock:
                 self._enter_down = True
-            self.deactivate(preserve_enter_pairing=True)
+                self._enter_pair_complete.clear()
+                self.suppressed_keydown_count += 1
+            self.deactivate()
             return True
         if not foreground_matches:
             # The active H2 binding never captures another application's Enter.
@@ -353,6 +365,7 @@ class CodexComposerInputBinding:
                     # Enter gesture in Codex during that interval so it cannot
                     # escape to the native request path.
                     self._enter_down = True
+                    self._enter_pair_complete.clear()
                     self.suppressed_keydown_count += 1
                     return True
                 armed = self._armed
@@ -364,6 +377,10 @@ class CodexComposerInputBinding:
             modified = tracked_modifier or self._modifier_active(user32)
         except Exception:
             self._set_error("HOST_KEY_STATE_UNAVAILABLE")
+            with self._state_lock:
+                self._enter_down = True
+                self._enter_pair_complete.clear()
+                self.suppressed_keydown_count += 1
             self.deactivate()
             return True
         if modified:
@@ -371,6 +388,7 @@ class CodexComposerInputBinding:
             return False
         with self._state_lock:
             self._enter_down = True
+            self._enter_pair_complete.clear()
         self.suppressed_keydown_count += 1
         try:
             focus_verified = bool(self._focus_probe())
@@ -378,13 +396,13 @@ class CodexComposerInputBinding:
             focus_verified = False
         if not focus_verified:
             self._set_error("ACTUAL_COMPOSER_FOCUS_UNVERIFIED_AT_ENTER")
-            self.deactivate(preserve_enter_pairing=True)
+            self.deactivate()
             return True
         try:
             text = self._text_probe()
         except Exception:
             self._set_error("HOST_COMPOSER_VALUE_UNAVAILABLE")
-            self.deactivate(preserve_enter_pairing=True)
+            self.deactivate()
             return True
         if not isinstance(text, str) or not text.strip():
             self.empty_enter_suppressed_count += 1
@@ -533,6 +551,8 @@ class CodexComposerInputBinding:
             except CodexInputBindingError as exc:
                 pending_failure = exc
         self.deactivate()
+        if not self._enter_pair_complete.wait(timeout=5.0):
+            raise CodexInputBindingError("HOST_ENTER_KEYUP_DRAIN_TIMEOUT")
         self._stop.set()
         if self._hook_thread is not None:
             if self._hook_thread_id:

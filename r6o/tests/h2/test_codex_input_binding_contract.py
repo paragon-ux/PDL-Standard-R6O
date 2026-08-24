@@ -72,6 +72,11 @@ class FakeUser32:
         return 0x8000 if self.shift and key == VK_SHIFT else 0
 
 
+class FailingModifierProbeUser32(FakeUser32):
+    def GetAsyncKeyState(self, key: int) -> int:
+        raise OSError("modifier state unavailable")
+
+
 def input_binding(*, focused: bool = True, text: str = "H2E1TEXT") -> CodexComposerInputBinding:
     host = SimpleNamespace(host_hwnd=101, sidecar_hwnd=303)
     binding = CodexComposerInputBinding(
@@ -191,6 +196,42 @@ def test_unmodified_enter_is_suppressed_and_queued_exactly_once() -> None:
     assert binding.suppressed_keyup_count == 1
     assert binding.armed is False
     assert binding._captures.empty()
+
+
+def test_modifier_probe_failure_suppresses_complete_enter_pair_without_dispatch() -> None:
+    binding = input_binding()
+    api = FailingModifierProbeUser32()
+
+    assert binding._handle_key_event(api, 0x0D, WM_KEYDOWN) is True
+    assert binding.last_error == "HOST_KEY_STATE_UNAVAILABLE"
+    assert binding.suppressed_keydown_count == 1
+    assert binding.capture_count == 0
+    assert binding.delivery_count == 0
+    assert binding._captures.empty()
+    assert binding.armed is False
+
+    assert binding._handle_key_event(api, 0x0D, WM_KEYUP) is True
+    assert binding.suppressed_keyup_count == 1
+    assert binding._enter_down is False
+
+
+def test_deactivation_preserves_pair_until_keyup_then_teardown_completes() -> None:
+    binding = input_binding(text="   ")
+    api = FakeUser32()
+
+    assert binding._handle_key_event(api, 0x0D, WM_KEYDOWN) is True
+    binding.deactivate()
+    assert binding._enter_down is True
+
+    # An unrelated key is not part of the suppressed Enter pair.
+    assert binding._handle_key_event(api, 0x41, WM_KEYDOWN) is False
+    assert binding._handle_key_event(api, 0x41, WM_KEYUP) is False
+
+    assert binding._handle_key_event(api, 0x0D, WM_KEYUP) is True
+    assert binding._enter_down is False
+    binding.stop()
+    assert binding._dispatcher is None
+    assert binding._handle_key_event(api, 0x0D, WM_KEYUP) is False
 
 
 def test_second_enter_is_suppressed_until_captured_text_is_cleared() -> None:
@@ -415,13 +456,147 @@ def test_sidecar_action_readiness_is_false_until_qml_item_exists() -> None:
     assert verifier.sidecar_action_ready(binding, "reviewAction_something_else") is False
 
 
+class CleanupComposer:
+    def __init__(self, value: str, *, readable: bool = True) -> None:
+        self.value = value
+        self.readable = readable
+        self.focus_calls = 0
+
+    @property
+    def iface_value(self) -> object:
+        if not self.readable:
+            raise RuntimeError("composer value unavailable")
+        return SimpleNamespace(CurrentValue=self.value)
+
+    def set_focus(self) -> None:
+        self.focus_calls += 1
+
+    def has_keyboard_focus(self) -> bool:
+        return True
+
+
+class CleanupBinding:
+    def __init__(self, composer: CleanupComposer) -> None:
+        self.composer = composer
+        self.controls = SimpleNamespace(composer=composer)
+        self.host_hwnd = 101
+        self.native = SimpleNamespace(foreground=lambda: 101)
+        self.selectors = {"reset_contract": {"composer_empty": {}}}
+
+    def refresh_controls(self) -> object:
+        return self.controls
+
+
+def cleanup_send_recorder(composer: CleanupComposer, calls: list[str]):
+    def send_keys(keys: str, *, pause: float) -> None:
+        calls.append(keys)
+        composer.value = ""
+
+    return send_keys
+
+
+def test_empty_composer_cleanup_is_nondestructive_noop() -> None:
+    composer = CleanupComposer("")
+    calls: list[str] = []
+    verifier.reset_composer(
+        CleanupBinding(composer),
+        expected_text=verifier.ROUTING_MARKER,
+        send_keys_fn=cleanup_send_recorder(composer, calls),
+    )
+    assert calls == []
+    assert composer.focus_calls == 0
+
+
+def test_exact_verifier_marker_cleanup_is_permitted_and_idempotent(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    composer = CleanupComposer(verifier.ROUTING_MARKER)
+    binding = CleanupBinding(composer)
+    calls: list[str] = []
+    monkeypatch.setattr(
+        verifier,
+        "composer_empty_observation",
+        lambda candidate, contract: {"empty": candidate.value == ""},
+    )
+
+    verifier.reset_composer(
+        binding,
+        expected_text=verifier.ROUTING_MARKER,
+        send_keys_fn=cleanup_send_recorder(composer, calls),
+    )
+    verifier.reset_composer(
+        binding,
+        expected_text=verifier.ROUTING_MARKER,
+        send_keys_fn=cleanup_send_recorder(composer, calls),
+    )
+
+    assert calls == ["^a{BACKSPACE}"]
+    assert composer.value == ""
+    assert composer.focus_calls == 1
+
+
+@pytest.mark.parametrize(
+    ("actual_text", "expected_text"),
+    [
+        ("unrelated user draft", verifier.ROUTING_MARKER),
+        (verifier.ROUTING_MARKER + " plus user text", verifier.ROUTING_MARKER),
+        (verifier.ROUTING_MARKER, None),
+    ],
+)
+def test_unowned_or_nonexact_composer_content_is_never_cleared(
+    actual_text: str, expected_text: str | None
+) -> None:
+    composer = CleanupComposer(actual_text)
+    calls: list[str] = []
+
+    with pytest.raises(CodexInputBindingError, match="COMPOSER_RESET_CONTENT_REFUSED"):
+        verifier.reset_composer(
+            CleanupBinding(composer),
+            expected_text=expected_text,
+            send_keys_fn=cleanup_send_recorder(composer, calls),
+        )
+
+    assert calls == []
+    assert composer.value == actual_text
+    assert composer.focus_calls == 0
+
+
+def test_unreadable_composer_content_is_never_cleared() -> None:
+    composer = CleanupComposer(verifier.ROUTING_MARKER, readable=False)
+    calls: list[str] = []
+
+    with pytest.raises(CodexInputBindingError, match="HOST_COMPOSER_VALUE_UNAVAILABLE"):
+        verifier.reset_composer(
+            CleanupBinding(composer),
+            expected_text=verifier.ROUTING_MARKER,
+            send_keys_fn=cleanup_send_recorder(composer, calls),
+        )
+
+    assert calls == []
+    assert composer.value == verifier.ROUTING_MARKER
+    assert composer.focus_calls == 0
+
+
 def test_qualification_cleanup_attempts_reset_stop_and_host_close(monkeypatch: pytest.MonkeyPatch) -> None:
     calls: list[str] = []
     host = SimpleNamespace(close=lambda: calls.append("host_close"))
     input_router = SimpleNamespace(stop=lambda: calls.append("input_stop"))
-    monkeypatch.setattr(verifier, "reset_composer", lambda value: calls.append("composer_reset"))
-    verifier.close_qualification_resources(host, input_router, reset_required=True)
-    assert calls == ["composer_reset", "input_stop", "host_close"]
+    monkeypatch.setattr(
+        verifier,
+        "reset_composer",
+        lambda value, *, expected_text: calls.append(f"composer_reset:{expected_text}"),
+    )
+    verifier.close_qualification_resources(
+        host,
+        input_router,
+        reset_required=True,
+        expected_composer_text=verifier.ROUTING_MARKER,
+    )
+    assert calls == [
+        f"composer_reset:{verifier.ROUTING_MARKER}",
+        "input_stop",
+        "host_close",
+    ]
 
 
 def test_cleanup_failure_never_skips_later_cleanup(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -434,7 +609,7 @@ def test_cleanup_failure_never_skips_later_cleanup(monkeypatch: pytest.MonkeyPat
 
     input_router = SimpleNamespace(stop=fail_stop)
 
-    def fail_reset(value: object) -> None:
+    def fail_reset(value: object, *, expected_text: str | None) -> None:
         calls.append("composer_reset")
         raise RuntimeError("reset failed")
 
