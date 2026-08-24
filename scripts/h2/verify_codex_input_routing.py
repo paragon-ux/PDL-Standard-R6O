@@ -177,6 +177,26 @@ def sidecar_action_center(binding: CodexSidecarBinding, object_name: str) -> tup
     return rectangle.left + 542, rectangle.top + 203
 
 
+def sidecar_action_ready(binding: CodexSidecarBinding, object_name: str) -> bool:
+    """Return whether the exact projected QML action can receive one click."""
+
+    try:
+        pending = [binding.sidecar.window.contentItem()]
+        while pending:
+            item = pending.pop()
+            if str(item.objectName()) == object_name:
+                return (
+                    bool(item.isEnabled())
+                    and bool(item.isVisible())
+                    and float(item.width()) > 0
+                    and float(item.height()) > 0
+                )
+            pending.extend(item.childItems())
+        return False
+    except (AttributeError, LookupError, RuntimeError, TypeError, ValueError):
+        return False
+
+
 def reset_composer(binding: CodexSidecarBinding) -> None:
     try:
         from pywinauto.keyboard import send_keys
@@ -235,7 +255,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--host-record", type=Path, default=DEFAULT_HOST_RECORD)
     parser.add_argument("--selectors", type=Path, default=DEFAULT_SELECTORS)
     parser.add_argument("--evidence-dir", type=Path, default=DEFAULT_EVIDENCE)
-    return parser.parse_args()
+    args = parser.parse_args()
+    args.evidence_dir = args.evidence_dir.resolve()
+    return args
 
 
 def run(args: argparse.Namespace) -> dict[str, Any]:
@@ -286,7 +308,13 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             raise CodexInputBindingError("COMPOSER_NOT_EMPTY")
         turns_before = visible_turn_count(host)
 
-        action_point = sidecar_action_center(host, "reviewAction_something_else")
+        action_name = "reviewAction_something_else"
+        wait_until(
+            lambda: sidecar_action_ready(host, action_name),
+            timeout=5.0,
+            code="SIDECAR_ACTION_NOT_READY",
+        )
+        action_point = sidecar_action_center(host, action_name)
         physical_click(action_point)
         wait_until(
             lambda: len(action_envelopes) == 1 or bool(action_errors),

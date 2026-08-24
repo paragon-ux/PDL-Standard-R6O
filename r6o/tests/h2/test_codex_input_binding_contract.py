@@ -365,6 +365,56 @@ def test_e1_verifier_has_portable_help() -> None:
     assert result.returncode == 0, result.stdout + result.stderr
 
 
+def test_e1_verifier_resolves_relative_evidence_directory(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    relative = Path("r6o_evidence") / "H2-E1"
+    monkeypatch.setattr(sys, "argv", ["verify_codex_input_routing.py", "--evidence-dir", str(relative)])
+    args = verifier.parse_args()
+    assert args.evidence_dir == (Path.cwd() / relative).resolve()
+
+
+@pytest.mark.parametrize(
+    ("enabled", "visible", "width", "height", "expected"),
+    [
+        (True, True, 221.0, 31.0, True),
+        (False, True, 221.0, 31.0, False),
+        (True, False, 221.0, 31.0, False),
+        (True, True, 0.0, 31.0, False),
+        (True, True, 221.0, 0.0, False),
+    ],
+)
+def test_sidecar_action_readiness_requires_exact_interactable_qml_item(
+    enabled: bool,
+    visible: bool,
+    width: float,
+    height: float,
+    expected: bool,
+) -> None:
+    action = SimpleNamespace(
+        objectName=lambda: "reviewAction_something_else",
+        isEnabled=lambda: enabled,
+        isVisible=lambda: visible,
+        width=lambda: width,
+        height=lambda: height,
+        childItems=lambda: [],
+    )
+    root = SimpleNamespace(objectName=lambda: "", childItems=lambda: [action])
+    window = SimpleNamespace(contentItem=lambda: root)
+    binding = SimpleNamespace(sidecar=SimpleNamespace(window=window))
+    assert (
+        verifier.sidecar_action_ready(binding, "reviewAction_something_else")
+        is expected
+    )
+
+
+def test_sidecar_action_readiness_is_false_until_qml_item_exists() -> None:
+    root = SimpleNamespace(objectName=lambda: "", childItems=lambda: [])
+    window = SimpleNamespace(contentItem=lambda: root)
+    binding = SimpleNamespace(sidecar=SimpleNamespace(window=window))
+    assert verifier.sidecar_action_ready(binding, "reviewAction_something_else") is False
+
+
 def test_qualification_cleanup_attempts_reset_stop_and_host_close(monkeypatch: pytest.MonkeyPatch) -> None:
     calls: list[str] = []
     host = SimpleNamespace(close=lambda: calls.append("host_close"))
