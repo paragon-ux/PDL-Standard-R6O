@@ -16,6 +16,82 @@ and its independently gated H2 presentation work.
 - H2 work proceeds through independent gates and dedicated pull requests.
 - A later H2 gate must not be inferred to have passed from an earlier gate.
 
+## H2-D1R current Codex compatibility refreeze
+
+Run H2-D1R only from the isolated compatibility branch:
+
+```text
+codex/h2-d1r-host-compatibility-refreeze
+```
+
+Before qualification, verify that the checkout is at the intended D1R head and
+that exactly one actual Codex top-level window is open, visible, and not
+minimized. The installed/running identity must be exactly:
+
+```text
+package:         26.818.5229.0
+ProductVersion:  151.0.7922.170
+FileVersion:     151.0.7922.170
+```
+
+This gate permits `26.818.3698.0 -> 26.818.5229.0` and only the three
+authorized selector metadata leaves. It does not permit selector/control/reset
+semantic changes or changes to D1/D2 Python production code.
+
+Generate the current redacted host evidence, update only the authorized package
+version and two evidence hashes in `selectors.json`, then run the machine check
+before resetting the actual host:
+
+```powershell
+& {
+    $ErrorActionPreference = 'Stop'
+    $ExpectedBranch = 'codex/h2-d1r-host-compatibility-refreeze'
+    if ((git branch --show-current).Trim() -ne $ExpectedBranch) {
+        throw "Wrong H2-D1R branch; expected $ExpectedBranch"
+    }
+    python -m pip install -r requirements-h2-d2.txt
+    if ($LASTEXITCODE -ne 0) { throw 'H2-D1R pinned dependency installation failed' }
+    python scripts\h2\inspect_codex_host.py --discover --output r6o_evidence\H2-D1\host-environment.json
+    if ($LASTEXITCODE -ne 0) { throw 'H2-D1R host discovery failed' }
+    python scripts\h2\dump_codex_uia.py --host-record r6o_evidence\H2-D1\host-environment.json --output r6o_evidence\H2-D1\codex-uia.json
+    if ($LASTEXITCODE -ne 0) { throw 'H2-D1R UIA capture failed' }
+}
+```
+
+After the three selector leaves are refrozen, run the closed qualification
+sequence. The D2 verifier writes only to D1R-owned evidence; the accepted
+`r6o_evidence/H2-D2/**` record remains unchanged.
+
+```powershell
+& {
+    $ErrorActionPreference = 'Stop'
+    python scripts\h2\verify_d1r_compatibility_refreeze.py --output r6o_evidence\H2-D1R\compatibility-refreeze.json
+    if ($LASTEXITCODE -ne 0) { throw 'H2-D1R allowed-delta verification failed' }
+    python -c "from pathlib import Path; from r6o.host.codex.windows.uia import load_selectors; load_selectors(Path(r'r6o/host/codex/windows/selectors.json')); print('D1R SELECTOR PROVENANCE PASS')"
+    if ($LASTEXITCODE -ne 0) { throw 'H2-D1R selector provenance failed' }
+    python scripts\h2\reset_codex_test_session.py --selectors r6o\host\codex\windows\selectors.json
+    if ($LASTEXITCODE -ne 0) { throw 'H2-D1R actual Codex reset failed' }
+    python -m pytest r6o\tests\h2\test_d1r_compatibility_refreeze.py r6o\tests\h2\test_codex_discovery_contract.py -q -p no:cacheprovider
+    if ($LASTEXITCODE -ne 0) { throw 'H2-D1R/D1 focused tests failed' }
+    $env:QT_QUICK_BACKEND = 'software'
+    $env:QT_SCALE_FACTOR = '1'
+    $env:QT_FONT_DPI = '96'
+    python scripts\h2\verify_codex_attachment.py --host-record r6o_evidence\H2-D1\host-environment.json --selectors r6o\host\codex\windows\selectors.json --evidence-dir r6o_evidence\H2-D1R\d2-actual-host
+    if ($LASTEXITCODE -ne 0) { throw 'H2-D1R actual D2 attachment verification failed' }
+    python -m pytest r6o\tests\h2\test_codex_binding_contract.py -q -p no:cacheprovider
+    if ($LASTEXITCODE -ne 0) { throw 'H2-D1R D2 focused tests failed' }
+}
+```
+
+Expected statuses include:
+
+```text
+D1R_COMPATIBILITY_REFREEZE_PASS
+CODEX_TEST_SESSION_READY
+H2_D2_ATTACHMENT_PASS
+D1R COMPATIBILITY REFREEZE VERIFIED
+```
+
 ## H2-D2 actual Codex attachment checkout
 
 Review and run H2-D2 only from this branch:

@@ -36,6 +36,10 @@ from scripts.h2.verify_codex_attachment import clear_injected_composer_text
 
 
 ROOT = Path(__file__).resolve().parents[3]
+HISTORICAL_D2_EVIDENCE_DIR = ROOT / "r6o_evidence" / "H2-D2"
+CURRENT_D1R_D2_EVIDENCE_DIR = ROOT / "r6o_evidence" / "H2-D1R" / "d2-actual-host"
+HISTORICAL_D1_HOST_RECORD_SHA256 = "7cf1b2219f38b2d7e1f610dd25467969c688b681b3ac0632041eff3978ce9db5"
+HISTORICAL_D2_SELECTORS_SHA256 = "cb5a1b5b3123c979c54ecd3ec2614aa1d7b3c927dec987cdcfbbddeae75a21ef"
 
 
 def candidate(**overrides: object) -> HostCandidate:
@@ -593,34 +597,67 @@ def test_d2_qualification_dependencies_are_exactly_pinned() -> None:
     ]
 
 
-def test_d2_evidence_schema_and_required_observations_when_present() -> None:
-    path = ROOT / "r6o_evidence" / "H2-D2" / "attachment-result.json"
-    if not path.exists():
-        pytest.skip("live D2 evidence is created only by the Windows verifier")
-    document = json.loads(path.read_text(encoding="utf-8"))
+def _assert_d2_evidence(
+    document: dict[str, object],
+    *,
+    evidence_dir: Path,
+    expected_host_record_sha256: str,
+    expected_selectors_sha256: str,
+) -> None:
     assert document["schema_version"] == "r6o-h2-d2-attachment-result-1"
     assert document["status"] == "H2_D2_ATTACHMENT_PASS"
     assert document["real_codex_host_tested"] is True
     assert document["synthetic_owner_used"] is False
-    assert document["standard"]["owner_hwnd"] == document["host"]["hwnd"]
-    assert document["standard"]["sidecar_above_host"] is True
-    assert document["standard"]["global_topmost"] is False
-    assert document["non_interference"]["marker_submitted"] is False
-    assert document["non_interference"]["placement_unchanged"] is True
-    assert document["unrelated_window"]["host_focus_router_ignored_probe_click"] is True
-    assert document["close_focus_return"]["composer_keyboard_focus"] is True
+    host = document["host"]
+    for mode in ("standard", "expanded"):
+        observation = document[mode]
+        assert observation["owner_hwnd"] == host["hwnd"]
+        assert observation["expected_owner_hwnd"] == host["hwnd"]
+        assert observation["actual_rectangle"] == observation["expected_rectangle"]
+        assert observation["placement_matches"] is True
+        assert observation["sidecar_above_host"] is True
+        assert observation["global_topmost"] is False
+        assert observation["visible"] is True
+        assert observation["host_geometry_source"] == "LIVE_REMEASURED_EXACT_D1_HWND"
+
+    non_interference = document["non_interference"]
+    assert non_interference["composer_clicked_outside_sidecar"] is True
+    assert non_interference["composer_empty_before"] is True
+    assert non_interference["composer_received_keyboard_focus"] is True
+    assert non_interference["marker_visible"] is True
+    assert non_interference["marker_removed"] is True
+    assert non_interference["marker_submitted"] is False
+    assert non_interference["normal_codex_dispatch_observed"] is False
+    assert non_interference["placement_unchanged"] is True
+    assert non_interference["sidecar_above_host_after"] is True
+    assert non_interference["sidecar_visible_after"] is True
+    assert non_interference["visible_turn_count_after"] == non_interference["visible_turn_count_before"]
+
+    unrelated = document["unrelated_window"]
+    assert unrelated["host_focus_router_ignored_probe_click"] is True
+    assert unrelated["probe_above_sidecar"] is True
+    assert unrelated["probe_foreground"] is True
+    assert unrelated["probe_global_topmost"] is False
+    assert unrelated["probe_owner_hwnd"] == 0
+
+    close_focus = document["close_focus_return"]
+    assert close_focus["composer_keyboard_focus"] is True
+    assert close_focus["sidecar_visible"] is False
+    assert close_focus["foreground_hwnd"] == close_focus["expected_foreground_hwnd"] == host["hwnd"]
     assert document["recording"]["frame_count"] > 0
+    assert document["recording"]["mandatory"] is True
     assert len(document["recording"]["sha256"]) == 64
     assert document["observer_ordering_mutation"] is False
-    assert document["host"]["geometry_source"] == "LIVE_REMEASURED_EXACT_D1_HWND"
-    assert document["host"]["client_rectangle"]["width"] > 0
-    assert document["host"]["work_area"]["height"] > 0
-    assert document["host_record_sha256"] == hashlib.sha256(
-        (ROOT / "r6o_evidence" / "H2-D1" / "host-environment.json").read_bytes()
-    ).hexdigest()
-    assert document["selectors_sha256"] == hashlib.sha256(
-        (ROOT / "r6o" / "host" / "codex" / "windows" / "selectors.json").read_bytes()
-    ).hexdigest()
+    assert host["geometry_source"] == "LIVE_REMEASURED_EXACT_D1_HWND"
+    assert host["client_rectangle"]["width"] > 0
+    assert host["work_area"]["height"] > 0
+    assert document["host_record_sha256"] == expected_host_record_sha256
+    assert document["selectors_sha256"] == expected_selectors_sha256
+    assert document["scope"] == {
+        "normal_codex_submit_gesture_used": False,
+        "r6o3_lease_implemented": False,
+        "semantic_workflow_exercised": False,
+    }
     expected_implementation = {
         source: hashlib.sha256((ROOT / source).read_bytes()).hexdigest()
         for source in (
@@ -644,6 +681,7 @@ def test_d2_evidence_schema_and_required_observations_when_present() -> None:
     for mode in ("standard", "expanded"):
         recording = document["recording"][mode]
         recording_path = ROOT / recording["path"]
+        assert recording_path.resolve().parent == evidence_dir.resolve()
         assert recording_path.read_bytes()[4:8] == b"ftyp"
         actual_hash = hashlib.sha256(recording_path.read_bytes()).hexdigest()
         assert recording["sha256"] == actual_hash
@@ -664,9 +702,11 @@ def test_d2_evidence_schema_and_required_observations_when_present() -> None:
         "actual_rectangle"
     ]
 
-    event_path = ROOT / document["event_log"]["path"]
-    assert document["event_log"]["sha256"] == hashlib.sha256(event_path.read_bytes()).hexdigest()
-    events = [json.loads(line) for line in event_path.read_text(encoding="utf-8").splitlines()]
+    event_path = evidence_dir / "win32-uia-events.jsonl"
+    canonical_event_bytes = event_path.read_bytes().replace(b"\r\n", b"\n")
+    assert document["event_log"]["sha256"] == hashlib.sha256(canonical_event_bytes).hexdigest()
+    events = [json.loads(line) for line in canonical_event_bytes.decode("utf-8").splitlines()]
+    assert document["event_log"]["event_count"] == len(events)
     assert [event["sequence"] for event in events] == list(range(1, len(events) + 1))
     clicked = next(event for event in events if event["event"] == "actual_codex_composer_clicked")
     assert clicked["focus_router_transfer_count"] >= 1
@@ -674,3 +714,38 @@ def test_d2_evidence_schema_and_required_observations_when_present() -> None:
     assert clicked["thread_input_attached"] is True
     assert clicked["thread_input_detached"] is True
     assert clicked["thread_input_attached_only_for_focus_transaction"] is True
+
+
+def test_historical_d2_evidence_remains_bound_to_historical_d1_inputs() -> None:
+    path = HISTORICAL_D2_EVIDENCE_DIR / "attachment-result.json"
+    if not path.exists():
+        pytest.skip("accepted historical D2 evidence is not present")
+    document = json.loads(path.read_text(encoding="utf-8"))
+    assert ROOT / document["event_log"]["path"] == HISTORICAL_D2_EVIDENCE_DIR / "win32-uia-events.jsonl"
+    _assert_d2_evidence(
+        document,
+        evidence_dir=HISTORICAL_D2_EVIDENCE_DIR,
+        expected_host_record_sha256=HISTORICAL_D1_HOST_RECORD_SHA256,
+        expected_selectors_sha256=HISTORICAL_D2_SELECTORS_SHA256,
+    )
+
+
+def test_current_d1r_d2_evidence_is_bound_to_current_refreeze_inputs() -> None:
+    path = CURRENT_D1R_D2_EVIDENCE_DIR / "attachment-result.json"
+    if not path.exists():
+        pytest.skip("current-host D1R D2 evidence is not present")
+    document = json.loads(path.read_text(encoding="utf-8"))
+    current_host_record = json.loads(
+        (ROOT / "r6o_evidence" / "H2-D1" / "host-environment.json").read_text(encoding="utf-8")
+    )["codex"]
+    current_selector_path = ROOT / "r6o" / "host" / "codex" / "windows" / "selectors.json"
+    for key in ("hwnd", "pid", "product_name", "product_version", "file_version", "package_version"):
+        assert document["host"][key] == current_host_record[key]
+    _assert_d2_evidence(
+        document,
+        evidence_dir=CURRENT_D1R_D2_EVIDENCE_DIR,
+        expected_host_record_sha256=hashlib.sha256(
+            (ROOT / "r6o_evidence" / "H2-D1" / "host-environment.json").read_bytes()
+        ).hexdigest(),
+        expected_selectors_sha256=hashlib.sha256(current_selector_path.read_bytes()).hexdigest(),
+    )

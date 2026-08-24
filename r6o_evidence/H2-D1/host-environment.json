@@ -9,9 +9,9 @@
       "width": 1602
     },
     "dpi": 96,
-    "executable": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.818.3698.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe",
+    "executable": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.818.5229.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe",
     "file_version": "151.0.7922.170",
-    "hwnd": 15009088,
+    "hwnd": 2758514,
     "monitor": {
       "handle": 65537,
       "id": "\\\\.\\DISPLAY1",
@@ -32,8 +32,8 @@
         "width": 1600
       }
     },
-    "package_version": "26.818.3698.0",
-    "pid": 18644,
+    "package_version": "26.818.5229.0",
+    "pid": 11512,
     "product_name": "Codex",
     "product_version": "151.0.7922.170",
     "scale": 1.0,
@@ -56,7 +56,7 @@
   },
   "schema_version": "r6o-h2-d1-host-environment-1",
   "status": "HOST_DISCOVERED",
-  "timestamp_utc": "2026-08-23T01:34:14.822760Z",
+  "timestamp_utc": "2026-08-24T09:41:33.259808Z",
   "windows": {
     "architecture": "AMD64",
     "build": 22000,

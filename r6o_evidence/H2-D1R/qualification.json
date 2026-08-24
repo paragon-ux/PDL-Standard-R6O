@@ -1,0 +1,197 @@
+{
+  "schema_version": "r6o-h2-d1r-qualification-1",
+  "gate": "H2-D1R",
+  "agent": "SOL-H2-D1R",
+  "state": "IMPLEMENTATION_COMPLETE",
+  "stop_code": null,
+  "recorded_at_utc": "2026-08-24T10:34:04.5856759Z",
+  "base_commit": "9816c9b848101678e654bfc14abbb6db269737d3",
+  "base_tree": "8edf404795364a8d3dcc45cc008d11f267aa27f7",
+  "code_freeze_head": "55ac83d3911f4ee299d73364256e4696a251053b",
+  "code_freeze_tree": "2a2ddf33e87b1e7cee4579e97ead1424a634f365",
+  "evidence_head": "SELF (commit containing this record)",
+  "implementation_complete": true,
+  "ready_for_luna": true,
+  "pull_request": {
+    "number": 13,
+    "url": "https://github.com/paragon-ux/PDL-Standard-R6O/pull/13",
+    "base": "main",
+    "head": "codex/h2-d1r-host-compatibility-refreeze"
+  },
+  "supplemental_authority": {
+    "title": "H2-D1R DEPENDENCY-RESOLUTION AUTHORIZATION",
+    "authority": "HUMAN-H2 / H2-COORD",
+    "sha256": "52bf6ddcdf578b27d7b9b1360a56588a7ed013b34c3fa272fc0abf894d5d0fd2",
+    "authorized_additional_write_path": "r6o/tests/h2/test_codex_binding_contract.py",
+    "scope": "TEST_COMPATIBILITY_ONLY"
+  },
+  "host": {
+    "previous_package_version": "26.818.3698.0",
+    "current_package_version": "26.818.5229.0",
+    "product_name": "Codex",
+    "product_version": "151.0.7922.170",
+    "file_version": "151.0.7922.170",
+    "hwnd": 2758514,
+    "pid": 11512,
+    "host_environment_sha256": "8ceaf31da367dc6efe938d8f129a9d125e4f6ba0b19a991643b69680d87748c7",
+    "uia_tree_sha256": "f69cc0ba53e7860a651969948645b9e4efb92aeeba250b9b3664ad81ecdb6aaf",
+    "reset_session_sha256": "bacdd7b21106ca27b251f49ef15b4b63efde10f7f577358b1782650120a28263",
+    "selectors_sha256": "f45bc99891a8d6d07344519274baded3c601203e48ba612246bcdea6f4c34386"
+  },
+  "selector_refreeze": {
+    "allowed_selector_delta": [
+      "/captured_from/host_environment/sha256",
+      "/captured_from/uia_tree/sha256",
+      "/host_compatibility/package_version"
+    ],
+    "actual_selector_delta": [
+      "/captured_from/host_environment/sha256",
+      "/captured_from/uia_tree/sha256",
+      "/host_compatibility/package_version"
+    ],
+    "allowed_delta_only": true,
+    "controls_sha256_before": "167b8d64449ccc8912320e3612167cb88a9ec8c52f9d708c00a1fef56141688f",
+    "controls_sha256_after": "167b8d64449ccc8912320e3612167cb88a9ec8c52f9d708c00a1fef56141688f",
+    "controls_unchanged": true,
+    "reset_contract_sha256_before": "29dc95bb2065b817032f42c89f73d508d0923097a8fb80ee667ff4a7329fe88c",
+    "reset_contract_sha256_after": "29dc95bb2065b817032f42c89f73d508d0923097a8fb80ee667ff4a7329fe88c",
+    "reset_contract_unchanged": true,
+    "selector_semantics_unchanged": true,
+    "selector_provenance_valid": true
+  },
+  "evidence_bindings": {
+    "historical_h2_d2": {
+      "mutated": false,
+      "host_record_sha256": "7cf1b2219f38b2d7e1f610dd25467969c688b681b3ac0632041eff3978ce9db5",
+      "selectors_sha256": "cb5a1b5b3123c979c54ecd3ec2614aa1d7b3c927dec987cdcfbbddeae75a21ef",
+      "binding_test": "PASS"
+    },
+    "current_d1r_d2": {
+      "attachment_result_sha256": "e631417d121db2df74e1db01d598f940f6ad0cac05106e40c979201564ad3603",
+      "event_log_sha256": "cba39a190a6182dcee9d1e531603170c3929ddcf08c718df010dfade2f06e535",
+      "standard_recording_sha256": "5fe22d4551ba3e7a7b8fcb8e97c5a9dcc3877ab4267702281957a991bdf7a213",
+      "expanded_recording_sha256": "4f4c49873838c851b70861f2bf76ec93e209e9da6f5924ef6c236549d7649063",
+      "host_record_sha256": "8ceaf31da367dc6efe938d8f129a9d125e4f6ba0b19a991643b69680d87748c7",
+      "selectors_sha256": "f45bc99891a8d6d07344519274baded3c601203e48ba612246bcdea6f4c34386",
+      "binding_test": "PASS"
+    }
+  },
+  "qualification_results": [
+    {
+      "id": "PINNED_DEPENDENCIES",
+      "command": "python -m pip install -r requirements-h2-d2.txt",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "id": "D1R_ALLOWED_DELTA",
+      "command": "python scripts/h2/verify_d1r_compatibility_refreeze.py --output r6o_evidence/H2-D1R/compatibility-refreeze.json",
+      "exit_code": 0,
+      "status": "D1R_COMPATIBILITY_REFREEZE_PASS"
+    },
+    {
+      "id": "D1_ACTUAL_RESET",
+      "command": "python scripts/h2/reset_codex_test_session.py --selectors r6o/host/codex/windows/selectors.json",
+      "exit_code": 0,
+      "status": "CODEX_TEST_SESSION_READY"
+    },
+    {
+      "id": "D1R_D1_FOCUSED",
+      "command": "python -m pytest r6o/tests/h2/test_d1r_compatibility_refreeze.py r6o/tests/h2/test_codex_discovery_contract.py -q -p no:cacheprovider",
+      "exit_code": 0,
+      "status": "PASS",
+      "detail": "55 passed"
+    },
+    {
+      "id": "D2_ACTUAL_HOST",
+      "command": "python scripts/h2/verify_codex_attachment.py --host-record r6o_evidence/H2-D1/host-environment.json --selectors r6o/host/codex/windows/selectors.json --evidence-dir r6o_evidence/H2-D1R/d2-actual-host",
+      "exit_code": 0,
+      "status": "H2_D2_ATTACHMENT_PASS"
+    },
+    {
+      "id": "D2_FOCUSED",
+      "command": "python -m pytest r6o/tests/h2/test_codex_binding_contract.py -q -p no:cacheprovider",
+      "exit_code": 0,
+      "status": "PASS",
+      "detail": "38 passed; historical and current evidence binding tests both passed"
+    },
+    {
+      "id": "FULL_R6O_SUITE",
+      "command": "python -m pytest r6o/tests -q -p no:cacheprovider",
+      "exit_code": 0,
+      "status": "PASS",
+      "detail": "241 passed in 74.64s"
+    },
+    {
+      "id": "R6O1_VERIFIER",
+      "command": "python scripts/verify_r6o1.py",
+      "exit_code": 0,
+      "status": "R6O-1 VERIFICATION PASS",
+      "detail": "baseline verifier PASS; baseline pytest 9 passed in 48.62s; R6O pytest 241 passed in 61.25s"
+    },
+    {
+      "id": "GITHUB_REQUIRED_CI",
+      "run_id": 32717182668,
+      "head_sha": "55ac83d3911f4ee299d73364256e4696a251053b",
+      "status": "PASS",
+      "jobs": [
+        {"name": "qualify (ubuntu-latest)", "job_id": 97400802617, "status": "PASS"},
+        {"name": "qualify (windows-latest)", "job_id": 97400802883, "status": "PASS"}
+      ]
+    },
+    {
+      "id": "GITHUB_ANCILLARY_QT_CI",
+      "run_id": 32717182663,
+      "head_sha": "55ac83d3911f4ee299d73364256e4696a251053b",
+      "status": "PASS",
+      "jobs": [
+        {"name": "windows", "job_id": 97400802981, "status": "PASS"},
+        {"name": "linux-x11", "job_id": 97400803175, "status": "PASS"},
+        {"name": "linux-wayland", "job_id": 97400802805, "status": "PASS"}
+      ]
+    }
+  ],
+  "boundary_results": {
+    "historical_h2_d2_evidence_mutated": false,
+    "historical_d2_binding_test": "PASS",
+    "current_d1r_d2_binding_test": "PASS",
+    "protected_path_diff_empty": true,
+    "d1_d2_production_python_diff_empty": true,
+    "d1_python_production_diff_empty": true,
+    "d2_python_production_diff_empty": true,
+    "oracle_commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+    "oracle_tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+    "oracle_tracked_worktree_clean": true,
+    "oracle_unchanged": true
+  },
+  "warnings": [
+    {
+      "classification": "EXPECTED_EXTERNAL",
+      "source": "frozen R6S baseline verifier",
+      "detail": "The verifier reports forbidden-term inventory warnings, including architecture-decisions, while returning REPL BASELINE VERIFICATION PASS. The frozen oracle is immutable and verified at its exact commit/tree."
+    },
+    {
+      "classification": "EXPECTED_EXTERNAL",
+      "source": "GitHub Actions runtime",
+      "detail": "GitHub reports Node.js 20 deprecation warnings for actions/checkout@v4 and actions/setup-python@v5 while all jobs pass."
+    },
+    {
+      "classification": "EXPECTED_EXTERNAL",
+      "source": "pip",
+      "detail": "A newer pip release is available; all pinned qualification dependencies were satisfied without upgrades."
+    },
+    {
+      "classification": "NONBLOCKING_P2",
+      "source": "accepted H2-D2 verifier alternate evidence-directory metadata",
+      "detail": "attachment-result.json retains the historical literal event-log label r6o_evidence/H2-D2/win32-uia-events.jsonl when --evidence-dir targets H2-D1R. The authoritative current D1R path and canonical hash are independently validated by the current binding test."
+    }
+  ],
+  "known_implementer_findings": [
+    {
+      "severity": "P2",
+      "status": "NONBLOCKING",
+      "summary": "The accepted D2 verifier emits a historical literal event-log path label for alternate evidence directories; D1R validates the authoritative path/hash without modifying accepted D2 code."
+    }
+  ],
+  "human_approval_claimed": false
+}

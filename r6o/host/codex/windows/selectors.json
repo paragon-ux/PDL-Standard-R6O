@@ -3,18 +3,18 @@
   "captured_from": {
     "host_environment": {
       "path": "r6o_evidence/H2-D1/host-environment.json",
-      "sha256": "7cf1b2219f38b2d7e1f610dd25467969c688b681b3ac0632041eff3978ce9db5"
+      "sha256": "8ceaf31da367dc6efe938d8f129a9d125e4f6ba0b19a991643b69680d87748c7"
     },
     "uia_tree": {
       "path": "r6o_evidence/H2-D1/codex-uia.json",
-      "sha256": "2687e9c4eb0ad2291dd79bd0abafb2cbd45e029077204e890b3893d8b0e71f22"
+      "sha256": "f69cc0ba53e7860a651969948645b9e4efb92aeeba250b9b3664ad81ecdb6aaf"
     }
   },
   "host_compatibility": {
     "product_name": "Codex",
     "product_version": "151.0.7922.170",
     "file_version": "151.0.7922.170",
-    "package_version": "26.818.3698.0"
+    "package_version": "26.818.5229.0"
   },
   "controls": {
     "new_chat": {
