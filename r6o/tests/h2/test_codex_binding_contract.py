@@ -703,8 +703,9 @@ def _assert_d2_evidence(
     ]
 
     event_path = evidence_dir / "win32-uia-events.jsonl"
-    assert document["event_log"]["sha256"] == hashlib.sha256(event_path.read_bytes()).hexdigest()
-    events = [json.loads(line) for line in event_path.read_text(encoding="utf-8").splitlines()]
+    canonical_event_bytes = event_path.read_bytes().replace(b"\r\n", b"\n")
+    assert document["event_log"]["sha256"] == hashlib.sha256(canonical_event_bytes).hexdigest()
+    events = [json.loads(line) for line in canonical_event_bytes.decode("utf-8").splitlines()]
     assert document["event_log"]["event_count"] == len(events)
     assert [event["sequence"] for event in events] == list(range(1, len(events) + 1))
     clicked = next(event for event in events if event["event"] == "actual_codex_composer_clicked")
