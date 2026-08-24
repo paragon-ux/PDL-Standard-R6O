@@ -2,20 +2,20 @@
   "event_log": {
     "event_count": 6,
     "path": "r6o_evidence/H2-E1/input-routing-events.jsonl",
-    "sha256": "95bd8e7d8edc9a6ccb183e8f80c24f05bfa5a783a5d575a151d8f3952e38dca0"
+    "sha256": "b5aa5cf2ca395049c729d2e5acd18763bb263978943e086b1f198cc6b2083d42"
   },
   "fake_host_composer_used": false,
   "gate": "H2-E1",
   "host": {
-    "hwnd": 15009088,
-    "package_version": "26.818.3698.0",
-    "pid": 18644,
+    "hwnd": 2758514,
+    "package_version": "26.818.5229.0",
+    "pid": 11512,
     "product_version": "151.0.7922.170"
   },
-  "host_record_sha256": "7cf1b2219f38b2d7e1f610dd25467969c688b681b3ac0632041eff3978ce9db5",
+  "host_record_sha256": "8ceaf31da367dc6efe938d8f129a9d125e4f6ba0b19a991643b69680d87748c7",
   "implementation_sha256": {
     "r6o/host/codex/windows/input_binding.py": "d646a400c0b9749cbc21086ecac9bc4410e51fac1d8996b1e184f7eb775d916f",
-    "scripts/h2/verify_codex_input_routing.py": "78f0597cd67e155f5e0283225c06223d235f7964be6e0438ccab7f59baccd1d9"
+    "scripts/h2/verify_codex_input_routing.py": "a7be0d2948345989c648ade42124012cc71a14cc87399778f342f072632d023a"
   },
   "interaction": {
     "actual_composer_focused": true,
@@ -59,34 +59,34 @@
     "terminal_handoff_implemented": false,
     "viewmodel_semantics_exercised": false
   },
-  "selectors_sha256": "cb5a1b5b3123c979c54ecd3ec2614aa1d7b3c927dec987cdcfbbddeae75a21ef",
+  "selectors_sha256": "f45bc99891a8d6d07344519274baded3c601203e48ba612246bcdea6f4c34386",
   "source": {
     "branch": "codex/h2-e1-input-routing",
-    "head": "7103c4b54ec42c4f8cef6e3dde7ceb7c348349f9",
-    "tree": "135f516b6ca9381e21097a4ed03168275e88ada8"
+    "head": "55c70d10a018b8b688e7f81b4cedea6f2e0fda5a",
+    "tree": "cba1f18a627aef263c2cc17b00338716c6e95e7b"
   },
   "status": "H2_E1_INPUT_ROUTING_PASS",
   "steady_state": {
     "actual_rectangle": {
       "bottom": 791,
       "height": 300,
-      "left": 377,
-      "right": 1052,
+      "left": 587,
+      "right": 1262,
       "top": 491,
       "width": 675
     },
-    "composer_selector_match_count": 2,
+    "composer_selector_match_count": 1,
     "dpi": 96,
-    "expected_owner_hwnd": 15009088,
+    "expected_owner_hwnd": 2758514,
     "expected_rectangle": {
       "bottom": 791,
       "height": 300,
-      "left": 377,
-      "right": 1052,
+      "left": 587,
+      "right": 1262,
       "top": 491,
       "width": 675
     },
-    "foreground_hwnd": 15009088,
+    "foreground_hwnd": 2758514,
     "global_topmost": false,
     "host_client_rectangle": {
       "bottom": 899,
@@ -98,10 +98,10 @@
     },
     "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
     "mode": "STANDARD",
-    "owner_hwnd": 15009088,
+    "owner_hwnd": 2758514,
     "placement_matches": true,
     "sidecar_above_host": true,
-    "sidecar_hwnd": 11604714,
+    "sidecar_hwnd": 3151826,
     "visible": true,
     "work_area_rectangle": {
       "bottom": 900,
@@ -112,15 +112,15 @@
       "width": 1600
     },
     "z_order_indices": {
-      "host": 25,
-      "sidecar": 24
+      "host": 34,
+      "sidecar": 33
     }
   },
   "suppression": {
     "native_keydown_suppressed": true,
     "native_keyup_suppressed": true,
     "normal_codex_request_observed": false,
-    "visible_turn_count_after": 5,
-    "visible_turn_count_before": 5
+    "visible_turn_count_after": 0,
+    "visible_turn_count_before": 0
   }
 }

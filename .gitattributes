@@ -13,6 +13,7 @@ r6o/tests/h2/test_codex_input_binding_contract.py text eol=lf
 scripts/h2/verify_codex_input_routing.py text eol=lf
 r6o_evidence/H2-E1/*.json text eol=lf
 r6o_evidence/H2-E1/*.jsonl text eol=lf
+r6o_evidence/H2-E1/*.log text eol=lf
 
 *.png binary
 *.mp4 binary
