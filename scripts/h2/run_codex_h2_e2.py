@@ -83,6 +83,14 @@ def verify_checkout() -> dict[str, str]:
     )
     if ancestor.returncode != 0:
         raise H2E2IntegrationError("ACCEPTED_E1_HEAD_NOT_ANCESTOR")
+    freeze_manifest_path = str(FREEZE_MANIFEST.relative_to(ROOT)).replace("\\", "/")
+    if (
+        _git("ls-files", "--error-unmatch", freeze_manifest_path, check=False).returncode
+        != 0
+        or _git("diff", "--quiet", "HEAD", "--", freeze_manifest_path, check=False).returncode
+        != 0
+    ):
+        raise H2E2IntegrationError("E2_CODE_FREEZE_MANIFEST_NOT_COMMITTED")
     try:
         freeze = json.loads(FREEZE_MANIFEST.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
