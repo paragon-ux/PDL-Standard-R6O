@@ -187,6 +187,31 @@ Expected live status:
 H2_E2_G06_PASS
 ```
 
+## H2-E3 actual Codex A02-FULL integration
+
+Run H2-E3 only from the frozen integration branch:
+
+```text
+codex/h2-e3-a02-full-integration
+```
+
+The runner requires the accepted H2-E2 head
+`1b46da916aec20aa2a27e533ac5e8aff9f360791` as an ancestor and a committed
+`r6o_evidence/H2-E3/code-freeze.json`. It rejects post-freeze production or
+test changes and writes live evidence only beneath `r6o_evidence/H2-E3/`.
+
+After the frozen runner starts, the human performs exactly this sequence:
+
+1. Click `Something else...` in the visible Sidecar.
+2. Type `This is not confirmed. The audience should be data engineers, not backend engineers.` in the actual Codex composer and press unmodified Enter once.
+3. Click `Confirm prompt` when the revised prompt appears.
+4. Click `Confirm plan` when the plan appears.
+
+The H2-E3 runner does not inject clicks, typing, or Enter. The expected live
+status is `H2_E3_A02_FULL_PASS`; the native composer review text must not
+appear as a Codex conversation turn, and terminal closure must dismiss the
+Sidecar and return focus to the actual composer.
+
 ## H2-D2 actual Codex attachment checkout
 
 Review and run H2-D2 only from this branch:
