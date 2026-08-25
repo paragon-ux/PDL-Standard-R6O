@@ -1,0 +1,7 @@
+{
+  "accepted_e1_head": "8a85ac4214e7b3386c3c8079b0d45fb79a97e9ff",
+  "branch": "codex/h2-e2-g06-integration",
+  "code_freeze_head": "8e8f325c31b8d96d31cd7fea901a0790d5086bf6",
+  "code_freeze_tree": "ca7530b0ece301c6783877ab049daac884062989",
+  "schema_version": "r6o-h2-e2-code-freeze-1"
+}
