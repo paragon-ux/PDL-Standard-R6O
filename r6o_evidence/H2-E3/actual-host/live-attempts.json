@@ -1,0 +1,138 @@
+[
+  {
+    "attempt": 1,
+    "code_freeze_head": "858b0b52844761314456c64cd065549a23627073",
+    "code_freeze_tree": "0c78427a66f90e363df808be8d32b10aaf7b74e2",
+    "failure": null,
+    "head": "023cd0016797975928853198d6b7430f13d21bf8",
+    "started_at_utc": "2026-08-25T04:20:42.140082+00:00",
+    "status": "RUNNING",
+    "tree": "0dc69514f66e7d50298dca0e7bfe5a62ad81cb62"
+  },
+  {
+    "attempt": 2,
+    "code_freeze_head": "858b0b52844761314456c64cd065549a23627073",
+    "code_freeze_tree": "0c78427a66f90e363df808be8d32b10aaf7b74e2",
+    "failure": null,
+    "head": "023cd0016797975928853198d6b7430f13d21bf8",
+    "started_at_utc": "2026-08-25T04:21:56.617541+00:00",
+    "status": "RUNNING",
+    "tree": "0dc69514f66e7d50298dca0e7bfe5a62ad81cb62"
+  },
+  {
+    "attempt": 3,
+    "code_freeze_head": "858b0b52844761314456c64cd065549a23627073",
+    "code_freeze_tree": "0c78427a66f90e363df808be8d32b10aaf7b74e2",
+    "failure": "ACTUAL_COMPOSER_FOCUS_UNVERIFIED",
+    "finished_at_utc": "2026-08-25T04:23:03.584975+00:00",
+    "head": "023cd0016797975928853198d6b7430f13d21bf8",
+    "started_at_utc": "2026-08-25T04:22:25.860157+00:00",
+    "status": "FAIL",
+    "tree": "0dc69514f66e7d50298dca0e7bfe5a62ad81cb62"
+  },
+  {
+    "attempt": 4,
+    "code_freeze_head": "858b0b52844761314456c64cd065549a23627073",
+    "code_freeze_tree": "0c78427a66f90e363df808be8d32b10aaf7b74e2",
+    "failure": "ACTUAL_COMPOSER_FOCUS_UNVERIFIED",
+    "finished_at_utc": "2026-08-25T04:24:24.903733+00:00",
+    "head": "023cd0016797975928853198d6b7430f13d21bf8",
+    "started_at_utc": "2026-08-25T04:23:40.557945+00:00",
+    "status": "FAIL",
+    "tree": "0dc69514f66e7d50298dca0e7bfe5a62ad81cb62"
+  },
+  {
+    "attempt": 5,
+    "code_freeze_head": "858b0b52844761314456c64cd065549a23627073",
+    "code_freeze_tree": "0c78427a66f90e363df808be8d32b10aaf7b74e2",
+    "failure": "TRANSITION_A02_T1_FOCUS_CODEX_COMPOSER_NOT_EMPTY",
+    "finished_at_utc": "2026-08-25T04:31:56.905408+00:00",
+    "head": "023cd0016797975928853198d6b7430f13d21bf8",
+    "started_at_utc": "2026-08-25T04:31:14.974818+00:00",
+    "status": "FAIL",
+    "tree": "0dc69514f66e7d50298dca0e7bfe5a62ad81cb62"
+  },
+  {
+    "attempt": 6,
+    "code_freeze_head": "858b0b52844761314456c64cd065549a23627073",
+    "code_freeze_tree": "0c78427a66f90e363df808be8d32b10aaf7b74e2",
+    "failure": "TRANSITION_A02_T1_FOCUS_CODEX_COMPOSER_NOT_EMPTY",
+    "finished_at_utc": "2026-08-25T04:33:37.978636+00:00",
+    "head": "023cd0016797975928853198d6b7430f13d21bf8",
+    "started_at_utc": "2026-08-25T04:32:58.480944+00:00",
+    "status": "FAIL",
+    "tree": "0dc69514f66e7d50298dca0e7bfe5a62ad81cb62"
+  },
+  {
+    "attempt": 7,
+    "code_freeze_head": "858b0b52844761314456c64cd065549a23627073",
+    "code_freeze_tree": "0c78427a66f90e363df808be8d32b10aaf7b74e2",
+    "failure": "INITIAL_COMPOSER_NOT_EMPTY",
+    "finished_at_utc": "2026-08-25T04:33:59.975677+00:00",
+    "head": "023cd0016797975928853198d6b7430f13d21bf8",
+    "started_at_utc": "2026-08-25T04:33:49.267568+00:00",
+    "status": "FAIL",
+    "tree": "0dc69514f66e7d50298dca0e7bfe5a62ad81cb62"
+  },
+  {
+    "attempt": 8,
+    "code_freeze_head": "858b0b52844761314456c64cd065549a23627073",
+    "code_freeze_tree": "0c78427a66f90e363df808be8d32b10aaf7b74e2",
+    "failure": "COMPOSER_FOCUS_RETURN_UNVERIFIED",
+    "finished_at_utc": "2026-08-25T04:36:25.858365+00:00",
+    "head": "023cd0016797975928853198d6b7430f13d21bf8",
+    "started_at_utc": "2026-08-25T04:34:15.772142+00:00",
+    "status": "FAIL",
+    "tree": "0dc69514f66e7d50298dca0e7bfe5a62ad81cb62"
+  },
+  {
+    "attempt": 9,
+    "code_freeze_head": "858b0b52844761314456c64cd065549a23627073",
+    "code_freeze_tree": "0c78427a66f90e363df808be8d32b10aaf7b74e2",
+    "failure": null,
+    "finished_at_utc": "2026-08-25T04:39:07.412963+00:00",
+    "head": "023cd0016797975928853198d6b7430f13d21bf8",
+    "started_at_utc": "2026-08-25T04:36:39.226368+00:00",
+    "status": "H2_E3_A02_FULL_PASS",
+    "tree": "0dc69514f66e7d50298dca0e7bfe5a62ad81cb62"
+  },
+  {
+    "attempt": 10,
+    "cleanup_failures": [
+      "INPUT_HANDOFF_ABORT:HOST_COMPOSER_CLEAR_FOCUS_UNVERIFIED"
+    ],
+    "code_freeze_head": "d94a1aa0c99056ec81f10c6a41e73ed6ea438ae3",
+    "code_freeze_tree": "9fec4c41ed0228e3d4e71c9e19a846c92447c69e",
+    "evidence_path": "r6o_evidence/H2-E3/actual-host/attempt-0010",
+    "failure": "ACTUAL_COMPOSER_FOCUS_UNVERIFIED",
+    "finished_at_utc": "2026-08-25T06:19:18.081588+00:00",
+    "head": "0049db183a1764c55ef2612a197aaa748c37758a",
+    "started_at_utc": "2026-08-25T06:18:20.052050+00:00",
+    "status": "FAIL",
+    "tree": "55f99055d6a5095b24d63b1e8ab1910d91a547e1"
+  },
+  {
+    "attempt": 11,
+    "code_freeze_head": "d94a1aa0c99056ec81f10c6a41e73ed6ea438ae3",
+    "code_freeze_tree": "9fec4c41ed0228e3d4e71c9e19a846c92447c69e",
+    "evidence_path": "r6o_evidence/H2-E3/actual-host/attempt-0011",
+    "failure": "INTERRUPTED",
+    "finished_at_utc": "2026-08-25T06:20:02.088674+00:00",
+    "head": "0049db183a1764c55ef2612a197aaa748c37758a",
+    "started_at_utc": "2026-08-25T06:20:01.381081+00:00",
+    "status": "FAIL",
+    "tree": "55f99055d6a5095b24d63b1e8ab1910d91a547e1"
+  },
+  {
+    "attempt": 12,
+    "code_freeze_head": "d94a1aa0c99056ec81f10c6a41e73ed6ea438ae3",
+    "code_freeze_tree": "9fec4c41ed0228e3d4e71c9e19a846c92447c69e",
+    "evidence_path": "r6o_evidence/H2-E3/actual-host/attempt-0012",
+    "failure": null,
+    "finished_at_utc": "2026-08-25T06:23:17.087332+00:00",
+    "head": "0049db183a1764c55ef2612a197aaa748c37758a",
+    "started_at_utc": "2026-08-25T06:21:23.724066+00:00",
+    "status": "H2_E3_A02_FULL_PASS",
+    "tree": "55f99055d6a5095b24d63b1e8ab1910d91a547e1"
+  }
+]

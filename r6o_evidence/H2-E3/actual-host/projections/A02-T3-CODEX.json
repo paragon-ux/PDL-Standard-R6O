@@ -1,0 +1,67 @@
+{
+  "actions": [
+    {
+      "action_id": "confirm_plan",
+      "canonical_review_text": "Confirm the plan and execute.",
+      "emphasis": "PRIMARY",
+      "enabled": true,
+      "kind": "SEMANTIC_MESSAGE",
+      "label": "Confirm plan",
+      "ordinal": 1
+    },
+    {
+      "action_id": "change_task",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Change the task",
+      "ordinal": 2
+    },
+    {
+      "action_id": "change_approach",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Change approach",
+      "ordinal": 3
+    },
+    {
+      "action_id": "something_else",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Something else...",
+      "ordinal": 4
+    }
+  ],
+  "artifact": {
+    "artifact_kind": "plan",
+    "artifact_ref": "plan:I-41edbe1b12-R1",
+    "artifact_revision": "31b9ea04df384ae93596e43ecc91733c6f6f4b9bbe76b77d20500ccb53bbae85",
+    "body": "IDENTIFY comparison criteria relevant to event delivery and data engineers.\nCOMPARE Kafka and RabbitMQ consistently across those criteria.\nSUMMARIZE the tradeoffs and the conditions that affect suitability.",
+    "capabilities": {
+      "copy": true,
+      "open_external": true
+    },
+    "media_type": "text/plain",
+    "title": "Authoritative Response Plan (PDL.md)"
+  },
+  "focus_kind": "PLAN_REVIEW",
+  "interaction_state": "REVIEW_REQUIRED",
+  "lifecycle": {
+    "authorized_handoff_artifacts": [],
+    "close_allowed": true,
+    "handoff_ready": false,
+    "result_body": null,
+    "review_required": true,
+    "terminal": false,
+    "terminal_disposition": null
+  },
+  "model_response": "Response Plan Pseudocode\n\nIDENTIFY comparison criteria relevant to event delivery and data engineers.\nCOMPARE Kafka and RabbitMQ consistently across those criteria.\nSUMMARIZE the tradeoffs and the conditions that affect suitability.\n\nConfirm or correct this response approach.",
+  "model_revision": "63e02deb588947a22a5bea9ed1f04af5b13406c25399698b75550b0efe2b0f6c",
+  "projection_id": "projection-f2ce739c2624456bff395ed291a6a8a1df8190b4b1535af5e597800f946dcfda",
+  "schema_version": "r6o-focus-projection-1",
+  "session_id": "I-41edbe1b12",
+  "stage": "PLAN_REVIEW",
+  "workspace_id": "W-d2dc53eb7e87"
+}

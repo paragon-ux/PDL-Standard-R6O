@@ -1,0 +1,22 @@
+{
+  "schema_version": "r6o-h2-e3-historical-evidence-index-1",
+  "attempt": 9,
+  "status": "HISTORICAL_OLD_FREEZE_PASS",
+  "qualifies_current_freeze": false,
+  "code_freeze_head": "858b0b52844761314456c64cd065549a23627073",
+  "code_freeze_tree": "0c78427a66f90e363df808be8d32b10aaf7b74e2",
+  "qualification": {
+    "path": "r6o_evidence/H2-E3/actual-host/attempt-0009/qualification.json",
+    "sha256": "cd5f3f9912ad95b14345b2b533c8515e318873ac9ffa9f72ef11417d61f9509e"
+  },
+  "transitions": {
+    "path": "r6o_evidence/H2-E3/actual-host/attempt-0009/transitions.json",
+    "sha256": "fb0db9bef3f84f2adc700adb31216512b0b53b21a2ae6424a54e89b8e2b14e27"
+  },
+  "captures_path": "r6o_evidence/H2-E3/actual-host/captures",
+  "projections_path": "r6o_evidence/H2-E3/actual-host/projections",
+  "attempt_ledger": {
+    "path": "r6o_evidence/H2-E3/actual-host/live-attempts.json",
+    "sha256_before_repair_freeze": "82551cf424e275d52f1fc72dc043e25ff1461576d75d511049a65d7d1181a1a7"
+  }
+}

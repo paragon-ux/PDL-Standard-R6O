@@ -10,6 +10,7 @@ import sys
 import pytest
 
 from r6o.host.codex.windows.input_binding import (
+    CapturedComposerSubmission,
     CodexComposerInputBinding,
     CodexInputBindingError,
     VK_SHIFT,
@@ -181,6 +182,95 @@ def test_activate_revalidates_frozen_host_before_native_focus_mutation() -> None
     assert calls == ["refresh_controls"]
 
 
+def test_activate_installs_enter_boundary_before_native_composer_focus() -> None:
+    queued: list[object] = []
+    api = FakeUser32()
+
+    class Composer:
+        def set_focus(self) -> None:
+            assert binding.armed is True
+            assert binding._handle_key_event(api, 0x0D, WM_KEYDOWN) is True
+            assert binding._handle_key_event(api, 0x0D, WM_KEYUP) is True
+
+        def has_keyboard_focus(self) -> bool:
+            return True
+
+    composer = Composer()
+    host = SimpleNamespace(
+        host_hwnd=101,
+        sidecar_hwnd=303,
+        controls=SimpleNamespace(composer=composer),
+        refresh_controls=lambda: SimpleNamespace(composer=composer),
+        native=SimpleNamespace(foreground=lambda: 101),
+    )
+    binding = CodexComposerInputBinding(
+        host, lambda envelope: None, focus_probe=lambda: True, text_probe=lambda: "EARLIEST"
+    )
+    binding._hook_thread = object()  # type: ignore[assignment]
+    binding._dispatcher = SimpleNamespace(
+        submissionRequested=SimpleNamespace(emit=queued.append)
+    )
+    binding._transfer_focus_from_sidecar_to_host = lambda: None  # type: ignore[method-assign]
+
+    binding.activate(projection())
+
+    assert binding.capture_count == 1
+    assert binding.suppressed_keydown_count == 1
+    assert binding.suppressed_keyup_count == 1
+    assert len(queued) == 1
+    assert binding.delivery_pending is True
+
+
+def test_focus_probe_race_fails_with_persistent_enter_guard_until_abort() -> None:
+    api = FakeUser32()
+
+    class Composer:
+        def set_focus(self) -> None:
+            assert binding._handle_key_event(api, 0x0D, WM_KEYDOWN) is True
+            assert binding._handle_key_event(api, 0x0D, WM_KEYUP) is True
+
+        def has_keyboard_focus(self) -> bool:
+            return True
+
+    composer = Composer()
+    host = SimpleNamespace(
+        host_hwnd=101,
+        sidecar_hwnd=303,
+        refresh_controls=lambda: SimpleNamespace(composer=composer),
+        native=SimpleNamespace(foreground=lambda: 101),
+    )
+    binding = CodexComposerInputBinding(
+        host, lambda envelope: None, focus_probe=lambda: False, text_probe=lambda: "EARLY"
+    )
+    binding._hook_thread = object()  # type: ignore[assignment]
+    binding._transfer_focus_from_sidecar_to_host = lambda: None  # type: ignore[method-assign]
+
+    with pytest.raises(CodexInputBindingError, match="ACTUAL_COMPOSER_FOCUS_UNVERIFIED_AT_ENTER"):
+        binding.activate(projection())
+
+    assert binding.armed is False
+    assert binding.capture_count == 0
+    assert binding._handle_key_event(api, 0x0D, WM_KEYDOWN) is True
+    assert binding._handle_key_event(api, 0x0D, WM_KEYUP) is True
+
+
+def test_abort_clears_attempt_owned_text_before_releasing_failure_guard() -> None:
+    binding = input_binding()
+    binding._armed = False
+    binding._failure_guard = True
+    calls: list[str] = []
+    binding._clear_actual_composer = lambda: calls.append("clear")  # type: ignore[method-assign]
+
+    binding.abort_handoff()
+
+    assert calls == ["clear"]
+    assert binding._failure_guard is True
+    assert binding._handle_key_event(FakeUser32(), 0x0D, WM_KEYDOWN) is True
+    assert binding._handle_key_event(FakeUser32(), 0x0D, WM_KEYUP) is True
+    binding.stop()
+    assert binding._failure_guard is False
+
+
 def test_unmodified_enter_is_suppressed_and_queued_exactly_once() -> None:
     binding = input_binding()
     api = FakeUser32()
@@ -259,6 +349,45 @@ def test_second_enter_is_suppressed_until_captured_text_is_cleared() -> None:
     # consumes a later independent host gesture.
     assert binding._handle_key_event(api, 0x0D, WM_KEYDOWN) is False
     assert binding.delivery_count == 1
+
+
+def test_cancelled_queued_delivery_clears_text_without_semantic_callback() -> None:
+    callbacks: list[dict[str, object]] = []
+    binding = input_binding()
+    binding.on_envelope = callbacks.append
+    api = FakeUser32()
+    assert binding._handle_key_event(api, 0x0D, WM_KEYDOWN) is True
+    assert binding._handle_key_event(api, 0x0D, WM_KEYUP) is True
+    capture = binding._captures.get_nowait()
+    assert capture is not None
+    clears: list[str] = []
+    binding._clear_actual_composer = lambda: clears.append("clear")  # type: ignore[method-assign]
+    binding._delivery_cancelled = True
+
+    binding._deliver_capture(capture)
+
+    assert clears == ["clear"]
+    assert callbacks == []
+    assert binding.delivery_count == 0
+    assert binding.delivery_pending is False
+    assert binding._delivery_event.is_set()
+
+
+def test_stale_cancelled_qt_delivery_cannot_clear_post_abort_user_text() -> None:
+    binding = input_binding()
+    capture = CapturedComposerSubmission(
+        projection=projection(), text="ABORTED", captured_monotonic=1.0
+    )
+    binding._delivery_cancelled = True
+    binding._delivery_pending = False
+    clears: list[str] = []
+    binding._clear_actual_composer = lambda: clears.append("clear")  # type: ignore[method-assign]
+
+    binding._deliver_capture(capture)
+
+    assert clears == []
+    assert binding.delivery_count == 0
+    assert binding._delivery_event.is_set()
 
 
 def test_pending_delivery_never_suppresses_enter_in_another_window() -> None:
@@ -377,6 +506,46 @@ def test_stop_reports_pending_delivery_failure_after_cleanup() -> None:
 
     assert binding._dispatcher is None
     assert binding._delivery_pending is False
+
+
+def test_enter_pair_timeout_still_completes_bounded_resource_cleanup() -> None:
+    binding = input_binding()
+    binding._dispatcher = object()
+    binding._enter_pair_complete.wait = lambda timeout: False  # type: ignore[method-assign]
+
+    with pytest.raises(CodexInputBindingError, match="HOST_ENTER_KEYUP_DRAIN_TIMEOUT"):
+        binding.stop()
+
+    assert binding._stop.is_set()
+    assert binding._dispatcher is None
+
+
+def test_hook_thread_timeout_uses_direct_unhook_fallback_before_return() -> None:
+    class StuckThread:
+        def join(self, timeout: float) -> None:
+            assert timeout == 5.0
+
+        def is_alive(self) -> bool:
+            return True
+
+    binding = input_binding()
+    binding._hook_thread = StuckThread()  # type: ignore[assignment]
+    binding._hook = 123
+    binding._hook_user32 = object()
+    calls: list[str] = []
+
+    def remove(_user32: object) -> bool:
+        calls.append("unhook")
+        binding._hook = 0
+        return True
+
+    binding._remove_keyboard_hook = remove  # type: ignore[method-assign]
+    with pytest.raises(CodexInputBindingError, match="HOST_INPUT_HOOK_STOP_TIMEOUT"):
+        binding.stop()
+
+    assert calls == ["unhook"]
+    assert binding._hook == 0
+    assert binding._dispatcher is None
 
 
 def test_production_binding_has_no_semantics_fixture_or_direct_authority() -> None:
@@ -628,7 +797,7 @@ def test_readme_e1_command_is_branch_bound_and_sets_exact_qt_runtime() -> None:
     assert "H2_E1_INPUT_ROUTING_PASS" in readme
 
 
-def test_e1_evidence_is_bound_and_fail_closed_when_present() -> None:
+def test_e1_evidence_is_historical_and_fail_closed_when_present() -> None:
     path = ROOT / "r6o_evidence" / "H2-E1" / "input-routing-result.json"
     if not path.exists():
         pytest.skip("actual-Codex E1 evidence is Windows-host generated")
@@ -662,14 +831,15 @@ def test_e1_evidence_is_bound_and_fail_closed_when_present() -> None:
     ]
     assert document["scope"]["controller_called"] is False
     assert document["scope"]["r6o3_host_model_lease_implemented"] is False
-    expected_hashes = {
-        source: hashlib.sha256((ROOT / source).read_bytes()).hexdigest()
-        for source in (
-            "r6o/host/codex/windows/input_binding.py",
-            "scripts/h2/verify_codex_input_routing.py",
-        )
+    input_source = "r6o/host/codex/windows/input_binding.py"
+    verifier_source = "scripts/h2/verify_codex_input_routing.py"
+    assert document["implementation_sha256"] == {
+        input_source: "cae01174e33879498b206d947365eec29f967219b67011981a929324e3c39221",
+        verifier_source: hashlib.sha256((ROOT / verifier_source).read_bytes()).hexdigest(),
     }
-    assert document["implementation_sha256"] == expected_hashes
+    assert document["implementation_sha256"][input_source] != hashlib.sha256(
+        (ROOT / input_source).read_bytes()
+    ).hexdigest()
     assert document["runtime"]["qt_platform"] == "windows"
     assert document["runtime"]["qt_quick_backend"] == "software"
     event_path = ROOT / document["event_log"]["path"]
