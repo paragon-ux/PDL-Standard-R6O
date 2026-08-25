@@ -137,6 +137,7 @@ class CodexComposerInputBinding:
         self._dispatcher: Any | None = None
         self._hook_thread_id = 0
         self._hook = 0
+        self._hook_user32: Any | None = None
         self._callback: Any | None = None
         self.last_error: str | None = None
         self.last_envelope: dict[str, Any] | None = None
@@ -568,6 +569,7 @@ class CodexComposerInputBinding:
 
     def _run_keyboard_hook(self) -> None:
         user32 = ctypes.windll.user32
+        self._hook_user32 = user32
         kernel32 = ctypes.windll.kernel32
         hook_proc = ctypes.WINFUNCTYPE(
             ctypes.c_ssize_t,
@@ -672,7 +674,11 @@ class CodexComposerInputBinding:
             self._hook_thread.join(timeout=5.0)
             if self._hook_thread.is_alive():
                 failures.append(CodexInputBindingError("HOST_INPUT_HOOK_STOP_TIMEOUT"))
-                if not self._remove_keyboard_hook(ctypes.windll.user32):
+                user32 = self._hook_user32
+                if user32 is None:
+                    windll = getattr(ctypes, "windll", None)
+                    user32 = getattr(windll, "user32", None)
+                if user32 is None or not self._remove_keyboard_hook(user32):
                     failures.append(CodexInputBindingError("HOST_INPUT_HOOK_REMOVE_FAILED"))
             else:
                 self._hook_thread = None

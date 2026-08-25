@@ -531,6 +531,7 @@ def test_hook_thread_timeout_uses_direct_unhook_fallback_before_return() -> None
     binding = input_binding()
     binding._hook_thread = StuckThread()  # type: ignore[assignment]
     binding._hook = 123
+    binding._hook_user32 = object()
     calls: list[str] = []
 
     def remove(_user32: object) -> bool:

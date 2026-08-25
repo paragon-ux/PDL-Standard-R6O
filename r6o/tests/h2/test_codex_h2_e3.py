@@ -605,18 +605,14 @@ def test_cleanup_attempts_every_resource_after_each_prior_failure() -> None:
     ]
 
 
-def test_e3_cleanup_force_removes_stalled_accepted_d2_router_hook(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+def test_e3_cleanup_force_removes_stalled_accepted_d2_router_hook() -> None:
     calls: list[int] = []
     router = SimpleNamespace(_hook=456)
     host = SimpleNamespace(focus_router=router)
     fake_user32 = SimpleNamespace(
         UnhookWindowsHookEx=lambda handle: calls.append(int(handle.value)) or True
     )
-    monkeypatch.setattr(e3_runner.ctypes, "windll", SimpleNamespace(user32=fake_user32))
-
-    e3_runner._force_remove_host_router_hook(host)
+    e3_runner._force_remove_host_router_hook(host, user32=fake_user32)
 
     assert calls == [456]
     assert router._hook == 0

@@ -462,14 +462,19 @@ def _close_run_resources(
     return failures
 
 
-def _force_remove_host_router_hook(host: Any) -> None:
+def _force_remove_host_router_hook(host: Any, *, user32: Any | None = None) -> None:
     """E3-only fallback when accepted D2 router shutdown reports a timeout."""
 
     router = getattr(host, "focus_router", None)
     hook = int(getattr(router, "_hook", 0) or 0) if router is not None else 0
     if not hook:
         return
-    removed = bool(ctypes.windll.user32.UnhookWindowsHookEx(ctypes.c_void_p(hook)))
+    if user32 is None:
+        windll = getattr(ctypes, "windll", None)
+        user32 = getattr(windll, "user32", None)
+    if user32 is None:
+        raise H2E3IntegrationError("HOST_CLICK_FOCUS_ROUTER_REMOVE_FAILED")
+    removed = bool(user32.UnhookWindowsHookEx(ctypes.c_void_p(hook)))
     if removed or int(getattr(router, "_hook", 0) or 0) == 0:
         router._hook = 0
         return
