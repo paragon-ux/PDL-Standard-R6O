@@ -1,0 +1,7 @@
+{
+  "accepted_e2_head": "1b46da916aec20aa2a27e533ac5e8aff9f360791",
+  "branch": "codex/h2-e3-a02-full-integration",
+  "code_freeze_head": "858b0b52844761314456c64cd065549a23627073",
+  "code_freeze_tree": "0c78427a66f90e363df808be8d32b10aaf7b74e2",
+  "schema_version": "r6o-h2-e3-code-freeze-1"
+}
