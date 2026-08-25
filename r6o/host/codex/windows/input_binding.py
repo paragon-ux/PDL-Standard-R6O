@@ -123,6 +123,8 @@ class CodexComposerInputBinding:
         self._active_projection: dict[str, Any] | None = None
         self._armed = False
         self._delivery_pending = False
+        self._delivery_cancelled = False
+        self._failure_guard = False
         self._enter_down = False
         self._enter_pair_complete = threading.Event()
         self._enter_pair_complete.set()
@@ -151,9 +153,21 @@ class CodexComposerInputBinding:
         with self._state_lock:
             return self._armed
 
+    @property
+    def delivery_pending(self) -> bool:
+        with self._state_lock:
+            return self._delivery_pending
+
     def _set_error(self, code: str) -> None:
         if self.last_error is None:
             self.last_error = code
+
+    def _enter_fail_closed(self, code: str) -> None:
+        self._set_error(code)
+        with self._state_lock:
+            self._armed = False
+            self._active_projection = None
+            self._failure_guard = True
 
     def assert_healthy(self) -> None:
         if self.last_error:
@@ -254,8 +268,19 @@ class CodexComposerInputBinding:
             raise CodexInputBindingError("HOST_INPUT_HOOK_NOT_STARTED")
         context = validate_active_projection_context(projection)
         with self._state_lock:
+            if self._delivery_pending:
+                raise CodexInputBindingError("HOST_COMPOSER_DELIVERY_PENDING")
             if self._enter_down:
                 raise CodexInputBindingError("HOST_ENTER_KEYUP_PENDING")
+            # Enter suppression must be fail-closed before the first native
+            # operation can make the actual composer usable.  Qt dispatch is
+            # queued, so a capture during focus convergence cannot reach the
+            # E3 session until activate() and its caller finish the handoff.
+            self._active_projection = context
+            self._armed = True
+            self._delivery_cancelled = False
+            self._failure_guard = False
+            self._delivery_event.clear()
         # Revalidate the frozen D1 HWND before any native focus mutation. A
         # stale HWND may have been reused since the D2 attachment completed.
         self.host.refresh_controls()
@@ -264,6 +289,7 @@ class CodexComposerInputBinding:
         controls.composer.set_focus()
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
+            self.assert_healthy()
             try:
                 controls = self.host.refresh_controls()
                 focused = bool(controls.composer.has_keyboard_focus())
@@ -271,17 +297,20 @@ class CodexComposerInputBinding:
             except Exception:
                 focused = False
                 foreground = False
+            with self._state_lock:
+                delivery_pending = self._delivery_pending
+            if delivery_pending:
+                # The hook independently verified the foreground and composer
+                # focus before accepting this earliest valid Enter gesture.
+                self.assert_healthy()
+                return
             if focused and foreground:
-                with self._state_lock:
-                    if self._delivery_pending:
-                        raise CodexInputBindingError("HOST_COMPOSER_DELIVERY_PENDING")
-                    if self._enter_down:
-                        raise CodexInputBindingError("HOST_ENTER_KEYUP_PENDING")
-                    self._active_projection = context
-                    self._armed = True
-                self._delivery_event.clear()
+                self.assert_healthy()
                 return
             time.sleep(0.025)
+        # Keep the already-installed suppression boundary active until the
+        # owner explicitly aborts/stops it.  Deactivating here would expose any
+        # text typed during native focus convergence to Codex after this error.
         raise CodexInputBindingError("ACTUAL_COMPOSER_FOCUS_UNVERIFIED")
 
     def deactivate(self) -> None:
@@ -293,6 +322,56 @@ class CodexComposerInputBinding:
             # pair; clearing it here would leak that keyup to the native host.
             if not self._enter_down:
                 self._enter_pair_complete.set()
+
+    def abort_handoff(self) -> None:
+        """Clear an abandoned handoff while Enter suppression is still active."""
+
+        failure: CodexInputBindingError | None = None
+        with self._state_lock:
+            delivery_pending = self._delivery_pending
+            armed = self._armed
+            failure_guard = self._failure_guard
+            self._delivery_cancelled = True
+        if delivery_pending:
+            deadline = time.monotonic() + 5.0
+            while time.monotonic() < deadline and not self._delivery_event.is_set():
+                try:
+                    from PySide6.QtCore import QCoreApplication, QEventLoop
+
+                    app = QCoreApplication.instance()
+                    if app is not None:
+                        app.processEvents(QEventLoop.AllEvents, 25)
+                except ImportError:
+                    pass
+                time.sleep(0.025)
+            if not self._delivery_event.is_set():
+                failure = CodexInputBindingError("HOST_COMPOSER_ENVELOPE_TIMEOUT")
+            with self._state_lock:
+                still_pending = self._delivery_pending
+            if still_pending:
+                try:
+                    self._clear_actual_composer()
+                    with self._state_lock:
+                        self._delivery_pending = False
+                except Exception as exc:
+                    if failure is None:
+                        failure = (
+                            exc
+                            if isinstance(exc, CodexInputBindingError)
+                            else CodexInputBindingError("HOST_COMPOSER_ABORT_CLEAR_FAILED")
+                        )
+        elif armed or failure_guard:
+            try:
+                self._clear_actual_composer()
+            except Exception as exc:
+                failure = (
+                    exc
+                    if isinstance(exc, CodexInputBindingError)
+                    else CodexInputBindingError("HOST_COMPOSER_ABORT_CLEAR_FAILED")
+                )
+        self.deactivate()
+        if failure is not None:
+            raise failure
 
     def wait_for_delivery(self, timeout: float = 5.0) -> dict[str, Any]:
         deadline = time.monotonic() + timeout
@@ -340,21 +419,29 @@ class CodexComposerInputBinding:
                 return True
             armed = self._armed
             delivery_pending = self._delivery_pending
-        if message not in KEY_DOWN_MESSAGES or not (armed or delivery_pending):
+            failure_guard = self._failure_guard
+        if message not in KEY_DOWN_MESSAGES or not (
+            armed or delivery_pending or failure_guard
+        ):
             return False
         try:
             foreground_matches = int(user32.GetForegroundWindow() or 0) == self.host.host_hwnd
         except Exception:
-            self._set_error("HOST_KEY_STATE_UNAVAILABLE")
             with self._state_lock:
                 self._enter_down = True
                 self._enter_pair_complete.clear()
                 self.suppressed_keydown_count += 1
-            self.deactivate()
+            self._enter_fail_closed("HOST_KEY_STATE_UNAVAILABLE")
             return True
         if not foreground_matches:
             # The active H2 binding never captures another application's Enter.
             return False
+        if failure_guard:
+            with self._state_lock:
+                self._enter_down = True
+                self._enter_pair_complete.clear()
+                self.suppressed_keydown_count += 1
+            return True
         if delivery_pending:
             with self._state_lock:
                 # Recheck after foreground observation because GUI-thread
@@ -376,12 +463,11 @@ class CodexComposerInputBinding:
                 tracked_modifier = bool(self._pressed_modifiers)
             modified = tracked_modifier or self._modifier_active(user32)
         except Exception:
-            self._set_error("HOST_KEY_STATE_UNAVAILABLE")
             with self._state_lock:
                 self._enter_down = True
                 self._enter_pair_complete.clear()
                 self.suppressed_keydown_count += 1
-            self.deactivate()
+            self._enter_fail_closed("HOST_KEY_STATE_UNAVAILABLE")
             return True
         if modified:
             self.modified_enter_passthrough_count += 1
@@ -395,14 +481,12 @@ class CodexComposerInputBinding:
         except Exception:
             focus_verified = False
         if not focus_verified:
-            self._set_error("ACTUAL_COMPOSER_FOCUS_UNVERIFIED_AT_ENTER")
-            self.deactivate()
+            self._enter_fail_closed("ACTUAL_COMPOSER_FOCUS_UNVERIFIED_AT_ENTER")
             return True
         try:
             text = self._text_probe()
         except Exception:
-            self._set_error("HOST_COMPOSER_VALUE_UNAVAILABLE")
-            self.deactivate()
+            self._enter_fail_closed("HOST_COMPOSER_VALUE_UNAVAILABLE")
             return True
         if not isinstance(text, str) or not text.strip():
             self.empty_enter_suppressed_count += 1
@@ -460,13 +544,22 @@ class CodexComposerInputBinding:
         try:
             if not isinstance(capture, CapturedComposerSubmission):
                 raise CodexInputBindingError("CAPTURE_RECORD_INVALID")
+            with self._state_lock:
+                abandoned = self._delivery_cancelled and not self._delivery_pending
+            if abandoned:
+                # abort_handoff() already cleared the attempt-owned composer
+                # after a bounded queued-delivery timeout.  A stale Qt event
+                # must not clear text typed after H2 teardown begins.
+                return
             envelope = build_host_composer_envelope(capture.projection, capture.text)
             self._clear_actual_composer()
-            self.on_envelope(dict(envelope))
-            self.last_envelope = envelope
-            self.delivery_count += 1
             with self._state_lock:
+                cancelled = self._delivery_cancelled
                 self._delivery_pending = False
+            if not cancelled:
+                self.on_envelope(dict(envelope))
+                self.last_envelope = envelope
+                self.delivery_count += 1
         except Exception as exc:
             code = exc.code if isinstance(exc, CodexInputBindingError) else "ENVELOPE_DELIVERY_FAILED"
             self._set_error(code)
@@ -503,7 +596,10 @@ class CodexComposerInputBinding:
                     self._set_error("HOST_INPUT_HOOK_RUNTIME_FAILED")
                     with self._state_lock:
                         suppress_fail_closed = (
-                            self._armed or self._delivery_pending or self._enter_down
+                            self._armed
+                            or self._delivery_pending
+                            or self._failure_guard
+                            or self._enter_down
                         )
                     suppressed = bool(suppress_fail_closed and message in KEY_DOWN_MESSAGES | KEY_UP_MESSAGES)
             if suppressed:
@@ -516,7 +612,10 @@ class CodexComposerInputBinding:
             self._callback = hook_proc(callback)
             self._hook_thread_id = int(kernel32.GetCurrentThreadId())
             module = kernel32.GetModuleHandleW(None)
-            self._hook = int(user32.SetWindowsHookExW(WH_KEYBOARD_LL, self._callback, module, 0) or 0)
+            with self._state_lock:
+                self._hook = int(
+                    user32.SetWindowsHookExW(WH_KEYBOARD_LL, self._callback, module, 0) or 0
+                )
             if not self._hook:
                 self._set_error("HOST_INPUT_HOOK_INSTALL_FAILED")
                 self._ready.set()
@@ -532,13 +631,23 @@ class CodexComposerInputBinding:
             self._set_error("HOST_INPUT_HOOK_RUNTIME_FAILED")
             self._ready.set()
         finally:
-            if self._hook:
-                if not user32.UnhookWindowsHookEx(ctypes.c_void_p(self._hook)):
-                    self._set_error("HOST_INPUT_HOOK_REMOVE_FAILED")
+            if not self._remove_keyboard_hook(user32):
+                self._set_error("HOST_INPUT_HOOK_REMOVE_FAILED")
+
+    def _remove_keyboard_hook(self, user32: Any) -> bool:
+        """Remove the low-level hook exactly once, including stop-time fallback."""
+
+        with self._state_lock:
+            hook = self._hook
+            if not hook:
+                return True
+            removed = bool(user32.UnhookWindowsHookEx(ctypes.c_void_p(hook)))
+            if removed:
                 self._hook = 0
+            return removed
 
     def stop(self) -> None:
-        pending_failure: CodexInputBindingError | None = None
+        failures: list[CodexInputBindingError] = []
         with self._state_lock:
             delivery_pending = self._delivery_pending
         if delivery_pending:
@@ -549,23 +658,30 @@ class CodexComposerInputBinding:
                 # continues.
                 self.wait_for_delivery(timeout=5.0)
             except CodexInputBindingError as exc:
-                pending_failure = exc
+                failures.append(exc)
         self.deactivate()
         if not self._enter_pair_complete.wait(timeout=5.0):
-            raise CodexInputBindingError("HOST_ENTER_KEYUP_DRAIN_TIMEOUT")
+            # Teardown must still remove the hook and release Qt resources.
+            # The timeout remains a gate failure; it no longer strands global
+            # keyboard capture by returning before WM_QUIT/unhook.
+            failures.append(CodexInputBindingError("HOST_ENTER_KEYUP_DRAIN_TIMEOUT"))
         self._stop.set()
         if self._hook_thread is not None:
             if self._hook_thread_id:
                 ctypes.windll.user32.PostThreadMessageW(self._hook_thread_id, WM_QUIT, 0, 0)
             self._hook_thread.join(timeout=5.0)
             if self._hook_thread.is_alive():
-                raise CodexInputBindingError("HOST_INPUT_HOOK_STOP_TIMEOUT")
-            self._hook_thread = None
+                failures.append(CodexInputBindingError("HOST_INPUT_HOOK_STOP_TIMEOUT"))
+                if not self._remove_keyboard_hook(ctypes.windll.user32):
+                    failures.append(CodexInputBindingError("HOST_INPUT_HOOK_REMOVE_FAILED"))
+            else:
+                self._hook_thread = None
         with self._state_lock:
             self._delivery_pending = False
+            self._failure_guard = False
         self._dispatcher = None
-        if pending_failure is not None:
-            raise pending_failure
+        if failures:
+            raise failures[0]
         self.assert_healthy()
 
     def __enter__(self) -> "CodexComposerInputBinding":

@@ -1,0 +1,477 @@
+[
+  {
+    "artifact_body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
+    "artifact_kind": "prompt",
+    "artifact_ref": "prompt:I-41edbe1b12-P1",
+    "capture_path": "r6o_evidence/H2-E3/actual-host/captures/A02-T0-CODEX.png",
+    "host_session_observation": {
+      "composer": {
+        "accessibility_name_matches": true,
+        "descendant_text_count": 0,
+        "descendant_text_lengths": [],
+        "empty": true,
+        "uia_value_matches": true
+      },
+      "conversation": {
+        "fresh": true,
+        "fresh_home_surface_match_count": 1,
+        "visible_turn_group_count": 0
+      }
+    },
+    "input_binding": {
+      "armed": false,
+      "capture_count": 0,
+      "delivery_count": 0,
+      "suppressed_keydown_count": 0,
+      "suppressed_keyup_count": 0
+    },
+    "input_envelope": null,
+    "presentation": {
+      "attachment": {
+        "actual_rectangle": {
+          "bottom": 791,
+          "height": 300,
+          "left": 587,
+          "right": 1262,
+          "top": 491,
+          "width": 675
+        },
+        "composer_selector_match_count": 1,
+        "dpi": 96,
+        "expected_owner_hwnd": 2758514,
+        "expected_rectangle": {
+          "bottom": 791,
+          "height": 300,
+          "left": 587,
+          "right": 1262,
+          "top": 491,
+          "width": 675
+        },
+        "foreground_hwnd": 11015504,
+        "global_topmost": false,
+        "host_client_rectangle": {
+          "bottom": 899,
+          "height": 900,
+          "left": -1,
+          "right": 1601,
+          "top": -1,
+          "width": 1602
+        },
+        "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
+        "mode": "STANDARD",
+        "owner_hwnd": 2758514,
+        "placement_matches": true,
+        "sidecar_above_host": true,
+        "sidecar_hwnd": 11015504,
+        "visible": true,
+        "work_area_rectangle": {
+          "bottom": 900,
+          "height": 900,
+          "left": 0,
+          "right": 1600,
+          "top": 0,
+          "width": 1600
+        },
+        "z_order_indices": {
+          "host": 31,
+          "sidecar": 25
+        }
+      },
+      "focus_owner": "SIDECAR_ACTION_CONFIRM_PROMPT",
+      "sidecar_visibility": "VISIBLE_STANDARD"
+    },
+    "projection_id": "projection-c6c1271e5e979c4b1b4777cb7068abf87ca43498148667b9b1eff349b3a9933c",
+    "projection_path": "r6o_evidence/H2-E3/actual-host/projections/A02-T0-CODEX.json",
+    "projection_sha256": "e73752c8766b1dab6d022c5de87726dd5306ecc4e5f18d7e0336aee76fa07686",
+    "result_body_sha256": null,
+    "schema_version": "r6o-h2-e3-transition-1",
+    "stage": "PROMPT_REVIEW",
+    "state_id": "A02-S1",
+    "transition_id": "A02-T0-CODEX",
+    "worker_operations": [
+      {
+        "operation": "DRAFT_PROMPT",
+        "operation_id": "A02F:0001"
+      }
+    ]
+  },
+  {
+    "artifact_body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
+    "artifact_kind": "prompt",
+    "artifact_ref": "prompt:I-41edbe1b12-P1",
+    "capture_path": "r6o_evidence/H2-E3/actual-host/captures/A02-T1-FOCUS-CODEX.png",
+    "host_session_observation": {
+      "composer": {
+        "accessibility_name_matches": true,
+        "descendant_text_count": 0,
+        "descendant_text_lengths": [],
+        "empty": true,
+        "uia_value_matches": true
+      },
+      "conversation": {
+        "fresh": true,
+        "fresh_home_surface_match_count": 1,
+        "visible_turn_group_count": 0
+      }
+    },
+    "input_binding": {
+      "armed": true,
+      "capture_count": 0,
+      "delivery_count": 0,
+      "suppressed_keydown_count": 0,
+      "suppressed_keyup_count": 0
+    },
+    "input_envelope": {
+      "action_id": "something_else",
+      "model_revision": "3ac3db6a65eb09ecdea87634c9ebac5e94e33c47fb947c25722687319c0b9d39",
+      "projection_id": "projection-c6c1271e5e979c4b1b4777cb7068abf87ca43498148667b9b1eff349b3a9933c",
+      "schema_version": "r6o-input-envelope-1",
+      "session_id": "I-41edbe1b12",
+      "source": "STRUCTURED_ACTION",
+      "text": null
+    },
+    "presentation": {
+      "attachment": {
+        "actual_rectangle": {
+          "bottom": 791,
+          "height": 300,
+          "left": 587,
+          "right": 1262,
+          "top": 491,
+          "width": 675
+        },
+        "composer_selector_match_count": 1,
+        "dpi": 96,
+        "expected_owner_hwnd": 2758514,
+        "expected_rectangle": {
+          "bottom": 791,
+          "height": 300,
+          "left": 587,
+          "right": 1262,
+          "top": 491,
+          "width": 675
+        },
+        "foreground_hwnd": 2758514,
+        "global_topmost": false,
+        "host_client_rectangle": {
+          "bottom": 899,
+          "height": 900,
+          "left": -1,
+          "right": 1601,
+          "top": -1,
+          "width": 1602
+        },
+        "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
+        "mode": "STANDARD",
+        "owner_hwnd": 2758514,
+        "placement_matches": true,
+        "sidecar_above_host": true,
+        "sidecar_hwnd": 11015504,
+        "visible": true,
+        "work_area_rectangle": {
+          "bottom": 900,
+          "height": 900,
+          "left": 0,
+          "right": 1600,
+          "top": 0,
+          "width": 1600
+        },
+        "z_order_indices": {
+          "host": 26,
+          "sidecar": 25
+        }
+      },
+      "focus_owner": "ACTUAL_CODEX_COMPOSER",
+      "sidecar_visibility": "VISIBLE_STANDARD"
+    },
+    "projection_id": "projection-c6c1271e5e979c4b1b4777cb7068abf87ca43498148667b9b1eff349b3a9933c",
+    "projection_path": "r6o_evidence/H2-E3/actual-host/projections/A02-T1-FOCUS-CODEX.json",
+    "projection_sha256": "e73752c8766b1dab6d022c5de87726dd5306ecc4e5f18d7e0336aee76fa07686",
+    "result_body_sha256": null,
+    "schema_version": "r6o-h2-e3-transition-1",
+    "stage": "PROMPT_REVIEW",
+    "state_id": "A02-S1",
+    "transition_id": "A02-T1-FOCUS-CODEX",
+    "worker_operations": []
+  },
+  {
+    "artifact_body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
+    "artifact_kind": "prompt",
+    "artifact_ref": "prompt:I-41edbe1b12-P2",
+    "capture_path": "r6o_evidence/H2-E3/actual-host/captures/A02-T2-REVISE-CODEX.png",
+    "host_session_observation": {
+      "composer": {
+        "accessibility_name_matches": true,
+        "descendant_text_count": 0,
+        "descendant_text_lengths": [],
+        "empty": true,
+        "uia_value_matches": true
+      },
+      "conversation": {
+        "fresh": true,
+        "fresh_home_surface_match_count": 1,
+        "visible_turn_group_count": 0
+      }
+    },
+    "input_binding": {
+      "armed": false,
+      "capture_count": 1,
+      "delivery_count": 1,
+      "suppressed_keydown_count": 1,
+      "suppressed_keyup_count": 1
+    },
+    "input_envelope": {
+      "action_id": null,
+      "model_revision": "3ac3db6a65eb09ecdea87634c9ebac5e94e33c47fb947c25722687319c0b9d39",
+      "projection_id": null,
+      "schema_version": "r6o-input-envelope-1",
+      "session_id": "I-41edbe1b12",
+      "source": "HOST_COMPOSER_TEXT",
+      "text": "This is not confirmed. The audience should be data engineers, not backend engineers."
+    },
+    "presentation": {
+      "attachment": {
+        "actual_rectangle": {
+          "bottom": 791,
+          "height": 300,
+          "left": 587,
+          "right": 1262,
+          "top": 491,
+          "width": 675
+        },
+        "composer_selector_match_count": 1,
+        "dpi": 96,
+        "expected_owner_hwnd": 2758514,
+        "expected_rectangle": {
+          "bottom": 791,
+          "height": 300,
+          "left": 587,
+          "right": 1262,
+          "top": 491,
+          "width": 675
+        },
+        "foreground_hwnd": 11015504,
+        "global_topmost": false,
+        "host_client_rectangle": {
+          "bottom": 899,
+          "height": 900,
+          "left": -1,
+          "right": 1601,
+          "top": -1,
+          "width": 1602
+        },
+        "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
+        "mode": "STANDARD",
+        "owner_hwnd": 2758514,
+        "placement_matches": true,
+        "sidecar_above_host": true,
+        "sidecar_hwnd": 11015504,
+        "visible": true,
+        "work_area_rectangle": {
+          "bottom": 900,
+          "height": 900,
+          "left": 0,
+          "right": 1600,
+          "top": 0,
+          "width": 1600
+        },
+        "z_order_indices": {
+          "host": 26,
+          "sidecar": 25
+        }
+      },
+      "focus_owner": "SIDECAR_ACTION_CONFIRM_PROMPT",
+      "sidecar_visibility": "VISIBLE_STANDARD"
+    },
+    "projection_id": "projection-48ee72875d8c055bfa3d515d2918332d1ee820bc8d5a51732f19ef79e378c1ea",
+    "projection_path": "r6o_evidence/H2-E3/actual-host/projections/A02-T2-REVISE-CODEX.json",
+    "projection_sha256": "ca6ac2a71a0bb000693b4b8bac774c7f4848a01228b36289b338938c11ff6ecc",
+    "result_body_sha256": null,
+    "schema_version": "r6o-h2-e3-transition-1",
+    "stage": "PROMPT_REVIEW",
+    "state_id": "A02-S2",
+    "transition_id": "A02-T2-REVISE-CODEX",
+    "worker_operations": [
+      {
+        "operation": "INTERPRET_PROMPT_REVIEW",
+        "operation_id": "A02F:0002"
+      },
+      {
+        "operation": "REVISE_PROMPT",
+        "operation_id": "A02F:0003"
+      }
+    ]
+  },
+  {
+    "artifact_body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
+    "artifact_kind": "plan",
+    "artifact_ref": "plan:I-41edbe1b12-R1",
+    "capture_path": "r6o_evidence/H2-E3/actual-host/captures/A02-T3-CODEX.png",
+    "host_session_observation": {
+      "composer": {
+        "accessibility_name_matches": true,
+        "descendant_text_count": 0,
+        "descendant_text_lengths": [],
+        "empty": true,
+        "uia_value_matches": true
+      },
+      "conversation": {
+        "fresh": true,
+        "fresh_home_surface_match_count": 1,
+        "visible_turn_group_count": 0
+      }
+    },
+    "input_binding": {
+      "armed": false,
+      "capture_count": 1,
+      "delivery_count": 1,
+      "suppressed_keydown_count": 1,
+      "suppressed_keyup_count": 1
+    },
+    "input_envelope": {
+      "action_id": "confirm_prompt",
+      "model_revision": "c35ad9b8c36160e79e9cc8aef829706f7bb9050bde89125915ff5caf4f4b7123",
+      "projection_id": "projection-48ee72875d8c055bfa3d515d2918332d1ee820bc8d5a51732f19ef79e378c1ea",
+      "schema_version": "r6o-input-envelope-1",
+      "session_id": "I-41edbe1b12",
+      "source": "STRUCTURED_ACTION",
+      "text": null
+    },
+    "presentation": {
+      "attachment": {
+        "actual_rectangle": {
+          "bottom": 791,
+          "height": 300,
+          "left": 587,
+          "right": 1262,
+          "top": 491,
+          "width": 675
+        },
+        "composer_selector_match_count": 1,
+        "dpi": 96,
+        "expected_owner_hwnd": 2758514,
+        "expected_rectangle": {
+          "bottom": 791,
+          "height": 300,
+          "left": 587,
+          "right": 1262,
+          "top": 491,
+          "width": 675
+        },
+        "foreground_hwnd": 11015504,
+        "global_topmost": false,
+        "host_client_rectangle": {
+          "bottom": 899,
+          "height": 900,
+          "left": -1,
+          "right": 1601,
+          "top": -1,
+          "width": 1602
+        },
+        "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
+        "mode": "STANDARD",
+        "owner_hwnd": 2758514,
+        "placement_matches": true,
+        "sidecar_above_host": true,
+        "sidecar_hwnd": 11015504,
+        "visible": true,
+        "work_area_rectangle": {
+          "bottom": 900,
+          "height": 900,
+          "left": 0,
+          "right": 1600,
+          "top": 0,
+          "width": 1600
+        },
+        "z_order_indices": {
+          "host": 26,
+          "sidecar": 25
+        }
+      },
+      "focus_owner": "SIDECAR_ACTION_CONFIRM_PLAN",
+      "sidecar_visibility": "VISIBLE_STANDARD"
+    },
+    "projection_id": "projection-f2ce739c2624456bff395ed291a6a8a1df8190b4b1535af5e597800f946dcfda",
+    "projection_path": "r6o_evidence/H2-E3/actual-host/projections/A02-T3-CODEX.json",
+    "projection_sha256": "a009bbf5ff7f9d7e393c34c26cf2baa31d33d52d528dc04b0fb0c4091c71be2e",
+    "result_body_sha256": null,
+    "schema_version": "r6o-h2-e3-transition-1",
+    "stage": "PLAN_REVIEW",
+    "state_id": "A02-S3",
+    "transition_id": "A02-T3-CODEX",
+    "worker_operations": [
+      {
+        "operation": "INTERPRET_PROMPT_REVIEW",
+        "operation_id": "A02F:0004"
+      },
+      {
+        "operation": "DRAFT_PLAN",
+        "operation_id": "A02F:0005"
+      }
+    ]
+  },
+  {
+    "artifact_body_sha256": null,
+    "artifact_kind": null,
+    "artifact_ref": null,
+    "capture_path": null,
+    "host_session_observation": {
+      "composer": {
+        "accessibility_name_matches": true,
+        "descendant_text_count": 0,
+        "descendant_text_lengths": [],
+        "empty": true,
+        "uia_value_matches": true
+      },
+      "conversation": {
+        "fresh": true,
+        "fresh_home_surface_match_count": 1,
+        "visible_turn_group_count": 0
+      }
+    },
+    "input_binding": {
+      "armed": false,
+      "capture_count": 1,
+      "delivery_count": 1,
+      "suppressed_keydown_count": 1,
+      "suppressed_keyup_count": 1
+    },
+    "input_envelope": {
+      "action_id": "confirm_plan",
+      "model_revision": "63e02deb588947a22a5bea9ed1f04af5b13406c25399698b75550b0efe2b0f6c",
+      "projection_id": "projection-f2ce739c2624456bff395ed291a6a8a1df8190b4b1535af5e597800f946dcfda",
+      "schema_version": "r6o-input-envelope-1",
+      "session_id": "I-41edbe1b12",
+      "source": "STRUCTURED_ACTION",
+      "text": null
+    },
+    "presentation": {
+      "focus_owner": "ACTUAL_CODEX_COMPOSER",
+      "focus_return": {
+        "composer_keyboard_focus": true,
+        "expected_foreground_hwnd": 2758514,
+        "foreground_hwnd": 2758514,
+        "sidecar_visible": false
+      },
+      "sidecar_visibility": "DISMISSED"
+    },
+    "projection_id": "projection-bcd6d02b5e14740460baf250dad60ebcb16700d158d30c1877cd36aedb8a365f",
+    "projection_path": "r6o_evidence/H2-E3/actual-host/projections/A02-T4-CODEX.json",
+    "projection_sha256": "04a19e769dc4fdbe1f23c6c4b7d6c8c4d2a2c9c9b9ee3b24e5cd0bf0bd878ea6",
+    "result_body_sha256": "79cd3ac621e54343d4cbef28229766f2c8ae4b5e694dc46b7d69b9375f7e35c4",
+    "schema_version": "r6o-h2-e3-transition-1",
+    "stage": "CLOSED_SUCCESS",
+    "state_id": "A02-S4",
+    "transition_id": "A02-T4-CODEX",
+    "worker_operations": [
+      {
+        "operation": "INTERPRET_PLAN_REVIEW",
+        "operation_id": "A02F:0006"
+      },
+      {
+        "operation": "EXECUTE",
+        "operation_id": "A02F:0007"
+      }
+    ]
+  }
+]

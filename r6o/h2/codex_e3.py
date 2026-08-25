@@ -2,6 +2,7 @@ from __future__ import annotations
 
 """H2-E3 A02-FULL coordination at the accepted E1/E2 presentation seams."""
 
+import time
 from collections.abc import Callable
 from typing import Any, Protocol
 
@@ -159,9 +160,66 @@ class AttachedCodexE3Presentation:
         self.binding = binding
         self.input_binding = input_binding
         self._sidecar = AttachedCodexSidecarPresentation(binding)
+        self._terminal_dismissed = False
 
     def present(self, projection: dict[str, Any], *, initial: bool = False) -> dict[str, Any]:
+        if projection.get("stage") == TERMINAL_STAGE:
+            return self._present_terminal(projection, initial=initial)
+        if self._terminal_dismissed:
+            raise H2E3IntegrationError("ACTIVE_PROJECTION_AFTER_TERMINAL")
         return self._sidecar.present(projection, initial=initial)
+
+    def _present_terminal(
+        self, projection: dict[str, Any], *, initial: bool
+    ) -> dict[str, Any]:
+        if initial or self._terminal_dismissed:
+            raise H2E3IntegrationError("TERMINAL_CLOSE_NOT_EXACTLY_ONCE")
+        if self.binding.sidecar.render(projection):
+            raise H2E3IntegrationError("TERMINAL_PROJECTION_REMAINED_VISIBLE")
+        self.binding.sidecar.dismiss_terminal()
+        try:
+            self.binding.refresh_controls().composer.set_focus()
+        except Exception as exc:
+            raise H2E3IntegrationError("COMPOSER_FOCUS_RETURN_FAILED") from exc
+
+        deadline = time.monotonic() + 5.0
+        sidecar_visible = True
+        while time.monotonic() < deadline:
+            try:
+                from PySide6.QtCore import QCoreApplication, QEventLoop
+
+                app = QCoreApplication.instance()
+                if app is not None:
+                    app.processEvents(QEventLoop.AllEvents, 25)
+            except ImportError:
+                pass
+            try:
+                focused = bool(
+                    self.binding.refresh_controls().composer.has_keyboard_focus()
+                )
+                foreground = self.binding.native.foreground()
+                sidecar_visible = self.binding.native.is_visible(
+                    self.binding.sidecar_hwnd
+                )
+            except Exception:
+                focused = False
+                foreground = 0
+            if focused and foreground == self.binding.host_hwnd and not sidecar_visible:
+                self._terminal_dismissed = True
+                return {
+                    "sidecar_visibility": "DISMISSED",
+                    "focus_owner": "ACTUAL_CODEX_COMPOSER",
+                    "focus_return": {
+                        "sidecar_visible": False,
+                        "composer_keyboard_focus": True,
+                        "foreground_hwnd": foreground,
+                        "expected_foreground_hwnd": self.binding.host_hwnd,
+                    },
+                }
+            time.sleep(0.025)
+        if sidecar_visible:
+            raise H2E3IntegrationError("TERMINAL_SIDECAR_NOT_DISMISSED")
+        raise H2E3IntegrationError("COMPOSER_FOCUS_RETURN_UNVERIFIED")
 
     def focus_actual_composer(self, projection: dict[str, Any]) -> dict[str, Any]:
         self.input_binding.activate(projection)
@@ -330,7 +388,16 @@ class CodexH2E3Session:
                 raise H2E3IntegrationError("ACTUAL_COMPOSER_FOCUS_UNVERIFIED") from exc
             self._free_response_armed = True
             self.envelopes.append(dict(envelope))
-            self._emit("something_else", projection, presentation, envelope)
+            try:
+                self._emit("something_else", projection, presentation, envelope)
+            except Exception:
+                # A transition/evidence failure must not leave the semantic
+                # session eligible to consume a capture queued during the
+                # native focus handoff.  The E1 binding remains fail-closed
+                # until the runner aborts and clears the attempt-owned input.
+                self._free_response_armed = False
+                self.envelopes.pop()
+                raise
             return projection
         finally:
             self._busy = False

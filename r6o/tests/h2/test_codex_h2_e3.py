@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import subprocess
 import sys
 from copy import deepcopy
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
 
 from r6o.h2.codex_e3 import (
+    AttachedCodexE3Presentation,
     CodexH2E3Session,
     H2E3IntegrationError,
 )
@@ -268,6 +271,110 @@ def test_input_binding_focus_failure_does_not_emit_something_else(a02_session) -
     assert session.free_response_armed is False
 
 
+def test_t1_recorder_failure_rolls_back_semantic_capture_eligibility(a02_session) -> None:
+    session, _model, worker, input_binding, _presentation, _events = a02_session
+    session.start()
+    session.on_transition = lambda event: (_ for _ in ()).throw(
+        H2E3IntegrationError("INJECTED_T1_RECORDER_FAILURE")
+    )
+
+    with pytest.raises(H2E3IntegrationError, match="INJECTED_T1_RECORDER_FAILURE"):
+        session.activate_action("something_else")
+
+    assert session.free_response_armed is False
+    assert session.envelopes == []
+    assert input_binding.armed is True
+    assert len(worker.calls) == 1
+
+
+def test_e3_terminal_focus_waits_for_observable_ready_state() -> None:
+    focus_states = iter([False, True])
+    foreground_states = iter([0, 101])
+    calls: list[str] = []
+
+    class Composer:
+        def set_focus(self) -> None:
+            calls.append("focus")
+
+        def has_keyboard_focus(self) -> bool:
+            return next(focus_states)
+
+    sidecar = SimpleNamespace(
+        render=lambda projection: False,
+        dismiss_terminal=lambda: calls.append("dismiss"),
+    )
+    binding = SimpleNamespace(
+        sidecar=sidecar,
+        sidecar_hwnd=303,
+        host_hwnd=101,
+        refresh_controls=lambda: SimpleNamespace(composer=Composer()),
+        native=SimpleNamespace(
+            foreground=lambda: next(foreground_states),
+            is_visible=lambda _hwnd: False,
+        ),
+    )
+    presentation = AttachedCodexE3Presentation(binding, SimpleNamespace())
+
+    result = presentation.present({"stage": "CLOSED_SUCCESS"})
+
+    assert calls == ["dismiss", "focus"]
+    assert result["focus_return"] == {
+        "sidecar_visible": False,
+        "composer_keyboard_focus": True,
+        "foreground_hwnd": 101,
+        "expected_foreground_hwnd": 101,
+    }
+    with pytest.raises(H2E3IntegrationError, match="TERMINAL_CLOSE_NOT_EXACTLY_ONCE"):
+        presentation.present({"stage": "CLOSED_SUCCESS"})
+    with pytest.raises(H2E3IntegrationError, match="ACTIVE_PROJECTION_AFTER_TERMINAL"):
+        presentation.present({"stage": "PROMPT_REVIEW"})
+
+
+def test_t1_evidence_uses_pre_handoff_empty_observation(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    safe = {
+        "composer": {"empty": True},
+        "conversation": {"fresh": True, "visible_turn_group_count": 0},
+    }
+    worker = SimpleNamespace(calls=[])
+
+    def capture(path: Path) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"capture")
+
+    binding = SimpleNamespace(sidecar=SimpleNamespace(capture=capture))
+    monkeypatch.setattr(e3_runner, "ROOT", tmp_path)
+    recorder = e3_runner.EvidenceRecorder(tmp_path, worker, binding)
+    monkeypatch.setattr(e3_runner, "_host_session_observation", lambda _binding: safe)
+    recorder.prepare_free_response_handoff()
+    monkeypatch.setattr(
+        e3_runner,
+        "_host_session_observation",
+        lambda _binding: (_ for _ in ()).throw(AssertionError("post-handoff reread raced typing")),
+    )
+    event = {
+        "transition_id": "A02-T1-FOCUS-CODEX",
+        "state_id": "A02-S1",
+        "projection": {
+            "stage": "PROMPT_REVIEW",
+            "projection_id": "projection-1",
+            "artifact": {"artifact_kind": "prompt", "artifact_ref": "prompt-1", "body": "body"},
+            "lifecycle": {},
+        },
+        "presentation": {"focus_owner": "ACTUAL_CODEX_COMPOSER"},
+        "envelope": {
+            "source": "STRUCTURED_ACTION",
+            "action_id": "something_else",
+            "text": None,
+        },
+    }
+
+    recorder(event)
+
+    assert recorder.transitions[0]["host_session_observation"] == safe
+
+
 def test_text_viewmodel_failure_deactivates_binding_and_preserves_projection(a02_session) -> None:
     session, _model, worker, input_binding, presentation, events = a02_session
     initial = session.start()
@@ -374,3 +481,152 @@ def test_e3_runner_rejects_uncommitted_non_evidence_changes(
     (repo / "e3.py").write_text("VALUE = 3\n", encoding="utf-8")
     with pytest.raises(H2E3IntegrationError, match="UNCOMMITTED_NON_E3_EVIDENCE_CHANGES"):
         e3_runner.verify_checkout()
+
+
+def test_initial_host_preflight_failure_is_actionable() -> None:
+    observation = {
+        "composer": {"empty": False},
+        "conversation": {"fresh": False},
+    }
+    with pytest.raises(
+        H2E3IntegrationError,
+        match="INITIAL_HOST_NOT_READY:OPEN_FRESH_NEW_CHAT_AND_VERIFY_EMPTY_COMPOSER",
+    ):
+        e3_runner._require_safe_host_session(observation, phase="INITIAL")
+
+
+def test_attempt_ledger_appends_new_freeze_without_mutating_history(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    evidence = tmp_path / "r6o_evidence" / "H2-E3" / "actual-host"
+    evidence.mkdir(parents=True)
+    historical = [
+        {
+            "attempt": 1,
+            "status": "FAIL",
+            "failure": "OLD_FAILURE",
+            "code_freeze_head": "old-head",
+            "code_freeze_tree": "old-tree",
+        }
+    ]
+    (evidence / "live-attempts.json").write_text(json.dumps(historical), encoding="utf-8")
+    monkeypatch.setattr(e3_runner, "ROOT", tmp_path)
+    checkout = {
+        "head": "new-evidence-head",
+        "tree": "new-evidence-tree",
+        "code_freeze_head": "repair-head",
+        "code_freeze_tree": "repair-tree",
+    }
+
+    path, attempts, count, attempt_dir = e3_runner._start_attempt(evidence, checkout)
+
+    assert attempts[0] == historical[0]
+    assert count == 2
+    assert attempt_dir == evidence / "attempt-0002"
+    assert attempts[1]["code_freeze_head"] == "repair-head"
+    assert attempts[1]["code_freeze_tree"] == "repair-tree"
+    assert attempts[1]["evidence_path"].endswith("actual-host/attempt-0002")
+    e3_runner._finish_attempt(
+        path,
+        attempts,
+        status="FAIL",
+        failure="PRIMARY_FAILURE",
+        cleanup_failures=["INPUT_BINDING_STOP:HOST_INPUT_HOOK_STOP_TIMEOUT"],
+    )
+    persisted = json.loads(path.read_text(encoding="utf-8"))
+    assert persisted[0] == historical[0]
+    assert persisted[1]["cleanup_failures"] == [
+        "INPUT_BINDING_STOP:HOST_INPUT_HOOK_STOP_TIMEOUT"
+    ]
+
+
+def test_old_freeze_attempts_and_pass_are_preserved_only_as_historical() -> None:
+    evidence = ROOT / "r6o_evidence" / "H2-E3" / "actual-host"
+    attempts = json.loads((evidence / "live-attempts.json").read_text(encoding="utf-8"))
+    assert len(attempts) == 9
+    assert [item["attempt"] for item in attempts] == list(range(1, 10))
+    assert [item["status"] for item in attempts] == [
+        "RUNNING",
+        "RUNNING",
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "H2_E3_A02_FULL_PASS",
+    ]
+    assert all(
+        item["code_freeze_head"] == "858b0b52844761314456c64cd065549a23627073"
+        and item["code_freeze_tree"] == "0c78427a66f90e363df808be8d32b10aaf7b74e2"
+        for item in attempts
+    )
+    index = json.loads(
+        (evidence / "historical-evidence-index.json").read_text(encoding="utf-8")
+    )
+    assert index["attempt"] == 9
+    assert index["status"] == "HISTORICAL_OLD_FREEZE_PASS"
+    assert index["qualifies_current_freeze"] is False
+    for key in ("qualification", "transitions"):
+        path = ROOT / index[key]["path"]
+        assert path.is_file()
+        canonical_bytes = path.read_bytes().replace(b"\r\n", b"\n")
+        assert hashlib.sha256(canonical_bytes).hexdigest() == index[key]["sha256"]
+
+
+def test_cleanup_attempts_every_resource_after_each_prior_failure() -> None:
+    calls: list[str] = []
+
+    def fail(label: str):
+        def callback() -> None:
+            calls.append(label)
+            raise RuntimeError(label)
+
+        return callback
+
+    failures = e3_runner._close_run_resources(
+        input_binding=SimpleNamespace(
+            abort_handoff=fail("abort"),
+            stop=fail("stop"),
+        ),
+        host=SimpleNamespace(close=fail("host")),
+        model=SimpleNamespace(close=fail("model")),
+        temporary=SimpleNamespace(cleanup=fail("temporary")),
+        handoff_started=True,
+    )
+
+    assert calls == ["abort", "stop", "host", "model", "temporary"]
+    assert [item.split(":", 1)[0] for item in failures] == [
+        "INPUT_HANDOFF_ABORT",
+        "INPUT_BINDING_STOP",
+        "HOST_CLOSE",
+        "MODEL_CLOSE",
+        "TEMPORARY_CLEANUP",
+    ]
+
+
+def test_e3_cleanup_force_removes_stalled_accepted_d2_router_hook(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[int] = []
+    router = SimpleNamespace(_hook=456)
+    host = SimpleNamespace(focus_router=router)
+    fake_user32 = SimpleNamespace(
+        UnhookWindowsHookEx=lambda handle: calls.append(int(handle.value)) or True
+    )
+    monkeypatch.setattr(e3_runner.ctypes, "windll", SimpleNamespace(user32=fake_user32))
+
+    e3_runner._force_remove_host_router_hook(host)
+
+    assert calls == [456]
+    assert router._hook == 0
+
+
+def test_readme_has_fresh_chat_preflight_and_complete_rerun_procedure() -> None:
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    normalized = " ".join(readme.split())
+    assert "--output r6o_evidence\\H2-E3\\actual-host\\preflight-reset.json" in readme
+    assert "INITIAL_HOST_NOT_READY:OPEN_FRESH_NEW_CHAT_AND_VERIFY_EMPTY_COMPOSER" in readme
+    assert "If an attempt fails" in readme
+    assert "never resume a prior failed host session" in readme
+    assert "No fixed delay or undocumented pause" in normalized

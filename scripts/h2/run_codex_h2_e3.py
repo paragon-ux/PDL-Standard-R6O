@@ -3,6 +3,7 @@ from __future__ import annotations
 """Run and record the human-operated actual Codex A02-FULL H2-E3 qualification."""
 
 import argparse
+import ctypes
 import hashlib
 import json
 import os
@@ -184,8 +185,18 @@ def _host_session_observation(binding: Any) -> dict[str, Any]:
 
 def _require_safe_host_session(observation: dict[str, Any], *, phase: str) -> None:
     if observation["composer"].get("empty") is not True:
+        if phase == "INITIAL":
+            raise H2E3IntegrationError(
+                "INITIAL_HOST_NOT_READY:OPEN_FRESH_NEW_CHAT_AND_VERIFY_EMPTY_COMPOSER:"
+                "COMPOSER_NOT_EMPTY"
+            )
         raise H2E3IntegrationError(f"{phase}_COMPOSER_NOT_EMPTY")
     if observation["conversation"].get("fresh") is not True:
+        if phase == "INITIAL":
+            raise H2E3IntegrationError(
+                "INITIAL_HOST_NOT_READY:OPEN_FRESH_NEW_CHAT_AND_VERIFY_EMPTY_COMPOSER:"
+                "CODEX_SESSION_NOT_FRESH"
+            )
         raise H2E3IntegrationError(f"{phase}_CODEX_SESSION_NOT_FRESH")
 
 
@@ -222,6 +233,14 @@ class EvidenceRecorder:
         self.call_cursor = 0
         self.transitions: list[dict[str, Any]] = []
         self.files: list[Path] = []
+        self._pre_handoff_host_session: dict[str, Any] | None = None
+
+    def prepare_free_response_handoff(self) -> None:
+        if self._pre_handoff_host_session is not None:
+            raise H2E3IntegrationError("PRE_HANDOFF_OBSERVATION_NOT_EXACTLY_ONCE")
+        observation = _host_session_observation(self.binding)
+        _require_safe_host_session(observation, phase="PRE_HANDOFF")
+        self._pre_handoff_host_session = observation
 
     def __call__(self, event: dict[str, Any]) -> None:
         transition_id = event["transition_id"]
@@ -274,10 +293,16 @@ class EvidenceRecorder:
                 )
 
         projection = event["projection"]
-        host_session = _host_session_observation(self.binding)
-        _require_safe_host_session(
-            host_session, phase=f"TRANSITION_{transition_id.replace('-', '_')}"
-        )
+        if transition_id == "A02-T1-FOCUS-CODEX":
+            host_session = self._pre_handoff_host_session
+            if host_session is None:
+                raise H2E3IntegrationError("PRE_HANDOFF_OBSERVATION_MISSING")
+            self._pre_handoff_host_session = None
+        else:
+            host_session = _host_session_observation(self.binding)
+            _require_safe_host_session(
+                host_session, phase=f"TRANSITION_{transition_id.replace('-', '_')}"
+            )
         projection_path = self.evidence_dir / "projections" / f"{transition_id}.json"
         _write_json(projection_path, projection)
         self.files.append(projection_path)
@@ -367,10 +392,11 @@ def _read_attempts(path: Path) -> list[dict[str, Any]]:
 
 def _start_attempt(
     evidence_dir: Path, checkout: dict[str, str]
-) -> tuple[Path, list[dict[str, Any]], int]:
+) -> tuple[Path, list[dict[str, Any]], int, Path]:
     path = evidence_dir / "live-attempts.json"
     attempts = _read_attempts(path)
     count = len(attempts) + 1
+    attempt_evidence_dir = evidence_dir / f"attempt-{count:04d}"
     attempts.append(
         {
             "attempt": count,
@@ -380,11 +406,12 @@ def _start_attempt(
             "tree": checkout["tree"],
             "code_freeze_head": checkout["code_freeze_head"],
             "code_freeze_tree": checkout["code_freeze_tree"],
+            "evidence_path": str(attempt_evidence_dir.relative_to(ROOT)).replace("\\", "/"),
             "failure": None,
         }
     )
     _write_json(path, attempts)
-    return path, attempts, count
+    return path, attempts, count, attempt_evidence_dir
 
 
 def _finish_attempt(
@@ -393,11 +420,60 @@ def _finish_attempt(
     *,
     status: str,
     failure: str | None = None,
+    cleanup_failures: list[str] | None = None,
 ) -> None:
     attempts[-1]["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
     attempts[-1]["status"] = status
     attempts[-1]["failure"] = failure
+    if cleanup_failures:
+        attempts[-1]["cleanup_failures"] = list(cleanup_failures)
     _write_json(path, attempts)
+
+
+def _close_run_resources(
+    *,
+    input_binding: Any | None,
+    host: Any | None,
+    model: LocalRuntimeModelBinding | None,
+    temporary: tempfile.TemporaryDirectory[str] | None,
+    handoff_started: bool,
+) -> list[str]:
+    """Attempt every bounded cleanup step and return stable failure details."""
+
+    failures: list[str] = []
+
+    def attempt(label: str, callback: Any) -> None:
+        try:
+            callback()
+        except Exception as exc:
+            failures.append(f"{label}:{getattr(exc, 'code', type(exc).__name__)}")
+
+    if handoff_started and input_binding is not None:
+        attempt("INPUT_HANDOFF_ABORT", input_binding.abort_handoff)
+    if input_binding is not None:
+        attempt("INPUT_BINDING_STOP", input_binding.stop)
+    if host is not None:
+        attempt("HOST_CLOSE", host.close)
+        attempt("HOST_ROUTER_HOOK_REMOVE", lambda: _force_remove_host_router_hook(host))
+    if model is not None:
+        attempt("MODEL_CLOSE", model.close)
+    if temporary is not None:
+        attempt("TEMPORARY_CLEANUP", temporary.cleanup)
+    return failures
+
+
+def _force_remove_host_router_hook(host: Any) -> None:
+    """E3-only fallback when accepted D2 router shutdown reports a timeout."""
+
+    router = getattr(host, "focus_router", None)
+    hook = int(getattr(router, "_hook", 0) or 0) if router is not None else 0
+    if not hook:
+        return
+    removed = bool(ctypes.windll.user32.UnhookWindowsHookEx(ctypes.c_void_p(hook)))
+    if removed or int(getattr(router, "_hook", 0) or 0) == 0:
+        router._hook = 0
+        return
+    raise H2E3IntegrationError("HOST_CLICK_FOCUS_ROUTER_REMOVE_FAILED")
 
 
 def run(args: argparse.Namespace, checkout: dict[str, str], live_run_count: int) -> dict[str, Any]:
@@ -422,6 +498,8 @@ def run(args: argparse.Namespace, checkout: dict[str, str], live_run_count: int)
     input_binding: Any | None = None
     callback_errors: list[Exception] = []
     holder: dict[str, Any] = {}
+    handoff_started = False
+    primary_error: BaseException | None = None
     try:
         workspace_root = args.workspace_root
         if workspace_root is None:
@@ -438,16 +516,25 @@ def run(args: argparse.Namespace, checkout: dict[str, str], live_run_count: int)
         )
 
         def on_action(action_id: str) -> None:
+            nonlocal handoff_started
             try:
+                if callback_errors:
+                    return
+                if action_id == "something_else":
+                    recorder.prepare_free_response_handoff()
+                    handoff_started = True
                 holder["session"].activate_action(action_id)
             except Exception as exc:
                 callback_errors.append(exc)
 
         def on_envelope(envelope: dict[str, Any]) -> None:
+            if callback_errors:
+                raise H2E3IntegrationError("CALLBACK_ABORTED_AFTER_PRIOR_FAILURE")
             try:
                 holder["session"].submit_composer_text(envelope)
             except Exception as exc:
                 callback_errors.append(exc)
+                raise
 
         def sidecar_factory(**options: Any) -> Any:
             return QtSidecarWindow(on_action=on_action, **options)
@@ -462,7 +549,8 @@ def run(args: argparse.Namespace, checkout: dict[str, str], live_run_count: int)
 
         input_binding = CodexComposerInputBinding(host, on_envelope)
         input_binding.start()
-        recorder = EvidenceRecorder(args.evidence_dir, worker, host)
+        evidence_dir = getattr(args, "attempt_evidence_dir", args.evidence_dir)
+        recorder = EvidenceRecorder(evidence_dir, worker, host)
         recorder.input_binding = input_binding
         session = CodexH2E3Session(
             model,
@@ -588,15 +676,26 @@ def run(args: argparse.Namespace, checkout: dict[str, str], live_run_count: int)
             "sidecar_dismissed": True,
             "actual_composer_focus_restored": True,
         }
+    except BaseException as exc:
+        primary_error = exc
+        raise
     finally:
-        if input_binding is not None:
-            input_binding.stop()
-        if host is not None:
-            host.close()
-        if model is not None:
-            model.close()
-        if temporary is not None:
-            temporary.cleanup()
+        cleanup_failures = _close_run_resources(
+            input_binding=input_binding,
+            host=host,
+            model=model,
+            temporary=temporary,
+            handoff_started=handoff_started,
+        )
+        if cleanup_failures:
+            cleanup_error = H2E3IntegrationError(
+                "E3_CLEANUP_FAILED:" + "|".join(cleanup_failures)
+            )
+            cleanup_error.cleanup_failures = list(cleanup_failures)
+            if primary_error is None:
+                raise cleanup_error
+            primary_error.cleanup_failures = list(cleanup_failures)
+            primary_error.add_note(str(cleanup_error))
 
 
 def parse_args() -> argparse.Namespace:
@@ -633,23 +732,38 @@ def main() -> int:
     attempts: list[dict[str, Any]] | None = None
     try:
         checkout = verify_checkout()
-        attempt_path, attempts, count = _start_attempt(args.evidence_dir, checkout)
+        attempt_path, attempts, count, attempt_evidence_dir = _start_attempt(
+            args.evidence_dir, checkout
+        )
+        args.attempt_evidence_dir = attempt_evidence_dir
         report = run(args, checkout, count)
-        qualification_path = args.evidence_dir / "qualification.json"
+        qualification_path = attempt_evidence_dir / "qualification.json"
         _write_json(qualification_path, report)
         _finish_attempt(attempt_path, attempts, status="H2_E3_A02_FULL_PASS")
         print("H2_E3_A02_FULL_PASS", flush=True)
         return 0
-    except KeyboardInterrupt:
+    except KeyboardInterrupt as exc:
         failure = "INTERRUPTED"
         if attempt_path is not None and attempts is not None:
-            _finish_attempt(attempt_path, attempts, status="FAIL", failure=failure)
+            _finish_attempt(
+                attempt_path,
+                attempts,
+                status="FAIL",
+                failure=failure,
+                cleanup_failures=getattr(exc, "cleanup_failures", None),
+            )
         print("H2 E3 INTERRUPTED", file=sys.stderr, flush=True)
         return 130
     except Exception as exc:
         failure = getattr(exc, "code", str(exc))
         if attempt_path is not None and attempts is not None:
-            _finish_attempt(attempt_path, attempts, status="FAIL", failure=failure)
+            _finish_attempt(
+                attempt_path,
+                attempts,
+                status="FAIL",
+                failure=failure,
+                cleanup_failures=getattr(exc, "cleanup_failures", None),
+            )
         print(f"H2 E3 FAIL: {failure}", file=sys.stderr, flush=True)
         return 1
 

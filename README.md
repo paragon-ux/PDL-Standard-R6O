@@ -200,10 +200,33 @@ The runner requires the accepted H2-E2 head
 `r6o_evidence/H2-E3/code-freeze.json`. It rejects post-freeze production or
 test changes and writes live evidence only beneath `r6o_evidence/H2-E3/`.
 
-After the frozen runner starts, the human performs exactly this sequence:
+Before every live attempt, preserve or clear any draft already in the actual
+Codex composer, then establish a verified fresh `New chat` with the accepted
+fail-closed reset. The reset refuses to invoke `New chat` when the composer is
+not empty, so it never silently discards an existing draft:
+
+```powershell
+python scripts\h2\reset_codex_test_session.py --selectors r6o\host\codex\windows\selectors.json --output r6o_evidence\H2-E3\actual-host\preflight-reset.json
+```
+
+Do not start E3 unless this prints `CODEX_TEST_SESSION_READY`. The E3 runner
+independently verifies the composer is empty and the conversation is fresh
+before starting semantic qualification; a failed check reports the actionable
+`INITIAL_HOST_NOT_READY:OPEN_FRESH_NEW_CHAT_AND_VERIFY_EMPTY_COMPOSER` error.
+
+With that precondition satisfied, run:
+
+```powershell
+python scripts\h2\run_codex_h2_e3.py --case A02-FULL --record
+```
+
+After the frozen runner starts, the human performs exactly this sequence. No
+fixed delay or undocumented pause is part of the procedure:
 
 1. Click `Something else...` in the visible Sidecar.
-2. Type `This is not confirmed. The audience should be data engineers, not backend engineers.` in the actual Codex composer and press unmodified Enter once.
+2. When the caret is visible in the actual Codex composer, the completed
+   free-response handoff is ready. Type `This is not confirmed. The audience should be data engineers, not backend engineers.`
+   normally and press unmodified Enter once.
 3. Click `Confirm prompt` when the revised prompt appears.
 4. Click `Confirm plan` when the plan appears.
 
@@ -211,6 +234,15 @@ The H2-E3 runner does not inject clicks, typing, or Enter. The expected live
 status is `H2_E3_A02_FULL_PASS`; the native composer review text must not
 appear as a Codex conversation turn, and terminal closure must dismiss the
 Sidecar and return focus to the actual composer.
+
+If an attempt fails, keep its `live-attempts.json` row unchanged and use this
+complete rerun procedure:
+
+1. Let the failed runner finish bounded cleanup; do not reuse its Sidecar or hooks.
+2. Preserve or clear any remaining composer draft as appropriate.
+3. Rerun the accepted reset command above and require `CODEX_TEST_SESSION_READY`.
+4. Verify the fresh `New chat` composer is empty.
+5. Start the complete E3 command again; never resume a prior failed host session.
 
 ## H2-D2 actual Codex attachment checkout
 
