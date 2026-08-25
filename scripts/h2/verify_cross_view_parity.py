@@ -22,6 +22,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 FROZEN_ORACLE_COMMIT = "60d982f3328b45a351879d67dc4bb525172b65fd"
 FROZEN_ORACLE_TREE = "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6"
+ACCEPTED_E1_HEAD = "8a85ac4214e7b3386c3c8079b0d45fb79a97e9ff"
+E2_CODE_FREEZE_HEAD = "8e8f325c31b8d96d31cd7fea901a0790d5086bf6"
+E2_CODE_FREEZE_TREE = "ca7530b0ece301c6783877ab049daac884062989"
+ACCEPTED_E2_HEAD = "1b46da916aec20aa2a27e533ac5e8aff9f360791"
 E3_CODE_FREEZE_HEAD = "d94a1aa0c99056ec81f10c6a41e73ed6ea438ae3"
 E3_CODE_FREEZE_TREE = "9fec4c41ed0228e3d4e71c9e19a846c92447c69e"
 
@@ -29,11 +33,17 @@ E3_CODE_FREEZE_TREE = "9fec4c41ed0228e3d4e71c9e19a846c92447c69e"
 @dataclass(frozen=True)
 class CaseConfig:
     tui_directory: str
+    sidecar_gate_directory: str
     sidecar_directory: str
     sidecar_status: str
     sidecar_schema: str
     tui_schema: str
     transition_schema: str
+    predecessor_field: str
+    predecessor_head: str
+    code_freeze_schema: str
+    code_freeze_head: str
+    code_freeze_tree: str
     transition_ids: tuple[str, ...]
     expected_sources_tui: tuple[str | None, ...]
     expected_sources_sidecar: tuple[str | None, ...]
@@ -42,22 +52,34 @@ class CaseConfig:
 CASE_CONFIGS = {
     "G06": CaseConfig(
         tui_directory="H2-B1",
+        sidecar_gate_directory="H2-E2",
         sidecar_directory="H2-E2/actual-host",
         sidecar_status="H2_E2_G06_PASS",
         sidecar_schema="r6o-h2-e2-qualification-1",
         tui_schema="r6o-h2-b1-test-results-1",
         transition_schema="r6o-h2-e2-transition-1",
+        predecessor_field="accepted_e1_head",
+        predecessor_head=ACCEPTED_E1_HEAD,
+        code_freeze_schema="r6o-h2-e2-code-freeze-1",
+        code_freeze_head=E2_CODE_FREEZE_HEAD,
+        code_freeze_tree=E2_CODE_FREEZE_TREE,
         transition_ids=("G06-T0-CODEX", "G06-T1-CODEX", "G06-T2-CODEX"),
         expected_sources_tui=(None, "STRUCTURED_ACTION", "STRUCTURED_ACTION"),
         expected_sources_sidecar=(None, "STRUCTURED_ACTION", "STRUCTURED_ACTION"),
     ),
     "A02-FULL": CaseConfig(
         tui_directory="H2-B2",
+        sidecar_gate_directory="H2-E3",
         sidecar_directory="H2-E3/actual-host",
         sidecar_status="H2_E3_A02_FULL_PASS",
         sidecar_schema="r6o-h2-e3-qualification-1",
         tui_schema="r6o-h2-b2-test-results-1",
         transition_schema="r6o-h2-e3-transition-1",
+        predecessor_field="accepted_e2_head",
+        predecessor_head=ACCEPTED_E2_HEAD,
+        code_freeze_schema="r6o-h2-e3-code-freeze-1",
+        code_freeze_head=E3_CODE_FREEZE_HEAD,
+        code_freeze_tree=E3_CODE_FREEZE_TREE,
         transition_ids=(
             "A02-T0-CODEX",
             "A02-T1-FOCUS-CODEX",
@@ -593,7 +615,7 @@ def load_tui_acceptance(case: str, evidence_root: Path) -> dict[str, Any]:
     return {"source": source, "results": results, "records": records}
 
 
-def _load_e3_evidence_directory(case: str, evidence_root: Path) -> Path:
+def _load_e3_evidence_directory(case: str, evidence_root: Path) -> tuple[Path, dict[str, Any]]:
     ledger_path = evidence_root / "H2-E3/actual-host/live-attempts.json"
     ledger = _read_json_array(ledger_path, case=case, dimension="MISSING_EVIDENCE", source=f"SIDECAR:{ledger_path}")
     candidates = [
@@ -613,7 +635,75 @@ def _load_e3_evidence_directory(case: str, evidence_root: Path) -> Path:
     directory = _resolve_evidence_path(evidence_path, evidence_root)
     if not _is_within(directory, evidence_root):
         _fail(case, "EVIDENCE_INTEGRITY", str(directory), str(evidence_root), str(ledger_path))
-    return directory
+    return directory, selected
+
+
+def _validate_sidecar_provenance(
+    case: str,
+    config: CaseConfig,
+    qualification: dict[str, Any],
+    evidence_root: Path,
+    source: str,
+    ledger_entry: dict[str, Any] | None,
+) -> None:
+    expected_identity = {
+        config.predecessor_field: config.predecessor_head,
+        "code_freeze_head": config.code_freeze_head,
+        "code_freeze_tree": config.code_freeze_tree,
+    }
+    qualification_identity = {
+        config.predecessor_field: qualification.get(config.predecessor_field),
+        "code_freeze_head": qualification.get("code_freeze_head"),
+        "code_freeze_tree": qualification.get("code_freeze_tree"),
+    }
+    _require(
+        qualification_identity == expected_identity,
+        case=case,
+        dimension="EVIDENCE_INTEGRITY",
+        tui_value=expected_identity,
+        sidecar_value=qualification_identity,
+        source_identity=source,
+        detail="qualification predecessor/code-freeze identity mismatch",
+    )
+
+    freeze_path = evidence_root / config.sidecar_gate_directory / "code-freeze.json"
+    freeze = _read_json(freeze_path, case=case, dimension="MISSING_EVIDENCE", source=str(freeze_path))
+    expected_freeze = {"schema_version": config.code_freeze_schema, **expected_identity}
+    actual_freeze = {
+        "schema_version": freeze.get("schema_version"),
+        config.predecessor_field: freeze.get(config.predecessor_field),
+        "code_freeze_head": freeze.get("code_freeze_head"),
+        "code_freeze_tree": freeze.get("code_freeze_tree"),
+    }
+    _require(
+        actual_freeze == expected_freeze,
+        case=case,
+        dimension="EVIDENCE_INTEGRITY",
+        tui_value=expected_freeze,
+        sidecar_value=actual_freeze,
+        source_identity=str(freeze_path),
+        detail="code-freeze manifest identity mismatch",
+    )
+
+    if ledger_entry is None:
+        return
+    expected_ledger = {
+        "status": config.sidecar_status,
+        "code_freeze_head": qualification.get("code_freeze_head"),
+        "code_freeze_tree": qualification.get("code_freeze_tree"),
+        "head": qualification.get("evidence_head_at_run"),
+        "tree": qualification.get("evidence_tree_at_run"),
+    }
+    actual_ledger = {key: ledger_entry.get(key) for key in expected_ledger}
+    _require(
+        actual_ledger == expected_ledger,
+        case=case,
+        dimension="EVIDENCE_INTEGRITY",
+        tui_value=expected_ledger,
+        sidecar_value=actual_ledger,
+        source_identity=source,
+        detail="live-attempt ledger/qualification identity mismatch",
+    )
 
 
 def _read_json_array(path: Path, *, case: str, dimension: str, source: str) -> list[Any]:
@@ -714,8 +804,9 @@ def _validate_envelope(
 
 def load_sidecar_evidence(case: str, evidence_root: Path) -> dict[str, Any]:
     config = CASE_CONFIGS[case]
+    ledger_entry: dict[str, Any] | None = None
     if case == "A02-FULL":
-        directory = _load_e3_evidence_directory(case, evidence_root)
+        directory, ledger_entry = _load_e3_evidence_directory(case, evidence_root)
     else:
         directory = evidence_root / config.sidecar_directory
     source = f"SIDECAR:{directory}"
@@ -739,6 +830,7 @@ def load_sidecar_evidence(case: str, evidence_root: Path) -> dict[str, Any]:
         sidecar_value=qualification.get("status"),
         source_identity=source,
     )
+    _validate_sidecar_provenance(case, config, qualification, evidence_root, source, ledger_entry)
     frozen = qualification.get("frozen_r6s")
     _require(
         isinstance(frozen, dict)
@@ -771,6 +863,15 @@ def load_sidecar_evidence(case: str, evidence_root: Path) -> dict[str, Any]:
     for index, transition in enumerate(transitions):
         if not isinstance(transition, dict):
             _fail(case, "EVIDENCE_INTEGRITY", f"index={index}", type(transition).__name__, source)
+        _require(
+            transition.get("schema_version") == config.transition_schema,
+            case=case,
+            dimension="EVIDENCE_INTEGRITY",
+            tui_value=config.transition_schema,
+            sidecar_value=transition.get("schema_version"),
+            source_identity=f"{source}:transition={index}",
+            detail="transition schema mismatch",
+        )
         transition_id = transition.get("transition_id")
         _require(
             transition_id == config.transition_ids[index],
