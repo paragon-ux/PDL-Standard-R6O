@@ -95,5 +95,44 @@
     "started_at_utc": "2026-08-25T04:36:39.226368+00:00",
     "status": "H2_E3_A02_FULL_PASS",
     "tree": "0dc69514f66e7d50298dca0e7bfe5a62ad81cb62"
+  },
+  {
+    "attempt": 10,
+    "cleanup_failures": [
+      "INPUT_HANDOFF_ABORT:HOST_COMPOSER_CLEAR_FOCUS_UNVERIFIED"
+    ],
+    "code_freeze_head": "d94a1aa0c99056ec81f10c6a41e73ed6ea438ae3",
+    "code_freeze_tree": "9fec4c41ed0228e3d4e71c9e19a846c92447c69e",
+    "evidence_path": "r6o_evidence/H2-E3/actual-host/attempt-0010",
+    "failure": "ACTUAL_COMPOSER_FOCUS_UNVERIFIED",
+    "finished_at_utc": "2026-08-25T06:19:18.081588+00:00",
+    "head": "0049db183a1764c55ef2612a197aaa748c37758a",
+    "started_at_utc": "2026-08-25T06:18:20.052050+00:00",
+    "status": "FAIL",
+    "tree": "55f99055d6a5095b24d63b1e8ab1910d91a547e1"
+  },
+  {
+    "attempt": 11,
+    "code_freeze_head": "d94a1aa0c99056ec81f10c6a41e73ed6ea438ae3",
+    "code_freeze_tree": "9fec4c41ed0228e3d4e71c9e19a846c92447c69e",
+    "evidence_path": "r6o_evidence/H2-E3/actual-host/attempt-0011",
+    "failure": "INTERRUPTED",
+    "finished_at_utc": "2026-08-25T06:20:02.088674+00:00",
+    "head": "0049db183a1764c55ef2612a197aaa748c37758a",
+    "started_at_utc": "2026-08-25T06:20:01.381081+00:00",
+    "status": "FAIL",
+    "tree": "55f99055d6a5095b24d63b1e8ab1910d91a547e1"
+  },
+  {
+    "attempt": 12,
+    "code_freeze_head": "d94a1aa0c99056ec81f10c6a41e73ed6ea438ae3",
+    "code_freeze_tree": "9fec4c41ed0228e3d4e71c9e19a846c92447c69e",
+    "evidence_path": "r6o_evidence/H2-E3/actual-host/attempt-0012",
+    "failure": null,
+    "finished_at_utc": "2026-08-25T06:23:17.087332+00:00",
+    "head": "0049db183a1764c55ef2612a197aaa748c37758a",
+    "started_at_utc": "2026-08-25T06:21:23.724066+00:00",
+    "status": "H2_E3_A02_FULL_PASS",
+    "tree": "55f99055d6a5095b24d63b1e8ab1910d91a547e1"
   }
 ]
