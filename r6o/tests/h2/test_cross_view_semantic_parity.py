@@ -290,3 +290,17 @@ def test_e3_ledger_qualification_mismatch_fails_closed_in_temporary_input(tmp_pa
 
     _assert_diagnostic(exc_info, "A02-FULL")
     assert exc_info.value.dimension == "EVIDENCE_INTEGRITY"
+
+
+def test_e2_ledger_qualification_mismatch_fails_closed_in_temporary_input(tmp_path: Path) -> None:
+    evidence_root = _copy_actual_host_evidence(tmp_path, "G06")
+    ledger_path = evidence_root / "H2-E2/actual-host/live-attempts.json"
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+    ledger[-1]["head"] = "stale-evidence-head"
+    _write_json(ledger_path, ledger)
+
+    with pytest.raises(verifier.ParityVerificationError) as exc_info:
+        verifier.load_sidecar_evidence("G06", evidence_root)
+
+    _assert_diagnostic(exc_info, "G06")
+    assert exc_info.value.dimension == "EVIDENCE_INTEGRITY"

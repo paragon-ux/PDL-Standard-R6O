@@ -638,6 +638,23 @@ def _load_e3_evidence_directory(case: str, evidence_root: Path) -> tuple[Path, d
     return directory, selected
 
 
+def _load_e2_evidence_directory(case: str, evidence_root: Path) -> tuple[Path, dict[str, Any]]:
+    ledger_path = evidence_root / "H2-E2/actual-host/live-attempts.json"
+    ledger = _read_json_array(ledger_path, case=case, dimension="MISSING_EVIDENCE", source=f"SIDECAR:{ledger_path}")
+    candidates = [
+        item
+        for item in ledger
+        if isinstance(item, dict)
+        and item.get("status") == "H2_E2_G06_PASS"
+        and item.get("code_freeze_head") == E2_CODE_FREEZE_HEAD
+        and item.get("code_freeze_tree") == E2_CODE_FREEZE_TREE
+    ]
+    if not candidates:
+        _fail(case, "MISSING_EVIDENCE", "CURRENT_FREEZE_PASS_NOT_FOUND", candidates, str(ledger_path))
+    selected = max(candidates, key=lambda item: int(item.get("attempt", 0)))
+    return evidence_root / "H2-E2/actual-host", selected
+
+
 def _validate_sidecar_provenance(
     case: str,
     config: CaseConfig,
@@ -808,7 +825,7 @@ def load_sidecar_evidence(case: str, evidence_root: Path) -> dict[str, Any]:
     if case == "A02-FULL":
         directory, ledger_entry = _load_e3_evidence_directory(case, evidence_root)
     else:
-        directory = evidence_root / config.sidecar_directory
+        directory, ledger_entry = _load_e2_evidence_directory(case, evidence_root)
     source = f"SIDECAR:{directory}"
     qualification_path = directory / "qualification.json"
     qualification = _read_json(qualification_path, case=case, dimension="MISSING_EVIDENCE", source=source)
