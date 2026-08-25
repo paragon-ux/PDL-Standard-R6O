@@ -542,10 +542,23 @@ def test_attempt_ledger_appends_new_freeze_without_mutating_history(
 
 def test_old_freeze_attempts_and_pass_are_preserved_only_as_historical() -> None:
     evidence = ROOT / "r6o_evidence" / "H2-E3" / "actual-host"
-    attempts = json.loads((evidence / "live-attempts.json").read_text(encoding="utf-8"))
-    assert len(attempts) == 9
-    assert [item["attempt"] for item in attempts] == list(range(1, 10))
-    assert [item["status"] for item in attempts] == [
+    attempts = json.loads(
+        (evidence / "live-attempts.json").read_text(encoding="utf-8")
+    )
+
+    old_head = "858b0b52844761314456c64cd065549a23627073"
+    old_tree = "0c78427a66f90e363df808be8d32b10aaf7b74e2"
+
+    old_attempts = [
+        item
+        for item in attempts
+        if item["code_freeze_head"] == old_head
+        and item["code_freeze_tree"] == old_tree
+    ]
+
+    assert len(old_attempts) == 9
+    assert [item["attempt"] for item in old_attempts] == list(range(1, 10))
+    assert [item["status"] for item in old_attempts] == [
         "RUNNING",
         "RUNNING",
         "FAIL",
@@ -556,23 +569,24 @@ def test_old_freeze_attempts_and_pass_are_preserved_only_as_historical() -> None
         "FAIL",
         "H2_E3_A02_FULL_PASS",
     ]
-    assert all(
-        item["code_freeze_head"] == "858b0b52844761314456c64cd065549a23627073"
-        and item["code_freeze_tree"] == "0c78427a66f90e363df808be8d32b10aaf7b74e2"
-        for item in attempts
+
+    # The overall ledger is append-only and may contain repaired-freeze attempts.
+    assert [item["attempt"] for item in attempts] == list(
+        range(1, len(attempts) + 1)
     )
+
     index = json.loads(
         (evidence / "historical-evidence-index.json").read_text(encoding="utf-8")
     )
     assert index["attempt"] == 9
     assert index["status"] == "HISTORICAL_OLD_FREEZE_PASS"
     assert index["qualifies_current_freeze"] is False
+
     for key in ("qualification", "transitions"):
         path = ROOT / index[key]["path"]
         assert path.is_file()
         canonical_bytes = path.read_bytes().replace(b"\r\n", b"\n")
         assert hashlib.sha256(canonical_bytes).hexdigest() == index[key]["sha256"]
-
 
 def test_cleanup_attempts_every_resource_after_each_prior_failure() -> None:
     calls: list[str] = []
