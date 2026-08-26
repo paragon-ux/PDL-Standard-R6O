@@ -15,11 +15,41 @@ import subprocess
 import sys
 from types import SimpleNamespace
 from typing import Any, Callable
+import warnings
 
 
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+_OBSERVED_WARNING_IDS: set[str] = set()
+_ORIGINAL_SHOWWARNING = warnings.showwarning
+
+
+def _warning_id(message: object) -> str | None:
+    text = str(message)
+    if "STA COM threading mode" in text or "RPC_E_CHANGED_MODE" in text:
+        return "RPC_E_CHANGED_MODE"
+    if "DPI" in text and ("denied" in text.lower() or "awareness" in text.lower()):
+        return "DPI_AWARENESS_ACCESS_DENIED"
+    return None
+
+
+def _capture_warning(
+    message: object,
+    category: type[Warning],
+    filename: str,
+    lineno: int,
+    file: Any | None = None,
+    line: str | None = None,
+) -> None:
+    identifier = _warning_id(message)
+    if identifier is not None:
+        _OBSERVED_WARNING_IDS.add(identifier)
+    _ORIGINAL_SHOWWARNING(message, category, filename, lineno, file=file, line=line)
+
+
+warnings.showwarning = _capture_warning
 
 from r6o.host.codex.windows.binding import (  # noqa: E402
     CodexBindingError,
@@ -387,20 +417,31 @@ def dependency_versions() -> dict[str, str | None]:
 
 
 def warning_triage() -> list[dict[str, Any]]:
+    rpc_observed = "RPC_E_CHANGED_MODE" in _OBSERVED_WARNING_IDS
+    dpi_observed = "DPI_AWARENESS_ACCESS_DENIED" in _OBSERVED_WARNING_IDS
     return [
         {
             "id": "RPC_E_CHANGED_MODE",
-            "observed_in_current_run": False,
+            "observed_in_current_run": rpc_observed,
             "prior_frozen_observation": True,
             "classification": "NONBLOCKING_P2",
-            "effective_runtime_state": "No lifecycle failure, nondeterminism, or resource leak observed by F2 checks.",
+            "effective_runtime_state": (
+                "Warning was emitted while pywinauto restored STA COM mode; no lifecycle failure, "
+                "nondeterminism, or resource leak was observed."
+                if rpc_observed
+                else "No warning was emitted; no lifecycle failure, nondeterminism, or resource leak was observed."
+            ),
         },
         {
             "id": "DPI_AWARENESS_ACCESS_DENIED",
-            "observed_in_current_run": False,
+            "observed_in_current_run": dpi_observed,
             "prior_frozen_observation": True,
             "classification": "NONBLOCKING_P2",
-            "effective_runtime_state": "Qt ran with the configured runtime DPI contract; placement and teardown checks remained bounded.",
+            "effective_runtime_state": (
+                "DPI-awareness setup was denied; configured runtime DPI and bounded placement/teardown remained valid."
+                if dpi_observed
+                else "DPI-awareness denial was not emitted; configured runtime DPI and bounded placement/teardown remained valid."
+            ),
         },
     ]
 
