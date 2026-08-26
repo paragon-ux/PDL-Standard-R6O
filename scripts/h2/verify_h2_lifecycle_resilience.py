@@ -24,6 +24,7 @@ if str(ROOT) not in sys.path:
 
 _OBSERVED_WARNING_IDS: set[str] = set()
 _ORIGINAL_SHOWWARNING = warnings.showwarning
+_ORIGINAL_WARN = warnings.warn
 
 
 def _warning_id(message: object) -> str | None:
@@ -49,7 +50,20 @@ def _capture_warning(
     _ORIGINAL_SHOWWARNING(message, category, filename, lineno, file=file, line=line)
 
 
+def _capture_warn(
+    message: object,
+    category: type[Warning] | None = None,
+    stacklevel: int = 1,
+    source: object | None = None,
+) -> None:
+    identifier = _warning_id(message)
+    if identifier is not None:
+        _OBSERVED_WARNING_IDS.add(identifier)
+    _ORIGINAL_WARN(message, category, stacklevel=stacklevel, source=source)
+
+
 warnings.showwarning = _capture_warning
+warnings.warn = _capture_warn
 
 from r6o.host.codex.windows.binding import (  # noqa: E402
     CodexBindingError,
