@@ -1,0 +1,109 @@
+{
+  "schema_version": "r6o-h2-f1-human-disposition-completion-1",
+  "gate": "H2-F1",
+  "agent": "SOL-H2-F1-REPAIR",
+  "authority": "HUMAN-H2",
+  "trigger_source": "HUMAN_QUALIFICATION",
+  "authority_detail": "HUMAN-H2 explicitly authorized closure of the final Luna repair-delta P1 after the automatic repair budget was exhausted and directed that no second Luna review be run.",
+  "gate_base_head": "72d1cf3a1eba4371c5c087cda1133890302aff97",
+  "original_code_freeze": {
+    "head": "af514bfa5c249a87270125f6c614edf7f81ff9f0",
+    "tree": "eeda4dc238cc9356a1d3ca624ef7d9188b0346ee"
+  },
+  "original_evidence_head": "da596871ed2d73a1d4a95fe51dd50a00e5c8bfa5",
+  "preserved_automatic_repair_history": {
+    "repair_base": "da596871ed2d73a1d4a95fe51dd50a00e5c8bfa5",
+    "repaired_code_freeze_head": "ac850ffbbff02cbaed5d7a11661eb2a317f3fc8a",
+    "repaired_code_freeze_tree": "0b3d9f71a80bfd5c0bfbeb912a87866b83e38ef3",
+    "repaired_evidence_head": "aae0646ebc12d2581e0f9f27882f4ce32a497740",
+    "luna_report_label": "LUNA_REPAIR_DELTA_REQUEST_CHANGES",
+    "luna_verdict": "REQUEST_CHANGES",
+    "luna_state": "REVIEW_FROZEN",
+    "automatic_repair_budget": "EXHAUSTED",
+    "remaining_finding": "F3: E2 live-attempt ledger provenance was not validated"
+  },
+  "human_directed_completion": {
+    "repair_base": {
+      "head": "aae0646ebc12d2581e0f9f27882f4ce32a497740",
+      "tree": "53d591563d5832de70df4598244c923b841e23d9"
+    },
+    "repaired_code_freeze": {
+      "head": "83e4b3ff0602bec9976fde4829796cff974ea840",
+      "tree": "5f364267c9bd3720aed530e3b2c9de6c02c0933f"
+    },
+    "finding_closed": {
+      "id": "F3",
+      "reviewer_priority": "P1",
+      "status": "fixed",
+      "resolution": "The verifier now selects the accepted E2 live-attempt entry and cross-checks its status, code-freeze head/tree, and evidence head/tree against the G06 qualification. A temporary E2 ledger-head mutation now fails closed."
+    }
+  },
+  "repair_findings_closed": [
+    "F1",
+    "F2",
+    "F3"
+  ],
+  "repair_write_set": [
+    "scripts/h2/verify_cross_view_parity.py",
+    "r6o/tests/h2/test_cross_view_semantic_parity.py",
+    "r6o_evidence/H2-F1/repair-report.json",
+    "r6o_evidence/H2-F1/human-disposition-completion.json"
+  ],
+  "human_completion_changed_files": [
+    "scripts/h2/verify_cross_view_parity.py",
+    "r6o/tests/h2/test_cross_view_semantic_parity.py",
+    "r6o_evidence/H2-F1/human-disposition-completion.json"
+  ],
+  "historical_evidence_preserved": true,
+  "production_behavior_changed": false,
+  "live_qualified_production_freeze": {
+    "owner_gate": "H2-E3",
+    "head": "d94a1aa0c99056ec81f10c6a41e73ed6ea438ae3",
+    "tree": "9fec4c41ed0228e3d4e71c9e19a846c92447c69e",
+    "unchanged": true
+  },
+  "qualification": {
+    "f1_verifier": "PASS",
+    "focused_f1_pytest": {
+      "status": "PASS",
+      "passed": 26
+    },
+    "tui_b1_b2_e2_e3_regressions": {
+      "status": "PASS",
+      "passed": 64
+    },
+    "full_r6o": {
+      "status": "PASS",
+      "passed": 350
+    },
+    "r6o1_verification": {
+      "status": "PASS",
+      "baseline_passed": 9,
+      "r6o_passed": 350
+    },
+    "github_ci_at_repaired_code_freeze": {
+      "head": "83e4b3ff0602bec9976fde4829796cff974ea840",
+      "r6o1_run_id": 32880498907,
+      "r6o1_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/32880498907",
+      "ubuntu": "PASS",
+      "windows": "PASS",
+      "h2_c_run_id": 32880498895,
+      "h2_c_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/32880498895",
+      "additional_jobs": "PASS"
+    },
+    "protected_path_diff": "EMPTY",
+    "frozen_oracle": {
+      "head": "60d982f3328b45a351879d67dc4bb525172b65fd",
+      "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+      "status": "UNCHANGED"
+    }
+  },
+  "warning_inventory_source": "r6o_evidence/H2-F1/repair-report.json",
+  "repair_findings_remaining": [],
+  "automatic_repair_budget_remaining": 0,
+  "ready_for_luna_repair_delta_review": false,
+  "luna_review_waiver_authority": "HUMAN-H2",
+  "next_authority": "HUMAN-H2",
+  "ready_for_human_h2": true,
+  "human_pass": "NOT_CLAIMED"
+}

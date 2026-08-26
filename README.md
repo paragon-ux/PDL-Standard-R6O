@@ -244,6 +244,47 @@ complete rerun procedure:
 4. Verify the fresh `New chat` composer is empty.
 5. Start the complete E3 command again; never resume a prior failed host session.
 
+## H2-F1 cross-view semantic parity
+
+Run H2-F1 only from the isolated parity worktree and branch:
+
+```text
+codex/h2-f1-cross-view-parity
+```
+
+The verifier captures the accepted deterministic TUI path through the public
+TUI class, validates it against the accepted B1/B2 evidence, and compares it
+with the accepted actual-host E2/E3 Sidecar evidence. It does not rerun the
+actual Codex gestures or synthesize clicks, typing, Enter, or Send. The
+accepted Windows actual-host evidence is the E2/E3 qualification input; a
+fresh host run is a separate human-gated procedure.
+
+Bind the frozen R6S oracle to the exact commit/tree recorded above, then run:
+
+```powershell
+& {
+    $ErrorActionPreference = 'Stop'
+    python scripts\h2\verify_cross_view_parity.py --baseline-repo $env:PDL_R6S_BASELINE_REPO
+    if ($LASTEXITCODE -ne 0) { throw 'H2-F1 cross-view parity failed' }
+    python -m pytest r6o\tests\h2\test_cross_view_semantic_parity.py -q -p no:cacheprovider
+    if ($LASTEXITCODE -ne 0) { throw 'H2-F1 focused parity tests failed' }
+}
+```
+
+The verifier writes only gate-owned output beneath
+`r6o_evidence/H2-F1/` and fails closed with `CASE`, `DIMENSION`, `TUI_VALUE`,
+`SIDECAR_VALUE`, and `SOURCE_IDENTITY` diagnostics. For A02-FULL the required
+human revision remains:
+
+```text
+This is not confirmed. The audience should be data engineers, not backend engineers.
+```
+
+The expected transport-source distinction is `TUI_TEXT` versus
+`HOST_COMPOSER_TEXT`; it is reported as transport variance, not semantic
+divergence. G06 has no free-response path and reports that dimension as
+`N/A — NOT EXERCISED BY G06`.
+
 ## H2-D2 actual Codex attachment checkout
 
 Review and run H2-D2 only from this branch:

@@ -1,0 +1,149 @@
+{
+  "schema_version": "r6o-h2-f1-bounded-repair-report-1",
+  "gate": "H2-F1",
+  "agent": "SOL-H2-F1-REPAIR",
+  "trigger_source": "SOL_REVIEW",
+  "repair_base": {
+    "head": "da596871ed2d73a1d4a95fe51dd50a00e5c8bfa5",
+    "tree": "1ae917942c3457f30b72852de015a6af530cc2f1"
+  },
+  "original_code_freeze": {
+    "head": "af514bfa5c249a87270125f6c614edf7f81ff9f0",
+    "tree": "eeda4dc238cc9356a1d3ca624ef7d9188b0346ee"
+  },
+  "original_evidence_head": "da596871ed2d73a1d4a95fe51dd50a00e5c8bfa5",
+  "repaired_code_freeze": {
+    "head": "ac850ffbbff02cbaed5d7a11661eb2a317f3fc8a",
+    "tree": "0b3d9f71a80bfd5c0bfbeb912a87866b83e38ef3"
+  },
+  "repair_findings": [
+    {
+      "id": "F1",
+      "reviewer_priority": "P1",
+      "status": "fixed",
+      "resolution": "The verifier now validates every E2/E3 transition schema, qualification and code-freeze predecessor/freeze identity, and the selected E3 live-attempt ledger identity. Temporary-input mutation tests cover each repaired fail-closed boundary."
+    },
+    {
+      "id": "F2",
+      "reviewer_priority": "P2",
+      "status": "fixed",
+      "resolution": "The complete warning inventory from the exact repaired-freeze Windows and Ubuntu qualification run is recorded below."
+    }
+  ],
+  "repair_write_set": [
+    "scripts/h2/verify_cross_view_parity.py",
+    "r6o/tests/h2/test_cross_view_semantic_parity.py",
+    "r6o_evidence/H2-F1/repair-report.json"
+  ],
+  "code_test_changed_files": [
+    "scripts/h2/verify_cross_view_parity.py",
+    "r6o/tests/h2/test_cross_view_semantic_parity.py"
+  ],
+  "evidence_changed_files": [
+    "r6o_evidence/H2-F1/repair-report.json"
+  ],
+  "historical_evidence_preserved": true,
+  "production_behavior_changed": false,
+  "live_qualified_production_freeze": {
+    "owner_gate": "H2-E3",
+    "head": "d94a1aa0c99056ec81f10c6a41e73ed6ea438ae3",
+    "tree": "9fec4c41ed0228e3d4e71c9e19a846c92447c69e",
+    "unchanged": true
+  },
+  "qualification": {
+    "f1_verifier": "PASS",
+    "focused_f1_pytest": {
+      "status": "PASS",
+      "passed": 25
+    },
+    "tui_b1_b2_e2_e3_regressions": {
+      "status": "PASS",
+      "passed": 64
+    },
+    "full_r6o": {
+      "status": "PASS",
+      "passed": 349
+    },
+    "r6o1_verification": {
+      "status": "PASS",
+      "baseline_passed": 9,
+      "r6o_passed": 349
+    },
+    "github_ci": {
+      "head": "ac850ffbbff02cbaed5d7a11661eb2a317f3fc8a",
+      "run_id": 32844522799,
+      "url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/32844522799",
+      "ubuntu": "PASS",
+      "windows": "PASS"
+    },
+    "protected_path_diff": "EMPTY",
+    "frozen_oracle": {
+      "head": "60d982f3328b45a351879d67dc4bb525172b65fd",
+      "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+      "status": "UNCHANGED"
+    }
+  },
+  "warning_inventory": [
+    {
+      "category": "github_actions_node20_deprecation",
+      "classification": "EXPECTED_EXTERNAL",
+      "platforms": [
+        "ubuntu-latest",
+        "windows-latest"
+      ],
+      "detail": "actions/checkout@v4 and actions/setup-python@v5 target Node.js 20 and were forced to Node.js 24; jobs passed."
+    },
+    {
+      "category": "node_punycode_deprecation",
+      "classification": "EXPECTED_EXTERNAL",
+      "platforms": [
+        "ubuntu-latest",
+        "windows-latest"
+      ],
+      "detail": "Node.js DEP0040 was emitted by action runtime setup/teardown; jobs passed."
+    },
+    {
+      "category": "node_url_parse_deprecation",
+      "classification": "EXPECTED_EXTERNAL",
+      "platforms": [
+        "ubuntu-latest",
+        "windows-latest"
+      ],
+      "detail": "Node.js DEP0169 was emitted by action runtime setup; jobs passed."
+    },
+    {
+      "category": "baseline_forbidden_terms_ci",
+      "classification": "EXPECTED_EXTERNAL",
+      "platforms": [
+        "ubuntu-latest",
+        "windows-latest"
+      ],
+      "terms": [
+        "phase6ev",
+        "cohort",
+        "recruitment",
+        "guardian",
+        "recurrence",
+        "OPEN_AUTHORIZATION",
+        "current-phase-docs",
+        "architecture-decisions"
+      ],
+      "detail": "The baseline verifier reports external baseline vocabulary without failing qualification; R6O-1 verification passed."
+    },
+    {
+      "category": "baseline_forbidden_term_local",
+      "classification": "EXPECTED_EXTERNAL",
+      "platforms": [
+        "local-windows"
+      ],
+      "terms": [
+        "architecture-decisions"
+      ],
+      "detail": "The local aggregate verifier reported the expected external architecture-decisions warning; R6O-1 verification passed."
+    }
+  ],
+  "repair_findings_remaining": [],
+  "automatic_repair_budget_remaining": 0,
+  "ready_for_luna_repair_delta_review": true,
+  "human_pass": "NOT_CLAIMED"
+}
