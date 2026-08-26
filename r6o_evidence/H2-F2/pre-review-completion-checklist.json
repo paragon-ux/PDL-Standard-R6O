@@ -58,24 +58,36 @@
       "evidence": "qualification.json"
     },
     "github_windows": {
-      "status": "NOT_RUN",
+      "status": "PASS",
       "required": true,
-      "reason": "No remote branch or pull request exists for codex/h2-f2-lifecycle-resilience; no GitHub run was available."
+      "workflow": "R6O-1 qualification",
+      "run_id": 33001661763,
+      "job": "qualify (windows-latest)",
+      "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33001661763/job/98284795341"
     },
     "github_ubuntu": {
-      "status": "NOT_RUN",
+      "status": "PASS",
       "required": true,
-      "reason": "No remote branch or pull request exists for codex/h2-f2-lifecycle-resilience; no GitHub run was available."
+      "workflow": "R6O-1 qualification",
+      "run_id": 33001661763,
+      "job": "qualify (ubuntu-latest)",
+      "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33001661763/job/98284794997"
     },
     "linux_x11": {
-      "status": "NOT_RUN",
+      "status": "PASS",
       "required": true,
-      "reason": "qt_app.py is an allowed lifecycle-shell production change; no Linux CI runner is available in this worktree."
+      "workflow": "H2-C Qt Quick qualification",
+      "run_id": 33001661645,
+      "job": "linux-x11",
+      "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33001661645/job/98284794819"
     },
     "linux_wayland": {
-      "status": "NOT_RUN",
+      "status": "PASS",
       "required": true,
-      "reason": "qt_app.py is an allowed lifecycle-shell production change; no Linux CI runner is available in this worktree."
+      "workflow": "H2-C Qt Quick qualification",
+      "run_id": 33001661645,
+      "job": "linux-wayland",
+      "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33001661645/job/98284794859"
     }
   },
   "warnings": [
@@ -92,11 +104,20 @@
       "effective_runtime_state": "No denial was emitted; configured DPI and bounded placement remained valid."
     }
   ],
-  "state": "BLOCKED",
-  "stop_code": "BLOCKED_ENVIRONMENT",
+  "pull_request": {
+    "number": 17,
+    "url": "https://github.com/paragon-ux/PDL-Standard-R6O/pull/17",
+    "head_sha": "953f30a559f2f0d8a9824e956a8a45724d2c81ea",
+    "merge_state": "CLEAN"
+  },
+  "known_implementer_findings": [
+    "Visual substitute review and final human disposition remain reviewer-owned; no Sol or Human pass is claimed."
+  ],
+  "state": "IMPLEMENTATION_COMPLETE",
+  "stop_code": "NONE",
   "implementation_complete": true,
-  "ready_for_sol_review": false,
+  "ready_for_sol_review": true,
   "sol_review_pass": "NOT_CLAIMED",
   "human_pass": "NOT_CLAIMED",
-  "generated_at_utc": "2026-08-26T10:40:24.4486746Z"
+  "generated_at_utc": "2026-08-26T18:51:19.0382011Z"
 }

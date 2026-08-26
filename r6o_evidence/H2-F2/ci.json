@@ -1,0 +1,61 @@
+{
+  "schema_version": "r6o-h2-f2-ci-qualification-1",
+  "gate": "H2-F2",
+  "pull_request": {
+    "number": 17,
+    "url": "https://github.com/paragon-ux/PDL-Standard-R6O/pull/17",
+    "head_sha": "953f30a559f2f0d8a9824e956a8a45724d2c81ea",
+    "base": "main",
+    "state": "OPEN",
+    "merge_state": "CLEAN"
+  },
+  "workflows": [
+    {
+      "workflow": "R6O-1 qualification",
+      "run_id": 33001661763,
+      "run_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33001661763",
+      "event": "pull_request",
+      "head_sha": "953f30a559f2f0d8a9824e956a8a45724d2c81ea",
+      "status": "SUCCESS",
+      "jobs": {
+        "github_windows": {
+          "name": "qualify (windows-latest)",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33001661763/job/98284795341"
+        },
+        "github_ubuntu": {
+          "name": "qualify (ubuntu-latest)",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33001661763/job/98284794997"
+        }
+      }
+    },
+    {
+      "workflow": "H2-C Qt Quick qualification",
+      "run_id": 33001661645,
+      "run_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33001661645",
+      "event": "pull_request",
+      "head_sha": "953f30a559f2f0d8a9824e956a8a45724d2c81ea",
+      "status": "SUCCESS",
+      "jobs": {
+        "windows": {
+          "name": "windows",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33001661645/job/98284794514"
+        },
+        "linux_x11": {
+          "name": "linux-x11",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33001661645/job/98284794819"
+        },
+        "linux_wayland": {
+          "name": "linux-wayland",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33001661645/job/98284794859"
+        }
+      }
+    }
+  ],
+  "all_required_jobs_passed": true,
+  "recorded_at_utc": "2026-08-26T18:51:19.0382011Z"
+}
