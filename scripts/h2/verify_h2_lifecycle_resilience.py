@@ -586,7 +586,7 @@ def main() -> int:
             "machine": platform.machine(),
             "dependencies": dependency_versions(),
         },
-        "warnings": warning_triage(),
+        "warnings": [],
     }
     try:
         identity = checkout_identity()
@@ -625,6 +625,7 @@ def main() -> int:
         result["failure"] = {"code": "UNEXPECTED_FAILURE", "detail": repr(exc)}
     finally:
         result["finished_at_utc"] = utc_now()
+        result["warnings"] = warning_triage()
         if identity is None:
             try:
                 result["checkout"] = checkout_identity()
