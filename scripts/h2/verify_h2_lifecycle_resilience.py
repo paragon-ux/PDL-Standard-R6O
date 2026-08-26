@@ -421,6 +421,7 @@ def qualify_actual_host(host_record_path: Path, selectors_path: Path, settle_sec
     cleanup_failures: list[str] = []
     try:
         host = CodexSidecarBinding(host_record_path, selectors_path)
+        actual_hwnd = host.host_hwnd
         empty_contract = host.selectors["reset_contract"]["composer_empty"]
         before = composer_empty_observation(host.refresh_controls().composer, empty_contract)
         require(before.get("empty") is True, "HOST_COMPOSER_NOT_EMPTY")
@@ -470,7 +471,7 @@ def qualify_actual_host(host_record_path: Path, selectors_path: Path, settle_sec
         return {
             "status": "PASS",
             "host": {
-                "hwnd": host.host_hwnd,
+                "hwnd": actual_hwnd,
                 "record_sha256": sha256_file(host_record_path),
                 "selectors_sha256": sha256_file(selectors_path),
             },
