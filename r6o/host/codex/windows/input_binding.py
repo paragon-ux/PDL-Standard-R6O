@@ -190,8 +190,32 @@ class CodexComposerInputBinding:
         if os.name != "nt":
             raise CodexInputBindingError("HOST_PLATFORM_UNSUPPORTED")
         if self._hook_thread is not None:
-            return
-        self._stop.clear()
+            if self._hook_thread.is_alive():
+                return
+            self._hook_thread = None
+        if self._hook:
+            raise CodexInputBindingError("HOST_INPUT_HOOK_STILL_ACTIVE")
+        if self.last_error:
+            raise CodexInputBindingError(self.last_error)
+        with self._state_lock:
+            self._armed = False
+            self._active_projection = None
+            self._delivery_pending = False
+            self._delivery_cancelled = False
+            self._failure_guard = False
+            self._enter_down = False
+            self._enter_pair_complete.set()
+            self._pressed_modifiers.clear()
+            self._delivery_event.clear()
+            self._stop.clear()
+        self.last_envelope = None
+        self.capture_count = 0
+        self.delivery_count = 0
+        self.suppressed_keydown_count = 0
+        self.suppressed_keyup_count = 0
+        self.empty_enter_suppressed_count = 0
+        self.modified_enter_passthrough_count = 0
+        self.focus_transaction_count = 0
         self._ready.clear()
         self._install_dispatcher()
         self._hook_thread = threading.Thread(
@@ -668,11 +692,18 @@ class CodexComposerInputBinding:
             # keyboard capture by returning before WM_QUIT/unhook.
             failures.append(CodexInputBindingError("HOST_ENTER_KEYUP_DRAIN_TIMEOUT"))
         self._stop.set()
-        if self._hook_thread is not None:
+        thread = self._hook_thread
+        if thread is not None:
             if self._hook_thread_id:
-                ctypes.windll.user32.PostThreadMessageW(self._hook_thread_id, WM_QUIT, 0, 0)
-            self._hook_thread.join(timeout=5.0)
-            if self._hook_thread.is_alive():
+                try:
+                    ctypes.windll.user32.PostThreadMessageW(self._hook_thread_id, WM_QUIT, 0, 0)
+                except Exception:
+                    failures.append(CodexInputBindingError("HOST_INPUT_HOOK_STOP_SIGNAL_FAILED"))
+            try:
+                thread.join(timeout=5.0)
+            except Exception:
+                failures.append(CodexInputBindingError("HOST_INPUT_HOOK_STOP_FAILED"))
+            if thread.is_alive():
                 failures.append(CodexInputBindingError("HOST_INPUT_HOOK_STOP_TIMEOUT"))
                 user32 = self._hook_user32
                 if user32 is None:
@@ -682,6 +713,13 @@ class CodexComposerInputBinding:
                     failures.append(CodexInputBindingError("HOST_INPUT_HOOK_REMOVE_FAILED"))
             else:
                 self._hook_thread = None
+        elif self._hook:
+            user32 = self._hook_user32
+            if user32 is None:
+                windll = getattr(ctypes, "windll", None)
+                user32 = getattr(windll, "user32", None)
+            if user32 is None or not self._remove_keyboard_hook(user32):
+                failures.append(CodexInputBindingError("HOST_INPUT_HOOK_REMOVE_FAILED"))
         with self._state_lock:
             self._delivery_pending = False
             self._failure_guard = False

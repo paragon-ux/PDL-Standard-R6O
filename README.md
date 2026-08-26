@@ -285,6 +285,50 @@ The expected transport-source distinction is `TUI_TEXT` versus
 divergence. G06 has no free-response path and reports that dimension as
 `N/A — NOT EXERCISED BY G06`.
 
+## H2-F2 lifecycle and resilience
+
+Run H2-F2 only from the isolated lifecycle worktree and branch:
+
+```text
+codex/h2-f2-lifecycle-resilience
+```
+
+The F2 verifier exercises only lifecycle/host mechanics and presentation
+projection. It does not invoke the Model Port, acquire a host-model lease,
+submit a native Codex request, or change the locked QML design. Before the
+actual-host run, preserve or clear any existing composer draft and require an
+empty composer; the verifier never clears unowned user text.
+
+Run the portable contract and Qt lifecycle checks with the frozen oracle bound:
+
+```powershell
+python scripts\h2\verify_h2_lifecycle_resilience.py `
+  --mode portable `
+  --baseline-repo $env:PDL_R6S_BASELINE_REPO
+```
+
+On Windows, with the exact D1 Codex host visible and the composer empty, run
+the required actual-host lifecycle qualification:
+
+```powershell
+$env:QT_QUICK_BACKEND = 'software'
+$env:QT_SCALE_FACTOR = '1'
+$env:QT_FONT_DPI = '96'
+python scripts\h2\verify_h2_lifecycle_resilience.py `
+  --mode actual-host `
+  --baseline-repo $env:PDL_R6S_BASELINE_REPO
+```
+
+The qualification proves bounded open/close/reopen, terminal dismissal,
+focus recovery, deterministic input-hook install/uninstall, key-pair
+ownership, timeout/error precedence, stale HWND and selector mismatch
+fail-closed behavior, no global-topmost regression, and composer cleanliness
+after teardown. It records accepted D2 attachment/non-interference evidence
+without rewriting predecessor evidence. Output is written only beneath
+`r6o_evidence/H2-F2/`. The known `RPC_E_CHANGED_MODE` and DPI-awareness
+observations are recorded as bounded `NONBLOCKING_P2` findings when they do
+not produce lifecycle failure, nondeterminism, or resource leakage.
+
 ## H2-D2 actual Codex attachment checkout
 
 Review and run H2-D2 only from this branch:
