@@ -1,0 +1,102 @@
+{
+  "schema_version": "r6o-h2-f2-pre-review-completion-1",
+  "gate": "H2-F2",
+  "agent": "LUNA-H2-F2-IMPLEMENTER",
+  "reviewer": "SOL-H2-F2-REVIEWER",
+  "branch": "codex/h2-f2-lifecycle-resilience",
+  "base_head": "0cc86bbddd804f4d6383a05489d61cbf18d68ac6",
+  "base_tree": "0bb908f0999011beca581ffc7c5d66b80891dabd",
+  "code_freeze_head": "4bb71dfac7dd42e6a5495e8d3c199f4f905a1479",
+  "code_freeze_tree": "92d3985d0e0334e366c2786889ea080d4e34f00b",
+  "checks": {
+    "f2_resilience_verifier": {
+      "status": "PASS",
+      "evidence": "qualification.json",
+      "mode": "actual-host"
+    },
+    "focused_f2_tests": {
+      "status": "PASS",
+      "count": 147,
+      "command": "python -m pytest r6o/tests/h2/test_h2_lifecycle_resilience.py r6o/tests/h2/test_codex_binding_contract.py r6o/tests/h2/test_codex_input_binding_contract.py r6o/tests/h2/test_qt_sidecar_component.py r6o/tests/h2/test_codex_h2_e2.py r6o/tests/h2/test_codex_h2_e3.py -q -p no:cacheprovider"
+    },
+    "e1_input_routing_regression": {
+      "status": "PASS",
+      "evidence": "focused_f2_tests"
+    },
+    "e2_e3_workflow_regression": {
+      "status": "PASS",
+      "evidence": "focused_f2_tests"
+    },
+    "d2_attachment_regression": {
+      "status": "PASS",
+      "evidence": "qualification.json and test_codex_binding_contract.py"
+    },
+    "qt_sidecar_component_regression": {
+      "status": "PASS",
+      "detail": "Windows mechanical component qualification passed in an isolated temporary evidence directory; visual substitute review remains a reviewer decision."
+    },
+    "full_r6o": {
+      "status": "PASS",
+      "count": 359,
+      "command": "python -m pytest r6o/tests -q -p no:cacheprovider"
+    },
+    "r6o1_verification": {
+      "status": "PASS",
+      "command": "python scripts/verify_r6o1.py"
+    },
+    "protected_path_diff": {
+      "status": "EMPTY",
+      "binding_py_diff": "EMPTY"
+    },
+    "frozen_oracle": {
+      "status": "UNCHANGED",
+      "commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+      "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6"
+    },
+    "windows_local_actual_codex": {
+      "status": "PASS",
+      "evidence": "qualification.json"
+    },
+    "github_windows": {
+      "status": "NOT_RUN",
+      "required": true,
+      "reason": "No remote branch or pull request exists for codex/h2-f2-lifecycle-resilience; no GitHub run was available."
+    },
+    "github_ubuntu": {
+      "status": "NOT_RUN",
+      "required": true,
+      "reason": "No remote branch or pull request exists for codex/h2-f2-lifecycle-resilience; no GitHub run was available."
+    },
+    "linux_x11": {
+      "status": "NOT_RUN",
+      "required": true,
+      "reason": "qt_app.py is an allowed lifecycle-shell production change; no Linux CI runner is available in this worktree."
+    },
+    "linux_wayland": {
+      "status": "NOT_RUN",
+      "required": true,
+      "reason": "qt_app.py is an allowed lifecycle-shell production change; no Linux CI runner is available in this worktree."
+    }
+  },
+  "warnings": [
+    {
+      "id": "RPC_E_CHANGED_MODE",
+      "observed_in_current_run": true,
+      "classification": "NONBLOCKING_P2",
+      "effective_runtime_state": "pywinauto restored STA COM mode; lifecycle, determinism, and cleanup remained valid."
+    },
+    {
+      "id": "DPI_AWARENESS_ACCESS_DENIED",
+      "observed_in_current_run": false,
+      "classification": "NONBLOCKING_P2",
+      "effective_runtime_state": "No denial was emitted; configured DPI and bounded placement remained valid."
+    }
+  ],
+  "state": "BLOCKED",
+  "stop_code": "BLOCKED_ENVIRONMENT",
+  "implementation_complete": true,
+  "ready_for_sol_review": false,
+  "sol_review_pass": "NOT_CLAIMED",
+  "human_pass": "NOT_CLAIMED",
+  "generated_at_utc": "2026-08-26T10:40:24.4486746Z"
+}
