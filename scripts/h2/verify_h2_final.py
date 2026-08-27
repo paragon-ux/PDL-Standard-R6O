@@ -928,7 +928,42 @@ def _validate_f3_attachment_provenance(
         },
         provenance_path.as_posix(),
     )
+    result_implementation_hashes = attachment_result.get("implementation_sha256")
+    for relative_path in (
+        "r6o/host/codex/windows/binding.py",
+        "r6o/host/codex/windows/placement.py",
+        "scripts/h2/verify_codex_attachment.py",
+    ):
+        expected_hash = _sha256_file(repo / relative_path)
+        result_hash = (
+            result_implementation_hashes.get(relative_path)
+            if isinstance(result_implementation_hashes, dict)
+            else None
+        )
+        _require(
+            result_hash == expected_hash,
+            "F3_ATTACHMENT_IMPLEMENTATION_HASH",
+            {"path": relative_path, "sha256": expected_hash},
+            {"path": relative_path, "sha256": result_hash},
+            attachment_path.as_posix(),
+        )
     result_event_log = attachment_result.get("event_log")
+    expected_result_event_log_path = _repo_relative(
+        repo,
+        artifact_paths["event_log"],
+    )
+    result_event_log_path = (
+        result_event_log.get("path")
+        if isinstance(result_event_log, dict)
+        else None
+    )
+    _require(
+        result_event_log_path == expected_result_event_log_path,
+        "F3_ATTACHMENT_EVENT_LOG_RESULT_PATH_BINDING",
+        expected_result_event_log_path,
+        result_event_log_path,
+        attachment_path.as_posix(),
+    )
     result_event_log_hash = (
         result_event_log.get("sha256")
         if isinstance(result_event_log, dict)

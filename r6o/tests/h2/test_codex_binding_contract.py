@@ -32,6 +32,7 @@ from r6o.host.codex.windows.placement import (
     standard_placement,
 )
 from r6o.views.sidecar.model import EXPANDED_SIZE, STANDARD_SIZE, SidecarMode
+from scripts.h2 import verify_codex_attachment as attachment_verifier
 from scripts.h2.verify_codex_attachment import clear_injected_composer_text
 
 
@@ -40,6 +41,40 @@ HISTORICAL_D2_EVIDENCE_DIR = ROOT / "r6o_evidence" / "H2-D2"
 CURRENT_D1R_D2_EVIDENCE_DIR = ROOT / "r6o_evidence" / "H2-D1R" / "d2-actual-host"
 HISTORICAL_D1_HOST_RECORD_SHA256 = "7cf1b2219f38b2d7e1f610dd25467969c688b681b3ac0632041eff3978ce9db5"
 HISTORICAL_D2_SELECTORS_SHA256 = "cb5a1b5b3123c979c54ecd3ec2614aa1d7b3c927dec987cdcfbbddeae75a21ef"
+HISTORICAL_D2_IMPLEMENTATION_SHA256 = {
+    "r6o/host/codex/windows/binding.py": "eed2c7db45ff56ebad2ccec542dc795ce86a02652ac6ed1d33e38e7ab295413c",
+    "r6o/host/codex/windows/placement.py": "8d01b1b2d2e6c77965decadcf2b34f27ee90728f72b8f0ce8ad770d0d1b43ddb",
+    "scripts/h2/verify_codex_attachment.py": "2c85a1f14e65021e3a2aaaf73276e47c1c165c34abb838620055db9218d3cbec",
+}
+
+
+def test_event_log_record_uses_the_selected_evidence_directory(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(attachment_verifier, "ROOT", tmp_path)
+    evidence_dir = tmp_path / "r6o_evidence" / "H2-F3" / "repair" / "actual-host" / "attachment"
+    event_log = evidence_dir / "win32-uia-events.jsonl"
+    event_log.parent.mkdir(parents=True)
+    event_log.write_bytes(b'{"sequence":1}\n')
+
+    assert attachment_verifier.event_log_record(evidence_dir, event_count=1) == {
+        "path": "r6o_evidence/H2-F3/repair/actual-host/attachment/win32-uia-events.jsonl",
+        "sha256": hashlib.sha256(event_log.read_bytes()).hexdigest(),
+        "event_count": 1,
+    }
+
+
+def test_attachment_evidence_path_outside_repository_fails_closed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    repo = tmp_path / "repo"
+    outside = tmp_path / "outside" / "win32-uia-events.jsonl"
+    monkeypatch.setattr(attachment_verifier, "ROOT", repo)
+
+    with pytest.raises(CodexBindingError, match="EVIDENCE_PATH_OUTSIDE_REPOSITORY"):
+        attachment_verifier.repository_relative_path(outside)
 
 
 def candidate(**overrides: object) -> HostCandidate:
@@ -658,15 +693,7 @@ def _assert_d2_evidence(
         "r6o3_lease_implemented": False,
         "semantic_workflow_exercised": False,
     }
-    expected_implementation = {
-        source: hashlib.sha256((ROOT / source).read_bytes()).hexdigest()
-        for source in (
-            "r6o/host/codex/windows/binding.py",
-            "r6o/host/codex/windows/placement.py",
-            "scripts/h2/verify_codex_attachment.py",
-        )
-    }
-    assert document["implementation_sha256"] == expected_implementation
+    assert document["implementation_sha256"] == HISTORICAL_D2_IMPLEMENTATION_SHA256
     assert document["runtime"]["qt_platform"] == "windows"
     assert document["runtime"]["qt_quick_backend"] == "software"
     assert document["runtime"]["dependencies"] == {

@@ -18,6 +18,28 @@ ROOT = Path(__file__).resolve().parents[3]
 EVIDENCE = ROOT / "r6o_evidence"
 
 
+def test_f3_hashed_text_evidence_uses_lf_checkout_identity() -> None:
+    paths = [
+        "r6o_evidence/H2-F3/qualification.json",
+        "r6o_evidence/H2-F3/repair/actual-host/attachment/win32-uia-events.jsonl",
+        "r6o_evidence/H2-F3/repair/logs/final_verifier.stdout.txt",
+        "r6o_evidence/H2-F3/tui-e1/session.cast",
+        "r6o_evidence/H2-F3/future/failure.log",
+    ]
+    completed = subprocess.run(
+        ["git", "check-attr", "text", "eol", "--", *paths],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stderr
+    for path in paths:
+        assert f"{path}: text: set" in completed.stdout
+        assert f"{path}: eol: lf" in completed.stdout
+
+
 def test_direct_script_bootstraps_repository_imports_without_pythonpath() -> None:
     env = os.environ.copy()
     env.pop("PYTHONPATH", None)
@@ -734,9 +756,23 @@ def _write_current_host_fixture(
     attachment_document = json.loads(
         attachment_target.read_text(encoding="utf-8")
     )
+    attachment_document["event_log"]["path"] = event_log_target.relative_to(repo).as_posix()
     attachment_document["event_log"]["sha256"] = hashlib.sha256(
         event_log_target.read_bytes()
     ).hexdigest()
+    implementation_paths = (
+        "r6o/host/codex/windows/binding.py",
+        "r6o/host/codex/windows/placement.py",
+        "scripts/h2/verify_codex_attachment.py",
+    )
+    attachment_document["implementation_sha256"] = {}
+    for relative_path in implementation_paths:
+        implementation_target = repo / relative_path
+        implementation_target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / relative_path, implementation_target)
+        attachment_document["implementation_sha256"][relative_path] = hashlib.sha256(
+            implementation_target.read_bytes()
+        ).hexdigest()
     _write_json(attachment_target, attachment_document)
     preflight_target = output / "actual-host" / "preflight-reset.json"
     shutil.copyfile(
@@ -821,6 +857,65 @@ def test_current_actual_host_evidence_is_pinned_and_complete(tmp_path: Path) -> 
         output=output,
         freeze=freeze,
     )["status"] == "PASS"
+
+
+def test_current_attachment_event_log_result_path_mismatch_fails_closed(
+    tmp_path: Path,
+) -> None:
+    freeze = {"head": "1" * 40, "tree": "2" * 40}
+    repo = tmp_path / "repo"
+    output = repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(repo, output, freeze)
+    attachment_path = output / "actual-host" / "attachment" / "attachment-result.json"
+    attachment = json.loads(attachment_path.read_text(encoding="utf-8"))
+    attachment["event_log"]["path"] = "r6o_evidence/H2-D2/win32-uia-events.jsonl"
+    _write_json(attachment_path, attachment)
+    provenance_path = output / "actual-host" / "attachment" / "f3-provenance.json"
+    provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
+    provenance["attachment_result_sha256"] = hashlib.sha256(
+        attachment_path.read_bytes()
+    ).hexdigest()
+    _write_json(provenance_path, provenance)
+
+    with pytest.raises(verifier.FinalIntegrationError) as exc_info:
+        verifier._validate_current_host_evidence(
+            repo=repo,
+            output=output,
+            freeze=freeze,
+        )
+    _assert_diagnostic(exc_info)
+    assert (
+        exc_info.value.dimension
+        == "F3_ATTACHMENT_EVENT_LOG_RESULT_PATH_BINDING"
+    )
+
+
+def test_current_attachment_implementation_hash_mismatch_fails_closed(
+    tmp_path: Path,
+) -> None:
+    freeze = {"head": "1" * 40, "tree": "2" * 40}
+    repo = tmp_path / "repo"
+    output = repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(repo, output, freeze)
+    attachment_path = output / "actual-host" / "attachment" / "attachment-result.json"
+    attachment = json.loads(attachment_path.read_text(encoding="utf-8"))
+    attachment["implementation_sha256"]["scripts/h2/verify_codex_attachment.py"] = "0" * 64
+    _write_json(attachment_path, attachment)
+    provenance_path = output / "actual-host" / "attachment" / "f3-provenance.json"
+    provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
+    provenance["attachment_result_sha256"] = hashlib.sha256(
+        attachment_path.read_bytes()
+    ).hexdigest()
+    _write_json(provenance_path, provenance)
+
+    with pytest.raises(verifier.FinalIntegrationError) as exc_info:
+        verifier._validate_current_host_evidence(
+            repo=repo,
+            output=output,
+            freeze=freeze,
+        )
+    _assert_diagnostic(exc_info)
+    assert exc_info.value.dimension == "F3_ATTACHMENT_IMPLEMENTATION_HASH"
 
 
 def test_current_actual_host_wrong_revision_fails_closed(tmp_path: Path) -> None:
