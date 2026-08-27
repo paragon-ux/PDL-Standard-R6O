@@ -121,6 +121,10 @@ class CodexComposerInputBinding:
         self._focus_probe = focus_probe or self._default_focus_probe
         self._text_probe = text_probe or self._default_text_probe
         self._state_lock = threading.Lock()
+        # Lock order is composer mutation -> state. Cancellation paths never
+        # wait for this lock while holding _state_lock, and _state_lock is never
+        # held across the bounded UI/Win32 composer operation.
+        self._composer_mutation_lock = threading.Lock()
         self._active_projection: dict[str, Any] | None = None
         self._armed = False
         self._delivery_pending = False
@@ -209,19 +213,20 @@ class CodexComposerInputBinding:
             raise CodexInputBindingError("HOST_INPUT_HOOK_STILL_ACTIVE")
         if self.last_error:
             raise CodexInputBindingError(self.last_error)
-        with self._state_lock:
-            self._armed = False
-            self._active_projection = None
-            self._delivery_pending = False
-            self._delivery_cancelled = False
-            self._delivery_token += 1
-            self._pending_delivery_token = None
-            self._failure_guard = False
-            self._enter_down = False
-            self._enter_pair_complete.set()
-            self._pressed_modifiers.clear()
-            self._delivery_event.clear()
-            self._stop.clear()
+        with self._composer_mutation_lock:
+            with self._state_lock:
+                self._armed = False
+                self._active_projection = None
+                self._delivery_pending = False
+                self._delivery_cancelled = False
+                self._delivery_token += 1
+                self._pending_delivery_token = None
+                self._failure_guard = False
+                self._enter_down = False
+                self._enter_pair_complete.set()
+                self._pressed_modifiers.clear()
+                self._delivery_event.clear()
+                self._stop.clear()
         self.last_envelope = None
         self.capture_count = 0
         self.delivery_count = 0
@@ -374,40 +379,35 @@ class CodexComposerInputBinding:
             delivery_pending = self._delivery_pending
             armed = self._armed
             failure_guard = self._failure_guard
-            self._delivery_cancelled = True
         if delivery_pending:
-            deadline = time.monotonic() + 5.0
-            while time.monotonic() < deadline and not self._delivery_event.is_set():
-                try:
-                    from PySide6.QtCore import QCoreApplication, QEventLoop
-
-                    app = QCoreApplication.instance()
-                    if app is not None:
-                        app.processEvents(QEventLoop.AllEvents, 25)
-                except ImportError:
-                    pass
-                time.sleep(0.025)
-            if not self._delivery_event.is_set():
-                failure = CodexInputBindingError("HOST_COMPOSER_ENVELOPE_TIMEOUT")
-            with self._state_lock:
-                still_pending = self._delivery_pending
-                if still_pending:
-                    self._delivery_pending = False
-                    self._pending_delivery_token = None
-                    self._delivery_token += 1
-            if still_pending:
-                try:
-                    self._clear_actual_composer()
-                except Exception as exc:
-                    if failure is None:
-                        failure = (
-                            exc
-                            if isinstance(exc, CodexInputBindingError)
-                            else CodexInputBindingError("HOST_COMPOSER_ABORT_CLEAR_FAILED")
-                        )
+            try:
+                with self._composer_mutation_lock:
+                    with self._state_lock:
+                        still_pending = self._delivery_pending
+                        self._delivery_cancelled = True
+                        if still_pending:
+                            self._delivery_pending = False
+                            self._pending_delivery_token = None
+                            self._delivery_token += 1
+                    if still_pending:
+                        # Invalidation and the one authorized destructive clear
+                        # are one serialized transaction. A queued callback can
+                        # no longer acquire mutation authority afterward.
+                        self._clear_actual_composer()
+            except Exception as exc:
+                failure = (
+                    exc
+                    if isinstance(exc, CodexInputBindingError)
+                    else CodexInputBindingError("HOST_COMPOSER_ABORT_CLEAR_FAILED")
+                )
         elif armed or failure_guard:
             try:
-                self._clear_actual_composer()
+                with self._composer_mutation_lock:
+                    with self._state_lock:
+                        should_clear = self._armed or self._failure_guard
+                        self._delivery_cancelled = True
+                    if should_clear:
+                        self._clear_actual_composer()
             except Exception as exc:
                 failure = (
                     exc
@@ -611,27 +611,49 @@ class CodexComposerInputBinding:
             if cancelled_current_delivery:
                 self._delivery_event.set()
             return
+        completes_current_event = False
+        deliver_envelope = False
         try:
             envelope = build_host_composer_envelope(capture.projection, capture.text)
-            self._clear_actual_composer()
-            with self._state_lock:
-                still_owned = (
-                    self._delivery_pending
-                    and capture.delivery_token == self._pending_delivery_token
-                )
-                cancelled = self._delivery_cancelled or not still_owned
-                if still_owned:
+            with self._composer_mutation_lock:
+                with self._state_lock:
+                    owns_mutation = (
+                        self._delivery_pending
+                        and capture.delivery_token == self._pending_delivery_token
+                    )
+                    if owns_mutation:
+                        completes_current_event = True
+                if not owns_mutation:
+                    return
+                self._clear_actual_composer()
+                with self._state_lock:
+                    still_owned = (
+                        self._delivery_pending
+                        and capture.delivery_token == self._pending_delivery_token
+                    )
+                    if not still_owned:
+                        return
+                    deliver_envelope = not self._delivery_cancelled
                     self._delivery_pending = False
                     self._pending_delivery_token = None
-            if not cancelled:
+            if deliver_envelope:
                 self.on_envelope(dict(envelope))
                 self.last_envelope = envelope
                 self.delivery_count += 1
         except Exception as exc:
+            with self._state_lock:
+                completes_current_event = (
+                    self._delivery_pending
+                    and capture.delivery_token == self._pending_delivery_token
+                )
             code = exc.code if isinstance(exc, CodexInputBindingError) else "ENVELOPE_DELIVERY_FAILED"
             self._set_error(code)
         finally:
-            self._delivery_event.set()
+            if completes_current_event:
+                with self._state_lock:
+                    event_still_current = capture.delivery_token == self._delivery_token
+                if event_still_current:
+                    self._delivery_event.set()
 
     def _run_keyboard_hook(self) -> None:
         user32 = ctypes.windll.user32
@@ -728,24 +750,26 @@ class CodexComposerInputBinding:
                 self.wait_for_delivery(timeout=5.0)
             except CodexInputBindingError as exc:
                 failures.append(exc)
-        with self._state_lock:
-            abandoned_delivery = self._delivery_pending
-            self._delivery_cancelled = True
-            self._delivery_pending = False
-            self._pending_delivery_token = None
-            self._delivery_token += 1
-        if abandoned_delivery:
-            try:
-                # Once provenance is invalidated, only this synchronous cleanup
-                # may touch attempt-owned composer text. A queued Qt callback is
-                # now permanently stale, including across later start cycles.
-                self._clear_actual_composer()
-            except Exception as exc:
-                failures.append(
-                    exc
-                    if isinstance(exc, CodexInputBindingError)
-                    else CodexInputBindingError("HOST_COMPOSER_ABORT_CLEAR_FAILED")
-                )
+        try:
+            with self._composer_mutation_lock:
+                with self._state_lock:
+                    abandoned_delivery = self._delivery_pending
+                    self._delivery_cancelled = True
+                    if abandoned_delivery:
+                        self._delivery_pending = False
+                        self._pending_delivery_token = None
+                        self._delivery_token += 1
+                if abandoned_delivery:
+                    # Once provenance is invalidated, only this synchronous cleanup
+                    # may touch attempt-owned composer text. A queued Qt callback is
+                    # now permanently stale, including across later start cycles.
+                    self._clear_actual_composer()
+        except Exception as exc:
+            failures.append(
+                exc
+                if isinstance(exc, CodexInputBindingError)
+                else CodexInputBindingError("HOST_COMPOSER_ABORT_CLEAR_FAILED")
+            )
         self.deactivate()
         if not self._enter_pair_complete.wait(timeout=5.0):
             failures.append(CodexInputBindingError("HOST_ENTER_KEYUP_DRAIN_TIMEOUT"))

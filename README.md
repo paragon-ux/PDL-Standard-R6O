@@ -308,15 +308,15 @@ python -c "import PySide6; print(PySide6.__version__)"
 python -m pytest r6o\tests\h2\test_h2_lifecycle_resilience.py -q -p no:cacheprovider
 ```
 
-Run the portable deterministic repair matrix with the frozen oracle bound. Use
-the repair evidence subdirectory so the historical original F2 qualification
-remains unchanged:
+Run the portable deterministic second-repair matrix with the frozen oracle
+bound. Use the isolated human-override repair directory so both the original F2
+qualification and first-repair evidence remain unchanged:
 
 ```powershell
 python scripts\h2\verify_h2_lifecycle_resilience.py `
   --mode portable `
   --baseline-repo $env:PDL_R6S_BASELINE_REPO `
-  --evidence-dir r6o_evidence\H2-F2\repair
+  --evidence-dir r6o_evidence\H2-F2\human-override-repair-2
 ```
 
 On Windows, with the exact D1 Codex host visible and the composer empty, run
@@ -329,7 +329,7 @@ $env:QT_FONT_DPI = '96'
 python scripts\h2\verify_h2_lifecycle_resilience.py `
   --mode actual-host `
   --baseline-repo $env:PDL_R6S_BASELINE_REPO `
-  --evidence-dir r6o_evidence\H2-F2\repair
+  --evidence-dir r6o_evidence\H2-F2\human-override-repair-2
 ```
 
 The deterministic matrix directly exercises normal and repeated activation,
@@ -340,6 +340,14 @@ close/reopen, and stale provenance corruption. The actual-host mode additionally
 installs the real hook, performs repeated activation/deactivation plus bounded
 partial-activation cleanup, and verifies final hook/window/composer cleanup. It
 does not synthesize a human Enter gesture or submit a native Codex request.
+
+Each verifier invocation also launches a bounded child-process probe. Portable
+mode requires an observable cleanup-complete marker after deterministic input
+and Qt lifecycle cleanup; actual-host mode requires the child to prove final
+native hook/thread/dispatcher, focus-router, Qt window, and engine cleanup. The
+parent must observe the child exit with status zero before the process-exit
+matrix dimension can pass. A missing marker, incomplete resource state, child
+failure, or termination timeout fails qualification closed.
 
 The verifier also checks stale HWND and selector mismatch fail-closed behavior,
 no global-topmost regression, and accepted D2 attachment/non-interference

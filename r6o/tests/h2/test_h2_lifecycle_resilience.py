@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+import copy
+import json
+import os
 import subprocess
 import sys
+import threading
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
@@ -265,6 +269,65 @@ def test_pending_delivery_timeout_invalidates_stale_callback_across_restart(
     binding.stop()
 
 
+def test_delivery_cancellation_serializes_composer_mutation_before_stale_callback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    envelopes: list[dict[str, Any]] = []
+    composer = {"text": "attempt-owned text"}
+    clears: list[str] = []
+    callback_before_mutation = threading.Event()
+    resume_stale_callback = threading.Event()
+    binding = input_binding(on_envelope=envelopes.append)
+
+    def clear_composer() -> None:
+        clears.append(composer["text"])
+        composer["text"] = ""
+
+    binding._clear_actual_composer = clear_composer  # type: ignore[method-assign]
+    user32 = FakeUser32()
+    assert binding._handle_key_event(user32, 0x0D, WM_KEYDOWN) is True
+    assert binding._handle_key_event(user32, 0x0D, WM_KEYUP) is True
+    capture = binding._captures.get_nowait()
+    assert capture is not None
+    binding._dispatcher = object()
+    original_builder = input_binding_module.build_host_composer_envelope
+
+    def blocked_builder(active_projection: dict[str, Any], text: str) -> dict[str, Any]:
+        callback_before_mutation.set()
+        assert resume_stale_callback.wait(timeout=5.0)
+        return original_builder(active_projection, text)
+
+    monkeypatch.setattr(input_binding_module, "build_host_composer_envelope", blocked_builder)
+    callback = threading.Thread(target=binding._deliver_capture, args=(capture,))
+    callback.start()
+    assert callback_before_mutation.wait(timeout=5.0)
+
+    binding.abort_handoff()
+
+    assert clears == ["attempt-owned text"]
+    assert composer["text"] == ""
+    with binding._state_lock:
+        current_token = binding._delivery_token + 1
+        binding._delivery_cancelled = False
+        binding._delivery_pending = True
+        binding._pending_delivery_token = current_token
+        binding._delivery_token = current_token
+    binding._delivery_event.clear()
+    composer["text"] = "new user text"
+    resume_stale_callback.set()
+    callback.join(timeout=5.0)
+
+    assert callback.is_alive() is False
+    assert composer["text"] == "new user text"
+    assert clears == ["attempt-owned text"]
+    assert envelopes == []
+    assert binding._delivery_event.is_set() is False
+    with binding._state_lock:
+        assert binding._delivery_pending is True
+        assert binding._pending_delivery_token == current_token
+        assert binding._delivery_token == current_token
+
+
 def test_failed_hook_shutdown_cannot_restart_from_stale_thread_liveness(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -372,6 +435,97 @@ def test_lifecycle_verifier_help_is_portable() -> None:
     assert "lifecycle" in result.stdout.lower()
 
 
+def test_lifecycle_process_exit_probe_cleans_resources_and_terminates() -> None:
+    environment = os.environ.copy()
+    environment.setdefault("QT_QPA_PLATFORM", "offscreen")
+    environment.setdefault("QT_QUICK_BACKEND", "software")
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "h2" / "verify_h2_lifecycle_resilience.py"),
+            "--process-exit-probe",
+            "portable",
+        ],
+        cwd=ROOT,
+        env=environment,
+        capture_output=True,
+        text=True,
+        timeout=30.0,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    prefix = "H2_F2_PROCESS_EXIT_CLEANUP_COMPLETE="
+    marker_lines = [line for line in result.stdout.splitlines() if line.startswith(prefix)]
+    assert len(marker_lines) == 1
+    marker = json.loads(marker_lines[0][len(prefix) :])
+    assert marker["status"] == "PASS"
+    assert marker["cleanup_complete"] is True
+    assert marker["probe_mode"] == "portable"
+
+
+def _valid_matrix_facts() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    input_facts = {
+        "normal_activation_deactivation": True,
+        "repeated_activation_deactivation": 2,
+        "partial_activation_failure_cleanup": True,
+        "pending_delivery_teardown": True,
+        "stale_queued_delivery_inert": True,
+        "failed_hook_thread_shutdown": "HOST_INPUT_HOOK_STOP_TIMEOUT",
+        "restart_after_failed_shutdown": "HOST_INPUT_HOOK_RESTART_BLOCKED",
+        "enter_keyup_timeout_retains_ownership": True,
+        "retry_after_delayed_keyup": True,
+        "delivery_cancellation_race": {
+            "status": "PASS",
+            "new_user_text_preserved": True,
+            "destructive_clear_count": 1,
+            "envelope_count": 0,
+            "current_delivery_state_preserved": True,
+            "current_delivery_event_preserved": True,
+        },
+    }
+    qt_facts = {
+        "partial_close_failure": "EXERCISED",
+        "partial_close_retry": True,
+        "repeated_successful_close_reopen": True,
+        "close_view_hide_failure_retry": {
+            "hide_attempts": 2,
+            "notification_count": 1,
+            "close_notified": True,
+        },
+    }
+    process_facts = {
+        "status": "PASS",
+        "probe_mode": "portable",
+        "cleanup_complete_marker": True,
+        "process_terminated": True,
+        "returncode": 0,
+    }
+    return input_facts, qt_facts, process_facts
+
+
+@pytest.mark.parametrize(
+    ("fact_group", "missing_key"),
+    [
+        ("input", "delivery_cancellation_race"),
+        ("qt", "close_view_hide_failure_retry"),
+        ("process", "cleanup_complete_marker"),
+    ],
+)
+def test_resilience_matrix_fails_closed_when_executed_proof_is_missing(
+    fact_group: str,
+    missing_key: str,
+) -> None:
+    from scripts.h2.verify_h2_lifecycle_resilience import (
+        F2VerificationError,
+        derive_repair_resilience_matrix,
+    )
+
+    input_facts, qt_facts, process_facts = copy.deepcopy(_valid_matrix_facts())
+    groups = {"input": input_facts, "qt": qt_facts, "process": process_facts}
+    groups[fact_group].pop(missing_key)
+    with pytest.raises(F2VerificationError, match="RESILIENCE_MATRIX_DIMENSION_INSUFFICIENT"):
+        derive_repair_resilience_matrix(input_facts, qt_facts, process_facts)
+
+
 def test_qt_close_is_idempotent_and_active_projection_can_reopen() -> None:
     pytest.importorskip("PySide6")
     from r6o.views.sidecar import QtSidecarWindow
@@ -423,6 +577,44 @@ def test_qt_close_callback_failure_can_be_retried() -> None:
         assert len(attempts) == 2
     finally:
         sidecar.close()
+
+
+def test_qt_close_hide_failure_can_be_retried() -> None:
+    pytest.importorskip("PySide6")
+    from r6o.views.sidecar import qt_app
+
+    class Window:
+        attempts = 0
+
+        def hide(self) -> None:
+            self.attempts += 1
+            if self.attempts == 1:
+                raise RuntimeError("hide unavailable")
+
+    class Bridge:
+        notifications = 0
+
+        def notify_closed(self) -> None:
+            self.notifications += 1
+
+    sidecar = qt_app.QtSidecarWindow.__new__(qt_app.QtSidecarWindow)
+    sidecar._tearing_down = False
+    sidecar._closed = False
+    sidecar._close_notified = False
+    window = Window()
+    bridge = Bridge()
+    sidecar.window = window
+    sidecar.bridge = bridge
+
+    with pytest.raises(RuntimeError, match="hide unavailable"):
+        sidecar.close_view()
+    assert sidecar._close_notified is False
+
+    sidecar.close_view()
+    sidecar.close_view()
+    assert window.attempts == 2
+    assert bridge.notifications == 1
+    assert sidecar._close_notified is True
 
 
 def test_qt_partial_terminal_cleanup_failure_remains_retryable(

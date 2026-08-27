@@ -142,13 +142,12 @@ class QtSidecarWindow:
         if self._tearing_down or self._closed or self._close_notified:
             return
         self._close_notified = True
-        self.window.hide()
         try:
+            self.window.hide()
             self.bridge.notify_closed()
         except Exception:
-            # The native window is already hidden, but the focus callback may
-            # be retried by the owner. Do not convert a recoverable callback
-            # failure into a permanently acknowledged close request.
+            # Neither a native hide failure nor a focus callback failure may
+            # permanently acknowledge this recoverable close transaction.
             self._close_notified = False
             raise
 
