@@ -97,6 +97,7 @@ class CapturedComposerSubmission:
     projection: dict[str, Any]
     text: str
     captured_monotonic: float
+    delivery_token: int = 0
 
 
 class CodexComposerInputBinding:
@@ -120,10 +121,16 @@ class CodexComposerInputBinding:
         self._focus_probe = focus_probe or self._default_focus_probe
         self._text_probe = text_probe or self._default_text_probe
         self._state_lock = threading.Lock()
+        # Lock order is composer mutation -> state. Cancellation paths never
+        # wait for this lock while holding _state_lock, and _state_lock is never
+        # held across the bounded UI/Win32 composer operation.
+        self._composer_mutation_lock = threading.Lock()
         self._active_projection: dict[str, Any] | None = None
         self._armed = False
         self._delivery_pending = False
         self._delivery_cancelled = False
+        self._delivery_token = 0
+        self._pending_delivery_token: int | None = None
         self._failure_guard = False
         self._enter_down = False
         self._enter_pair_complete = threading.Event()
@@ -139,6 +146,7 @@ class CodexComposerInputBinding:
         self._hook = 0
         self._hook_user32: Any | None = None
         self._callback: Any | None = None
+        self._teardown_pending = False
         self.last_error: str | None = None
         self.last_envelope: dict[str, Any] | None = None
         self.capture_count = 0
@@ -190,8 +198,43 @@ class CodexComposerInputBinding:
         if os.name != "nt":
             raise CodexInputBindingError("HOST_PLATFORM_UNSUPPORTED")
         if self._hook_thread is not None:
-            return
-        self._stop.clear()
+            if self._hook_thread.is_alive():
+                with self._state_lock:
+                    verified_active_hook = bool(self._hook) and not self._teardown_pending
+                if verified_active_hook and not self._stop.is_set():
+                    self.assert_healthy()
+                    return
+                raise CodexInputBindingError("HOST_INPUT_HOOK_RESTART_BLOCKED")
+            self._hook_thread = None
+        with self._state_lock:
+            if self._teardown_pending:
+                raise CodexInputBindingError("HOST_INPUT_HOOK_RESTART_BLOCKED")
+        if self._hook:
+            raise CodexInputBindingError("HOST_INPUT_HOOK_STILL_ACTIVE")
+        if self.last_error:
+            raise CodexInputBindingError(self.last_error)
+        with self._composer_mutation_lock:
+            with self._state_lock:
+                self._armed = False
+                self._active_projection = None
+                self._delivery_pending = False
+                self._delivery_cancelled = False
+                self._delivery_token += 1
+                self._pending_delivery_token = None
+                self._failure_guard = False
+                self._enter_down = False
+                self._enter_pair_complete.set()
+                self._pressed_modifiers.clear()
+                self._delivery_event.clear()
+                self._stop.clear()
+        self.last_envelope = None
+        self.capture_count = 0
+        self.delivery_count = 0
+        self.suppressed_keydown_count = 0
+        self.suppressed_keyup_count = 0
+        self.empty_enter_suppressed_count = 0
+        self.modified_enter_passthrough_count = 0
+        self.focus_transaction_count = 0
         self._ready.clear()
         self._install_dispatcher()
         self._hook_thread = threading.Thread(
@@ -205,6 +248,10 @@ class CodexComposerInputBinding:
             raise CodexInputBindingError("HOST_INPUT_HOOK_START_TIMEOUT")
         try:
             self.assert_healthy()
+            with self._state_lock:
+                verified_hook = bool(self._hook)
+            if not verified_hook or self._hook_thread is None or not self._hook_thread.is_alive():
+                raise CodexInputBindingError("HOST_INPUT_HOOK_NOT_VERIFIED")
         except Exception:
             self.stop()
             raise
@@ -265,7 +312,7 @@ class CodexComposerInputBinding:
     def activate(self, projection: dict[str, Any], *, timeout: float = 5.0) -> None:
         """Focus the actual composer and arm exactly one text submission."""
 
-        if self._hook_thread is None:
+        if self._hook_thread is None or self._teardown_pending:
             raise CodexInputBindingError("HOST_INPUT_HOOK_NOT_STARTED")
         context = validate_active_projection_context(projection)
         with self._state_lock:
@@ -332,38 +379,35 @@ class CodexComposerInputBinding:
             delivery_pending = self._delivery_pending
             armed = self._armed
             failure_guard = self._failure_guard
-            self._delivery_cancelled = True
         if delivery_pending:
-            deadline = time.monotonic() + 5.0
-            while time.monotonic() < deadline and not self._delivery_event.is_set():
-                try:
-                    from PySide6.QtCore import QCoreApplication, QEventLoop
-
-                    app = QCoreApplication.instance()
-                    if app is not None:
-                        app.processEvents(QEventLoop.AllEvents, 25)
-                except ImportError:
-                    pass
-                time.sleep(0.025)
-            if not self._delivery_event.is_set():
-                failure = CodexInputBindingError("HOST_COMPOSER_ENVELOPE_TIMEOUT")
-            with self._state_lock:
-                still_pending = self._delivery_pending
-            if still_pending:
-                try:
-                    self._clear_actual_composer()
+            try:
+                with self._composer_mutation_lock:
                     with self._state_lock:
-                        self._delivery_pending = False
-                except Exception as exc:
-                    if failure is None:
-                        failure = (
-                            exc
-                            if isinstance(exc, CodexInputBindingError)
-                            else CodexInputBindingError("HOST_COMPOSER_ABORT_CLEAR_FAILED")
-                        )
+                        still_pending = self._delivery_pending
+                        self._delivery_cancelled = True
+                        if still_pending:
+                            self._delivery_pending = False
+                            self._pending_delivery_token = None
+                            self._delivery_token += 1
+                    if still_pending:
+                        # Invalidation and the one authorized destructive clear
+                        # are one serialized transaction. A queued callback can
+                        # no longer acquire mutation authority afterward.
+                        self._clear_actual_composer()
+            except Exception as exc:
+                failure = (
+                    exc
+                    if isinstance(exc, CodexInputBindingError)
+                    else CodexInputBindingError("HOST_COMPOSER_ABORT_CLEAR_FAILED")
+                )
         elif armed or failure_guard:
             try:
-                self._clear_actual_composer()
+                with self._composer_mutation_lock:
+                    with self._state_lock:
+                        should_clear = self._armed or self._failure_guard
+                        self._delivery_cancelled = True
+                    if should_clear:
+                        self._clear_actual_composer()
             except Exception as exc:
                 failure = (
                     exc
@@ -496,12 +540,16 @@ class CodexComposerInputBinding:
             projection = dict(self._active_projection or {})
             self._armed = False
             self._active_projection = None
+            self._delivery_token += 1
+            delivery_token = self._delivery_token
+            self._pending_delivery_token = delivery_token
             self._delivery_pending = True
         self.capture_count += 1
         capture = CapturedComposerSubmission(
             projection=projection,
             text=text,
             captured_monotonic=time.monotonic(),
+            delivery_token=delivery_token,
         )
         if self._dispatcher is None:
             # Unit-level callers may exercise the decision function without a
@@ -542,30 +590,70 @@ class CodexComposerInputBinding:
         raise CodexInputBindingError("HOST_COMPOSER_CLEAR_UNVERIFIED")
 
     def _deliver_capture(self, capture: object) -> None:
+        if not isinstance(capture, CapturedComposerSubmission):
+            self._set_error("CAPTURE_RECORD_INVALID")
+            self._delivery_event.set()
+            return
+        with self._state_lock:
+            owns_pending_delivery = (
+                self._delivery_pending
+                and capture.delivery_token == self._pending_delivery_token
+            )
+            cancelled_current_delivery = (
+                self._delivery_cancelled
+                and not self._delivery_pending
+                and capture.delivery_token == self._delivery_token
+            )
+        if not owns_pending_delivery:
+            # A timed-out delivery, a replayed callback, or a callback from an
+            # earlier start/stop cycle has no authority over the composer or
+            # the current cycle's delivery event.
+            if cancelled_current_delivery:
+                self._delivery_event.set()
+            return
+        completes_current_event = False
+        deliver_envelope = False
         try:
-            if not isinstance(capture, CapturedComposerSubmission):
-                raise CodexInputBindingError("CAPTURE_RECORD_INVALID")
-            with self._state_lock:
-                abandoned = self._delivery_cancelled and not self._delivery_pending
-            if abandoned:
-                # abort_handoff() already cleared the attempt-owned composer
-                # after a bounded queued-delivery timeout.  A stale Qt event
-                # must not clear text typed after H2 teardown begins.
-                return
             envelope = build_host_composer_envelope(capture.projection, capture.text)
-            self._clear_actual_composer()
-            with self._state_lock:
-                cancelled = self._delivery_cancelled
-                self._delivery_pending = False
-            if not cancelled:
+            with self._composer_mutation_lock:
+                with self._state_lock:
+                    owns_mutation = (
+                        self._delivery_pending
+                        and capture.delivery_token == self._pending_delivery_token
+                    )
+                    if owns_mutation:
+                        completes_current_event = True
+                if not owns_mutation:
+                    return
+                self._clear_actual_composer()
+                with self._state_lock:
+                    still_owned = (
+                        self._delivery_pending
+                        and capture.delivery_token == self._pending_delivery_token
+                    )
+                    if not still_owned:
+                        return
+                    deliver_envelope = not self._delivery_cancelled
+                    self._delivery_pending = False
+                    self._pending_delivery_token = None
+            if deliver_envelope:
                 self.on_envelope(dict(envelope))
                 self.last_envelope = envelope
                 self.delivery_count += 1
         except Exception as exc:
+            with self._state_lock:
+                completes_current_event = (
+                    self._delivery_pending
+                    and capture.delivery_token == self._pending_delivery_token
+                )
             code = exc.code if isinstance(exc, CodexInputBindingError) else "ENVELOPE_DELIVERY_FAILED"
             self._set_error(code)
         finally:
-            self._delivery_event.set()
+            if completes_current_event:
+                with self._state_lock:
+                    event_still_current = capture.delivery_token == self._delivery_token
+                if event_still_current:
+                    self._delivery_event.set()
 
     def _run_keyboard_hook(self) -> None:
         user32 = ctypes.windll.user32
@@ -651,6 +739,7 @@ class CodexComposerInputBinding:
     def stop(self) -> None:
         failures: list[CodexInputBindingError] = []
         with self._state_lock:
+            self._teardown_pending = True
             delivery_pending = self._delivery_pending
         if delivery_pending:
             try:
@@ -661,18 +750,50 @@ class CodexComposerInputBinding:
                 self.wait_for_delivery(timeout=5.0)
             except CodexInputBindingError as exc:
                 failures.append(exc)
+        try:
+            with self._composer_mutation_lock:
+                with self._state_lock:
+                    abandoned_delivery = self._delivery_pending
+                    self._delivery_cancelled = True
+                    if abandoned_delivery:
+                        self._delivery_pending = False
+                        self._pending_delivery_token = None
+                        self._delivery_token += 1
+                if abandoned_delivery:
+                    # Once provenance is invalidated, only this synchronous cleanup
+                    # may touch attempt-owned composer text. A queued Qt callback is
+                    # now permanently stale, including across later start cycles.
+                    self._clear_actual_composer()
+        except Exception as exc:
+            failures.append(
+                exc
+                if isinstance(exc, CodexInputBindingError)
+                else CodexInputBindingError("HOST_COMPOSER_ABORT_CLEAR_FAILED")
+            )
         self.deactivate()
         if not self._enter_pair_complete.wait(timeout=5.0):
-            # Teardown must still remove the hook and release Qt resources.
-            # The timeout remains a gate failure; it no longer strands global
-            # keyboard capture by returning before WM_QUIT/unhook.
             failures.append(CodexInputBindingError("HOST_ENTER_KEYUP_DRAIN_TIMEOUT"))
+            thread = self._hook_thread
+            if self._hook and thread is not None and thread.is_alive():
+                # Removing a verified hook here would abandon the matching
+                # native keyup for a keydown this binding swallowed. Return a
+                # bounded failure while retaining pair ownership; keyup makes
+                # a later stop retry safe and deterministic.
+                self._dispatcher = None
+                raise failures[0]
         self._stop.set()
-        if self._hook_thread is not None:
+        thread = self._hook_thread
+        if thread is not None:
             if self._hook_thread_id:
-                ctypes.windll.user32.PostThreadMessageW(self._hook_thread_id, WM_QUIT, 0, 0)
-            self._hook_thread.join(timeout=5.0)
-            if self._hook_thread.is_alive():
+                try:
+                    ctypes.windll.user32.PostThreadMessageW(self._hook_thread_id, WM_QUIT, 0, 0)
+                except Exception:
+                    failures.append(CodexInputBindingError("HOST_INPUT_HOOK_STOP_SIGNAL_FAILED"))
+            try:
+                thread.join(timeout=5.0)
+            except Exception:
+                failures.append(CodexInputBindingError("HOST_INPUT_HOOK_STOP_FAILED"))
+            if thread.is_alive():
                 failures.append(CodexInputBindingError("HOST_INPUT_HOOK_STOP_TIMEOUT"))
                 user32 = self._hook_user32
                 if user32 is None:
@@ -682,9 +803,19 @@ class CodexComposerInputBinding:
                     failures.append(CodexInputBindingError("HOST_INPUT_HOOK_REMOVE_FAILED"))
             else:
                 self._hook_thread = None
+        elif self._hook:
+            user32 = self._hook_user32
+            if user32 is None:
+                windll = getattr(ctypes, "windll", None)
+                user32 = getattr(windll, "user32", None)
+            if user32 is None or not self._remove_keyboard_hook(user32):
+                failures.append(CodexInputBindingError("HOST_INPUT_HOOK_REMOVE_FAILED"))
         with self._state_lock:
             self._delivery_pending = False
+            self._pending_delivery_token = None
             self._failure_guard = False
+            live_thread = self._hook_thread is not None and self._hook_thread.is_alive()
+            self._teardown_pending = bool(self._hook or live_thread)
         self._dispatcher = None
         if failures:
             raise failures[0]

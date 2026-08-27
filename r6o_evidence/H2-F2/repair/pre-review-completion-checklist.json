@@ -1,0 +1,47 @@
+{
+  "schema_version": "r6o-h2-f2-repair-pre-review-completion-1",
+  "gate": "H2-F2",
+  "agent": "SOL-H2-F2-REPAIR",
+  "next_reviewer": "LUNA-H2-F2-REPAIR-DELTA-REVIEW",
+  "repair_base_head": "7c4782e7864cd920d4b49d9f2a08276e24dd281c",
+  "code_freeze_head": "da376ad9d85ff1d92a4cef9221d9c61f14752d50",
+  "code_freeze_tree": "2a13c980a23b0b5cd9403be8a58f184c662a92ee",
+  "checks": {
+    "authorized_findings_f1_f5_closed": "PASS",
+    "targeted_repair_tests": "PASS",
+    "complete_f2_focused_suite": "PASS",
+    "f2_verifier": "PASS",
+    "d2_regression": "PASS",
+    "e1_regression": "PASS",
+    "e2_e3_regression": "PASS",
+    "qt_component_regression": "PASS",
+    "full_r6o": "PASS",
+    "r6o1_verification": "PASS",
+    "windows_local_actual_codex": "PASS",
+    "github_windows": "PASS",
+    "github_ubuntu": "PASS",
+    "windows_qt": "PASS",
+    "linux_x11": "PASS",
+    "linux_wayland": "PASS",
+    "protected_path_diff": "EMPTY",
+    "frozen_oracle": "UNCHANGED",
+    "historical_f2_evidence_preserved": "PASS",
+    "write_set": "FROZEN",
+    "forbidden_set": "FROZEN"
+  },
+  "known_repair_findings": [],
+  "nonblocking_findings_not_repaired": [
+    {
+      "id": "F6",
+      "warning": "RPC_E_CHANGED_MODE",
+      "classification": "NONBLOCKING_P2"
+    }
+  ],
+  "automatic_repair_budget_remaining": 0,
+  "implementation_complete": true,
+  "ready_for_luna_repair_delta_review": true,
+  "luna_repair_delta_pass": "NOT_CLAIMED",
+  "human_pass": "NOT_CLAIMED",
+  "next_authority": "LUNA-H2-F2-REPAIR-DELTA-REVIEW",
+  "generated_at_utc": "2026-08-27T00:21:07.0911927Z"
+}

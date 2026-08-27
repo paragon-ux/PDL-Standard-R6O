@@ -1,0 +1,50 @@
+{
+  "schema_version": "r6o-h2-f2-human-override-repair-2-code-freeze-1",
+  "gate": "H2-F2",
+  "agent": "SOL-H2-F2-HUMAN-OVERRIDE-REPAIR-2",
+  "branch": "codex/h2-f2-lifecycle-resilience",
+  "pull_request": 17,
+  "second_repair_base": {
+    "head": "63b534a62001dd5e5f435475d334554efcc296ac",
+    "tree": "64a40c273ed06f758b96bba6f2d86927d5c7f6d9"
+  },
+  "first_repaired_code_freeze": {
+    "head": "da376ad9d85ff1d92a4cef9221d9c61f14752d50",
+    "tree": "2a13c980a23b0b5cd9403be8a58f184c662a92ee"
+  },
+  "first_repaired_evidence": {
+    "head": "63b534a62001dd5e5f435475d334554efcc296ac",
+    "tree": "64a40c273ed06f758b96bba6f2d86927d5c7f6d9"
+  },
+  "abandoned_candidate_freeze": {
+    "head": "209472c74d820c46ca4333cf72551a75c5e34468",
+    "tree": "a0fc44c81c63fd9809d920401958654d0a5f16d8",
+    "reason": "General R6O CI did not install optional PySide6, so the new process-probe regression required the repository-standard optional-Qt skip guard.",
+    "status": "ABANDONED_AFTER_FAIL_CLOSED_CI"
+  },
+  "second_repaired_code_freeze": {
+    "head": "27cbce651ccacd3dc18f90a2684bb87d19582534",
+    "tree": "ab7fc624679498d48310edde008ea001c13e9552",
+    "status": "FROZEN"
+  },
+  "commits": [
+    "209472c74d820c46ca4333cf72551a75c5e34468",
+    "27cbce651ccacd3dc18f90a2684bb87d19582534"
+  ],
+  "implementation_changed_files": [
+    "README.md",
+    "r6o/host/codex/windows/input_binding.py",
+    "r6o/tests/h2/test_h2_lifecycle_resilience.py",
+    "r6o/views/sidecar/qt_app.py",
+    "scripts/h2/verify_h2_lifecycle_resilience.py"
+  ],
+  "production_behavior_changed": true,
+  "production_change_scope": "F2_AUTHORIZED_HUMAN_OVERRIDE_ONLY",
+  "protected_path_diff": "EMPTY",
+  "frozen_oracle": {
+    "commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+    "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+    "status": "UNCHANGED"
+  },
+  "post_freeze_rule": "Only r6o_evidence/H2-F2/human-override-repair-2 evidence files may be added after this freeze."
+}

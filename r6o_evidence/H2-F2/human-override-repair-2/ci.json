@@ -1,0 +1,68 @@
+{
+  "schema_version": "r6o-h2-f2-human-override-repair-2-ci-qualification-1",
+  "gate": "H2-F2",
+  "code_freeze_head": "27cbce651ccacd3dc18f90a2684bb87d19582534",
+  "pull_request": {
+    "number": 17,
+    "url": "https://github.com/paragon-ux/PDL-Standard-R6O/pull/17",
+    "head_sha": "27cbce651ccacd3dc18f90a2684bb87d19582534",
+    "state": "OPEN",
+    "base": "main",
+    "merged": false
+  },
+  "abandoned_freeze_ci": {
+    "head_sha": "209472c74d820c46ca4333cf72551a75c5e34468",
+    "r6o_run_id": 33033533619,
+    "conclusion": "FAILURE",
+    "reason": "Process-probe regression did not use the repository-standard optional-PySide6 skip guard in the general R6O workflow.",
+    "qt_run_id": 33033533670,
+    "qt_conclusion": "SUCCESS"
+  },
+  "workflows": [
+    {
+      "workflow": "R6O-1 qualification",
+      "run_id": 33034243022,
+      "run_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33034243022",
+      "head_sha": "27cbce651ccacd3dc18f90a2684bb87d19582534",
+      "status": "SUCCESS",
+      "jobs": {
+        "github_ubuntu": {
+          "job_id": 98393358795,
+          "name": "qualify (ubuntu-latest)",
+          "status": "SUCCESS"
+        },
+        "github_windows": {
+          "job_id": 98393358963,
+          "name": "qualify (windows-latest)",
+          "status": "SUCCESS"
+        }
+      }
+    },
+    {
+      "workflow": "H2-C Qt Quick qualification",
+      "run_id": 33034243010,
+      "run_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33034243010",
+      "head_sha": "27cbce651ccacd3dc18f90a2684bb87d19582534",
+      "status": "SUCCESS",
+      "jobs": {
+        "linux_x11": {
+          "job_id": 98393358732,
+          "name": "linux-x11",
+          "status": "SUCCESS"
+        },
+        "linux_wayland": {
+          "job_id": 98393358924,
+          "name": "linux-wayland",
+          "status": "SUCCESS"
+        },
+        "windows_qt": {
+          "job_id": 98393359017,
+          "name": "windows",
+          "status": "SUCCESS"
+        }
+      }
+    }
+  ],
+  "all_required_jobs_passed": true,
+  "recorded_at_utc": "2026-08-27T02:48:07.6546495Z"
+}

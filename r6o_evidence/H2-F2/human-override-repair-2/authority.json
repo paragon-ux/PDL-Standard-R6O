@@ -1,0 +1,23 @@
+{
+  "schema_version": "r6o-h2-f2-human-override-repair-2-authority-1",
+  "gate": "H2-F2",
+  "authority": "HUMAN-H2",
+  "agent": "SOL-H2-F2-HUMAN-OVERRIDE-REPAIR-2",
+  "role": "SECOND_BOUNDED_REPAIR",
+  "automatic_repair_budget_at_entry": "EXHAUSTED",
+  "human_override_second_repair": "AUTHORIZED",
+  "human_override_repair_budget": 1,
+  "repair_trigger": "LUNA_REPAIR_DELTA_REQUEST_CHANGES",
+  "luna_reviewed_head": "63b534a62001dd5e5f435475d334554efcc296ac",
+  "authorized_findings": [
+    "R1_F1_DELIVERY_CANCELLATION_RACE",
+    "R2_F5_UNSUPPORTED_QUALIFICATION_PASS",
+    "R3_F4_CLOSE_VIEW_HIDE_RETRY"
+  ],
+  "automatic_repair_budget_remaining": 0,
+  "human_override_repair_budget_remaining": 0,
+  "ready_for_further_automatic_repair": false,
+  "ready_for_automatic_luna_review": false,
+  "next_authority": "HUMAN-H2",
+  "human_pass": "NOT_CLAIMED"
+}

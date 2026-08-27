@@ -1,0 +1,84 @@
+{
+  "schema_version": "r6o-h2-f2-human-override-repair-2-qualification-summary-1",
+  "gate": "H2-F2",
+  "code_freeze_head": "27cbce651ccacd3dc18f90a2684bb87d19582534",
+  "code_freeze_tree": "ab7fc624679498d48310edde008ea001c13e9552",
+  "generated_at_utc": "2026-08-27T02:48:07.6546495Z",
+  "commands": [
+    {
+      "name": "targeted_r1_r2_r3_regressions",
+      "command": "python -m pytest r6o/tests/h2/test_h2_lifecycle_resilience.py -q -p no:cacheprovider",
+      "status": "PASS",
+      "count": 18
+    },
+    {
+      "name": "complete_f2_focused_and_adjacent_suite",
+      "command": "python -m pytest r6o/tests/h2/test_h2_lifecycle_resilience.py r6o/tests/h2/test_codex_binding_contract.py r6o/tests/h2/test_codex_input_binding_contract.py r6o/tests/h2/test_qt_sidecar_component.py r6o/tests/h2/test_codex_h2_e2.py r6o/tests/h2/test_codex_h2_e3.py -q -p no:cacheprovider",
+      "status": "PASS",
+      "count": 156,
+      "pyside6_version": "6.11.2",
+      "qt_tests_skipped": false
+    },
+    {
+      "name": "full_r6o_tests",
+      "command": "python -m pytest r6o/tests -q -p no:cacheprovider",
+      "status": "PASS",
+      "count": 368
+    },
+    {
+      "name": "r6o1_verification",
+      "command": "python scripts/verify_r6o1.py",
+      "status": "PASS",
+      "r6o_test_count": 368,
+      "baseline_test_count": 9
+    },
+    {
+      "name": "windows_local_actual_codex",
+      "command": "python scripts/h2/verify_h2_lifecycle_resilience.py --mode actual-host --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --evidence-dir r6o_evidence/H2-F2/human-override-repair-2",
+      "status": "PASS",
+      "evidence": "qualification.json"
+    }
+  ],
+  "authorized_findings": {
+    "R1_F1_DELIVERY_CANCELLATION_RACE": "PASS",
+    "R2_F5_UNSUPPORTED_QUALIFICATION_PASS": "PASS",
+    "R3_F4_CLOSE_VIEW_HIDE_RETRY": "PASS"
+  },
+  "process_exit_proof": {
+    "probe_mode": "actual-host",
+    "cleanup_complete_marker": true,
+    "process_terminated": true,
+    "returncode": 0,
+    "duration_seconds": 148.344,
+    "timeout_seconds": 180.0,
+    "status": "PASS"
+  },
+  "regressions": {
+    "d2": "PASS",
+    "e1": "PASS",
+    "e2_e3": "PASS",
+    "qt_component": "PASS",
+    "restart_after_failed_shutdown": "PRESERVED",
+    "enter_pair_ownership": "PRESERVED",
+    "semantic_workflow_preservation": "PASS",
+    "sidecar_fidelity_preservation": "PASS"
+  },
+  "repository_invariants": {
+    "protected_path_diff": "EMPTY",
+    "frozen_oracle": "UNCHANGED",
+    "git_diff_check": "PASS",
+    "qualification_checkout_dirty_reason": "Only untracked human-override-repair-2 evidence from the preserved abandoned freeze existed; tracked code/test/verifier/README diff was empty."
+  },
+  "warnings": [
+    {
+      "id": "RPC_E_CHANGED_MODE",
+      "observed": true,
+      "classification": "NONBLOCKING_P2"
+    },
+    {
+      "id": "DPI_AWARENESS_ACCESS_DENIED",
+      "observed": false,
+      "classification": "NONBLOCKING_P2"
+    }
+  ]
+}

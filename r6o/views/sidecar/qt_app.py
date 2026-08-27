@@ -75,6 +75,12 @@ class QtSidecarWindow:
         app = ensure_application()
         self._close_notified = False
         self._tearing_down = False
+        self._closed = False
+        self._window_hidden = False
+        self._window_delete_scheduled = False
+        self._engine_delete_scheduled = False
+        self._deferred_deletes_sent = False
+        self._cleanup_events_processed = False
         copy_callback = on_copy or (lambda body: app.clipboard().setText(body))
         self.bridge = SidecarBridge(
             mode,
@@ -100,6 +106,8 @@ class QtSidecarWindow:
         return SidecarMode.parse(self.bridge.mode)
 
     def show(self) -> None:
+        if self._closed:
+            raise RuntimeError("SIDECAR_WINDOW_CLOSED")
         self.window.show()
         self.window.requestActivate()
         _process_until(
@@ -110,6 +118,8 @@ class QtSidecarWindow:
         )
 
     def render(self, projection: dict[str, object]) -> bool:
+        if self._closed:
+            raise RuntimeError("SIDECAR_WINDOW_CLOSED")
         active = self.bridge.render(projection)
         if not active:
             return False
@@ -129,16 +139,24 @@ class QtSidecarWindow:
             raise RuntimeError("unable to focus the first projected Sidecar action")
 
     def close_view(self) -> None:
-        if self._tearing_down or self._close_notified:
+        if self._tearing_down or self._closed or self._close_notified:
             return
         self._close_notified = True
-        self.window.hide()
-        self.bridge.notify_closed()
+        try:
+            self.window.hide()
+            self.bridge.notify_closed()
+        except Exception:
+            # Neither a native hide failure nor a focus callback failure may
+            # permanently acknowledge this recoverable close transaction.
+            self._close_notified = False
+            raise
 
     def dismiss_terminal(self) -> None:
         self.window.hide()
 
     def capture(self, path: Path) -> QImage:
+        if self._closed:
+            raise RuntimeError("SIDECAR_WINDOW_CLOSED")
         path.parent.mkdir(parents=True, exist_ok=True)
         image = self.window.grabWindow()
         if image.isNull():
@@ -154,9 +172,22 @@ class QtSidecarWindow:
         return found
 
     def close(self) -> None:
+        if self._closed:
+            return
         self._tearing_down = True
-        self.window.hide()
-        self.window.deleteLater()
-        self.engine.deleteLater()
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
-        ensure_application().processEvents()
+        if not self._window_hidden:
+            self.window.hide()
+            self._window_hidden = True
+        if not self._window_delete_scheduled:
+            self.window.deleteLater()
+            self._window_delete_scheduled = True
+        if not self._engine_delete_scheduled:
+            self.engine.deleteLater()
+            self._engine_delete_scheduled = True
+        if not self._deferred_deletes_sent:
+            QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+            self._deferred_deletes_sent = True
+        if not self._cleanup_events_processed:
+            ensure_application().processEvents()
+            self._cleanup_events_processed = True
+        self._closed = True

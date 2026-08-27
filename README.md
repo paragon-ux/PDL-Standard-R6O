@@ -285,6 +285,77 @@ The expected transport-source distinction is `TUI_TEXT` versus
 divergence. G06 has no free-response path and reports that dimension as
 `N/A — NOT EXERCISED BY G06`.
 
+## H2-F2 lifecycle and resilience
+
+Run H2-F2 only from the isolated lifecycle worktree and branch:
+
+```text
+codex/h2-f2-lifecycle-resilience
+```
+
+The F2 verifier exercises only lifecycle/host mechanics and presentation
+projection. It does not invoke the Model Port, acquire a host-model lease,
+submit a native Codex request, or change the locked QML design. Before the
+actual-host run, preserve or clear any existing composer draft and require an
+empty composer; the verifier never clears unowned user text.
+
+First require PySide6 and run the focused F2 lifecycle tests. This qualification
+path must execute the Qt tests; a missing PySide6 installation is a failure, not
+evidence from a skipped test:
+
+```powershell
+python -c "import PySide6; print(PySide6.__version__)"
+python -m pytest r6o\tests\h2\test_h2_lifecycle_resilience.py -q -p no:cacheprovider
+```
+
+Run the portable deterministic second-repair matrix with the frozen oracle
+bound. Use the isolated human-override repair directory so both the original F2
+qualification and first-repair evidence remain unchanged:
+
+```powershell
+python scripts\h2\verify_h2_lifecycle_resilience.py `
+  --mode portable `
+  --baseline-repo $env:PDL_R6S_BASELINE_REPO `
+  --evidence-dir r6o_evidence\H2-F2\human-override-repair-2
+```
+
+On Windows, with the exact D1 Codex host visible and the composer empty, run
+the required actual-host lifecycle qualification:
+
+```powershell
+$env:QT_QUICK_BACKEND = 'software'
+$env:QT_SCALE_FACTOR = '1'
+$env:QT_FONT_DPI = '96'
+python scripts\h2\verify_h2_lifecycle_resilience.py `
+  --mode actual-host `
+  --baseline-repo $env:PDL_R6S_BASELINE_REPO `
+  --evidence-dir r6o_evidence\H2-F2\human-override-repair-2
+```
+
+The deterministic matrix directly exercises normal and repeated activation,
+partial activation cleanup, pending-delivery teardown, stale queued delivery,
+failed hook-thread shutdown and restart, delayed/missing Enter keyup ownership,
+shutdown cleanup, Qt partial-close failure and retry, repeated successful
+close/reopen, and stale provenance corruption. The actual-host mode additionally
+installs the real hook, performs repeated activation/deactivation plus bounded
+partial-activation cleanup, and verifies final hook/window/composer cleanup. It
+does not synthesize a human Enter gesture or submit a native Codex request.
+
+Each verifier invocation also launches a bounded child-process probe. Portable
+mode requires an observable cleanup-complete marker after deterministic input
+and Qt lifecycle cleanup; actual-host mode requires the child to prove final
+native hook/thread/dispatcher, focus-router, Qt window, and engine cleanup. The
+parent must observe the child exit with status zero before the process-exit
+matrix dimension can pass. A missing marker, incomplete resource state, child
+failure, or termination timeout fails qualification closed.
+
+The verifier also checks stale HWND and selector mismatch fail-closed behavior,
+no global-topmost regression, and accepted D2 attachment/non-interference
+evidence without rewriting predecessor evidence. The known
+`RPC_E_CHANGED_MODE` and DPI-awareness observations remain bounded
+`NONBLOCKING_P2` findings when they do not produce lifecycle failure,
+nondeterminism, or resource leakage.
+
 ## H2-D2 actual Codex attachment checkout
 
 Review and run H2-D2 only from this branch:
