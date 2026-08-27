@@ -97,6 +97,7 @@ class CapturedComposerSubmission:
     projection: dict[str, Any]
     text: str
     captured_monotonic: float
+    delivery_token: int = 0
 
 
 class CodexComposerInputBinding:
@@ -124,6 +125,8 @@ class CodexComposerInputBinding:
         self._armed = False
         self._delivery_pending = False
         self._delivery_cancelled = False
+        self._delivery_token = 0
+        self._pending_delivery_token: int | None = None
         self._failure_guard = False
         self._enter_down = False
         self._enter_pair_complete = threading.Event()
@@ -139,6 +142,7 @@ class CodexComposerInputBinding:
         self._hook = 0
         self._hook_user32: Any | None = None
         self._callback: Any | None = None
+        self._teardown_pending = False
         self.last_error: str | None = None
         self.last_envelope: dict[str, Any] | None = None
         self.capture_count = 0
@@ -191,8 +195,16 @@ class CodexComposerInputBinding:
             raise CodexInputBindingError("HOST_PLATFORM_UNSUPPORTED")
         if self._hook_thread is not None:
             if self._hook_thread.is_alive():
-                return
+                with self._state_lock:
+                    verified_active_hook = bool(self._hook) and not self._teardown_pending
+                if verified_active_hook and not self._stop.is_set():
+                    self.assert_healthy()
+                    return
+                raise CodexInputBindingError("HOST_INPUT_HOOK_RESTART_BLOCKED")
             self._hook_thread = None
+        with self._state_lock:
+            if self._teardown_pending:
+                raise CodexInputBindingError("HOST_INPUT_HOOK_RESTART_BLOCKED")
         if self._hook:
             raise CodexInputBindingError("HOST_INPUT_HOOK_STILL_ACTIVE")
         if self.last_error:
@@ -202,6 +214,8 @@ class CodexComposerInputBinding:
             self._active_projection = None
             self._delivery_pending = False
             self._delivery_cancelled = False
+            self._delivery_token += 1
+            self._pending_delivery_token = None
             self._failure_guard = False
             self._enter_down = False
             self._enter_pair_complete.set()
@@ -229,6 +243,10 @@ class CodexComposerInputBinding:
             raise CodexInputBindingError("HOST_INPUT_HOOK_START_TIMEOUT")
         try:
             self.assert_healthy()
+            with self._state_lock:
+                verified_hook = bool(self._hook)
+            if not verified_hook or self._hook_thread is None or not self._hook_thread.is_alive():
+                raise CodexInputBindingError("HOST_INPUT_HOOK_NOT_VERIFIED")
         except Exception:
             self.stop()
             raise
@@ -289,7 +307,7 @@ class CodexComposerInputBinding:
     def activate(self, projection: dict[str, Any], *, timeout: float = 5.0) -> None:
         """Focus the actual composer and arm exactly one text submission."""
 
-        if self._hook_thread is None:
+        if self._hook_thread is None or self._teardown_pending:
             raise CodexInputBindingError("HOST_INPUT_HOOK_NOT_STARTED")
         context = validate_active_projection_context(projection)
         with self._state_lock:
@@ -373,11 +391,13 @@ class CodexComposerInputBinding:
                 failure = CodexInputBindingError("HOST_COMPOSER_ENVELOPE_TIMEOUT")
             with self._state_lock:
                 still_pending = self._delivery_pending
+                if still_pending:
+                    self._delivery_pending = False
+                    self._pending_delivery_token = None
+                    self._delivery_token += 1
             if still_pending:
                 try:
                     self._clear_actual_composer()
-                    with self._state_lock:
-                        self._delivery_pending = False
                 except Exception as exc:
                     if failure is None:
                         failure = (
@@ -520,12 +540,16 @@ class CodexComposerInputBinding:
             projection = dict(self._active_projection or {})
             self._armed = False
             self._active_projection = None
+            self._delivery_token += 1
+            delivery_token = self._delivery_token
+            self._pending_delivery_token = delivery_token
             self._delivery_pending = True
         self.capture_count += 1
         capture = CapturedComposerSubmission(
             projection=projection,
             text=text,
             captured_monotonic=time.monotonic(),
+            delivery_token=delivery_token,
         )
         if self._dispatcher is None:
             # Unit-level callers may exercise the decision function without a
@@ -566,21 +590,39 @@ class CodexComposerInputBinding:
         raise CodexInputBindingError("HOST_COMPOSER_CLEAR_UNVERIFIED")
 
     def _deliver_capture(self, capture: object) -> None:
+        if not isinstance(capture, CapturedComposerSubmission):
+            self._set_error("CAPTURE_RECORD_INVALID")
+            self._delivery_event.set()
+            return
+        with self._state_lock:
+            owns_pending_delivery = (
+                self._delivery_pending
+                and capture.delivery_token == self._pending_delivery_token
+            )
+            cancelled_current_delivery = (
+                self._delivery_cancelled
+                and not self._delivery_pending
+                and capture.delivery_token == self._delivery_token
+            )
+        if not owns_pending_delivery:
+            # A timed-out delivery, a replayed callback, or a callback from an
+            # earlier start/stop cycle has no authority over the composer or
+            # the current cycle's delivery event.
+            if cancelled_current_delivery:
+                self._delivery_event.set()
+            return
         try:
-            if not isinstance(capture, CapturedComposerSubmission):
-                raise CodexInputBindingError("CAPTURE_RECORD_INVALID")
-            with self._state_lock:
-                abandoned = self._delivery_cancelled and not self._delivery_pending
-            if abandoned:
-                # abort_handoff() already cleared the attempt-owned composer
-                # after a bounded queued-delivery timeout.  A stale Qt event
-                # must not clear text typed after H2 teardown begins.
-                return
             envelope = build_host_composer_envelope(capture.projection, capture.text)
             self._clear_actual_composer()
             with self._state_lock:
-                cancelled = self._delivery_cancelled
-                self._delivery_pending = False
+                still_owned = (
+                    self._delivery_pending
+                    and capture.delivery_token == self._pending_delivery_token
+                )
+                cancelled = self._delivery_cancelled or not still_owned
+                if still_owned:
+                    self._delivery_pending = False
+                    self._pending_delivery_token = None
             if not cancelled:
                 self.on_envelope(dict(envelope))
                 self.last_envelope = envelope
@@ -675,6 +717,7 @@ class CodexComposerInputBinding:
     def stop(self) -> None:
         failures: list[CodexInputBindingError] = []
         with self._state_lock:
+            self._teardown_pending = True
             delivery_pending = self._delivery_pending
         if delivery_pending:
             try:
@@ -685,12 +728,35 @@ class CodexComposerInputBinding:
                 self.wait_for_delivery(timeout=5.0)
             except CodexInputBindingError as exc:
                 failures.append(exc)
+        with self._state_lock:
+            abandoned_delivery = self._delivery_pending
+            self._delivery_cancelled = True
+            self._delivery_pending = False
+            self._pending_delivery_token = None
+            self._delivery_token += 1
+        if abandoned_delivery:
+            try:
+                # Once provenance is invalidated, only this synchronous cleanup
+                # may touch attempt-owned composer text. A queued Qt callback is
+                # now permanently stale, including across later start cycles.
+                self._clear_actual_composer()
+            except Exception as exc:
+                failures.append(
+                    exc
+                    if isinstance(exc, CodexInputBindingError)
+                    else CodexInputBindingError("HOST_COMPOSER_ABORT_CLEAR_FAILED")
+                )
         self.deactivate()
         if not self._enter_pair_complete.wait(timeout=5.0):
-            # Teardown must still remove the hook and release Qt resources.
-            # The timeout remains a gate failure; it no longer strands global
-            # keyboard capture by returning before WM_QUIT/unhook.
             failures.append(CodexInputBindingError("HOST_ENTER_KEYUP_DRAIN_TIMEOUT"))
+            thread = self._hook_thread
+            if self._hook and thread is not None and thread.is_alive():
+                # Removing a verified hook here would abandon the matching
+                # native keyup for a keydown this binding swallowed. Return a
+                # bounded failure while retaining pair ownership; keyup makes
+                # a later stop retry safe and deterministic.
+                self._dispatcher = None
+                raise failures[0]
         self._stop.set()
         thread = self._hook_thread
         if thread is not None:
@@ -722,7 +788,10 @@ class CodexComposerInputBinding:
                 failures.append(CodexInputBindingError("HOST_INPUT_HOOK_REMOVE_FAILED"))
         with self._state_lock:
             self._delivery_pending = False
+            self._pending_delivery_token = None
             self._failure_guard = False
+            live_thread = self._hook_thread is not None and self._hook_thread.is_alive()
+            self._teardown_pending = bool(self._hook or live_thread)
         self._dispatcher = None
         if failures:
             raise failures[0]

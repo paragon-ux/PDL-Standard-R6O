@@ -177,13 +177,18 @@ def test_clean_stop_allows_a_fresh_input_hook_lifecycle(monkeypatch: pytest.Monk
         def join(self, timeout: float) -> None:
             assert timeout == 5.0
             self.alive = False
+            binding._hook = 0
 
         def is_alive(self) -> bool:
             return self.alive
 
     monkeypatch.setattr(input_binding_module.threading, "Thread", FakeThread)
     monkeypatch.setattr(binding, "_install_dispatcher", lambda: setattr(binding, "_dispatcher", object()))
-    monkeypatch.setattr(binding, "_run_keyboard_hook", lambda: binding._ready.set())
+    def install_verified_hook() -> None:
+        binding._hook = 701
+        binding._ready.set()
+
+    monkeypatch.setattr(binding, "_run_keyboard_hook", install_verified_hook)
 
     binding.start()
     binding.stop()
@@ -195,9 +200,18 @@ def test_clean_stop_allows_a_fresh_input_hook_lifecycle(monkeypatch: pytest.Monk
     assert binding._dispatcher is None
 
 
-def test_pending_delivery_timeout_is_reported_after_cleanup() -> None:
-    binding = input_binding()
-    binding._delivery_pending = True
+def test_pending_delivery_timeout_invalidates_stale_callback_across_restart(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    envelopes: list[dict[str, Any]] = []
+    clears: list[str] = []
+    binding = input_binding(on_envelope=envelopes.append)
+    binding._clear_actual_composer = lambda: clears.append("clear")  # type: ignore[method-assign]
+    user32 = FakeUser32()
+    assert binding._handle_key_event(user32, 0x0D, WM_KEYDOWN) is True
+    assert binding._handle_key_event(user32, 0x0D, WM_KEYUP) is True
+    capture = binding._captures.get_nowait()
+    assert capture is not None
     binding._dispatcher = object()
 
     def fail_wait(timeout: float) -> dict[str, Any]:
@@ -209,7 +223,142 @@ def test_pending_delivery_timeout_is_reported_after_cleanup() -> None:
         binding.stop()
 
     assert binding._delivery_pending is False
+    assert binding._delivery_cancelled is True
     assert binding._dispatcher is None
+    assert clears == ["clear"]
+    assert envelopes == []
+
+    class FakeThread:
+        def __init__(self, target: Any, **_: Any) -> None:
+            self.target = target
+            self.alive = False
+
+        def start(self) -> None:
+            self.alive = True
+            self.target()
+
+        def join(self, timeout: float) -> None:
+            assert timeout == 5.0
+            self.alive = False
+            binding._hook = 0
+
+        def is_alive(self) -> bool:
+            return self.alive
+
+    monkeypatch.setattr(input_binding_module.os, "name", "nt")
+    monkeypatch.setattr(input_binding_module.threading, "Thread", FakeThread)
+    monkeypatch.setattr(binding, "_install_dispatcher", lambda: setattr(binding, "_dispatcher", object()))
+
+    def install_verified_hook() -> None:
+        binding._hook = 702
+        binding._ready.set()
+
+    monkeypatch.setattr(binding, "_run_keyboard_hook", install_verified_hook)
+    binding.start()
+    binding._delivery_event.clear()
+
+    # A callback retained by Qt from the prior cycle must be entirely inert.
+    binding._deliver_capture(capture)
+    assert clears == ["clear"]
+    assert envelopes == []
+    assert binding._delivery_event.is_set() is False
+    binding.stop()
+
+
+def test_failed_hook_shutdown_cannot_restart_from_stale_thread_liveness(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class StuckThread:
+        def join(self, timeout: float) -> None:
+            assert timeout == 5.0
+
+        def is_alive(self) -> bool:
+            return True
+
+    binding = input_binding()
+    binding._hook_thread = StuckThread()  # type: ignore[assignment]
+    binding._hook = 801
+    binding._hook_user32 = object()
+
+    def remove_hook(_user32: object) -> bool:
+        binding._hook = 0
+        return True
+
+    binding._remove_keyboard_hook = remove_hook  # type: ignore[method-assign]
+    with pytest.raises(CodexInputBindingError, match="HOST_INPUT_HOOK_STOP_TIMEOUT"):
+        binding.stop()
+
+    assert binding._hook == 0
+    assert binding._hook_thread is not None
+    monkeypatch.setattr(input_binding_module.os, "name", "nt")
+    with pytest.raises(CodexInputBindingError, match="HOST_INPUT_HOOK_RESTART_BLOCKED"):
+        binding.start()
+
+    # Even corrupted teardown provenance cannot make hookless liveness STARTED.
+    binding._teardown_pending = False
+    with pytest.raises(CodexInputBindingError, match="HOST_INPUT_HOOK_RESTART_BLOCKED"):
+        binding.start()
+
+
+def test_enter_keyup_timeout_retains_hook_ownership_until_retry(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class PairEvent:
+        complete = False
+
+        def wait(self, timeout: float) -> bool:
+            assert timeout == 5.0
+            return self.complete
+
+        def set(self) -> None:
+            self.complete = True
+
+        def clear(self) -> None:
+            self.complete = False
+
+    class OwningThread:
+        alive = True
+        joins = 0
+
+        def join(self, timeout: float) -> None:
+            assert timeout == 5.0
+            self.joins += 1
+            self.alive = False
+            binding._hook = 0
+
+        def is_alive(self) -> bool:
+            return self.alive
+
+    binding = input_binding()
+    pair_event = PairEvent()
+    thread = OwningThread()
+    binding._enter_pair_complete = pair_event  # type: ignore[assignment]
+    binding._enter_down = True
+    binding._hook_thread = thread  # type: ignore[assignment]
+    binding._hook = 901
+    binding._dispatcher = object()
+
+    with pytest.raises(CodexInputBindingError, match="HOST_ENTER_KEYUP_DRAIN_TIMEOUT"):
+        binding.stop()
+
+    assert binding._stop.is_set() is False
+    assert binding._hook == 901
+    assert thread.joins == 0
+    assert binding._teardown_pending is True
+    assert binding._dispatcher is None
+
+    monkeypatch.setattr(input_binding_module.os, "name", "nt")
+    with pytest.raises(CodexInputBindingError, match="HOST_INPUT_HOOK_RESTART_BLOCKED"):
+        binding.start()
+
+    assert binding._handle_key_event(FakeUser32(), 0x0D, WM_KEYUP) is True
+    assert binding._enter_down is False
+    assert binding.suppressed_keyup_count == 1
+
+    binding.stop()
+    assert binding._hook == 0
+    assert binding._hook_thread is None
+    assert binding._teardown_pending is False
 
 
 def test_lifecycle_verifier_help_is_portable() -> None:
@@ -245,6 +394,14 @@ def test_qt_close_is_idempotent_and_active_projection_can_reopen() -> None:
     with pytest.raises(RuntimeError, match="SIDECAR_WINDOW_CLOSED"):
         sidecar.render(projection())
 
+    replacement = QtSidecarWindow()
+    try:
+        assert replacement.render(projection(projection_id="f2-replacement")) is True
+        assert replacement.bridge.projectionId == "f2-replacement"
+    finally:
+        replacement.close()
+        replacement.close()
+
 
 def test_qt_close_callback_failure_can_be_retried() -> None:
     pytest.importorskip("PySide6")
@@ -266,3 +423,61 @@ def test_qt_close_callback_failure_can_be_retried() -> None:
         assert len(attempts) == 2
     finally:
         sidecar.close()
+
+
+def test_qt_partial_terminal_cleanup_failure_remains_retryable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    pytest.importorskip("PySide6")
+    from r6o.views.sidecar import qt_app
+
+    calls: list[str] = []
+
+    class Resource:
+        def __init__(self, name: str) -> None:
+            self.name = name
+
+        def hide(self) -> None:
+            calls.append(f"{self.name}.hide")
+
+        def deleteLater(self) -> None:
+            calls.append(f"{self.name}.deleteLater")
+
+    class App:
+        attempts = 0
+
+        def processEvents(self) -> None:
+            self.attempts += 1
+            calls.append("app.processEvents")
+            if self.attempts == 1:
+                raise RuntimeError("event processing unavailable")
+
+    sidecar = qt_app.QtSidecarWindow.__new__(qt_app.QtSidecarWindow)
+    sidecar._close_notified = False
+    sidecar._tearing_down = False
+    sidecar._closed = False
+    sidecar._window_hidden = False
+    sidecar._window_delete_scheduled = False
+    sidecar._engine_delete_scheduled = False
+    sidecar._deferred_deletes_sent = False
+    sidecar._cleanup_events_processed = False
+    sidecar.window = Resource("window")
+    sidecar.engine = Resource("engine")
+    app = App()
+    monkeypatch.setattr(qt_app, "ensure_application", lambda: app)
+
+    with pytest.raises(RuntimeError, match="event processing unavailable"):
+        sidecar.close()
+    assert sidecar._closed is False
+    assert sidecar._tearing_down is True
+
+    sidecar.close()
+    sidecar.close()
+    assert sidecar._closed is True
+    assert calls == [
+        "window.hide",
+        "window.deleteLater",
+        "engine.deleteLater",
+        "app.processEvents",
+        "app.processEvents",
+    ]

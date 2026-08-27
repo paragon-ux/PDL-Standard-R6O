@@ -76,6 +76,11 @@ class QtSidecarWindow:
         self._close_notified = False
         self._tearing_down = False
         self._closed = False
+        self._window_hidden = False
+        self._window_delete_scheduled = False
+        self._engine_delete_scheduled = False
+        self._deferred_deletes_sent = False
+        self._cleanup_events_processed = False
         copy_callback = on_copy or (lambda body: app.clipboard().setText(body))
         self.bridge = SidecarBridge(
             mode,
@@ -171,11 +176,19 @@ class QtSidecarWindow:
         if self._closed:
             return
         self._tearing_down = True
-        try:
+        if not self._window_hidden:
             self.window.hide()
+            self._window_hidden = True
+        if not self._window_delete_scheduled:
             self.window.deleteLater()
+            self._window_delete_scheduled = True
+        if not self._engine_delete_scheduled:
             self.engine.deleteLater()
+            self._engine_delete_scheduled = True
+        if not self._deferred_deletes_sent:
             QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+            self._deferred_deletes_sent = True
+        if not self._cleanup_events_processed:
             ensure_application().processEvents()
-        finally:
-            self._closed = True
+            self._cleanup_events_processed = True
+        self._closed = True

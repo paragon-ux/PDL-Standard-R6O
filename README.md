@@ -299,12 +299,24 @@ submit a native Codex request, or change the locked QML design. Before the
 actual-host run, preserve or clear any existing composer draft and require an
 empty composer; the verifier never clears unowned user text.
 
-Run the portable contract and Qt lifecycle checks with the frozen oracle bound:
+First require PySide6 and run the focused F2 lifecycle tests. This qualification
+path must execute the Qt tests; a missing PySide6 installation is a failure, not
+evidence from a skipped test:
+
+```powershell
+python -c "import PySide6; print(PySide6.__version__)"
+python -m pytest r6o\tests\h2\test_h2_lifecycle_resilience.py -q -p no:cacheprovider
+```
+
+Run the portable deterministic repair matrix with the frozen oracle bound. Use
+the repair evidence subdirectory so the historical original F2 qualification
+remains unchanged:
 
 ```powershell
 python scripts\h2\verify_h2_lifecycle_resilience.py `
   --mode portable `
-  --baseline-repo $env:PDL_R6S_BASELINE_REPO
+  --baseline-repo $env:PDL_R6S_BASELINE_REPO `
+  --evidence-dir r6o_evidence\H2-F2\repair
 ```
 
 On Windows, with the exact D1 Codex host visible and the composer empty, run
@@ -316,18 +328,25 @@ $env:QT_SCALE_FACTOR = '1'
 $env:QT_FONT_DPI = '96'
 python scripts\h2\verify_h2_lifecycle_resilience.py `
   --mode actual-host `
-  --baseline-repo $env:PDL_R6S_BASELINE_REPO
+  --baseline-repo $env:PDL_R6S_BASELINE_REPO `
+  --evidence-dir r6o_evidence\H2-F2\repair
 ```
 
-The qualification proves bounded open/close/reopen, terminal dismissal,
-focus recovery, deterministic input-hook install/uninstall, key-pair
-ownership, timeout/error precedence, stale HWND and selector mismatch
-fail-closed behavior, no global-topmost regression, and composer cleanliness
-after teardown. It records accepted D2 attachment/non-interference evidence
-without rewriting predecessor evidence. Output is written only beneath
-`r6o_evidence/H2-F2/`. The known `RPC_E_CHANGED_MODE` and DPI-awareness
-observations are recorded as bounded `NONBLOCKING_P2` findings when they do
-not produce lifecycle failure, nondeterminism, or resource leakage.
+The deterministic matrix directly exercises normal and repeated activation,
+partial activation cleanup, pending-delivery teardown, stale queued delivery,
+failed hook-thread shutdown and restart, delayed/missing Enter keyup ownership,
+shutdown cleanup, Qt partial-close failure and retry, repeated successful
+close/reopen, and stale provenance corruption. The actual-host mode additionally
+installs the real hook, performs repeated activation/deactivation plus bounded
+partial-activation cleanup, and verifies final hook/window/composer cleanup. It
+does not synthesize a human Enter gesture or submit a native Codex request.
+
+The verifier also checks stale HWND and selector mismatch fail-closed behavior,
+no global-topmost regression, and accepted D2 attachment/non-interference
+evidence without rewriting predecessor evidence. The known
+`RPC_E_CHANGED_MODE` and DPI-awareness observations remain bounded
+`NONBLOCKING_P2` findings when they do not produce lifecycle failure,
+nondeterminism, or resource leakage.
 
 ## H2-D2 actual Codex attachment checkout
 
