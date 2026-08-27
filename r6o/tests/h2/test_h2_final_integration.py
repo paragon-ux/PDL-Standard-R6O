@@ -555,6 +555,80 @@ def test_repository_verifier_accepts_safe_negative_r6o3_values(
     assert report["r6o3_behavior_claimed"] is False
 
 
+@pytest.mark.parametrize(
+    ("relative_path", "document"),
+    [
+        (
+            "H2-F3/repair/actual-host/attachment/attachment-result.json",
+            {"scope": {"r6o3_lease_implemented": True}},
+        ),
+        (
+            "H2-F3/repair/actual-host/attachment/f3-provenance.json",
+            {"r6o3_behavior_claimed": True},
+        ),
+    ],
+)
+def test_repository_verifier_rejects_r6o3_claim_in_current_attachment_records(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    relative_path: str,
+    document: dict[str, Any],
+) -> None:
+    freeze = {"head": "1" * 40, "tree": "2" * 40}
+    _stub_repository_dependencies(monkeypatch, freeze=freeze)
+    evidence = tmp_path / "evidence"
+    output = evidence / "H2-F3" / "repair"
+    _write_json(evidence / relative_path, document)
+
+    with pytest.raises(verifier.FinalIntegrationError) as exc_info:
+        verifier.verify_repository(
+            repo_root=ROOT,
+            evidence_root=evidence,
+            baseline_repo=tmp_path,
+            output_dir=output,
+            require_local=False,
+            require_actual_host=False,
+            require_qt=False,
+            require_ci=False,
+            write_report=False,
+        )
+
+    _assert_diagnostic(exc_info)
+    assert exc_info.value.dimension == "R6O3_BEHAVIOR_CLAIM"
+
+
+def test_repository_verifier_accepts_safe_negative_current_attachment_records(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    freeze = {"head": "1" * 40, "tree": "2" * 40}
+    _stub_repository_dependencies(monkeypatch, freeze=freeze)
+    evidence = tmp_path / "evidence"
+    output = evidence / "H2-F3" / "repair"
+    _write_json(
+        output / "actual-host" / "attachment" / "attachment-result.json",
+        {"scope": {"r6o3_lease_implemented": False}},
+    )
+    _write_json(
+        output / "actual-host" / "attachment" / "f3-provenance.json",
+        {"r6o3_behavior_claimed": False},
+    )
+
+    report = verifier.verify_repository(
+        repo_root=ROOT,
+        evidence_root=evidence,
+        baseline_repo=tmp_path,
+        output_dir=output,
+        require_local=False,
+        require_actual_host=False,
+        require_qt=False,
+        require_ci=False,
+        write_report=False,
+    )
+
+    assert report["r6o3_behavior_claimed"] is False
+
+
 def _write_current_host_fixture(
     output: Path,
     freeze: dict[str, str],

@@ -737,6 +737,8 @@ def _collect_r6o3_documents(
             repair / "ci.json",
             repair / "authority.json",
             repair / "review-findings.json",
+            repair / "actual-host" / "attachment" / "attachment-result.json",
+            repair / "actual-host" / "attachment" / "f3-provenance.json",
         }
     )
     if (repair / "actual-host").is_dir():
