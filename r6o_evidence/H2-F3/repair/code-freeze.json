@@ -4,9 +4,9 @@
     "tree": "59e10dc1eeca86c3c2393a63b02eae4cc8c1cd2a"
   },
   "code_freeze": {
-    "head": "2ff50bdf9399d99025606f66a4522bdc66a1939e",
+    "head": "c2aec95f14177bb218ee0c9eb1921f3bee96866d",
     "status": "FROZEN",
-    "tree": "f43aee6df356ef50d96429f24d83b9069ed48369"
+    "tree": "66d92ecf605f64370ec79781ee34c7e99bad5288"
   },
   "gate": "H2-F3",
   "post_freeze_rule": "Only r6o_evidence/H2-F3/** and the explicitly authorized H2 final record may change after this freeze.",
