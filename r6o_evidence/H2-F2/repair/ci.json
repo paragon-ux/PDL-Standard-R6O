@@ -1,0 +1,59 @@
+{
+  "schema_version": "r6o-h2-f2-repair-ci-qualification-1",
+  "gate": "H2-F2",
+  "code_freeze_head": "da376ad9d85ff1d92a4cef9221d9c61f14752d50",
+  "pull_request": {
+    "number": 17,
+    "url": "https://github.com/paragon-ux/PDL-Standard-R6O/pull/17",
+    "head_sha": "da376ad9d85ff1d92a4cef9221d9c61f14752d50",
+    "state": "OPEN",
+    "merge_state": "CLEAN"
+  },
+  "workflows": [
+    {
+      "workflow": "R6O-1 qualification",
+      "run_id": 33026365195,
+      "run_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33026365195",
+      "head_sha": "da376ad9d85ff1d92a4cef9221d9c61f14752d50",
+      "status": "SUCCESS",
+      "jobs": {
+        "github_windows": {
+          "name": "qualify (windows-latest)",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33026365195/job/98368532904"
+        },
+        "github_ubuntu": {
+          "name": "qualify (ubuntu-latest)",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33026365195/job/98368533003"
+        }
+      }
+    },
+    {
+      "workflow": "H2-C Qt Quick qualification",
+      "run_id": 33026365186,
+      "run_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33026365186",
+      "head_sha": "da376ad9d85ff1d92a4cef9221d9c61f14752d50",
+      "status": "SUCCESS",
+      "jobs": {
+        "windows_qt": {
+          "name": "windows",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33026365186/job/98368533190"
+        },
+        "linux_x11": {
+          "name": "linux-x11",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33026365186/job/98368533100"
+        },
+        "linux_wayland": {
+          "name": "linux-wayland",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33026365186/job/98368532973"
+        }
+      }
+    }
+  ],
+  "all_required_jobs_passed": true,
+  "recorded_at_utc": "2026-08-27T00:21:07.0911927Z"
+}

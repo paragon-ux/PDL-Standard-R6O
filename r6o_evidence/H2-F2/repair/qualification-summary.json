@@ -1,0 +1,89 @@
+{
+  "schema_version": "r6o-h2-f2-repair-qualification-summary-1",
+  "gate": "H2-F2",
+  "code_freeze_head": "da376ad9d85ff1d92a4cef9221d9c61f14752d50",
+  "code_freeze_tree": "2a13c980a23b0b5cd9403be8a58f184c662a92ee",
+  "generated_at_utc": "2026-08-27T00:21:07.0911927Z",
+  "commands": [
+    {
+      "name": "targeted_f1_f4_and_input_contract",
+      "command": "python -m pytest r6o/tests/h2/test_h2_lifecycle_resilience.py r6o/tests/h2/test_codex_input_binding_contract.py -q -p no:cacheprovider",
+      "status": "PASS",
+      "count": 60
+    },
+    {
+      "name": "complete_f2_focused_suite",
+      "command": "python -m pytest r6o/tests/h2/test_h2_lifecycle_resilience.py r6o/tests/h2/test_codex_binding_contract.py r6o/tests/h2/test_codex_input_binding_contract.py r6o/tests/h2/test_qt_sidecar_component.py r6o/tests/h2/test_codex_h2_e2.py r6o/tests/h2/test_codex_h2_e3.py -q -p no:cacheprovider",
+      "status": "PASS",
+      "count": 150,
+      "pyside6_version": "6.11.2",
+      "qt_tests_skipped": false
+    },
+    {
+      "name": "full_r6o_tests",
+      "command": "python -m pytest r6o/tests -q -p no:cacheprovider",
+      "status": "PASS",
+      "count": 362
+    },
+    {
+      "name": "r6o1_verification",
+      "command": "python scripts/verify_r6o1.py",
+      "status": "PASS",
+      "r6o_test_count": 362,
+      "baseline_test_count": 9
+    },
+    {
+      "name": "windows_local_actual_codex",
+      "command": "python scripts/h2/verify_h2_lifecycle_resilience.py --mode actual-host --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --evidence-dir r6o_evidence/H2-F2/repair",
+      "status": "PASS",
+      "evidence": "qualification.json"
+    }
+  ],
+  "findings": {
+    "F1_pending_delivery_cancellation": "PASS",
+    "F2_restart_after_failed_shutdown": "PASS",
+    "F3_enter_pair_ownership": "PASS",
+    "F4_qt_partial_close_retry": "PASS",
+    "F5_qualification_coverage": "PASS"
+  },
+  "resilience_matrix": {
+    "normal_activation_deactivation": "PASS",
+    "repeated_activation_deactivation": "PASS",
+    "partial_activation_failure_cleanup": "PASS",
+    "pending_delivery_during_teardown": "PASS",
+    "stale_queued_delivery_after_teardown": "PASS",
+    "failed_hook_thread_shutdown": "PASS",
+    "restart_after_failed_shutdown": "FAIL_CLOSED_PASS",
+    "enter_keyup_drain_timeout": "PAIR_OWNERSHIP_RETAINED_PASS",
+    "shutdown_process_exit_cleanup": "PASS",
+    "qt_partial_close_failure": "PASS",
+    "qt_partial_close_retry": "PASS",
+    "repeated_successful_close_reopen": "PASS",
+    "stale_resource_callback_invalidation": "MUTATION_NEGATIVE_PASS"
+  },
+  "regressions": {
+    "d2": "PASS",
+    "e1": "PASS",
+    "e2_e3": "PASS",
+    "qt_component": "PASS",
+    "semantic_workflow_preservation": "PASS",
+    "sidecar_fidelity_preservation": "PASS"
+  },
+  "repository_invariants": {
+    "protected_path_diff": "EMPTY",
+    "frozen_oracle": "UNCHANGED",
+    "git_diff_check": "PASS"
+  },
+  "warnings": [
+    {
+      "id": "RPC_E_CHANGED_MODE",
+      "observed": true,
+      "classification": "NONBLOCKING_P2"
+    },
+    {
+      "id": "DPI_AWARENESS_ACCESS_DENIED",
+      "observed": false,
+      "classification": "NONBLOCKING_P2"
+    }
+  ]
+}

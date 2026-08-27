@@ -1,0 +1,50 @@
+{
+  "schema_version": "r6o-h2-f2-repair-code-freeze-1",
+  "gate": "H2-F2",
+  "agent": "SOL-H2-F2-REPAIR",
+  "role": "BOUNDED_REPAIR",
+  "branch": "codex/h2-f2-lifecycle-resilience",
+  "pull_request": 17,
+  "repair_base": {
+    "head": "7c4782e7864cd920d4b49d9f2a08276e24dd281c",
+    "tree": "a88a9e5772707909b26fd94823002b472591bf08"
+  },
+  "original_f2": {
+    "base_head": "0cc86bbddd804f4d6383a05489d61cbf18d68ac6",
+    "base_tree": "0bb908f0999011beca581ffc7c5d66b80891dabd",
+    "code_freeze_head": "4bb71dfac7dd42e6a5495e8d3c199f4f905a1479",
+    "code_freeze_tree": "92d3985d0e0334e366c2786889ea080d4e34f00b",
+    "evidence_head": "7c4782e7864cd920d4b49d9f2a08276e24dd281c",
+    "evidence_tree": "a88a9e5772707909b26fd94823002b472591bf08",
+    "status": "HISTORICAL_UNCHANGED"
+  },
+  "repaired_code_freeze": {
+    "head": "da376ad9d85ff1d92a4cef9221d9c61f14752d50",
+    "tree": "2a13c980a23b0b5cd9403be8a58f184c662a92ee",
+    "status": "FROZEN"
+  },
+  "findings_closed": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5"
+  ],
+  "implementation_changed_files": [
+    "README.md",
+    "r6o/host/codex/windows/input_binding.py",
+    "r6o/tests/h2/test_h2_lifecycle_resilience.py",
+    "r6o/views/sidecar/qt_app.py",
+    "scripts/h2/verify_h2_lifecycle_resilience.py"
+  ],
+  "production_behavior_changed": true,
+  "production_change_scope": "F2_AUTHORIZED_ONLY",
+  "protected_path_diff": "EMPTY",
+  "frozen_oracle": {
+    "commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+    "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+    "status": "UNCHANGED"
+  },
+  "automatic_repair_budget_remaining": 0,
+  "post_freeze_rule": "Only r6o_evidence/H2-F2/repair evidence files may be added after this repaired code freeze; production, test, verifier, and README semantics remain frozen."
+}
