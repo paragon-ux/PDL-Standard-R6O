@@ -11,6 +11,7 @@ from typing import Any, Callable
 
 import pytest
 
+from scripts.h2 import f3_attachment_provenance as transaction
 from scripts.h2 import verify_h2_final as verifier
 
 
@@ -807,6 +808,10 @@ def _write_current_host_fixture(
             "host_record_sha256": hashlib.sha256(host_record_target.read_bytes()).hexdigest(),
             "selectors_path": selectors_target.relative_to(repo).as_posix(),
             "selectors_sha256": hashlib.sha256(selectors_target.read_bytes()).hexdigest(),
+            "producer_implementation_sha256": {
+                relative_path: hashlib.sha256((repo / relative_path).read_bytes()).hexdigest()
+                for relative_path in implementation_paths
+            },
             "preflight_reset_path": preflight_target.relative_to(repo).as_posix(),
             "preflight_reset_sha256": hashlib.sha256(preflight_target.read_bytes()).hexdigest(),
             "preflight_status": "CODEX_TEST_SESSION_READY",
@@ -847,75 +852,141 @@ def _write_current_host_fixture(
     )
 
 
-def test_current_actual_host_evidence_is_pinned_and_complete(tmp_path: Path) -> None:
-    freeze = {"head": "1" * 40, "tree": "2" * 40}
-    repo = tmp_path / "repo"
-    output = repo / "r6o_evidence" / "H2-F3" / "repair"
-    _write_current_host_fixture(repo, output, freeze)
-    assert verifier._validate_current_host_evidence(
-        repo=repo,
-        output=output,
-        freeze=freeze,
-    )["status"] == "PASS"
-
-
-def test_current_attachment_event_log_result_path_mismatch_fails_closed(
-    tmp_path: Path,
-) -> None:
-    freeze = {"head": "1" * 40, "tree": "2" * 40}
-    repo = tmp_path / "repo"
-    output = repo / "r6o_evidence" / "H2-F3" / "repair"
-    _write_current_host_fixture(repo, output, freeze)
-    attachment_path = output / "actual-host" / "attachment" / "attachment-result.json"
-    attachment = json.loads(attachment_path.read_text(encoding="utf-8"))
-    attachment["event_log"]["path"] = "r6o_evidence/H2-D2/win32-uia-events.jsonl"
-    _write_json(attachment_path, attachment)
-    provenance_path = output / "actual-host" / "attachment" / "f3-provenance.json"
-    provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
-    provenance["attachment_result_sha256"] = hashlib.sha256(
-        attachment_path.read_bytes()
-    ).hexdigest()
-    _write_json(provenance_path, provenance)
-
-    with pytest.raises(verifier.FinalIntegrationError) as exc_info:
-        verifier._validate_current_host_evidence(
-            repo=repo,
-            output=output,
-            freeze=freeze,
-        )
-    _assert_diagnostic(exc_info)
-    assert (
-        exc_info.value.dimension
-        == "F3_ATTACHMENT_EVENT_LOG_RESULT_PATH_BINDING"
+def _write_transaction_inputs(repo: Path, output: Path) -> None:
+    for relative_path in transaction.PRODUCER_IMPLEMENTATION_PATHS:
+        path = repo / relative_path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(relative_path + "\n", encoding="utf-8")
+    _write_json(repo / transaction.HOST_RECORD_REFERENCE, {"codex": {"product_name": "Codex"}})
+    _write_json(repo / transaction.SELECTORS_REFERENCE, {"host_compatibility": {}})
+    _write_json(
+        output / "actual-host" / "qualification.json",
+        {
+            "schema_version": "r6o-h2-f3-current-actual-host-pending-1",
+            "gate": "H2-F3",
+            "status": "HUMAN_PENDING",
+        },
     )
 
 
-def test_current_attachment_implementation_hash_mismatch_fails_closed(
+def _fake_transaction_command(
+    repo: Path,
+    calls: list[str],
+    *,
+    attachment_schema: str = transaction.ATTACHMENT_RESULT_SCHEMA,
+) -> Callable[..., subprocess.CompletedProcess[str]]:
+    def run(
+        arguments: list[str],
+        *,
+        repo: Path,
+        environment: dict[str, str] | None = None,
+    ) -> subprocess.CompletedProcess[str]:
+        del environment
+        script = Path(arguments[1]).name
+        calls.append(script)
+        if script == "reset_codex_test_session.py":
+            output_path = repo / arguments[arguments.index("--output") + 1]
+            selectors_path = repo / transaction.SELECTORS_REFERENCE
+            _write_json(
+                output_path,
+                {
+                    "schema_version": "r6o-h2-d1-reset-log-1",
+                    "status": "CODEX_TEST_SESSION_READY",
+                    "selectors_sha256": hashlib.sha256(selectors_path.read_bytes()).hexdigest(),
+                },
+            )
+        else:
+            evidence_dir = repo / arguments[arguments.index("--evidence-dir") + 1]
+            event_log = evidence_dir / "win32-uia-events.jsonl"
+            event_log.parent.mkdir(parents=True, exist_ok=True)
+            event_log.write_bytes(b'{"sequence":1}\n')
+            _write_json(
+                evidence_dir / "attachment-result.json",
+                {
+                    "schema_version": attachment_schema,
+                    "gate": transaction.ATTACHMENT_RESULT_GATE,
+                    "status": transaction.ATTACHMENT_RESULT_PASS,
+                    "real_codex_host_tested": True,
+                    "synthetic_owner_used": False,
+                    "event_log": {
+                        "path": event_log.relative_to(repo).as_posix(),
+                        "sha256": hashlib.sha256(event_log.read_bytes()).hexdigest(),
+                    },
+                    "host_record_sha256": hashlib.sha256(
+                        (repo / transaction.HOST_RECORD_REFERENCE).read_bytes()
+                    ).hexdigest(),
+                    "selectors_sha256": hashlib.sha256(
+                        (repo / transaction.SELECTORS_REFERENCE).read_bytes()
+                    ).hexdigest(),
+                    "implementation_sha256": {
+                        relative_path: hashlib.sha256((repo / relative_path).read_bytes()).hexdigest()
+                        for relative_path in transaction.PRODUCER_IMPLEMENTATION_PATHS
+                    },
+                },
+            )
+        return subprocess.CompletedProcess(arguments, 0, stdout="PASS", stderr="")
+
+    return run
+
+
+def test_canonical_transaction_produces_only_a_complete_active_chain(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     freeze = {"head": "1" * 40, "tree": "2" * 40}
-    repo = tmp_path / "repo"
+    repo = tmp_path / "pass" / "repo"
     output = repo / "r6o_evidence" / "H2-F3" / "repair"
-    _write_current_host_fixture(repo, output, freeze)
-    attachment_path = output / "actual-host" / "attachment" / "attachment-result.json"
-    attachment = json.loads(attachment_path.read_text(encoding="utf-8"))
-    attachment["implementation_sha256"]["scripts/h2/verify_codex_attachment.py"] = "0" * 64
-    _write_json(attachment_path, attachment)
-    provenance_path = output / "actual-host" / "attachment" / "f3-provenance.json"
-    provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
-    provenance["attachment_result_sha256"] = hashlib.sha256(
-        attachment_path.read_bytes()
-    ).hexdigest()
-    _write_json(provenance_path, provenance)
+    _write_transaction_inputs(repo, output)
+    calls: list[str] = []
+    monkeypatch.setattr(transaction, "_candidate_identity", lambda _: dict(freeze))
+    monkeypatch.setattr(transaction, "_run_command", _fake_transaction_command(repo, calls))
 
-    with pytest.raises(verifier.FinalIntegrationError) as exc_info:
-        verifier._validate_current_host_evidence(
-            repo=repo,
-            output=output,
-            freeze=freeze,
-        )
-    _assert_diagnostic(exc_info)
-    assert exc_info.value.dimension == "F3_ATTACHMENT_IMPLEMENTATION_HASH"
+    provenance = transaction.run_canonical_transaction(repo=repo, output=output)
+    assert calls == ["reset_codex_test_session.py", "verify_codex_attachment.py"]
+    assert provenance["candidate_head"] == freeze["head"]
+    assert provenance["candidate_tree"] == freeze["tree"]
+    assert provenance["reset_to_attachment_contiguous_machine_flow"] is True
+    assert provenance["producer_implementation_sha256"] == {
+        path: hashlib.sha256((repo / path).read_bytes()).hexdigest()
+        for path in transaction.PRODUCER_IMPLEMENTATION_PATHS
+    }
+    aggregate = json.loads(
+        (output / "actual-host" / "qualification.json").read_text(encoding="utf-8")
+    )
+    attachment_path = output / transaction.ATTACHMENT_REFERENCE
+    attachment = json.loads(attachment_path.read_text(encoding="utf-8"))
+    assert aggregate["f3_attachment_provenance"] == transaction.PROVENANCE_REFERENCE
+    assert verifier._validate_f3_attachment_provenance(
+        repo=repo,
+        output=output,
+        qualification=aggregate,
+        freeze=freeze,
+        attachment_path=attachment_path,
+        attachment_result=attachment,
+    ) == {"status": "PASS", "path": transaction.PROVENANCE_REFERENCE}
+    _write_json(
+        output / "actual-host" / "qualification.json",
+        {"schema_version": "semantic-summary", "status": "HUMAN_COLLECTION_COMPLETE"},
+    )
+    relinked = transaction.link_existing_provenance(repo=repo, output=output)
+    assert relinked["status"] == "HUMAN_COLLECTION_COMPLETE"
+    assert relinked["f3_attachment_provenance"] == transaction.PROVENANCE_REFERENCE
+
+    failed_repo = tmp_path / "fail" / "repo"
+    failed_output = failed_repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_transaction_inputs(failed_repo, failed_output)
+    monkeypatch.setattr(
+        transaction,
+        "_run_command",
+        _fake_transaction_command(failed_repo, [], attachment_schema="wrong-schema"),
+    )
+    with pytest.raises(transaction.F3AttachmentTransactionError):
+        transaction.run_canonical_transaction(repo=failed_repo, output=failed_output)
+    assert not (failed_output / transaction.PROVENANCE_REFERENCE).exists()
+    failed_aggregate = json.loads(
+        (failed_output / "actual-host" / "qualification.json").read_text(encoding="utf-8")
+    )
+    assert "f3_attachment_provenance" not in failed_aggregate
 
 
 def test_current_actual_host_wrong_revision_fails_closed(tmp_path: Path) -> None:
@@ -937,47 +1008,26 @@ def test_current_actual_host_wrong_revision_fails_closed(tmp_path: Path) -> None
     assert exc_info.value.dimension == "CURRENT_A02_REVISION"
 
 
-@pytest.mark.parametrize(
-    ("field", "value", "dimension"),
-    [
-        ("candidate_head", "0" * 40, "F3_ATTACHMENT_CANDIDATE_HEAD"),
-        ("candidate_tree", "0" * 40, "F3_ATTACHMENT_CANDIDATE_TREE"),
-        (
-            "preflight_reset_sha256",
-            "0" * 64,
-            "F3_ATTACHMENT_PREFLIGHT_RESET_HASH",
-        ),
-        (
-            "attachment_result_sha256",
-            "0" * 64,
-            "F3_ATTACHMENT_ATTACHMENT_RESULT_HASH",
-        ),
-        ("event_log_sha256", "0" * 64, "F3_ATTACHMENT_EVENT_LOG_HASH"),
-        (
-            "attachment_status",
-            "FAIL",
-            "F3_ATTACHMENT_ATTACHMENT_STATUS",
-        ),
-        ("synthetic_owner_used", True, "F3_ATTACHMENT_SYNTHETIC_OWNER_USED"),
-    ],
-)
-def test_current_attachment_provenance_mutations_fail_closed(
-    tmp_path: Path,
-    field: str,
-    value: object,
+def _load_attachment_chain(
+    output: Path,
+) -> tuple[Path, dict[str, Any], Path, dict[str, Any]]:
+    attachment_path = output / "actual-host" / "attachment" / "attachment-result.json"
+    provenance_path = output / "actual-host" / "attachment" / "f3-provenance.json"
+    return (
+        attachment_path,
+        json.loads(attachment_path.read_text(encoding="utf-8")),
+        provenance_path,
+        json.loads(provenance_path.read_text(encoding="utf-8")),
+    )
+
+
+def _assert_current_chain_fails(
+    *,
+    repo: Path,
+    output: Path,
+    freeze: dict[str, str],
     dimension: str,
 ) -> None:
-    freeze = {"head": "1" * 40, "tree": "2" * 40}
-    repo = tmp_path / "repo"
-    output = repo / "r6o_evidence" / "H2-F3" / "repair"
-    _write_current_host_fixture(repo, output, freeze)
-    provenance_path = (
-        output / "actual-host" / "attachment" / "f3-provenance.json"
-    )
-    provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
-    provenance[field] = value
-    _write_json(provenance_path, provenance)
-
     with pytest.raises(verifier.FinalIntegrationError) as exc_info:
         verifier._validate_current_host_evidence(
             repo=repo,
@@ -988,97 +1038,167 @@ def test_current_attachment_provenance_mutations_fail_closed(
     assert exc_info.value.dimension == dimension
 
 
-def test_missing_current_attachment_provenance_fails_closed(
-    tmp_path: Path,
-) -> None:
-    freeze = {"head": "1" * 40, "tree": "2" * 40}
-    repo = tmp_path / "repo"
-    output = repo / "r6o_evidence" / "H2-F3" / "repair"
-    _write_current_host_fixture(repo, output, freeze)
-    (output / "actual-host" / "attachment" / "f3-provenance.json").unlink()
-
-    with pytest.raises(verifier.FinalIntegrationError) as exc_info:
-        verifier._validate_current_host_evidence(
-            repo=repo,
-            output=output,
-            freeze=freeze,
-        )
-    _assert_diagnostic(exc_info)
-    assert exc_info.value.dimension == "F3_ATTACHMENT_PROVENANCE_RECORD"
-
-
 @pytest.mark.parametrize(
-    "reference",
-    [None, "actual-host/attachment/not-current-provenance.json"],
+    ("scenario", "dimension"),
+    [
+        ("attachment_schema", "F3_ATTACHMENT_RESULT_SCHEMA_VERSION"),
+        ("attachment_gate", "F3_ATTACHMENT_RESULT_GATE"),
+        ("candidate_identity", "F3_ATTACHMENT_CANDIDATE_HEAD"),
+        ("attachment_artifact_binding", "F3_ATTACHMENT_ATTACHMENT_RESULT_PATH"),
+        ("nested_event_log_binding", "F3_ATTACHMENT_EVENT_LOG_RESULT_PATH_BINDING"),
+        ("preflight_binding", "F3_ATTACHMENT_PREFLIGHT_RESET_PATH"),
+        ("producer_input_binding", "F3_ATTACHMENT_HOST_RECORD_PATH"),
+        ("attachment_status", "ACTUAL_HOST_ATTACHMENT_STATUS"),
+        ("real_host_flag", "ACTUAL_HOST_RUNTIME_IDENTITY"),
+        ("synthetic_owner_flag", "ACTUAL_HOST_RUNTIME_IDENTITY"),
+        ("contiguous_flow", "F3_ATTACHMENT_RESET_TO_ATTACHMENT_CONTIGUOUS_MACHINE_FLOW"),
+        ("producer_identity", "F3_ATTACHMENT_IMPLEMENTATION_HASH"),
+    ],
 )
-def test_aggregate_current_qualification_must_reference_provenance(
+def test_contract_tampering_matrix_fails_closed(
     tmp_path: Path,
-    reference: str | None,
+    scenario: str,
+    dimension: str,
 ) -> None:
     freeze = {"head": "1" * 40, "tree": "2" * 40}
     repo = tmp_path / "repo"
     output = repo / "r6o_evidence" / "H2-F3" / "repair"
     _write_current_host_fixture(repo, output, freeze)
-    qualification_path = output / "actual-host" / "qualification.json"
-    qualification = json.loads(qualification_path.read_text(encoding="utf-8"))
-    if reference is None:
-        qualification.pop("f3_attachment_provenance")
-    else:
-        qualification["f3_attachment_provenance"] = reference
-    _write_json(qualification_path, qualification)
+    attachment_path, attachment, provenance_path, provenance = _load_attachment_chain(output)
 
-    with pytest.raises(verifier.FinalIntegrationError) as exc_info:
-        verifier._validate_current_host_evidence(
-            repo=repo,
-            output=output,
-            freeze=freeze,
-        )
-    _assert_diagnostic(exc_info)
-    assert exc_info.value.dimension == "F3_ATTACHMENT_PROVENANCE_REFERENCE"
+    if scenario == "attachment_schema":
+        attachment["schema_version"] = "wrong-schema"
+    elif scenario == "attachment_gate":
+        attachment["gate"] = "WRONG-GATE"
+    elif scenario == "candidate_identity":
+        provenance["candidate_head"] = "0" * 40
+        provenance["candidate_tree"] = "0" * 40
+    elif scenario == "attachment_artifact_binding":
+        provenance["attachment_result_path"] = "r6o_evidence/H2-D2/attachment-result.json"
+        provenance["attachment_result_sha256"] = "0" * 64
+    elif scenario == "nested_event_log_binding":
+        attachment["event_log"] = {
+            "path": "r6o_evidence/H2-D2/win32-uia-events.jsonl",
+            "sha256": "0" * 64,
+        }
+    elif scenario == "preflight_binding":
+        provenance["preflight_reset_path"] = "r6o_evidence/H2-D1/reset-session.log"
+        provenance["preflight_reset_sha256"] = "0" * 64
+        provenance["preflight_status"] = "FAIL"
+    elif scenario == "producer_input_binding":
+        provenance["host_record_path"] = "r6o_evidence/H2-D1/wrong-host.json"
+        provenance["host_record_sha256"] = "0" * 64
+        provenance["selectors_path"] = "r6o/host/codex/windows/wrong-selectors.json"
+        provenance["selectors_sha256"] = "0" * 64
+    elif scenario == "attachment_status":
+        attachment["status"] = "FAIL"
+    elif scenario == "real_host_flag":
+        attachment["real_codex_host_tested"] = False
+    elif scenario == "synthetic_owner_flag":
+        attachment["synthetic_owner_used"] = True
+    elif scenario == "contiguous_flow":
+        provenance["reset_to_attachment_contiguous_machine_flow"] = False
+    elif scenario == "producer_identity":
+        attachment["implementation_sha256"]["scripts/h2/verify_codex_attachment.py"] = "0" * 64
+        provenance["producer_implementation_sha256"]["scripts/h2/verify_codex_attachment.py"] = "0" * 64
+    else:  # pragma: no cover - the parameter table is exhaustive
+        raise AssertionError(scenario)
 
-
-def test_historical_failure_does_not_override_current_provenance_pass(
-    tmp_path: Path,
-) -> None:
-    freeze = {"head": "1" * 40, "tree": "2" * 40}
-    repo = tmp_path / "repo"
-    output = repo / "r6o_evidence" / "H2-F3" / "repair"
-    _write_current_host_fixture(repo, output, freeze)
-    _write_json(
-        output / "actual-host" / "attachment" / "history" / "failed.json",
-        {"attachment_status": "FAIL"},
-    )
-
-    assert verifier._validate_current_host_evidence(
+    if scenario in {
+        "attachment_schema",
+        "attachment_gate",
+        "nested_event_log_binding",
+        "attachment_status",
+        "real_host_flag",
+        "synthetic_owner_flag",
+        "producer_identity",
+    }:
+        _write_json(attachment_path, attachment)
+        provenance["attachment_result_sha256"] = hashlib.sha256(
+            attachment_path.read_bytes()
+        ).hexdigest()
+    _write_json(provenance_path, provenance)
+    _assert_current_chain_fails(
         repo=repo,
         output=output,
         freeze=freeze,
+        dimension=dimension,
+    )
+
+
+def test_chain_topology_matrix_fails_closed(tmp_path: Path) -> None:
+    freeze = {"head": "1" * 40, "tree": "2" * 40}
+
+    missing_repo = tmp_path / "missing" / "repo"
+    missing_output = missing_repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(missing_repo, missing_output, freeze)
+    (missing_output / transaction.PROVENANCE_REFERENCE).unlink()
+    _assert_current_chain_fails(
+        repo=missing_repo,
+        output=missing_output,
+        freeze=freeze,
+        dimension="F3_ATTACHMENT_PROVENANCE_RECORD",
+    )
+
+    unlinked_repo = tmp_path / "unlinked" / "repo"
+    unlinked_output = unlinked_repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(unlinked_repo, unlinked_output, freeze)
+    unlinked_path = unlinked_output / "actual-host" / "qualification.json"
+    unlinked = json.loads(unlinked_path.read_text(encoding="utf-8"))
+    unlinked.pop("f3_attachment_provenance")
+    _write_json(unlinked_path, unlinked)
+    _assert_current_chain_fails(
+        repo=unlinked_repo,
+        output=unlinked_output,
+        freeze=freeze,
+        dimension="F3_ATTACHMENT_PROVENANCE_REFERENCE",
+    )
+
+    wrong_repo = tmp_path / "wrong" / "repo"
+    wrong_output = wrong_repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(wrong_repo, wrong_output, freeze)
+    wrong_path = wrong_output / "actual-host" / "qualification.json"
+    wrong = json.loads(wrong_path.read_text(encoding="utf-8"))
+    wrong["f3_attachment_provenance"] = "actual-host/attachment/not-current.json"
+    _write_json(wrong_path, wrong)
+    _assert_current_chain_fails(
+        repo=wrong_repo,
+        output=wrong_output,
+        freeze=freeze,
+        dimension="F3_ATTACHMENT_PROVENANCE_REFERENCE",
+    )
+
+
+def test_current_history_isolation_matrix(tmp_path: Path) -> None:
+    freeze = {"head": "1" * 40, "tree": "2" * 40}
+
+    current_pass_repo = tmp_path / "current-pass" / "repo"
+    current_pass_output = current_pass_repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(current_pass_repo, current_pass_output, freeze)
+    _write_json(
+        current_pass_output / "actual-host" / "attachment" / "history" / "failed.json",
+        {"attachment_status": "FAIL"},
+    )
+    assert verifier._validate_current_host_evidence(
+        repo=current_pass_repo,
+        output=current_pass_output,
+        freeze=freeze,
     )["status"] == "PASS"
 
-
-def test_historical_pass_does_not_override_current_provenance_failure(
-    tmp_path: Path,
-) -> None:
-    freeze = {"head": "1" * 40, "tree": "2" * 40}
-    repo = tmp_path / "repo"
-    output = repo / "r6o_evidence" / "H2-F3" / "repair"
-    _write_current_host_fixture(repo, output, freeze)
+    current_fail_repo = tmp_path / "current-fail" / "repo"
+    current_fail_output = current_fail_repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(current_fail_repo, current_fail_output, freeze)
     _write_json(
-        output / "actual-host" / "attachment" / "history" / "passed.json",
+        current_fail_output / "actual-host" / "attachment" / "history" / "passed.json",
         {"attachment_status": "H2_D2_ATTACHMENT_PASS"},
     )
-    provenance_path = (
-        output / "actual-host" / "attachment" / "f3-provenance.json"
-    )
+    provenance_path = current_fail_output / transaction.PROVENANCE_REFERENCE
     provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
     provenance["attachment_status"] = "FAIL"
     _write_json(provenance_path, provenance)
-
-    with pytest.raises(verifier.FinalIntegrationError) as exc_info:
-        verifier._validate_current_host_evidence(
-            repo=repo,
-            output=output,
-            freeze=freeze,
-        )
-    _assert_diagnostic(exc_info)
-    assert exc_info.value.dimension == "F3_ATTACHMENT_ATTACHMENT_STATUS"
+    _assert_current_chain_fails(
+        repo=current_fail_repo,
+        output=current_fail_output,
+        freeze=freeze,
+        dimension="F3_ATTACHMENT_ATTACHMENT_STATUS",
+    )

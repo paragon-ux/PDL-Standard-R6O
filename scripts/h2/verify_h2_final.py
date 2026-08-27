@@ -779,6 +779,21 @@ def _validate_f3_attachment_provenance(
     attachment_path: Path,
     attachment_result: dict[str, Any],
 ) -> dict[str, str]:
+    attachment_contract = {
+        "schema_version": "r6o-h2-d2-attachment-result-1",
+        "gate": "H2-D2",
+        "status": "H2_D2_ATTACHMENT_PASS",
+        "real_codex_host_tested": True,
+        "synthetic_owner_used": False,
+    }
+    for field, expected in attachment_contract.items():
+        _require(
+            attachment_result.get(field) == expected,
+            f"F3_ATTACHMENT_RESULT_{field.upper()}",
+            expected,
+            attachment_result.get(field),
+            attachment_path.as_posix(),
+        )
     reference = qualification.get("f3_attachment_provenance")
     expected_reference = "actual-host/attachment/f3-provenance.json"
     _require(
@@ -929,12 +944,14 @@ def _validate_f3_attachment_provenance(
         provenance_path.as_posix(),
     )
     result_implementation_hashes = attachment_result.get("implementation_sha256")
+    expected_implementation_hashes: dict[str, str] = {}
     for relative_path in (
         "r6o/host/codex/windows/binding.py",
         "r6o/host/codex/windows/placement.py",
         "scripts/h2/verify_codex_attachment.py",
     ):
         expected_hash = _sha256_file(repo / relative_path)
+        expected_implementation_hashes[relative_path] = expected_hash
         result_hash = (
             result_implementation_hashes.get(relative_path)
             if isinstance(result_implementation_hashes, dict)
@@ -947,6 +964,14 @@ def _validate_f3_attachment_provenance(
             {"path": relative_path, "sha256": result_hash},
             attachment_path.as_posix(),
         )
+    _require(
+        provenance.get("producer_implementation_sha256")
+        == expected_implementation_hashes,
+        "F3_ATTACHMENT_PROVENANCE_PRODUCER_IDENTITY",
+        expected_implementation_hashes,
+        provenance.get("producer_implementation_sha256"),
+        provenance_path.as_posix(),
+    )
     result_event_log = attachment_result.get("event_log")
     expected_result_event_log_path = _repo_relative(
         repo,
@@ -1068,7 +1093,14 @@ def _validate_current_host_evidence(*, repo: Path, output: Path, freeze: dict[st
         path.as_posix(),
     )
     attachment_path_value = attachment.get("path")
-    _require(isinstance(attachment_path_value, str), "ACTUAL_HOST_ATTACHMENT_PATH", "relative path", attachment_path_value, path.as_posix())
+    expected_attachment_path = "actual-host/attachment/attachment-result.json"
+    _require(
+        attachment_path_value == expected_attachment_path,
+        "ACTUAL_HOST_ATTACHMENT_PATH",
+        expected_attachment_path,
+        attachment_path_value,
+        path.as_posix(),
+    )
     attachment_path = output / Path(attachment_path_value)
     _require(_is_within(attachment_path, output), "ACTUAL_HOST_ATTACHMENT_PATH_SCOPE", "inside F3 output", attachment_path.as_posix(), path.as_posix())
     attachment_result = _read_json(attachment_path, gate="H2-F3", dimension="ACTUAL_HOST_ATTACHMENT_RESULT")
@@ -1456,6 +1488,27 @@ def collect_local_qualification(*, repo: Path, output: Path, baseline: Path) -> 
     assert isinstance(base, dict)
     freeze = _write_code_freeze(repo=repo, output=output, base={"head": base["head"], "tree": base["tree"]})
     _json_write(
+        output / "actual-host" / "qualification.json",
+        {
+            "schema_version": "r6o-h2-f3-current-actual-host-pending-1",
+            "gate": "H2-F3",
+            "status": "HUMAN_PENDING",
+            "source": freeze,
+            "attachment": {
+                "status": "PENDING",
+                "path": "actual-host/attachment/attachment-result.json",
+            },
+            "current_candidate_dimensions": {
+                "e1_input_routing": "HUMAN_PENDING",
+                "actual_host_g06": "HUMAN_PENDING",
+                "actual_host_a02_full": "HUMAN_PENDING",
+                "lifecycle_resilience": "HUMAN_PENDING",
+            },
+            "human_gesture_synthesized": False,
+            "gesture_policy": "The repaired candidate is not qualified until HUMAN-H2 completes the F3 current-host command.",
+        },
+    )
+    _json_write(
         output / "authority.json",
         {
             "schema_version": "r6o-h2-f3-bounded-repair-authority-1",
@@ -1509,27 +1562,29 @@ def collect_local_qualification(*, repo: Path, output: Path, baseline: Path) -> 
     commands.append(_run_command(repo=repo, output=output, identifier="f2_portable_verifier", arguments=[python, "scripts/h2/verify_h2_lifecycle_resilience.py", "--mode", "portable", "--baseline-repo", baseline_text, "--evidence-dir", f"{output_relative}/f2-portable"]))
     commands.append(_run_command(repo=repo, output=output, identifier="qt_windows_qualification", arguments=[python, "scripts/h2/verify_qt_sidecar_component.py", "--platform", "windows", "--evidence-dir", f"{output_relative}/qt"], environment={"QT_QUICK_BACKEND": "software", "QT_SCALE_FACTOR": "1", "QT_FONT_DPI": "96"}))
     if os.name == "nt":
-        commands.append(_run_command(repo=repo, output=output, identifier="actual_codex_attachment", arguments=[python, "scripts/h2/verify_codex_attachment.py", "--host-record", "r6o_evidence/H2-D1/host-environment.json", "--selectors", "r6o/host/codex/windows/selectors.json", "--evidence-dir", f"{output_relative}/actual-host/attachment"], environment={"QT_QUICK_BACKEND": "software", "QT_SCALE_FACTOR": "1", "QT_FONT_DPI": "96"}))
+        commands.append(
+            _run_command(
+                repo=repo,
+                output=output,
+                identifier="actual_codex_attachment",
+                arguments=[
+                    python,
+                    "scripts/h2/f3_attachment_provenance.py",
+                    "--output-dir",
+                    output_relative,
+                ],
+                environment={
+                    "QT_QUICK_BACKEND": "software",
+                    "QT_SCALE_FACTOR": "1",
+                    "QT_FONT_DPI": "96",
+                },
+            )
+        )
     else:
         commands.append({"id": "actual_codex_attachment", "command": "Windows-only actual Codex attachment verifier", "exit_code": 1, "status": "FAIL", "reason": "F3 requires WINDOWS_LOCAL_ACTUAL_CODEX"})
 
     attachment_path = output / "actual-host" / "attachment" / "attachment-result.json"
     attachment_status = "PASS" if attachment_path.is_file() and _read_json(attachment_path, gate="H2-F3", dimension="ACTUAL_HOST_COLLECTION").get("status") == "H2_D2_ATTACHMENT_PASS" else "FAIL"
-    _json_write(output / "actual-host" / "qualification.json", {
-        "schema_version": "r6o-h2-f3-current-actual-host-pending-1",
-        "gate": "H2-F3",
-        "status": "HUMAN_PENDING",
-        "source": freeze,
-        "attachment": {"status": attachment_status, "path": "actual-host/attachment/attachment-result.json"},
-        "current_candidate_dimensions": {
-            "e1_input_routing": "HUMAN_PENDING",
-            "actual_host_g06": "HUMAN_PENDING",
-            "actual_host_a02_full": "HUMAN_PENDING",
-            "lifecycle_resilience": "HUMAN_PENDING",
-        },
-        "human_gesture_synthesized": False,
-        "gesture_policy": "The repaired candidate is not qualified until HUMAN-H2 completes the F3 current-host command.",
-    })
     qt_status = "PASS" if (output / "qt" / "windows" / "component-result.json").is_file() else "FAIL"
     _json_write(output / "qt-qualification.json", {
         "schema_version": "r6o-h2-f3-qt-qualification-1",
@@ -1718,6 +1773,40 @@ def _collect_current_e1(
                 input_binding.stop()
         if host is not None:
             host.close()
+
+
+def _validate_machine_chain_before_current_collection(
+    *,
+    repo: Path,
+    output: Path,
+    expected_head: str,
+    expected_tree: str,
+) -> None:
+    source = _verify_repaired_candidate(
+        repo=repo,
+        output=output,
+        expected_head=expected_head,
+        expected_tree=expected_tree,
+    )
+    qualification = _read_json(
+        output / "actual-host" / "qualification.json",
+        gate="H2-F3",
+        dimension="CURRENT_MACHINE_ATTACHMENT_QUALIFICATION",
+    )
+    attachment_path = output / "actual-host" / "attachment" / "attachment-result.json"
+    attachment = _read_json(
+        attachment_path,
+        gate="H2-F3",
+        dimension="CURRENT_MACHINE_ATTACHMENT_RESULT",
+    )
+    _validate_f3_attachment_provenance(
+        repo=repo,
+        output=output,
+        qualification=qualification,
+        freeze=source,
+        attachment_path=attachment_path,
+        attachment_result=attachment,
+    )
 
 
 def collect_current_actual_host(
@@ -1909,6 +1998,12 @@ def main() -> int:
                 _fail("FROZEN_ORACLE_INPUT", "--baseline-repo or PDL_R6S_BASELINE_REPO", "MISSING", "H2-F3")
             if args.repair_freeze_head is None or args.repair_freeze_tree is None:
                 _fail("REPAIRED_FREEZE_ARGUMENTS", "--repair-freeze-head and --repair-freeze-tree", "MISSING", "H2-F3")
+            _validate_machine_chain_before_current_collection(
+                repo=ROOT,
+                output=args.output_dir.resolve(),
+                expected_head=args.repair_freeze_head,
+                expected_tree=args.repair_freeze_tree,
+            )
             collect_current_actual_host(
                 repo=ROOT,
                 output=args.output_dir.resolve(),
@@ -1916,6 +2011,12 @@ def main() -> int:
                 expected_head=args.repair_freeze_head,
                 expected_tree=args.repair_freeze_tree,
                 timeout=args.human_action_timeout,
+            )
+            from scripts.h2.f3_attachment_provenance import link_existing_provenance
+
+            link_existing_provenance(
+                repo=ROOT,
+                output=args.output_dir.resolve(),
             )
         report = verify_repository(
             evidence_root=args.evidence_root,
