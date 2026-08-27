@@ -4,8 +4,8 @@
   "status": "F1_PARITY_PASS",
   "agent": "LUNA-H2-F1-IMPLEMENTER",
   "repository": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O-h2-f3",
-  "base_commit": "dfbf9c32e72d3c148cb3c2267b808b08c8f9acf4",
-  "base_tree": "dd7194db212daa24b235fdaae436d140d3faeb91",
+  "base_commit": "94d56129893206db8899df74f5201144a64a1679",
+  "base_tree": "729d2e3c1f507ac01189e1fcc0e77cb80b8b3997",
   "frozen_oracle": {
     "commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
     "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
@@ -70,7 +70,7 @@
           "tui": [
             {
               "artifact_kind": "prompt",
-              "artifact_revision": "4ac4b282f6e3006e5a6176af35c7afc47ad705a130b923eab5a81aca9a3ce51d",
+              "artifact_revision": "40e418e5e7215a1da60aded05847fc657d99c2724464527a497a65c66c98b553",
               "body_sha256": "3b981f581b4f8ab151852f9214493c65accc72153f2f57c68dbc3c4c244911f2",
               "media_type": "text/plain",
               "title": "Authoritative Prompt (PDL.md)",
@@ -81,7 +81,7 @@
             },
             {
               "artifact_kind": "plan",
-              "artifact_revision": "b581c175e295737691e610a3ca06abe643db058b83c918f74dd5a485a19d5f36",
+              "artifact_revision": "d38b50b1faa5598c9aad8bec21828e807c9dc2b3fef96ffe113d2f464f7719dd",
               "body_sha256": "4763d12d6203ca03c4e8936f2dfb58a3d0d0e782d8990f7a5d12dbf8425bf7ce",
               "media_type": "text/plain",
               "title": "Authoritative Response Plan (PDL.md)",
@@ -193,7 +193,7 @@
           "status": "PASS",
           "tui": {
             "artifact_kind": "plan",
-            "artifact_revision": "b581c175e295737691e610a3ca06abe643db058b83c918f74dd5a485a19d5f36",
+            "artifact_revision": "d38b50b1faa5598c9aad8bec21828e807c9dc2b3fef96ffe113d2f464f7719dd",
             "body_sha256": "4763d12d6203ca03c4e8936f2dfb58a3d0d0e782d8990f7a5d12dbf8425bf7ce",
             "media_type": "text/plain",
             "title": "Authoritative Response Plan (PDL.md)",
@@ -311,7 +311,7 @@
           "tui": [
             {
               "artifact_kind": "prompt",
-              "artifact_revision": "49290a8238dbbc2b97fb993a1a656b8093999143349edb851aaa73b26cd5d405",
+              "artifact_revision": "f715c1a5dd0e16e400da19720ac768a1af3552526b41d6fcc949c8c843b6635d",
               "body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
               "media_type": "text/plain",
               "title": "Authoritative Prompt (PDL.md)",
@@ -322,7 +322,7 @@
             },
             {
               "artifact_kind": "prompt",
-              "artifact_revision": "49290a8238dbbc2b97fb993a1a656b8093999143349edb851aaa73b26cd5d405",
+              "artifact_revision": "f715c1a5dd0e16e400da19720ac768a1af3552526b41d6fcc949c8c843b6635d",
               "body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
               "media_type": "text/plain",
               "title": "Authoritative Prompt (PDL.md)",
@@ -333,7 +333,7 @@
             },
             {
               "artifact_kind": "prompt",
-              "artifact_revision": "0f1575f93cddbfb816b13486461a0681fcbc5e9bcb50c555fc9505199b1b219c",
+              "artifact_revision": "343207c596409404d13b0d98fbb98e8314265a8e4b9a74e33f2ec1caea70ee74",
               "body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
               "media_type": "text/plain",
               "title": "Authoritative Prompt (PDL.md)",
@@ -344,7 +344,7 @@
             },
             {
               "artifact_kind": "plan",
-              "artifact_revision": "f599634a8f7e1f174784c1d2b8ec07585d2f7dd2003c2ec5f293bd3e3503b2a2",
+              "artifact_revision": "92f26b336bc350c44e689d5fc35296ce72d1ff97197e3862517072474017a96a",
               "body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
               "media_type": "text/plain",
               "title": "Authoritative Response Plan (PDL.md)",
@@ -499,7 +499,7 @@
           "status": "PASS",
           "tui": {
             "artifact_kind": "prompt",
-            "artifact_revision": "0f1575f93cddbfb816b13486461a0681fcbc5e9bcb50c555fc9505199b1b219c",
+            "artifact_revision": "343207c596409404d13b0d98fbb98e8314265a8e4b9a74e33f2ec1caea70ee74",
             "body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
             "media_type": "text/plain",
             "title": "Authoritative Prompt (PDL.md)",
@@ -524,7 +524,7 @@
           "status": "PASS",
           "tui": {
             "artifact_kind": "plan",
-            "artifact_revision": "f599634a8f7e1f174784c1d2b8ec07585d2f7dd2003c2ec5f293bd3e3503b2a2",
+            "artifact_revision": "92f26b336bc350c44e689d5fc35296ce72d1ff97197e3862517072474017a96a",
             "body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
             "media_type": "text/plain",
             "title": "Authoritative Response Plan (PDL.md)",

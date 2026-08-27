@@ -7,8 +7,8 @@
     "authorized_handoff_artifacts": [
       {
         "artifact_kind": "prompt",
-        "artifact_ref": "prompt:I-978e26d065-P1",
-        "artifact_revision": "97d41ca463b3387b8b071323030b3c2d706aadc9732eaf44ccc8dbc2cb72fa8d",
+        "artifact_ref": "prompt:I-c167a72d1a-P1",
+        "artifact_revision": "cd0c4fbca78223e0ace530ca25f702f3d110ef4d1df7ee801698f82cfca09b2e",
         "body": "Explain the difference between optimistic locking and pessimistic locking for an audience of senior developers.",
         "capabilities": {
           "copy": true,
@@ -19,8 +19,8 @@
       },
       {
         "artifact_kind": "plan",
-        "artifact_ref": "plan:I-978e26d065-R1",
-        "artifact_revision": "930edd17003112d3ba7c44b72194ec2addc7173efbd92ef2f7457fe8d0192a6f",
+        "artifact_ref": "plan:I-c167a72d1a-R1",
+        "artifact_revision": "14e0ee425dd2fad0869f674ba0e3474c469ea26464cb8605b6b518e90729c538",
         "body": "IDENTIFY the target audience as senior developers\nINTRODUCE the subject of concurrency control\nDEFINE optimistic locking\nDEFINE pessimistic locking\nCOMPARE the two approaches\nSUMMARIZE the differences",
         "capabilities": {
           "copy": true,
@@ -38,10 +38,10 @@
     "terminal_disposition": "HOST_HANDOFF"
   },
   "model_response": "For senior developers: Optimistic and pessimistic locking are two strategies for managing concurrent access to shared data. Pessimistic locking assumes conflicts are likely and locks data before reading or writing, preventing other transactions from accessing it until the lock is released. This is typically implemented with database row-level locks (e.g., SELECT ... FOR UPDATE) or application-level mutexes. It guarantees strong consistency but can reduce concurrency and risk deadlocks. Optimistic locking assumes conflicts are rare and does not lock during reads; instead, it validates at write time by checking a version number or timestamp. If the version has changed since the read, the update is rejected (often with a retry). This approach maximizes concurrency and avoids lock overhead, but requires handling conflicts and may be unsuitable for high-contention scenarios. Key differences: locking timing (before vs. after), concurrency impact, conflict handling, and suitability for read-heavy vs. write-heavy workloads. Choose pessimistic when data consistency is critical and contention is high; choose optimistic when read/write ratios are high and retries are acceptable.",
-  "model_revision": "43247484163cb4d5a9394cfb374f7a38551175b8370e5d6922c00b64d2427cad",
-  "projection_id": "projection-e7ffc798937f81c1c637a366c8d134baed8f137de3d62d423cfc00c159f2538c",
+  "model_revision": "29f632fd6bd9679c100b0d69388aaa6dc55e32a4ff14fc1d6937ba42a6501dd3",
+  "projection_id": "projection-610a45961c066502456e820c72cfddc6e444153d7a6d41cbda2a92e471a174e7",
   "schema_version": "r6o-focus-projection-1",
-  "session_id": "I-978e26d065",
+  "session_id": "I-c167a72d1a",
   "stage": "CLOSED_SUCCESS",
-  "workspace_id": "W-2a19531ec79a"
+  "workspace_id": "W-4f04cef8bfca"
 }

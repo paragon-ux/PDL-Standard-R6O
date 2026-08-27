@@ -36,8 +36,8 @@
   ],
   "artifact": {
     "artifact_kind": "prompt",
-    "artifact_ref": "prompt:I-978e26d065-P1",
-    "artifact_revision": "1f0202d278d5bc60f4465b6940a62b6460951341bf1a102da133896165601649",
+    "artifact_ref": "prompt:I-c167a72d1a-P1",
+    "artifact_revision": "d2140899e0c4baf53dbfaa9c2adf9353407e7062d620cf953f54ebd49d3dd02b",
     "body": "Explain the difference between optimistic locking and pessimistic locking for an audience of senior developers.",
     "capabilities": {
       "copy": true,
@@ -58,10 +58,10 @@
     "terminal_disposition": null
   },
   "model_response": "Prompt Pseudocode\n\nExplain the difference between optimistic locking and pessimistic locking for an audience of senior developers.\n\nConfirm or correct this interpretation.",
-  "model_revision": "1a5c2b8803ec7579c7e8537908a47755547b1fc20e2f6a48784107ee47cdedcb",
-  "projection_id": "projection-b8a40b86df0e9ac0f020136b5055e8687065805c8c121e4fd4b53d0c85f13238",
+  "model_revision": "005eb3c7f0c02f37056400d4b4657b70dc2ddfaaa5aff14a4d17994a95630219",
+  "projection_id": "projection-c4da901f9be0f6830cb1bb0f5a31fac818ad7ee7ca0b1f63be859b49e61614a5",
   "schema_version": "r6o-focus-projection-1",
-  "session_id": "I-978e26d065",
+  "session_id": "I-c167a72d1a",
   "stage": "PROMPT_REVIEW",
-  "workspace_id": "W-2a19531ec79a"
+  "workspace_id": "W-4f04cef8bfca"
 }

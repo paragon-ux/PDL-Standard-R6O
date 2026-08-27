@@ -1,8 +1,8 @@
 {
   "actual_host": {
-    "attachment_status": "H2_D2_ATTACHMENT_PASS",
+    "attachment_status": "FAIL",
     "evidence": "actual-host/qualification.json",
-    "status": "PASS"
+    "status": "HUMAN_PENDING"
   },
   "commands": [
     {
@@ -107,11 +107,11 @@
     },
     {
       "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_codex_attachment.py --host-record r6o_evidence/H2-D1/host-environment.json --selectors r6o/host/codex/windows/selectors.json --evidence-dir r6o_evidence/H2-F3/repair/actual-host/attachment",
-      "duration_seconds": 79.852,
-      "exit_code": 0,
+      "duration_seconds": 240.625,
+      "exit_code": 1,
       "id": "actual_codex_attachment",
       "passed_count": null,
-      "status": "PASS",
+      "status": "FAIL",
       "stderr_path": "logs/actual_codex_attachment.stderr.txt",
       "stdout_path": "logs/actual_codex_attachment.stdout.txt"
     }

@@ -22,7 +22,7 @@
   "f3_attachment_provenance": "actual-host/attachment/f3-provenance.json",
   "f3_local_event_log": {
     "path": "actual-host/attachment/win32-uia-events.jsonl",
-    "sha256": "2528c38f181f272dd9b13624bb518689509427d8f48f82ab420dae9f10f14849"
+    "sha256": "4ab046f9ece27b3cfd193e6ce0b2fe0f9e198f43c88e9691054b91d95e3c9479"
   },
   "gate": "H2-F3",
   "human_gesture_synthesized": false,
@@ -39,9 +39,9 @@
   },
   "schema_version": "r6o-h2-f3-current-actual-host-1",
   "source": {
-    "head": "dfbf9c32e72d3c148cb3c2267b808b08c8f9acf4",
+    "head": "94d56129893206db8899df74f5201144a64a1679",
     "status": "FROZEN",
-    "tree": "dd7194db212daa24b235fdaae436d140d3faeb91"
+    "tree": "729d2e3c1f507ac01189e1fcc0e77cb80b8b3997"
   },
   "status": "H2_F3_CURRENT_ACTUAL_HOST_INTEGRATION_PASS"
 }

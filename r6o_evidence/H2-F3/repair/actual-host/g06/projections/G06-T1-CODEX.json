@@ -36,8 +36,8 @@
   ],
   "artifact": {
     "artifact_kind": "plan",
-    "artifact_ref": "plan:I-978e26d065-R1",
-    "artifact_revision": "49fbbf96d73a25ae5933339d12684392e7a57331169c89f263f2d6441b83fead",
+    "artifact_ref": "plan:I-c167a72d1a-R1",
+    "artifact_revision": "522123ba4f57541b37846b73cf498b0a0246d49378bf173923b82ca594585819",
     "body": "IDENTIFY the target audience as senior developers\nINTRODUCE the subject of concurrency control\nDEFINE optimistic locking\nDEFINE pessimistic locking\nCOMPARE the two approaches\nSUMMARIZE the differences",
     "capabilities": {
       "copy": true,
@@ -58,10 +58,10 @@
     "terminal_disposition": null
   },
   "model_response": "Response Plan Pseudocode\n\nIDENTIFY the target audience as senior developers\nINTRODUCE the subject of concurrency control\nDEFINE optimistic locking\nDEFINE pessimistic locking\nCOMPARE the two approaches\nSUMMARIZE the differences\n\nConfirm or correct this response approach.",
-  "model_revision": "f0567fd487154a002aef0e48bd7eebec76f608276e3ff73899f17737b4beee3f",
-  "projection_id": "projection-c31e523a80ac0d017db16ae132dc1393bb2c7046ba2b9760c4ce39c9bcc8a190",
+  "model_revision": "703c6d5ba0b2d67042539ab0f203f2dd0903c88838cc79f875cc214d2cbdc528",
+  "projection_id": "projection-84b3fbbdce3de06d874daea3383779c1b7dee4716b1043ae81eb38812da3588f",
   "schema_version": "r6o-focus-projection-1",
-  "session_id": "I-978e26d065",
+  "session_id": "I-c167a72d1a",
   "stage": "PLAN_REVIEW",
-  "workspace_id": "W-2a19531ec79a"
+  "workspace_id": "W-4f04cef8bfca"
 }

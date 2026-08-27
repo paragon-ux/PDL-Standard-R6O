@@ -2,8 +2,8 @@
   "agent": "SOL-H2-F3-ATTACHMENT-PROVENANCE-CLOSURE",
   "automatic_repair_budget_remaining": 0,
   "gate": "H2-F3",
-  "human_action_required": false,
   "human_pass": "NOT_CLAIMED",
+  "human_action_required": false,
   "human_semantic_replay": "PASS",
   "next_authority": "LUNA-H2-F3-ATTACHMENT-PROVENANCE-FINAL-AUDITOR",
   "production_behavior_changed": false,
@@ -13,9 +13,9 @@
     "tree": "7c1f15aca91438695be54d5ea25ba6611e281fb3"
   },
   "repaired_code_freeze": {
-    "head": "dfbf9c32e72d3c148cb3c2267b808b08c8f9acf4",
+    "head": "94d56129893206db8899df74f5201144a64a1679",
     "status": "FROZEN",
-    "tree": "dd7194db212daa24b235fdaae436d140d3faeb91"
+    "tree": "729d2e3c1f507ac01189e1fcc0e77cb80b8b3997"
   },
   "role": "HUMAN_DIRECTED_BOUNDED_P1_REPAIR",
   "schema_version": "r6o-h2-f3-bounded-repair-authority-1",

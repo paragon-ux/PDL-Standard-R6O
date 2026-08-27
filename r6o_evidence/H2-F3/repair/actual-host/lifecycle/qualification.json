@@ -132,7 +132,7 @@
         "top": 47,
         "width": 412
       },
-      "foreground_hwnd": 13110360,
+      "foreground_hwnd": 3150930,
       "global_topmost": false,
       "host_client_rectangle": {
         "bottom": 899,
@@ -147,7 +147,7 @@
       "owner_hwnd": 2758514,
       "placement_matches": true,
       "sidecar_above_host": true,
-      "sidecar_hwnd": 13110360,
+      "sidecar_hwnd": 3150930,
       "visible": true,
       "work_area_rectangle": {
         "bottom": 900,
@@ -222,7 +222,7 @@
         "top": 491,
         "width": 675
       },
-      "foreground_hwnd": 13110360,
+      "foreground_hwnd": 3150930,
       "global_topmost": false,
       "host_client_rectangle": {
         "bottom": 899,
@@ -237,7 +237,7 @@
       "owner_hwnd": 2758514,
       "placement_matches": true,
       "sidecar_above_host": true,
-      "sidecar_hwnd": 13110360,
+      "sidecar_hwnd": 3150930,
       "visible": true,
       "work_area_rectangle": {
         "bottom": 900,
@@ -272,7 +272,7 @@
         "top": 491,
         "width": 675
       },
-      "foreground_hwnd": 13110360,
+      "foreground_hwnd": 3150930,
       "global_topmost": false,
       "host_client_rectangle": {
         "bottom": 899,
@@ -287,7 +287,7 @@
       "owner_hwnd": 2758514,
       "placement_matches": true,
       "sidecar_above_host": true,
-      "sidecar_hwnd": 13110360,
+      "sidecar_hwnd": 3150930,
       "visible": true,
       "work_area_rectangle": {
         "bottom": 900,
@@ -325,9 +325,9 @@
   },
   "gate": "H2-F3",
   "process_exit": {
-    "child_pid": 8688,
+    "child_pid": 14864,
     "cleanup_complete_marker": true,
-    "duration_seconds": 130.657,
+    "duration_seconds": 96.984,
     "final_resource_state": {
       "focus_router": {
         "hook_removed": true,
@@ -361,9 +361,9 @@
   "r6o3_lease_implemented": false,
   "schema_version": "r6o-h2-f3-current-lifecycle-1",
   "source": {
-    "head": "dfbf9c32e72d3c148cb3c2267b808b08c8f9acf4",
+    "head": "94d56129893206db8899df74f5201144a64a1679",
     "status": "FROZEN",
-    "tree": "dd7194db212daa24b235fdaae436d140d3faeb91"
+    "tree": "729d2e3c1f507ac01189e1fcc0e77cb80b8b3997"
   },
   "status": "H2_F3_CURRENT_LIFECYCLE_PASS",
   "warnings": [

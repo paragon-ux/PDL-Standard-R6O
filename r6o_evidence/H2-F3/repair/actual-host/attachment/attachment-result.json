@@ -19,8 +19,8 @@
   },
   "event_log": {
     "event_count": 10,
-    "path": "r6o_evidence/H2-D2/win32-uia-events.jsonl",
-    "sha256": "2528c38f181f272dd9b13624bb518689509427d8f48f82ab420dae9f10f14849"
+    "path": "r6o_evidence/H2-F3/repair/actual-host/attachment/win32-uia-events.jsonl",
+    "sha256": "4ab046f9ece27b3cfd193e6ce0b2fe0f9e198f43c88e9691054b91d95e3c9479"
   },
   "expanded": {
     "actual_rectangle": {
@@ -57,7 +57,7 @@
     "owner_hwnd": 2758514,
     "placement_matches": true,
     "sidecar_above_host": true,
-    "sidecar_hwnd": 16913024,
+    "sidecar_hwnd": 5572944,
     "visible": true,
     "work_area_rectangle": {
       "bottom": 900,
@@ -103,7 +103,7 @@
   "implementation_sha256": {
     "r6o/host/codex/windows/binding.py": "eed2c7db45ff56ebad2ccec542dc795ce86a02652ac6ed1d33e38e7ab295413c",
     "r6o/host/codex/windows/placement.py": "8d01b1b2d2e6c77965decadcf2b34f27ee90728f72b8f0ce8ad770d0d1b43ddb",
-    "scripts/h2/verify_codex_attachment.py": "2c85a1f14e65021e3a2aaaf73276e47c1c165c34abb838620055db9218d3cbec"
+    "scripts/h2/verify_codex_attachment.py": "626aa2e9c8d6dcfc737c05b5a4c0f4b92271fbdbab226801defbf29afa05d1b4"
   },
   "non_interference": {
     "composer_clicked_outside_sidecar": true,
@@ -135,11 +135,11 @@
       "frame_count": 9,
       "observer_ordering_mutation": false,
       "path": "r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-expanded.mp4",
-      "sha256": "4f4c49873838c851b70861f2bf76ec93e209e9da6f5924ef6c236549d7649063"
+      "sha256": "e9dc3465a433259a76a5502623c6abf9c31b05d71ecd68b4dcb9b58bcd634e26"
     },
-    "frame_count": 318,
+    "frame_count": 339,
     "mandatory": true,
-    "sha256": "ca0bf18f44d2a2ad290acf27193aa70a8a0807de097e4d907ca905ed34c32b26",
+    "sha256": "817cbca110b807780d2ae161c1e998b47ff0ee7286380a89e3e6c81ed54fd480",
     "standard": {
       "crop_rectangle": {
         "bottom": 843,
@@ -150,10 +150,10 @@
         "width": 676
       },
       "fps": 8,
-      "frame_count": 309,
+      "frame_count": 330,
       "observer_ordering_mutation": false,
       "path": "r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-standard.mp4",
-      "sha256": "2f33a5bb961cb834f2d3e1a006f844afcfe9de432e8c8a5f953c59ffce881fe7"
+      "sha256": "b18ae8d2c9d3671aa19c960437d18e7e2144989ae0ee818498ea3bc38dd17b6c"
     }
   },
   "runtime": {
@@ -168,7 +168,7 @@
     "platform": "Windows-10-10.0.22000-SP0",
     "python_version": "3.11.9",
     "qt_platform": "windows",
-    "qt_quick_backend": "software",
+    "qt_quick_backend": "",
     "qt_version": "6.11.2"
   },
   "schema_version": "r6o-h2-d2-attachment-result-1",
@@ -198,7 +198,7 @@
       "top": 491,
       "width": 675
     },
-    "foreground_hwnd": 16913024,
+    "foreground_hwnd": 5572944,
     "global_topmost": false,
     "host_client_rectangle": {
       "bottom": 899,
@@ -213,7 +213,7 @@
     "owner_hwnd": 2758514,
     "placement_matches": true,
     "sidecar_above_host": true,
-    "sidecar_hwnd": 16913024,
+    "sidecar_hwnd": 5572944,
     "visible": true,
     "work_area_rectangle": {
       "bottom": 900,
@@ -230,13 +230,13 @@
   },
   "status": "H2_D2_ATTACHMENT_PASS",
   "synthetic_owner_used": false,
-  "timestamp_utc": "2026-08-27T12:56:12.172231Z",
+  "timestamp_utc": "2026-08-27T20:12:30.971306Z",
   "unrelated_window": {
     "host_focus_router_ignored_probe_click": true,
     "probe_above_sidecar": true,
     "probe_foreground": true,
     "probe_global_topmost": false,
-    "probe_hwnd": 13241432,
+    "probe_hwnd": 22218406,
     "probe_owner_hwnd": 0
   }
 }

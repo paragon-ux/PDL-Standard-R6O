@@ -1,0 +1,11 @@
+{
+  "code": "FRESH_CHAT_NOT_PROVED",
+  "details": {
+    "composer": {},
+    "conversation": {},
+    "last_observer_error": "SELECTOR_CARDINALITY:composer:0"
+  },
+  "schema_version": "r6o-h2-d1-reset-log-1",
+  "status": "FAIL",
+  "timestamp_utc": "2026-08-27T20:10:29.393092Z"
+}

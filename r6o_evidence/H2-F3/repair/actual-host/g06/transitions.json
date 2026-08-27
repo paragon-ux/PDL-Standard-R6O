@@ -2,7 +2,7 @@
   {
     "artifact_body_sha256": "3b981f581b4f8ab151852f9214493c65accc72153f2f57c68dbc3c4c244911f2",
     "artifact_kind": "prompt",
-    "artifact_ref": "prompt:I-978e26d065-P1",
+    "artifact_ref": "prompt:I-c167a72d1a-P1",
     "capture_path": "r6o_evidence/H2-F3/repair/actual-host/g06/captures/G06-T0-CODEX.png",
     "host_session_observation": {
       "composer": {
@@ -40,7 +40,7 @@
           "top": 491,
           "width": 675
         },
-        "foreground_hwnd": 8392172,
+        "foreground_hwnd": 13502874,
         "global_topmost": false,
         "host_client_rectangle": {
           "bottom": 899,
@@ -55,7 +55,7 @@
         "owner_hwnd": 2758514,
         "placement_matches": true,
         "sidecar_above_host": true,
-        "sidecar_hwnd": 8392172,
+        "sidecar_hwnd": 13502874,
         "visible": true,
         "work_area_rectangle": {
           "bottom": 900,
@@ -73,9 +73,9 @@
       "focus_owner": "SIDECAR_ACTION_CONFIRM_PROMPT",
       "sidecar_visibility": "VISIBLE_STANDARD"
     },
-    "projection_id": "projection-b8a40b86df0e9ac0f020136b5055e8687065805c8c121e4fd4b53d0c85f13238",
+    "projection_id": "projection-c4da901f9be0f6830cb1bb0f5a31fac818ad7ee7ca0b1f63be859b49e61614a5",
     "projection_path": "r6o_evidence/H2-F3/repair/actual-host/g06/projections/G06-T0-CODEX.json",
-    "projection_sha256": "394fd228f394627df30ba6c6ab546300e3e8b5755873f661294406e334414c7e",
+    "projection_sha256": "b92eda76fa22d59414e00e5b034c289cc1263bd751a6f0170f8d38324b94d7db",
     "schema_version": "r6o-h2-e2-transition-1",
     "stage": "PROMPT_REVIEW",
     "state_id": "G06-S1",
@@ -90,7 +90,7 @@
   {
     "artifact_body_sha256": "4763d12d6203ca03c4e8936f2dfb58a3d0d0e782d8990f7a5d12dbf8425bf7ce",
     "artifact_kind": "plan",
-    "artifact_ref": "plan:I-978e26d065-R1",
+    "artifact_ref": "plan:I-c167a72d1a-R1",
     "capture_path": "r6o_evidence/H2-F3/repair/actual-host/g06/captures/G06-T1-CODEX.png",
     "host_session_observation": {
       "composer": {
@@ -108,10 +108,10 @@
     },
     "input_envelope": {
       "action_id": "confirm_prompt",
-      "model_revision": "1a5c2b8803ec7579c7e8537908a47755547b1fc20e2f6a48784107ee47cdedcb",
-      "projection_id": "projection-b8a40b86df0e9ac0f020136b5055e8687065805c8c121e4fd4b53d0c85f13238",
+      "model_revision": "005eb3c7f0c02f37056400d4b4657b70dc2ddfaaa5aff14a4d17994a95630219",
+      "projection_id": "projection-c4da901f9be0f6830cb1bb0f5a31fac818ad7ee7ca0b1f63be859b49e61614a5",
       "schema_version": "r6o-input-envelope-1",
-      "session_id": "I-978e26d065",
+      "session_id": "I-c167a72d1a",
       "source": "STRUCTURED_ACTION",
       "text": null
     },
@@ -136,7 +136,7 @@
           "top": 491,
           "width": 675
         },
-        "foreground_hwnd": 8392172,
+        "foreground_hwnd": 13502874,
         "global_topmost": false,
         "host_client_rectangle": {
           "bottom": 899,
@@ -151,7 +151,7 @@
         "owner_hwnd": 2758514,
         "placement_matches": true,
         "sidecar_above_host": true,
-        "sidecar_hwnd": 8392172,
+        "sidecar_hwnd": 13502874,
         "visible": true,
         "work_area_rectangle": {
           "bottom": 900,
@@ -169,9 +169,9 @@
       "focus_owner": "SIDECAR_ACTION_CONFIRM_PLAN",
       "sidecar_visibility": "VISIBLE_STANDARD"
     },
-    "projection_id": "projection-c31e523a80ac0d017db16ae132dc1393bb2c7046ba2b9760c4ce39c9bcc8a190",
+    "projection_id": "projection-84b3fbbdce3de06d874daea3383779c1b7dee4716b1043ae81eb38812da3588f",
     "projection_path": "r6o_evidence/H2-F3/repair/actual-host/g06/projections/G06-T1-CODEX.json",
-    "projection_sha256": "c43d6c35745f7a75f989fa6dcc76086d3ddc2af89fc118ba2b3045c86de54907",
+    "projection_sha256": "d99c28641c5cbcf897534d42063608beaf72daf45c4e39a19687459d5b9bcd70",
     "schema_version": "r6o-h2-e2-transition-1",
     "stage": "PLAN_REVIEW",
     "state_id": "G06-S2",
@@ -208,10 +208,10 @@
     },
     "input_envelope": {
       "action_id": "confirm_plan",
-      "model_revision": "f0567fd487154a002aef0e48bd7eebec76f608276e3ff73899f17737b4beee3f",
-      "projection_id": "projection-c31e523a80ac0d017db16ae132dc1393bb2c7046ba2b9760c4ce39c9bcc8a190",
+      "model_revision": "703c6d5ba0b2d67042539ab0f203f2dd0903c88838cc79f875cc214d2cbdc528",
+      "projection_id": "projection-84b3fbbdce3de06d874daea3383779c1b7dee4716b1043ae81eb38812da3588f",
       "schema_version": "r6o-input-envelope-1",
-      "session_id": "I-978e26d065",
+      "session_id": "I-c167a72d1a",
       "source": "STRUCTURED_ACTION",
       "text": null
     },
@@ -225,9 +225,9 @@
       },
       "sidecar_visibility": "DISMISSED"
     },
-    "projection_id": "projection-e7ffc798937f81c1c637a366c8d134baed8f137de3d62d423cfc00c159f2538c",
+    "projection_id": "projection-610a45961c066502456e820c72cfddc6e444153d7a6d41cbda2a92e471a174e7",
     "projection_path": "r6o_evidence/H2-F3/repair/actual-host/g06/projections/G06-T2-CODEX.json",
-    "projection_sha256": "f03197d8ad0e1793b00910cd2bea2c05ff1619b3a0c184a33705f0ced623372b",
+    "projection_sha256": "b4f37069cab9ed429949dbd199de785127ac7946025e009ef689fc2bba4478c0",
     "schema_version": "r6o-h2-e2-transition-1",
     "stage": "CLOSED_SUCCESS",
     "state_id": "G06-S3",

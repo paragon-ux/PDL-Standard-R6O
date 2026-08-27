@@ -7,8 +7,8 @@
     "authorized_handoff_artifacts": [
       {
         "artifact_kind": "prompt",
-        "artifact_ref": "prompt:I-65b91add4e-P2",
-        "artifact_revision": "cec93a499b9c6d07be2b8c23922c715ed22b94a4c82b6dd2cc70a6870bdfb584",
+        "artifact_ref": "prompt:I-7f8744c58d-P2",
+        "artifact_revision": "b591bb3e748fb619d3539e6ee4d78f0348d78244e3682f1d113707c7fd881e48",
         "body": "COMPARE Kafka and RabbitMQ for event delivery for an audience of data engineers.",
         "capabilities": {
           "copy": true,
@@ -19,8 +19,8 @@
       },
       {
         "artifact_kind": "plan",
-        "artifact_ref": "plan:I-65b91add4e-R1",
-        "artifact_revision": "81d6a4a0993694586ac1648b3e2291f5c7c9fa26d7823a97da8b2133cfa4a354",
+        "artifact_ref": "plan:I-7f8744c58d-R1",
+        "artifact_revision": "f4c8a926f11af4294dbe45b6e731fe3088b651c3af7ddecf1d9e4e6ccf17e9c9",
         "body": "IDENTIFY comparison criteria relevant to event delivery and data engineers.\nCOMPARE Kafka and RabbitMQ consistently across those criteria.\nSUMMARIZE the tradeoffs and the conditions that affect suitability.",
         "capabilities": {
           "copy": true,
@@ -38,10 +38,10 @@
     "terminal_disposition": "HOST_HANDOFF"
   },
   "model_response": "Kafka and RabbitMQ solve different event-delivery problems.\n\nKafka is a distributed event-streaming platform built around durable, partitioned logs. Consumers independently track offsets, so events can be retained and replayed. It is generally the stronger choice for data pipelines, stream processing, event sourcing, CDC, and high-throughput integration where multiple consumer groups need the same history.\n\nRabbitMQ is a message broker built around exchanges and queues. It supports flexible routing, acknowledgments, retries, priorities, and per-message delivery patterns. It is generally the stronger choice for task queues, commands, request/reply workflows, and operational messaging where messages should be routed to specific consumers and removed after successful processing.\n\nKey tradeoffs:\n\n- Delivery model: Kafka consumers pull from partitioned logs; RabbitMQ pushes or dispatches messages from queues.\n- Retention and replay: Kafka retains events according to time or size policies and supports straightforward replay. RabbitMQ normally removes acknowledged messages; replay requires additional design.\n- Ordering: Kafka guarantees ordering within a partition. RabbitMQ queues are ordered in principle, but redelivery, priorities, and multiple consumers can alter observed processing order.\n- Scaling: Kafka scales throughput through partitions and consumer groups, but partition count and key selection affect parallelism. RabbitMQ scales consumers easily for work distribution, while very large backlogs and extreme sustained throughput require more careful queue topology.\n- Routing: RabbitMQ provides rich exchange-based routing, including direct, topic, fanout, and header rules. Kafka routing is primarily topic-and-partition based.\n- Failure handling: RabbitMQ has native acknowledgment, dead-lettering, expiration, and retry-oriented features. Kafka typically implements retries and dead-letter topics through consumer or stream-processing logic.\n- Processing guarantees: Both commonly provide at-least-once delivery. Kafka can support effectively-once or transactional processing within compatible Kafka workflows, but end-to-end exactly-once behavior still depends on external systems and application design.\n- Operational fit: Kafka brings durable history and a broad data-streaming ecosystem but requires deliberate partition, retention, and consumer-lag management. RabbitMQ is often simpler for conventional messaging but requires careful handling of queue depth, acknowledgments, and poison messages.\n\nFor data engineers, choose Kafka when events are reusable data products, replay matters, throughput is high, or analytics and stream-processing systems need independent consumption. Choose RabbitMQ when the primary need is reliable work assignment, sophisticated routing, low-latency commands, or explicit per-message retry behavior. Many platforms use both: Kafka as the durable event backbone and RabbitMQ for operational task or command delivery.",
-  "model_revision": "c078a705923c56b005e4200664d9e519fe5724141acdea1b7fd89fb3fef405e3",
-  "projection_id": "projection-aa25fb9c5ad031a6c861be13f89376a5718f40a996d9835191ae1f3843fd07f3",
+  "model_revision": "85187a89fd81e812beaebfbaa3dfbca879f540e8c5bcc2485f4938179c8d4d9a",
+  "projection_id": "projection-7880dc4295f271f9815a22aa0cf1c81aeffca13eeb62c050db212f0e842062d4",
   "schema_version": "r6o-focus-projection-1",
-  "session_id": "I-65b91add4e",
+  "session_id": "I-7f8744c58d",
   "stage": "CLOSED_SUCCESS",
-  "workspace_id": "W-c219ac8758ef"
+  "workspace_id": "W-171e48fa6cbd"
 }

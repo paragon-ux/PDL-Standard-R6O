@@ -17,9 +17,9 @@
   "implementation_complete": true,
   "local_qualification": {
     "counts": {
-      "f3_focused_tests": 46,
-      "full_r6o": 414,
-      "r6o1": 414
+      "f3_focused_tests": 49,
+      "full_r6o": 419,
+      "r6o1": 419
     },
     "status": "PASS"
   },
@@ -36,9 +36,9 @@
   "schema_version": "r6o-h2-f3-bounded-repair-summary-1",
   "semantic_replay_required": false,
   "source": {
-    "head": "dfbf9c32e72d3c148cb3c2267b808b08c8f9acf4",
+    "head": "94d56129893206db8899df74f5201144a64a1679",
     "status": "FROZEN",
-    "tree": "dd7194db212daa24b235fdaae436d140d3faeb91"
+    "tree": "729d2e3c1f507ac01189e1fcc0e77cb80b8b3997"
   },
   "status": "H2_F3_FINAL_INTEGRATION_PASS",
   "target_finding": "F3-R4-CURRENT-ATTACHMENT-PROVENANCE-MISMATCH",
