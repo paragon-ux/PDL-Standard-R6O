@@ -14,20 +14,20 @@ REPL BASELINE VERIFICATION PASS
 exit=0
 --- baseline_pytest ---
 .........                                                                [100%]
-9 passed in 38.25s
+9 passed in 38.82s
 exit=0
 --- r6o1_pytest ---
-........................................................................ [ 36%]
-........................................................................ [ 54%]
-........................................................................ [ 72%]
-........................................................................ [ 90%]
-.......................................                                  [100%]
+........................................................................ [ 35%]
+........................................................................ [ 53%]
+........................................................................ [ 71%]
+........................................................................ [ 89%]
+..........................................                               [100%]
 ============================== warnings summary ===============================
 r6o/tests/h2/test_codex_input_binding_contract.py::test_stop_reports_pending_delivery_failure_after_cleanup
   C:\Users\USER\AppData\Local\Programs\Python\Python311\Lib\site-packages\pywinauto\__init__.py:80: UserWarning: Revert to STA COM threading mode
     warnings.warn("Revert to STA COM threading mode", UserWarning)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-399 passed, 1 warning in 78.94s (0:01:18)
+402 passed, 1 warning in 80.71s (0:01:20)
 exit=0
 R6O-1 VERIFICATION PASS

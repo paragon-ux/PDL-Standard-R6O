@@ -36,8 +36,8 @@
   ],
   "artifact": {
     "artifact_kind": "prompt",
-    "artifact_ref": "prompt:I-4bc3f849c6-P1",
-    "artifact_revision": "a0a8a37e33967d5fded39523a103740629988ebe5c784d53f5d4b74b9883023b",
+    "artifact_ref": "prompt:I-df8e0c3878-P1",
+    "artifact_revision": "a5a41dbd37498aa7641041700b97915063eac216a36a9901cd0e913150a5d31e",
     "body": "COMPARE Kafka and RabbitMQ for event delivery.",
     "capabilities": {
       "copy": true,
@@ -58,10 +58,10 @@
     "terminal_disposition": null
   },
   "model_response": "Prompt Pseudocode\n\nCOMPARE Kafka and RabbitMQ for event delivery.\n\nConfirm or correct this interpretation.",
-  "model_revision": "0874bf05740e2e55af88548dd4bfd2455bc0d05454c1341d64ac001e13e21aff",
-  "projection_id": "projection-7eb196ff4a59eb4129f39fe4a407ed7900dfd6f775a7823c5992d124f779e863",
+  "model_revision": "3ce21f7636fa735560b7a6467c84157a27790300c5586c484c09bd6d0c4ef9a2",
+  "projection_id": "projection-fdc16ce1c449a729dedfb6193d16f3fee560609c8003dbc1d49a8b049b4467d9",
   "schema_version": "r6o-focus-projection-1",
-  "session_id": "I-4bc3f849c6",
+  "session_id": "I-df8e0c3878",
   "stage": "PROMPT_REVIEW",
-  "workspace_id": "W-01af5e690992"
+  "workspace_id": "W-81e4a6fca8c5"
 }

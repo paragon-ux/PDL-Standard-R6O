@@ -18,8 +18,8 @@
   },
   "source": {
     "branch": "codex/h2-f3-final-integration",
-    "head": "3c5e38fd1ea7946bec7553b13477b478dd3805b4",
-    "tree": "4864650e9726c5e14b0080171da94e619ff847f4"
+    "head": "2ff50bdf9399d99025606f66a4522bdc66a1939e",
+    "tree": "f43aee6df356ef50d96429f24d83b9069ed48369"
   },
   "proof": {
     "production_framework": "PySide6 + Qt Quick/QML",

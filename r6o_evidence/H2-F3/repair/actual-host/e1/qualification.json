@@ -59,16 +59,16 @@
         "fresh_home_surface_match_count": 1,
         "visible_turn_group_count": 0
       },
-      "elapsed_ms": 4343
+      "elapsed_ms": 4125
     }
   ],
   "schema_version": "r6o-h2-f3-current-e1-1",
   "shift_enter_preserved": true,
   "sidecar_dismissed": true,
   "source": {
-    "head": "3c5e38fd1ea7946bec7553b13477b478dd3805b4",
+    "head": "2ff50bdf9399d99025606f66a4522bdc66a1939e",
     "status": "FROZEN",
-    "tree": "4864650e9726c5e14b0080171da94e619ff847f4"
+    "tree": "f43aee6df356ef50d96429f24d83b9069ed48369"
   },
   "status": "H2_F3_CURRENT_E1_PASS",
   "unmodified_enter_intercepted": true

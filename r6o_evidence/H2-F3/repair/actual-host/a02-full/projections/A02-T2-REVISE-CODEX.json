@@ -36,8 +36,8 @@
   ],
   "artifact": {
     "artifact_kind": "prompt",
-    "artifact_ref": "prompt:I-4bc3f849c6-P2",
-    "artifact_revision": "38b6cb20030006a6da456b2143a31916bf46d05a40b505d76c959b73a186be28",
+    "artifact_ref": "prompt:I-df8e0c3878-P2",
+    "artifact_revision": "8f2db5986feb85623988276632ebbaea12559b80a4d75b5a8343631c806bf28c",
     "body": "COMPARE Kafka and RabbitMQ for event delivery for an audience of data engineers.",
     "capabilities": {
       "copy": true,
@@ -58,10 +58,10 @@
     "terminal_disposition": null
   },
   "model_response": "Prompt Pseudocode\n\nCOMPARE Kafka and RabbitMQ for event delivery for an audience of data engineers.\n\nConfirm or correct this interpretation.",
-  "model_revision": "c30b39ebc11438a485f5c1c65c0aa98141d845d36b997079eccdb35eb48d4997",
-  "projection_id": "projection-802a5d461a39250079b7c05bf90a3eab0cb550a3dbcac8957ed52a3628de922e",
+  "model_revision": "1b562923ecad04c7e81f067b3f63b36ef13d38bbf6ce57983f3c503f99c3a8ae",
+  "projection_id": "projection-06bf23f75be38d066c9d1fef09db1d5ae95956b175b910708cca2ec4097cd8f3",
   "schema_version": "r6o-focus-projection-1",
-  "session_id": "I-4bc3f849c6",
+  "session_id": "I-df8e0c3878",
   "stage": "PROMPT_REVIEW",
-  "workspace_id": "W-01af5e690992"
+  "workspace_id": "W-81e4a6fca8c5"
 }

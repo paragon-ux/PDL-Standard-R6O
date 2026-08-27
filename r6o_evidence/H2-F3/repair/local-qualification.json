@@ -7,17 +7,17 @@
   "commands": [
     {
       "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe -m pytest r6o/tests/h2/test_h2_final_integration.py -q -p no:cacheprovider",
-      "duration_seconds": 2.437,
+      "duration_seconds": 1.625,
       "exit_code": 0,
       "id": "f3_focused_tests",
-      "passed_count": 31,
+      "passed_count": 34,
       "status": "PASS",
       "stderr_path": "logs/f3_focused_tests.stderr.txt",
       "stdout_path": "logs/f3_focused_tests.stdout.txt"
     },
     {
       "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe -m pytest r6o/tests/h2/test_codex_input_binding_contract.py r6o/tests/h2/test_codex_h2_e2.py r6o/tests/h2/test_codex_h2_e3.py -q -p no:cacheprovider",
-      "duration_seconds": 22.281,
+      "duration_seconds": 39.672,
       "exit_code": 0,
       "id": "e1_e2_e3_regression",
       "passed_count": 83,
@@ -27,7 +27,7 @@
     },
     {
       "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe -m pytest r6o/tests/h2/test_qt_sidecar_feasibility.py r6o/tests/h2/test_qt_sidecar_component.py -q -p no:cacheprovider",
-      "duration_seconds": 2.672,
+      "duration_seconds": 4.203,
       "exit_code": 0,
       "id": "qt_focused_tests",
       "passed_count": 22,
@@ -37,27 +37,27 @@
     },
     {
       "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe -m pytest r6o/tests -q -p no:cacheprovider",
-      "duration_seconds": 83.438,
+      "duration_seconds": 110.078,
       "exit_code": 0,
       "id": "full_r6o",
-      "passed_count": 399,
+      "passed_count": 402,
       "status": "PASS",
       "stderr_path": "logs/full_r6o.stderr.txt",
       "stdout_path": "logs/full_r6o.stdout.txt"
     },
     {
       "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/verify_r6o1.py",
-      "duration_seconds": 123.078,
+      "duration_seconds": 125.672,
       "exit_code": 0,
       "id": "r6o1_verification",
-      "passed_count": 399,
+      "passed_count": 402,
       "status": "PASS",
       "stderr_path": "logs/r6o1_verification.stderr.txt",
       "stdout_path": "logs/r6o1_verification.stdout.txt"
     },
     {
       "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_tui_g06.py --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --evidence-dir r6o_evidence/H2-F3/repair/tui-g06",
-      "duration_seconds": 3.015,
+      "duration_seconds": 2.922,
       "exit_code": 0,
       "id": "tui_g06",
       "passed_count": null,
@@ -67,7 +67,7 @@
     },
     {
       "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_tui_a02_full.py --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --evidence-dir r6o_evidence/H2-F3/repair/tui-a02-full",
-      "duration_seconds": 3.797,
+      "duration_seconds": 3.641,
       "exit_code": 0,
       "id": "tui_a02_full",
       "passed_count": null,
@@ -77,7 +77,7 @@
     },
     {
       "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_cross_view_parity.py --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --output-dir r6o_evidence/H2-F3/repair/f1-parity-rerun",
-      "duration_seconds": 5.547,
+      "duration_seconds": 3.891,
       "exit_code": 0,
       "id": "f1_parity_verifier",
       "passed_count": null,
@@ -87,7 +87,7 @@
     },
     {
       "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_h2_lifecycle_resilience.py --mode portable --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --evidence-dir r6o_evidence/H2-F3/repair/f2-portable",
-      "duration_seconds": 5.031,
+      "duration_seconds": 3.5,
       "exit_code": 0,
       "id": "f2_portable_verifier",
       "passed_count": null,
@@ -97,7 +97,7 @@
     },
     {
       "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_qt_sidecar_component.py --platform windows --evidence-dir r6o_evidence/H2-F3/repair/qt",
-      "duration_seconds": 2.485,
+      "duration_seconds": 1.672,
       "exit_code": 0,
       "id": "qt_windows_qualification",
       "passed_count": null,
@@ -117,9 +117,9 @@
     }
   ],
   "counts": {
-    "f3_focused_tests": 31,
-    "full_r6o": 399,
-    "r6o1": 399
+    "f3_focused_tests": 34,
+    "full_r6o": 402,
+    "r6o1": 402
   },
   "gate": "H2-F3",
   "human_gesture_synthesized": false,
@@ -130,8 +130,8 @@
   ],
   "schema_version": "r6o-h2-f3-local-qualification-1",
   "source": {
-    "head": "3c5e38fd1ea7946bec7553b13477b478dd3805b4",
+    "head": "2ff50bdf9399d99025606f66a4522bdc66a1939e",
     "status": "FROZEN",
-    "tree": "4864650e9726c5e14b0080171da94e619ff847f4"
+    "tree": "f43aee6df356ef50d96429f24d83b9069ed48369"
   }
 }

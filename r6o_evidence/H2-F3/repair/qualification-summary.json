@@ -3,6 +3,9 @@
   "first_class_e3_reset_precedent": "APPLIED",
   "f3_console_transcript_reconciled": "PASS",
   "semantic_replay_required": false,
+  "human_current_host_replay": "PASS",
+  "human_h2_exception_authorized": true,
+  "automatic_repair_budget_remaining": 0,
   "pre_flight_reset": "PASS",
   "active_attachment": "PASS",
   "historical_failures_preserved": true,
@@ -10,9 +13,9 @@
   "implementation_complete": true,
   "local_qualification": {
     "counts": {
-      "f3_focused_tests": 31,
-      "full_r6o": 399,
-      "r6o1": 399
+      "f3_focused_tests": 34,
+      "full_r6o": 402,
+      "r6o1": 402
     },
     "status": "PASS"
   },
@@ -21,14 +24,15 @@
   "r1_qt_ci_job_provenance": "PASS",
   "r2_current_actual_host_integration": "PASS",
   "r4_r6o3_fail_closed": "FIXED",
+  "r4_attachment_scan_gap": "CLOSED",
   "r6o3_behavior_claimed": false,
   "ready_for_luna_repair_delta_review": true,
   "final_evidence_head_ci": "PENDING_POST_COMMIT",
   "schema_version": "r6o-h2-f3-bounded-repair-summary-1",
   "source": {
-    "head": "3c5e38fd1ea7946bec7553b13477b478dd3805b4",
+    "head": "2ff50bdf9399d99025606f66a4522bdc66a1939e",
     "status": "FROZEN",
-    "tree": "4864650e9726c5e14b0080171da94e619ff847f4"
+    "tree": "f43aee6df356ef50d96429f24d83b9069ed48369"
   },
   "status": "H2_F3_FINAL_INTEGRATION_PASS"
 }
