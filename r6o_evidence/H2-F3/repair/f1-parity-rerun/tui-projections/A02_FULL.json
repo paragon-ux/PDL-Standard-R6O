@@ -1,0 +1,709 @@
+{
+  "schema_version": "r6o-h2-f1-tui-capture-1",
+  "case": "A02-FULL",
+  "source": "TUI:A02-FULL:accepted-public-path",
+  "events": [
+    {
+      "event": "START",
+      "action_id": null,
+      "input_envelope_source": null,
+      "worker_operations": [
+        {
+          "operation_id": "A02F:0001",
+          "operation": "DRAFT_PROMPT"
+        }
+      ],
+      "projection": {
+        "schema_version": "r6o-focus-projection-1",
+        "session_id": "I-9759b70644",
+        "workspace_id": "W-e94192170b15",
+        "model_revision": "6f46256b4afff3e3fb8b7854e36b314d06805443c2274cbb4f28a6a163aaa356",
+        "projection_id": "projection-8265aa580acc21d0340918b6814f0433ccbb397d962994f2ac83632302fc4280",
+        "interaction_state": "REVIEW_REQUIRED",
+        "model_response": "Prompt Pseudocode\n\nCOMPARE Kafka and RabbitMQ for event delivery.\n\nConfirm or correct this interpretation.",
+        "stage": "PROMPT_REVIEW",
+        "focus_kind": "PROMPT_REVIEW",
+        "artifact": {
+          "artifact_ref": "prompt:I-9759b70644-P1",
+          "artifact_revision": "762590ad7bdf21046f889541483f25571ed347147f865ad09a84d4c11c205163",
+          "artifact_kind": "prompt",
+          "title": "Authoritative Prompt (PDL.md)",
+          "body": "COMPARE Kafka and RabbitMQ for event delivery.",
+          "media_type": "text/plain",
+          "capabilities": {
+            "copy": true,
+            "open_external": true
+          }
+        },
+        "actions": [
+          {
+            "action_id": "confirm_prompt",
+            "label": "Confirm prompt",
+            "ordinal": 1,
+            "kind": "SEMANTIC_MESSAGE",
+            "canonical_review_text": "Yes, that is what I mean.",
+            "emphasis": "PRIMARY",
+            "enabled": true
+          },
+          {
+            "action_id": "change_task",
+            "label": "Change the task",
+            "ordinal": 2,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          },
+          {
+            "action_id": "change_approach",
+            "label": "Change approach",
+            "ordinal": 3,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          },
+          {
+            "action_id": "something_else",
+            "label": "Something else...",
+            "ordinal": 4,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          }
+        ],
+        "lifecycle": {
+          "review_required": true,
+          "terminal": false,
+          "close_allowed": true,
+          "handoff_ready": false,
+          "terminal_disposition": null,
+          "result_body": null,
+          "authorized_handoff_artifacts": []
+        }
+      },
+      "normalized_projection": {
+        "stage": "PROMPT_REVIEW",
+        "focus_kind": "PROMPT_REVIEW",
+        "interaction_state": "REVIEW_REQUIRED",
+        "actions": [
+          {
+            "action_id": "confirm_prompt",
+            "ordinal": 1,
+            "kind": "SEMANTIC_MESSAGE",
+            "enabled": true,
+            "label": "Confirm prompt",
+            "canonical_review_text": "Yes, that is what I mean."
+          },
+          {
+            "action_id": "change_task",
+            "ordinal": 2,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Change the task",
+            "canonical_review_text": null
+          },
+          {
+            "action_id": "change_approach",
+            "ordinal": 3,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Change approach",
+            "canonical_review_text": null
+          },
+          {
+            "action_id": "something_else",
+            "ordinal": 4,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Something else...",
+            "canonical_review_text": null
+          }
+        ],
+        "artifact": {
+          "artifact_kind": "prompt",
+          "artifact_revision": "762590ad7bdf21046f889541483f25571ed347147f865ad09a84d4c11c205163",
+          "body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
+          "media_type": "text/plain",
+          "title": "Authoritative Prompt (PDL.md)",
+          "capabilities": {
+            "copy": true,
+            "open_external": true
+          }
+        },
+        "model_response_sha256": "75c07efcdfc8444538240c542131f9606dbd0124cf2976f2a7163df47af2d341",
+        "lifecycle": {
+          "review_required": true,
+          "terminal": false,
+          "close_allowed": true,
+          "handoff_ready": false,
+          "terminal_disposition": null,
+          "authorized_handoff_artifacts": [],
+          "result_body_sha256": null
+        },
+        "session_id": "I-9759b70644",
+        "model_revision": "6f46256b4afff3e3fb8b7854e36b314d06805443c2274cbb4f28a6a163aaa356",
+        "projection_id": "projection-8265aa580acc21d0340918b6814f0433ccbb397d962994f2ac83632302fc4280"
+      }
+    },
+    {
+      "event": "FOCUS",
+      "action_id": "something_else",
+      "input_envelope_source": "STRUCTURED_ACTION",
+      "worker_operations": [],
+      "projection": {
+        "schema_version": "r6o-focus-projection-1",
+        "session_id": "I-9759b70644",
+        "workspace_id": "W-e94192170b15",
+        "model_revision": "6f46256b4afff3e3fb8b7854e36b314d06805443c2274cbb4f28a6a163aaa356",
+        "projection_id": "projection-8265aa580acc21d0340918b6814f0433ccbb397d962994f2ac83632302fc4280",
+        "interaction_state": "REVIEW_REQUIRED",
+        "model_response": "Prompt Pseudocode\n\nCOMPARE Kafka and RabbitMQ for event delivery.\n\nConfirm or correct this interpretation.",
+        "stage": "PROMPT_REVIEW",
+        "focus_kind": "PROMPT_REVIEW",
+        "artifact": {
+          "artifact_ref": "prompt:I-9759b70644-P1",
+          "artifact_revision": "762590ad7bdf21046f889541483f25571ed347147f865ad09a84d4c11c205163",
+          "artifact_kind": "prompt",
+          "title": "Authoritative Prompt (PDL.md)",
+          "body": "COMPARE Kafka and RabbitMQ for event delivery.",
+          "media_type": "text/plain",
+          "capabilities": {
+            "copy": true,
+            "open_external": true
+          }
+        },
+        "actions": [
+          {
+            "action_id": "confirm_prompt",
+            "label": "Confirm prompt",
+            "ordinal": 1,
+            "kind": "SEMANTIC_MESSAGE",
+            "canonical_review_text": "Yes, that is what I mean.",
+            "emphasis": "PRIMARY",
+            "enabled": true
+          },
+          {
+            "action_id": "change_task",
+            "label": "Change the task",
+            "ordinal": 2,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          },
+          {
+            "action_id": "change_approach",
+            "label": "Change approach",
+            "ordinal": 3,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          },
+          {
+            "action_id": "something_else",
+            "label": "Something else...",
+            "ordinal": 4,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          }
+        ],
+        "lifecycle": {
+          "review_required": true,
+          "terminal": false,
+          "close_allowed": true,
+          "handoff_ready": false,
+          "terminal_disposition": null,
+          "result_body": null,
+          "authorized_handoff_artifacts": []
+        }
+      },
+      "normalized_projection": {
+        "stage": "PROMPT_REVIEW",
+        "focus_kind": "PROMPT_REVIEW",
+        "interaction_state": "REVIEW_REQUIRED",
+        "actions": [
+          {
+            "action_id": "confirm_prompt",
+            "ordinal": 1,
+            "kind": "SEMANTIC_MESSAGE",
+            "enabled": true,
+            "label": "Confirm prompt",
+            "canonical_review_text": "Yes, that is what I mean."
+          },
+          {
+            "action_id": "change_task",
+            "ordinal": 2,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Change the task",
+            "canonical_review_text": null
+          },
+          {
+            "action_id": "change_approach",
+            "ordinal": 3,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Change approach",
+            "canonical_review_text": null
+          },
+          {
+            "action_id": "something_else",
+            "ordinal": 4,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Something else...",
+            "canonical_review_text": null
+          }
+        ],
+        "artifact": {
+          "artifact_kind": "prompt",
+          "artifact_revision": "762590ad7bdf21046f889541483f25571ed347147f865ad09a84d4c11c205163",
+          "body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
+          "media_type": "text/plain",
+          "title": "Authoritative Prompt (PDL.md)",
+          "capabilities": {
+            "copy": true,
+            "open_external": true
+          }
+        },
+        "model_response_sha256": "75c07efcdfc8444538240c542131f9606dbd0124cf2976f2a7163df47af2d341",
+        "lifecycle": {
+          "review_required": true,
+          "terminal": false,
+          "close_allowed": true,
+          "handoff_ready": false,
+          "terminal_disposition": null,
+          "authorized_handoff_artifacts": [],
+          "result_body_sha256": null
+        },
+        "session_id": "I-9759b70644",
+        "model_revision": "6f46256b4afff3e3fb8b7854e36b314d06805443c2274cbb4f28a6a163aaa356",
+        "projection_id": "projection-8265aa580acc21d0340918b6814f0433ccbb397d962994f2ac83632302fc4280"
+      }
+    },
+    {
+      "event": "TEXT",
+      "action_id": null,
+      "input_envelope_source": "TUI_TEXT",
+      "worker_operations": [
+        {
+          "operation_id": "A02F:0002",
+          "operation": "INTERPRET_PROMPT_REVIEW"
+        },
+        {
+          "operation_id": "A02F:0003",
+          "operation": "REVISE_PROMPT"
+        }
+      ],
+      "projection": {
+        "schema_version": "r6o-focus-projection-1",
+        "session_id": "I-9759b70644",
+        "workspace_id": "W-e94192170b15",
+        "model_revision": "d89a832a7ef283240ca5399136e09790cc3ff49130bd9f7b83a46ada9b5ec12e",
+        "projection_id": "projection-1a9c05992409cc81db6880c484ea9c30cbe00474e4421e96efc3ce13c004cc52",
+        "interaction_state": "REVIEW_REQUIRED",
+        "model_response": "Prompt Pseudocode\n\nCOMPARE Kafka and RabbitMQ for event delivery for an audience of data engineers.\n\nConfirm or correct this interpretation.",
+        "stage": "PROMPT_REVIEW",
+        "focus_kind": "PROMPT_REVIEW",
+        "artifact": {
+          "artifact_ref": "prompt:I-9759b70644-P2",
+          "artifact_revision": "cb42b2697f2c29cbd2c34236be56377322bbc3e52b60dcc2c2a1741f1b5c7931",
+          "artifact_kind": "prompt",
+          "title": "Authoritative Prompt (PDL.md)",
+          "body": "COMPARE Kafka and RabbitMQ for event delivery for an audience of data engineers.",
+          "media_type": "text/plain",
+          "capabilities": {
+            "copy": true,
+            "open_external": true
+          }
+        },
+        "actions": [
+          {
+            "action_id": "confirm_prompt",
+            "label": "Confirm prompt",
+            "ordinal": 1,
+            "kind": "SEMANTIC_MESSAGE",
+            "canonical_review_text": "Yes, that is what I mean.",
+            "emphasis": "PRIMARY",
+            "enabled": true
+          },
+          {
+            "action_id": "change_task",
+            "label": "Change the task",
+            "ordinal": 2,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          },
+          {
+            "action_id": "change_approach",
+            "label": "Change approach",
+            "ordinal": 3,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          },
+          {
+            "action_id": "something_else",
+            "label": "Something else...",
+            "ordinal": 4,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          }
+        ],
+        "lifecycle": {
+          "review_required": true,
+          "terminal": false,
+          "close_allowed": true,
+          "handoff_ready": false,
+          "terminal_disposition": null,
+          "result_body": null,
+          "authorized_handoff_artifacts": []
+        }
+      },
+      "normalized_projection": {
+        "stage": "PROMPT_REVIEW",
+        "focus_kind": "PROMPT_REVIEW",
+        "interaction_state": "REVIEW_REQUIRED",
+        "actions": [
+          {
+            "action_id": "confirm_prompt",
+            "ordinal": 1,
+            "kind": "SEMANTIC_MESSAGE",
+            "enabled": true,
+            "label": "Confirm prompt",
+            "canonical_review_text": "Yes, that is what I mean."
+          },
+          {
+            "action_id": "change_task",
+            "ordinal": 2,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Change the task",
+            "canonical_review_text": null
+          },
+          {
+            "action_id": "change_approach",
+            "ordinal": 3,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Change approach",
+            "canonical_review_text": null
+          },
+          {
+            "action_id": "something_else",
+            "ordinal": 4,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Something else...",
+            "canonical_review_text": null
+          }
+        ],
+        "artifact": {
+          "artifact_kind": "prompt",
+          "artifact_revision": "cb42b2697f2c29cbd2c34236be56377322bbc3e52b60dcc2c2a1741f1b5c7931",
+          "body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
+          "media_type": "text/plain",
+          "title": "Authoritative Prompt (PDL.md)",
+          "capabilities": {
+            "copy": true,
+            "open_external": true
+          }
+        },
+        "model_response_sha256": "848ec11fa58af659bd049d3b8bf286af525ad87d1bd3c705c16b058f9151ccec",
+        "lifecycle": {
+          "review_required": true,
+          "terminal": false,
+          "close_allowed": true,
+          "handoff_ready": false,
+          "terminal_disposition": null,
+          "authorized_handoff_artifacts": [],
+          "result_body_sha256": null
+        },
+        "session_id": "I-9759b70644",
+        "model_revision": "d89a832a7ef283240ca5399136e09790cc3ff49130bd9f7b83a46ada9b5ec12e",
+        "projection_id": "projection-1a9c05992409cc81db6880c484ea9c30cbe00474e4421e96efc3ce13c004cc52"
+      }
+    },
+    {
+      "event": "ACTION",
+      "action_id": "confirm_prompt",
+      "input_envelope_source": "STRUCTURED_ACTION",
+      "worker_operations": [
+        {
+          "operation_id": "A02F:0004",
+          "operation": "INTERPRET_PROMPT_REVIEW"
+        },
+        {
+          "operation_id": "A02F:0005",
+          "operation": "DRAFT_PLAN"
+        }
+      ],
+      "projection": {
+        "schema_version": "r6o-focus-projection-1",
+        "session_id": "I-9759b70644",
+        "workspace_id": "W-e94192170b15",
+        "model_revision": "d358b1427e7123c8dca4a51fa33114330a305b3ad70035087c10da95f4b0bd83",
+        "projection_id": "projection-65d55e4d436a6f9490456028e102fa8e24ea0f62426538fa8d2c964bd8349d48",
+        "interaction_state": "REVIEW_REQUIRED",
+        "model_response": "Response Plan Pseudocode\n\nIDENTIFY comparison criteria relevant to event delivery and data engineers.\nCOMPARE Kafka and RabbitMQ consistently across those criteria.\nSUMMARIZE the tradeoffs and the conditions that affect suitability.\n\nConfirm or correct this response approach.",
+        "stage": "PLAN_REVIEW",
+        "focus_kind": "PLAN_REVIEW",
+        "artifact": {
+          "artifact_ref": "plan:I-9759b70644-R1",
+          "artifact_revision": "378217a267f1fbc657975361235d88a081c57ef99c8249e0d52c302b76a43c03",
+          "artifact_kind": "plan",
+          "title": "Authoritative Response Plan (PDL.md)",
+          "body": "IDENTIFY comparison criteria relevant to event delivery and data engineers.\nCOMPARE Kafka and RabbitMQ consistently across those criteria.\nSUMMARIZE the tradeoffs and the conditions that affect suitability.",
+          "media_type": "text/plain",
+          "capabilities": {
+            "copy": true,
+            "open_external": true
+          }
+        },
+        "actions": [
+          {
+            "action_id": "confirm_plan",
+            "label": "Confirm plan",
+            "ordinal": 1,
+            "kind": "SEMANTIC_MESSAGE",
+            "canonical_review_text": "Confirm the plan and execute.",
+            "emphasis": "PRIMARY",
+            "enabled": true
+          },
+          {
+            "action_id": "change_task",
+            "label": "Change the task",
+            "ordinal": 2,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          },
+          {
+            "action_id": "change_approach",
+            "label": "Change approach",
+            "ordinal": 3,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          },
+          {
+            "action_id": "something_else",
+            "label": "Something else...",
+            "ordinal": 4,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          }
+        ],
+        "lifecycle": {
+          "review_required": true,
+          "terminal": false,
+          "close_allowed": true,
+          "handoff_ready": false,
+          "terminal_disposition": null,
+          "result_body": null,
+          "authorized_handoff_artifacts": []
+        }
+      },
+      "normalized_projection": {
+        "stage": "PLAN_REVIEW",
+        "focus_kind": "PLAN_REVIEW",
+        "interaction_state": "REVIEW_REQUIRED",
+        "actions": [
+          {
+            "action_id": "confirm_plan",
+            "ordinal": 1,
+            "kind": "SEMANTIC_MESSAGE",
+            "enabled": true,
+            "label": "Confirm plan",
+            "canonical_review_text": "Confirm the plan and execute."
+          },
+          {
+            "action_id": "change_task",
+            "ordinal": 2,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Change the task",
+            "canonical_review_text": null
+          },
+          {
+            "action_id": "change_approach",
+            "ordinal": 3,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Change approach",
+            "canonical_review_text": null
+          },
+          {
+            "action_id": "something_else",
+            "ordinal": 4,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Something else...",
+            "canonical_review_text": null
+          }
+        ],
+        "artifact": {
+          "artifact_kind": "plan",
+          "artifact_revision": "378217a267f1fbc657975361235d88a081c57ef99c8249e0d52c302b76a43c03",
+          "body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
+          "media_type": "text/plain",
+          "title": "Authoritative Response Plan (PDL.md)",
+          "capabilities": {
+            "copy": true,
+            "open_external": true
+          }
+        },
+        "model_response_sha256": "48734d93ffb6918e801aaabc77e1601c4014cd7ba34d75ad7d34d04f4866c580",
+        "lifecycle": {
+          "review_required": true,
+          "terminal": false,
+          "close_allowed": true,
+          "handoff_ready": false,
+          "terminal_disposition": null,
+          "authorized_handoff_artifacts": [],
+          "result_body_sha256": null
+        },
+        "session_id": "I-9759b70644",
+        "model_revision": "d358b1427e7123c8dca4a51fa33114330a305b3ad70035087c10da95f4b0bd83",
+        "projection_id": "projection-65d55e4d436a6f9490456028e102fa8e24ea0f62426538fa8d2c964bd8349d48"
+      }
+    },
+    {
+      "event": "ACTION",
+      "action_id": "confirm_plan",
+      "input_envelope_source": "STRUCTURED_ACTION",
+      "worker_operations": [
+        {
+          "operation_id": "A02F:0006",
+          "operation": "INTERPRET_PLAN_REVIEW"
+        },
+        {
+          "operation_id": "A02F:0007",
+          "operation": "EXECUTE"
+        }
+      ],
+      "projection": {
+        "schema_version": "r6o-focus-projection-1",
+        "session_id": "I-9759b70644",
+        "workspace_id": "W-e94192170b15",
+        "model_revision": "957238d385a9e7619d094b53825b862ab69d003324413f8839a75bb66b8c96a9",
+        "projection_id": "projection-d4f3b8c2443e191b82eba610c8cee6cb037ec9f2cac59b1b046aaf74e8c2e0cb",
+        "interaction_state": "TERMINAL",
+        "model_response": "Kafka and RabbitMQ solve different event-delivery problems.\n\nKafka is a distributed event-streaming platform built around durable, partitioned logs. Consumers independently track offsets, so events can be retained and replayed. It is generally the stronger choice for data pipelines, stream processing, event sourcing, CDC, and high-throughput integration where multiple consumer groups need the same history.\n\nRabbitMQ is a message broker built around exchanges and queues. It supports flexible routing, acknowledgments, retries, priorities, and per-message delivery patterns. It is generally the stronger choice for task queues, commands, request/reply workflows, and operational messaging where messages should be routed to specific consumers and removed after successful processing.\n\nKey tradeoffs:\n\n- Delivery model: Kafka consumers pull from partitioned logs; RabbitMQ pushes or dispatches messages from queues.\n- Retention and replay: Kafka retains events according to time or size policies and supports straightforward replay. RabbitMQ normally removes acknowledged messages; replay requires additional design.\n- Ordering: Kafka guarantees ordering within a partition. RabbitMQ queues are ordered in principle, but redelivery, priorities, and multiple consumers can alter observed processing order.\n- Scaling: Kafka scales throughput through partitions and consumer groups, but partition count and key selection affect parallelism. RabbitMQ scales consumers easily for work distribution, while very large backlogs and extreme sustained throughput require more careful queue topology.\n- Routing: RabbitMQ provides rich exchange-based routing, including direct, topic, fanout, and header rules. Kafka routing is primarily topic-and-partition based.\n- Failure handling: RabbitMQ has native acknowledgment, dead-lettering, expiration, and retry-oriented features. Kafka typically implements retries and dead-letter topics through consumer or stream-processing logic.\n- Processing guarantees: Both commonly provide at-least-once delivery. Kafka can support effectively-once or transactional processing within compatible Kafka workflows, but end-to-end exactly-once behavior still depends on external systems and application design.\n- Operational fit: Kafka brings durable history and a broad data-streaming ecosystem but requires deliberate partition, retention, and consumer-lag management. RabbitMQ is often simpler for conventional messaging but requires careful handling of queue depth, acknowledgments, and poison messages.\n\nFor data engineers, choose Kafka when events are reusable data products, replay matters, throughput is high, or analytics and stream-processing systems need independent consumption. Choose RabbitMQ when the primary need is reliable work assignment, sophisticated routing, low-latency commands, or explicit per-message retry behavior. Many platforms use both: Kafka as the durable event backbone and RabbitMQ for operational task or command delivery.",
+        "stage": "CLOSED_SUCCESS",
+        "focus_kind": "CLOSED",
+        "artifact": null,
+        "actions": [],
+        "lifecycle": {
+          "review_required": false,
+          "terminal": true,
+          "close_allowed": true,
+          "handoff_ready": true,
+          "terminal_disposition": "HOST_HANDOFF",
+          "result_body": "Kafka and RabbitMQ solve different event-delivery problems.\n\nKafka is a distributed event-streaming platform built around durable, partitioned logs. Consumers independently track offsets, so events can be retained and replayed. It is generally the stronger choice for data pipelines, stream processing, event sourcing, CDC, and high-throughput integration where multiple consumer groups need the same history.\n\nRabbitMQ is a message broker built around exchanges and queues. It supports flexible routing, acknowledgments, retries, priorities, and per-message delivery patterns. It is generally the stronger choice for task queues, commands, request/reply workflows, and operational messaging where messages should be routed to specific consumers and removed after successful processing.\n\nKey tradeoffs:\n\n- Delivery model: Kafka consumers pull from partitioned logs; RabbitMQ pushes or dispatches messages from queues.\n- Retention and replay: Kafka retains events according to time or size policies and supports straightforward replay. RabbitMQ normally removes acknowledged messages; replay requires additional design.\n- Ordering: Kafka guarantees ordering within a partition. RabbitMQ queues are ordered in principle, but redelivery, priorities, and multiple consumers can alter observed processing order.\n- Scaling: Kafka scales throughput through partitions and consumer groups, but partition count and key selection affect parallelism. RabbitMQ scales consumers easily for work distribution, while very large backlogs and extreme sustained throughput require more careful queue topology.\n- Routing: RabbitMQ provides rich exchange-based routing, including direct, topic, fanout, and header rules. Kafka routing is primarily topic-and-partition based.\n- Failure handling: RabbitMQ has native acknowledgment, dead-lettering, expiration, and retry-oriented features. Kafka typically implements retries and dead-letter topics through consumer or stream-processing logic.\n- Processing guarantees: Both commonly provide at-least-once delivery. Kafka can support effectively-once or transactional processing within compatible Kafka workflows, but end-to-end exactly-once behavior still depends on external systems and application design.\n- Operational fit: Kafka brings durable history and a broad data-streaming ecosystem but requires deliberate partition, retention, and consumer-lag management. RabbitMQ is often simpler for conventional messaging but requires careful handling of queue depth, acknowledgments, and poison messages.\n\nFor data engineers, choose Kafka when events are reusable data products, replay matters, throughput is high, or analytics and stream-processing systems need independent consumption. Choose RabbitMQ when the primary need is reliable work assignment, sophisticated routing, low-latency commands, or explicit per-message retry behavior. Many platforms use both: Kafka as the durable event backbone and RabbitMQ for operational task or command delivery.",
+          "authorized_handoff_artifacts": [
+            {
+              "artifact_ref": "prompt:I-9759b70644-P2",
+              "artifact_revision": "c8a56167b210681c8ae71e00fe659a804fd883c55dc1a4c01aa68affe3fb5faa",
+              "artifact_kind": "prompt",
+              "title": "Authoritative Prompt (PDL.md)",
+              "body": "COMPARE Kafka and RabbitMQ for event delivery for an audience of data engineers.",
+              "media_type": "text/plain",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            {
+              "artifact_ref": "plan:I-9759b70644-R1",
+              "artifact_revision": "53fd9b467d8b34d541f65857c6c02749d42ad9254af00801ddbd9dd29a216707",
+              "artifact_kind": "plan",
+              "title": "Authoritative Response Plan (PDL.md)",
+              "body": "IDENTIFY comparison criteria relevant to event delivery and data engineers.\nCOMPARE Kafka and RabbitMQ consistently across those criteria.\nSUMMARIZE the tradeoffs and the conditions that affect suitability.",
+              "media_type": "text/plain",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            }
+          ]
+        }
+      },
+      "normalized_projection": {
+        "stage": "CLOSED_SUCCESS",
+        "focus_kind": "CLOSED",
+        "interaction_state": "TERMINAL",
+        "actions": [],
+        "artifact": null,
+        "model_response_sha256": "79cd3ac621e54343d4cbef28229766f2c8ae4b5e694dc46b7d69b9375f7e35c4",
+        "lifecycle": {
+          "review_required": false,
+          "terminal": true,
+          "close_allowed": true,
+          "handoff_ready": true,
+          "terminal_disposition": "HOST_HANDOFF",
+          "authorized_handoff_artifacts": [
+            {
+              "artifact_kind": "prompt",
+              "artifact_revision": "c8a56167b210681c8ae71e00fe659a804fd883c55dc1a4c01aa68affe3fb5faa",
+              "body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
+              "media_type": "text/plain",
+              "title": "Authoritative Prompt (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            {
+              "artifact_kind": "plan",
+              "artifact_revision": "53fd9b467d8b34d541f65857c6c02749d42ad9254af00801ddbd9dd29a216707",
+              "body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
+              "media_type": "text/plain",
+              "title": "Authoritative Response Plan (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            }
+          ],
+          "result_body_sha256": "79cd3ac621e54343d4cbef28229766f2c8ae4b5e694dc46b7d69b9375f7e35c4"
+        },
+        "session_id": "I-9759b70644",
+        "model_revision": "957238d385a9e7619d094b53825b862ab69d003324413f8839a75bb66b8c96a9",
+        "projection_id": "projection-d4f3b8c2443e191b82eba610c8cee6cb037ec9f2cac59b1b046aaf74e8c2e0cb"
+      }
+    }
+  ],
+  "worker_operations": [
+    {
+      "operation_id": "A02F:0001",
+      "operation": "DRAFT_PROMPT"
+    },
+    {
+      "operation_id": "A02F:0002",
+      "operation": "INTERPRET_PROMPT_REVIEW"
+    },
+    {
+      "operation_id": "A02F:0003",
+      "operation": "REVISE_PROMPT"
+    },
+    {
+      "operation_id": "A02F:0004",
+      "operation": "INTERPRET_PROMPT_REVIEW"
+    },
+    {
+      "operation_id": "A02F:0005",
+      "operation": "DRAFT_PLAN"
+    },
+    {
+      "operation_id": "A02F:0006",
+      "operation": "INTERPRET_PLAN_REVIEW"
+    },
+    {
+      "operation_id": "A02F:0007",
+      "operation": "EXECUTE"
+    }
+  ]
+}

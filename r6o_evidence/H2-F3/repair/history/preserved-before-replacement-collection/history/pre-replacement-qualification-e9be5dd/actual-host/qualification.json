@@ -1,0 +1,22 @@
+{
+  "attachment": {
+    "path": "actual-host/attachment/attachment-result.json",
+    "status": "PASS"
+  },
+  "current_candidate_dimensions": {
+    "actual_host_a02_full": "HUMAN_PENDING",
+    "actual_host_g06": "HUMAN_PENDING",
+    "e1_input_routing": "HUMAN_PENDING",
+    "lifecycle_resilience": "HUMAN_PENDING"
+  },
+  "gate": "H2-F3",
+  "gesture_policy": "The repaired candidate is not qualified until HUMAN-H2 completes the F3 current-host command.",
+  "human_gesture_synthesized": false,
+  "schema_version": "r6o-h2-f3-current-actual-host-pending-1",
+  "source": {
+    "head": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+    "status": "FROZEN",
+    "tree": "b333accaedadb2728276911e8798ac4fa248650e"
+  },
+  "status": "HUMAN_PENDING"
+}

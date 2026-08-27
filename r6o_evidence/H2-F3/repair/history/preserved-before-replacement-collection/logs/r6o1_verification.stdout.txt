@@ -1,0 +1,33 @@
+--- baseline_verifier ---
+WARN forbidden-term 'architecture-decisions' in scripts/verify_repl_baseline.py
+REPL BASELINE VERIFICATION PASS
+{
+  "final_stage": "CLOSED_SUCCESS",
+  "fresh_workspace": true,
+  "resume_stage": "CLOSED_SUCCESS",
+  "stages": [
+    "PROMPT_REVIEW",
+    "PLAN_REVIEW",
+    "CLOSED_SUCCESS"
+  ]
+}
+exit=0
+--- baseline_pytest ---
+.........                                                                [100%]
+9 passed in 40.20s
+exit=0
+--- r6o1_pytest ---
+........................................................................ [ 36%]
+........................................................................ [ 54%]
+........................................................................ [ 72%]
+........................................................................ [ 90%]
+......................................                                   [100%]
+============================== warnings summary ===============================
+r6o/tests/h2/test_codex_input_binding_contract.py::test_stop_reports_pending_delivery_failure_after_cleanup
+  C:\Users\USER\AppData\Local\Programs\Python\Python311\Lib\site-packages\pywinauto\__init__.py:80: UserWarning: Revert to STA COM threading mode
+    warnings.warn("Revert to STA COM threading mode", UserWarning)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+398 passed, 1 warning in 80.27s (0:01:20)
+exit=0
+R6O-1 VERIFICATION PASS

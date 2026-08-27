@@ -1,0 +1,47 @@
+{
+  "actions": [],
+  "artifact": null,
+  "focus_kind": "CLOSED",
+  "interaction_state": "TERMINAL",
+  "lifecycle": {
+    "authorized_handoff_artifacts": [
+      {
+        "artifact_kind": "prompt",
+        "artifact_ref": "prompt:I-bf0cba73ae-P1",
+        "artifact_revision": "b6d12a0be83f766525d7b08790f36edd3bf1c2dc43f6d68d6e79f953e75c536f",
+        "body": "Explain the difference between optimistic locking and pessimistic locking for an audience of senior developers.",
+        "capabilities": {
+          "copy": true,
+          "open_external": true
+        },
+        "media_type": "text/plain",
+        "title": "Authoritative Prompt (PDL.md)"
+      },
+      {
+        "artifact_kind": "plan",
+        "artifact_ref": "plan:I-bf0cba73ae-R1",
+        "artifact_revision": "0c3231cbd6d07129d6e65a93d0caee2706901ffa25aca272e03441c5eb0e573f",
+        "body": "IDENTIFY the target audience as senior developers\nINTRODUCE the subject of concurrency control\nDEFINE optimistic locking\nDEFINE pessimistic locking\nCOMPARE the two approaches\nSUMMARIZE the differences",
+        "capabilities": {
+          "copy": true,
+          "open_external": true
+        },
+        "media_type": "text/plain",
+        "title": "Authoritative Response Plan (PDL.md)"
+      }
+    ],
+    "close_allowed": true,
+    "handoff_ready": true,
+    "result_body": "For senior developers: Optimistic and pessimistic locking are two strategies for managing concurrent access to shared data. Pessimistic locking assumes conflicts are likely and locks data before reading or writing, preventing other transactions from accessing it until the lock is released. This is typically implemented with database row-level locks (e.g., SELECT ... FOR UPDATE) or application-level mutexes. It guarantees strong consistency but can reduce concurrency and risk deadlocks. Optimistic locking assumes conflicts are rare and does not lock during reads; instead, it validates at write time by checking a version number or timestamp. If the version has changed since the read, the update is rejected (often with a retry). This approach maximizes concurrency and avoids lock overhead, but requires handling conflicts and may be unsuitable for high-contention scenarios. Key differences: locking timing (before vs. after), concurrency impact, conflict handling, and suitability for read-heavy vs. write-heavy workloads. Choose pessimistic when data consistency is critical and contention is high; choose optimistic when read/write ratios are high and retries are acceptable.",
+    "review_required": false,
+    "terminal": true,
+    "terminal_disposition": "HOST_HANDOFF"
+  },
+  "model_response": "For senior developers: Optimistic and pessimistic locking are two strategies for managing concurrent access to shared data. Pessimistic locking assumes conflicts are likely and locks data before reading or writing, preventing other transactions from accessing it until the lock is released. This is typically implemented with database row-level locks (e.g., SELECT ... FOR UPDATE) or application-level mutexes. It guarantees strong consistency but can reduce concurrency and risk deadlocks. Optimistic locking assumes conflicts are rare and does not lock during reads; instead, it validates at write time by checking a version number or timestamp. If the version has changed since the read, the update is rejected (often with a retry). This approach maximizes concurrency and avoids lock overhead, but requires handling conflicts and may be unsuitable for high-contention scenarios. Key differences: locking timing (before vs. after), concurrency impact, conflict handling, and suitability for read-heavy vs. write-heavy workloads. Choose pessimistic when data consistency is critical and contention is high; choose optimistic when read/write ratios are high and retries are acceptable.",
+  "model_revision": "045bf4f05d143039ae28318543727a5a2a6da2fead9cd1d88a65f9f862333abc",
+  "projection_id": "projection-89f727570f5fbf8d2b8e203dca2007ed2823dc5ef1e594fa1d35e38c7974b9c0",
+  "schema_version": "r6o-focus-projection-1",
+  "session_id": "I-bf0cba73ae",
+  "stage": "CLOSED_SUCCESS",
+  "workspace_id": "W-14e73ff3c6e3"
+}

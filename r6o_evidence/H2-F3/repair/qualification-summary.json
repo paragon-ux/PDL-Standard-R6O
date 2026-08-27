@@ -1,0 +1,34 @@
+{
+  "gate": "H2-F3",
+  "first_class_e3_reset_precedent": "APPLIED",
+  "f3_console_transcript_reconciled": "PASS",
+  "semantic_replay_required": false,
+  "pre_flight_reset": "PASS",
+  "active_attachment": "PASS",
+  "historical_failures_preserved": true,
+  "human_pass": "NOT_CLAIMED",
+  "implementation_complete": true,
+  "local_qualification": {
+    "counts": {
+      "f3_focused_tests": 31,
+      "full_r6o": 399,
+      "r6o1": 399
+    },
+    "status": "PASS"
+  },
+  "next_authority": "LUNA-H2-F3-REPAIR-DELTA-REVIEW",
+  "production_behavior_changed": false,
+  "r1_qt_ci_job_provenance": "PASS",
+  "r2_current_actual_host_integration": "PASS",
+  "r4_r6o3_fail_closed": "FIXED",
+  "r6o3_behavior_claimed": false,
+  "ready_for_luna_repair_delta_review": true,
+  "final_evidence_head_ci": "PENDING_POST_COMMIT",
+  "schema_version": "r6o-h2-f3-bounded-repair-summary-1",
+  "source": {
+    "head": "3c5e38fd1ea7946bec7553b13477b478dd3805b4",
+    "status": "FROZEN",
+    "tree": "4864650e9726c5e14b0080171da94e619ff847f4"
+  },
+  "status": "H2_F3_FINAL_INTEGRATION_PASS"
+}

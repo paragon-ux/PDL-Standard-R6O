@@ -1,0 +1,420 @@
+{
+  "schema_version": "r6o-h2-f1-tui-capture-1",
+  "case": "G06",
+  "source": "TUI:G06:accepted-public-path",
+  "events": [
+    {
+      "event": "START",
+      "action_id": null,
+      "input_envelope_source": null,
+      "worker_operations": [
+        {
+          "operation_id": "G06:0001",
+          "operation": "DRAFT_PROMPT"
+        }
+      ],
+      "projection": {
+        "schema_version": "r6o-focus-projection-1",
+        "session_id": "I-1e151ff61a",
+        "workspace_id": "W-2a80c8ada866",
+        "model_revision": "65bce6e692556164182a6f49ac02018e272f2eba0fae4c6e9e0ff4b92b4c90ef",
+        "projection_id": "projection-8148fd5a7298e16a5982bff5e5b181151b9bdf8b9380bc822f336c578850989e",
+        "interaction_state": "REVIEW_REQUIRED",
+        "model_response": "Prompt Pseudocode\n\nExplain the difference between optimistic locking and pessimistic locking for an audience of senior developers.\n\nConfirm or correct this interpretation.",
+        "stage": "PROMPT_REVIEW",
+        "focus_kind": "PROMPT_REVIEW",
+        "artifact": {
+          "artifact_ref": "prompt:I-1e151ff61a-P1",
+          "artifact_revision": "c8d97348772b4432ef691cfb0b7eb026333310aaa85debee98eef67d6cc7291d",
+          "artifact_kind": "prompt",
+          "title": "Authoritative Prompt (PDL.md)",
+          "body": "Explain the difference between optimistic locking and pessimistic locking for an audience of senior developers.",
+          "media_type": "text/plain",
+          "capabilities": {
+            "copy": true,
+            "open_external": true
+          }
+        },
+        "actions": [
+          {
+            "action_id": "confirm_prompt",
+            "label": "Confirm prompt",
+            "ordinal": 1,
+            "kind": "SEMANTIC_MESSAGE",
+            "canonical_review_text": "Yes, that is what I mean.",
+            "emphasis": "PRIMARY",
+            "enabled": true
+          },
+          {
+            "action_id": "change_task",
+            "label": "Change the task",
+            "ordinal": 2,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          },
+          {
+            "action_id": "change_approach",
+            "label": "Change approach",
+            "ordinal": 3,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          },
+          {
+            "action_id": "something_else",
+            "label": "Something else...",
+            "ordinal": 4,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          }
+        ],
+        "lifecycle": {
+          "review_required": true,
+          "terminal": false,
+          "close_allowed": true,
+          "handoff_ready": false,
+          "terminal_disposition": null,
+          "result_body": null,
+          "authorized_handoff_artifacts": []
+        }
+      },
+      "normalized_projection": {
+        "stage": "PROMPT_REVIEW",
+        "focus_kind": "PROMPT_REVIEW",
+        "interaction_state": "REVIEW_REQUIRED",
+        "actions": [
+          {
+            "action_id": "confirm_prompt",
+            "ordinal": 1,
+            "kind": "SEMANTIC_MESSAGE",
+            "enabled": true,
+            "label": "Confirm prompt",
+            "canonical_review_text": "Yes, that is what I mean."
+          },
+          {
+            "action_id": "change_task",
+            "ordinal": 2,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Change the task",
+            "canonical_review_text": null
+          },
+          {
+            "action_id": "change_approach",
+            "ordinal": 3,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Change approach",
+            "canonical_review_text": null
+          },
+          {
+            "action_id": "something_else",
+            "ordinal": 4,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Something else...",
+            "canonical_review_text": null
+          }
+        ],
+        "artifact": {
+          "artifact_kind": "prompt",
+          "artifact_revision": "c8d97348772b4432ef691cfb0b7eb026333310aaa85debee98eef67d6cc7291d",
+          "body_sha256": "3b981f581b4f8ab151852f9214493c65accc72153f2f57c68dbc3c4c244911f2",
+          "media_type": "text/plain",
+          "title": "Authoritative Prompt (PDL.md)",
+          "capabilities": {
+            "copy": true,
+            "open_external": true
+          }
+        },
+        "model_response_sha256": "2335199d376f34f06a5f8866525a6e5b85c4c66116c065674af0de7a8c638592",
+        "lifecycle": {
+          "review_required": true,
+          "terminal": false,
+          "close_allowed": true,
+          "handoff_ready": false,
+          "terminal_disposition": null,
+          "authorized_handoff_artifacts": [],
+          "result_body_sha256": null
+        },
+        "session_id": "I-1e151ff61a",
+        "model_revision": "65bce6e692556164182a6f49ac02018e272f2eba0fae4c6e9e0ff4b92b4c90ef",
+        "projection_id": "projection-8148fd5a7298e16a5982bff5e5b181151b9bdf8b9380bc822f336c578850989e"
+      }
+    },
+    {
+      "event": "ACTION",
+      "action_id": "confirm_prompt",
+      "input_envelope_source": "STRUCTURED_ACTION",
+      "worker_operations": [
+        {
+          "operation_id": "G06:0002",
+          "operation": "INTERPRET_PROMPT_REVIEW"
+        },
+        {
+          "operation_id": "G06:0003",
+          "operation": "DRAFT_PLAN"
+        }
+      ],
+      "projection": {
+        "schema_version": "r6o-focus-projection-1",
+        "session_id": "I-1e151ff61a",
+        "workspace_id": "W-2a80c8ada866",
+        "model_revision": "208d98c97c2a4482662c563731c786dff99649459f8a73eb5ccdf30de32062d9",
+        "projection_id": "projection-32e470a8ce0fc40af20751e7a027c405de0377f313731990761b90782b787cee",
+        "interaction_state": "REVIEW_REQUIRED",
+        "model_response": "Response Plan Pseudocode\n\nIDENTIFY the target audience as senior developers\nINTRODUCE the subject of concurrency control\nDEFINE optimistic locking\nDEFINE pessimistic locking\nCOMPARE the two approaches\nSUMMARIZE the differences\n\nConfirm or correct this response approach.",
+        "stage": "PLAN_REVIEW",
+        "focus_kind": "PLAN_REVIEW",
+        "artifact": {
+          "artifact_ref": "plan:I-1e151ff61a-R1",
+          "artifact_revision": "90775e4415fcf45644bf8f1120ffdc09cb357b3654b339655d7c98acdbc2e8c1",
+          "artifact_kind": "plan",
+          "title": "Authoritative Response Plan (PDL.md)",
+          "body": "IDENTIFY the target audience as senior developers\nINTRODUCE the subject of concurrency control\nDEFINE optimistic locking\nDEFINE pessimistic locking\nCOMPARE the two approaches\nSUMMARIZE the differences",
+          "media_type": "text/plain",
+          "capabilities": {
+            "copy": true,
+            "open_external": true
+          }
+        },
+        "actions": [
+          {
+            "action_id": "confirm_plan",
+            "label": "Confirm plan",
+            "ordinal": 1,
+            "kind": "SEMANTIC_MESSAGE",
+            "canonical_review_text": "Confirm the plan and execute.",
+            "emphasis": "PRIMARY",
+            "enabled": true
+          },
+          {
+            "action_id": "change_task",
+            "label": "Change the task",
+            "ordinal": 2,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          },
+          {
+            "action_id": "change_approach",
+            "label": "Change approach",
+            "ordinal": 3,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          },
+          {
+            "action_id": "something_else",
+            "label": "Something else...",
+            "ordinal": 4,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "emphasis": "NORMAL",
+            "enabled": true
+          }
+        ],
+        "lifecycle": {
+          "review_required": true,
+          "terminal": false,
+          "close_allowed": true,
+          "handoff_ready": false,
+          "terminal_disposition": null,
+          "result_body": null,
+          "authorized_handoff_artifacts": []
+        }
+      },
+      "normalized_projection": {
+        "stage": "PLAN_REVIEW",
+        "focus_kind": "PLAN_REVIEW",
+        "interaction_state": "REVIEW_REQUIRED",
+        "actions": [
+          {
+            "action_id": "confirm_plan",
+            "ordinal": 1,
+            "kind": "SEMANTIC_MESSAGE",
+            "enabled": true,
+            "label": "Confirm plan",
+            "canonical_review_text": "Confirm the plan and execute."
+          },
+          {
+            "action_id": "change_task",
+            "ordinal": 2,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Change the task",
+            "canonical_review_text": null
+          },
+          {
+            "action_id": "change_approach",
+            "ordinal": 3,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Change approach",
+            "canonical_review_text": null
+          },
+          {
+            "action_id": "something_else",
+            "ordinal": 4,
+            "kind": "FREE_RESPONSE_FOCUS",
+            "enabled": true,
+            "label": "Something else...",
+            "canonical_review_text": null
+          }
+        ],
+        "artifact": {
+          "artifact_kind": "plan",
+          "artifact_revision": "90775e4415fcf45644bf8f1120ffdc09cb357b3654b339655d7c98acdbc2e8c1",
+          "body_sha256": "4763d12d6203ca03c4e8936f2dfb58a3d0d0e782d8990f7a5d12dbf8425bf7ce",
+          "media_type": "text/plain",
+          "title": "Authoritative Response Plan (PDL.md)",
+          "capabilities": {
+            "copy": true,
+            "open_external": true
+          }
+        },
+        "model_response_sha256": "c017a561ad7e1ce89f8458f51a41c813d5b8abba432ef2a481753a4121b16701",
+        "lifecycle": {
+          "review_required": true,
+          "terminal": false,
+          "close_allowed": true,
+          "handoff_ready": false,
+          "terminal_disposition": null,
+          "authorized_handoff_artifacts": [],
+          "result_body_sha256": null
+        },
+        "session_id": "I-1e151ff61a",
+        "model_revision": "208d98c97c2a4482662c563731c786dff99649459f8a73eb5ccdf30de32062d9",
+        "projection_id": "projection-32e470a8ce0fc40af20751e7a027c405de0377f313731990761b90782b787cee"
+      }
+    },
+    {
+      "event": "ACTION",
+      "action_id": "confirm_plan",
+      "input_envelope_source": "STRUCTURED_ACTION",
+      "worker_operations": [
+        {
+          "operation_id": "G06:0004",
+          "operation": "INTERPRET_PLAN_REVIEW"
+        },
+        {
+          "operation_id": "G06:0005",
+          "operation": "EXECUTE"
+        }
+      ],
+      "projection": {
+        "schema_version": "r6o-focus-projection-1",
+        "session_id": "I-1e151ff61a",
+        "workspace_id": "W-2a80c8ada866",
+        "model_revision": "e4cd365f2cc679cc15d50cca63731f7200153b353492256465f8770e5761ec07",
+        "projection_id": "projection-c2a7d884fe5b4588973d081ae3086832f74312cbe35cc00515954134915cb02e",
+        "interaction_state": "TERMINAL",
+        "model_response": "For senior developers: Optimistic and pessimistic locking are two strategies for managing concurrent access to shared data. Pessimistic locking assumes conflicts are likely and locks data before reading or writing, preventing other transactions from accessing it until the lock is released. This is typically implemented with database row-level locks (e.g., SELECT ... FOR UPDATE) or application-level mutexes. It guarantees strong consistency but can reduce concurrency and risk deadlocks. Optimistic locking assumes conflicts are rare and does not lock during reads; instead, it validates at write time by checking a version number or timestamp. If the version has changed since the read, the update is rejected (often with a retry). This approach maximizes concurrency and avoids lock overhead, but requires handling conflicts and may be unsuitable for high-contention scenarios. Key differences: locking timing (before vs. after), concurrency impact, conflict handling, and suitability for read-heavy vs. write-heavy workloads. Choose pessimistic when data consistency is critical and contention is high; choose optimistic when read/write ratios are high and retries are acceptable.",
+        "stage": "CLOSED_SUCCESS",
+        "focus_kind": "CLOSED",
+        "artifact": null,
+        "actions": [],
+        "lifecycle": {
+          "review_required": false,
+          "terminal": true,
+          "close_allowed": true,
+          "handoff_ready": true,
+          "terminal_disposition": "HOST_HANDOFF",
+          "result_body": "For senior developers: Optimistic and pessimistic locking are two strategies for managing concurrent access to shared data. Pessimistic locking assumes conflicts are likely and locks data before reading or writing, preventing other transactions from accessing it until the lock is released. This is typically implemented with database row-level locks (e.g., SELECT ... FOR UPDATE) or application-level mutexes. It guarantees strong consistency but can reduce concurrency and risk deadlocks. Optimistic locking assumes conflicts are rare and does not lock during reads; instead, it validates at write time by checking a version number or timestamp. If the version has changed since the read, the update is rejected (often with a retry). This approach maximizes concurrency and avoids lock overhead, but requires handling conflicts and may be unsuitable for high-contention scenarios. Key differences: locking timing (before vs. after), concurrency impact, conflict handling, and suitability for read-heavy vs. write-heavy workloads. Choose pessimistic when data consistency is critical and contention is high; choose optimistic when read/write ratios are high and retries are acceptable.",
+          "authorized_handoff_artifacts": [
+            {
+              "artifact_ref": "prompt:I-1e151ff61a-P1",
+              "artifact_revision": "fcbea5f3a1e75212333de87595bc5132b5cebdaa789d7d4e63c1018299a73f83",
+              "artifact_kind": "prompt",
+              "title": "Authoritative Prompt (PDL.md)",
+              "body": "Explain the difference between optimistic locking and pessimistic locking for an audience of senior developers.",
+              "media_type": "text/plain",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            {
+              "artifact_ref": "plan:I-1e151ff61a-R1",
+              "artifact_revision": "819c13d48e5f7ad19de05c2d9784b51d72e11d36908d6aae8174599854c0dfc0",
+              "artifact_kind": "plan",
+              "title": "Authoritative Response Plan (PDL.md)",
+              "body": "IDENTIFY the target audience as senior developers\nINTRODUCE the subject of concurrency control\nDEFINE optimistic locking\nDEFINE pessimistic locking\nCOMPARE the two approaches\nSUMMARIZE the differences",
+              "media_type": "text/plain",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            }
+          ]
+        }
+      },
+      "normalized_projection": {
+        "stage": "CLOSED_SUCCESS",
+        "focus_kind": "CLOSED",
+        "interaction_state": "TERMINAL",
+        "actions": [],
+        "artifact": null,
+        "model_response_sha256": "47106d2d4689ef07820e0537511d0cbabdb50701ca0bef83d52dc1b617ea279b",
+        "lifecycle": {
+          "review_required": false,
+          "terminal": true,
+          "close_allowed": true,
+          "handoff_ready": true,
+          "terminal_disposition": "HOST_HANDOFF",
+          "authorized_handoff_artifacts": [
+            {
+              "artifact_kind": "prompt",
+              "artifact_revision": "fcbea5f3a1e75212333de87595bc5132b5cebdaa789d7d4e63c1018299a73f83",
+              "body_sha256": "3b981f581b4f8ab151852f9214493c65accc72153f2f57c68dbc3c4c244911f2",
+              "media_type": "text/plain",
+              "title": "Authoritative Prompt (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            {
+              "artifact_kind": "plan",
+              "artifact_revision": "819c13d48e5f7ad19de05c2d9784b51d72e11d36908d6aae8174599854c0dfc0",
+              "body_sha256": "4763d12d6203ca03c4e8936f2dfb58a3d0d0e782d8990f7a5d12dbf8425bf7ce",
+              "media_type": "text/plain",
+              "title": "Authoritative Response Plan (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            }
+          ],
+          "result_body_sha256": "47106d2d4689ef07820e0537511d0cbabdb50701ca0bef83d52dc1b617ea279b"
+        },
+        "session_id": "I-1e151ff61a",
+        "model_revision": "e4cd365f2cc679cc15d50cca63731f7200153b353492256465f8770e5761ec07",
+        "projection_id": "projection-c2a7d884fe5b4588973d081ae3086832f74312cbe35cc00515954134915cb02e"
+      }
+    }
+  ],
+  "worker_operations": [
+    {
+      "operation_id": "G06:0001",
+      "operation": "DRAFT_PROMPT"
+    },
+    {
+      "operation_id": "G06:0002",
+      "operation": "INTERPRET_PROMPT_REVIEW"
+    },
+    {
+      "operation_id": "G06:0003",
+      "operation": "DRAFT_PLAN"
+    },
+    {
+      "operation_id": "G06:0004",
+      "operation": "INTERPRET_PLAN_REVIEW"
+    },
+    {
+      "operation_id": "G06:0005",
+      "operation": "EXECUTE"
+    }
+  ]
+}

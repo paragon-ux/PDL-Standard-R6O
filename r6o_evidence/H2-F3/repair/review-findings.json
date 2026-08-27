@@ -1,0 +1,17 @@
+{
+  "automatic_repair_budget_remaining": 0,
+  "blocking_findings": {
+    "F3-R1-QT-CI-JOB-PROVENANCE-BYPASS": "FIXED_PENDING_INDEPENDENT_DELTA_REVIEW",
+    "F3-R2-CURRENT-ACTUAL-HOST-INTEGRATION-INSUFFICIENT": "FIXED_PENDING_INDEPENDENT_DELTA_REVIEW",
+    "F3-R4-R6O3-FINAL-EVIDENCE-SCAN-GAP": "FIXED_PENDING_INDEPENDENT_DELTA_REVIEW"
+  },
+  "gate": "H2-F3",
+  "human_pass": "NOT_CLAIMED",
+  "initial_review": "REQUEST_CHANGES",
+  "known_nonblocking_findings": {
+    "F3-R3-ATTACHMENT-PROVENANCE-MISMATCH": "OPEN_P2_OWNER_GATE",
+    "F3-R5-HUMAN-GATE-CANDIDATE-NOT-PINNED": "OPEN_P2_F3",
+    "RPC_E_CHANGED_MODE": "NONBLOCKING_P2"
+  },
+  "schema_version": "r6o-h2-f3-review-findings-1"
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "r6o-h2-f3-preflight-reset-attempt-history-1",
+  "gate": "H2-F3",
+  "attempt_id": "host-ambiguous-20260827T082207Z",
+  "candidate_head": "3c5e38fd1ea7946bec7553b13477b478dd3805b4",
+  "candidate_tree": "4864650e9726c5e14b0080171da94e619ff847f4",
+  "reset_result_path": "preflight-reset.json",
+  "reset_result_sha256": "92bf97f9e34c5322d740c86c205d39c378e7f992b0b5a8c2467042b946e843dd",
+  "preflight_reset": "FAIL",
+  "failure": "HOST_AMBIGUOUS",
+  "attachment_started": false,
+  "human_semantic_replay_started": false,
+  "observed_transient_candidates": [
+    "Codex activity flyout",
+    "Select files dialog"
+  ]
+}

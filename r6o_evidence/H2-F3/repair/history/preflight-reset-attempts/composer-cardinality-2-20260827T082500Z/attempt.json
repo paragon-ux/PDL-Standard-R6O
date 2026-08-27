@@ -1,0 +1,14 @@
+{
+  "schema_version": "r6o-h2-f3-preflight-reset-attempt-history-1",
+  "gate": "H2-F3",
+  "attempt_id": "composer-cardinality-2-20260827T082500Z",
+  "candidate_head": "3c5e38fd1ea7946bec7553b13477b478dd3805b4",
+  "candidate_tree": "4864650e9726c5e14b0080171da94e619ff847f4",
+  "reset_result_path": "preflight-reset.json",
+  "reset_result_sha256": "411e0bf81764d18810c04472a9ad394919d02a869143da083ffb75e76e96c70c",
+  "preflight_reset": "FAIL",
+  "failure": "SELECTOR_CARDINALITY:composer:2",
+  "attachment_started": false,
+  "human_semantic_replay_started": false,
+  "diagnosis": "The main Codex content and an open Side chat panel each exposed one visible empty ProseMirror composer. The Side chat state is preserved by selecting its sibling pasted-text tab rather than closing the Side chat tab."
+}

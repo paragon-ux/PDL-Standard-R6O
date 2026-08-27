@@ -1,0 +1,266 @@
+{
+  "checkout": {
+    "branch": "codex/h2-f3-final-integration",
+    "dirty": true,
+    "head": "3c5e38fd1ea7946bec7553b13477b478dd3805b4",
+    "tree": "4864650e9726c5e14b0080171da94e619ff847f4"
+  },
+  "d2_regression": {
+    "accepted_evidence": [
+      "r6o_evidence/H2-D2/attachment-result.json",
+      "r6o_evidence/H2-D1R/d2-actual-host/attachment-result.json"
+    ],
+    "status": "PASS"
+  },
+  "finished_at_utc": "2026-08-27T07:24:39.361463Z",
+  "frozen_oracle": {
+    "commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+    "path": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1",
+    "status": "PASS",
+    "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6"
+  },
+  "gate": "H2-F2",
+  "host_fail_closed": {
+    "selector_mismatch": "SELECTOR_HOST_MISMATCH:package_version",
+    "stale_hwnd": "FROZEN_HOST_HWND_STALE",
+    "status": "PASS"
+  },
+  "host_record": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O-h2-f3\\r6o_evidence\\H2-D1\\host-environment.json",
+  "input_boundary": {
+    "delivery_cancellation_race": {
+      "callback_paused_before_mutation": true,
+      "cancellation_cleanup_completed": true,
+      "current_delivery_event_preserved": true,
+      "current_delivery_state_preserved": true,
+      "destructive_clear_count": 1,
+      "envelope_count": 0,
+      "new_user_text_preserved": true,
+      "status": "PASS"
+    },
+    "enter_keyup_timeout_retains_ownership": true,
+    "failed_hook_thread_shutdown": "HOST_INPUT_HOOK_STOP_TIMEOUT",
+    "final_resource_state": {
+      "orphaned_dispatcher_released": true,
+      "orphaned_hook_removed": true,
+      "pair_owner_hook_removed": true,
+      "pair_owner_teardown_complete": true,
+      "pair_owner_thread_absent": true
+    },
+    "focus_failure": "ACTUAL_COMPOSER_FOCUS_UNVERIFIED_AT_ENTER",
+    "normal_activation_deactivation": true,
+    "orphaned_hook_removed": true,
+    "partial_activation_failure_cleanup": true,
+    "pending_delivery_teardown": true,
+    "repeated_activation_deactivation": 2,
+    "restart_after_failed_shutdown": "HOST_INPUT_HOOK_RESTART_BLOCKED",
+    "retry_after_delayed_keyup": true,
+    "shift_enter": "PASSTHROUGH",
+    "stale_provenance_corruption": "FAIL_CLOSED",
+    "stale_queued_delivery_inert": true,
+    "status": "PASS",
+    "timeout_error_precedence": "HOST_COMPOSER_ENVELOPE_TIMEOUT",
+    "unmodified_enter": {
+      "capture_count": 1,
+      "delivery_count": 1
+    },
+    "unrelated_window": "PASSTHROUGH"
+  },
+  "mode": "portable",
+  "process_exit_qualification": {
+    "child_pid": 360,
+    "cleanup_complete_marker": true,
+    "duration_seconds": 2.234,
+    "final_resource_state": {
+      "input": {
+        "orphaned_dispatcher_released": true,
+        "orphaned_hook_removed": true,
+        "pair_owner_hook_removed": true,
+        "pair_owner_teardown_complete": true,
+        "pair_owner_thread_absent": true
+      },
+      "sidecar": {
+        "cleanup_events_processed": true,
+        "deferred_deletes_sent": true,
+        "engine_delete_scheduled": true,
+        "partial_sidecar_closed": true,
+        "primary_sidecar_closed": true,
+        "replacement_sidecar_closed": true,
+        "window_delete_scheduled": true
+      }
+    },
+    "probe_mode": "portable",
+    "process_terminated": true,
+    "returncode": 0,
+    "status": "PASS",
+    "stderr_tail": "",
+    "timeout_seconds": 180.0
+  },
+  "qt_lifecycle": {
+    "authoritative_projection_id": "h2-f2-reopen",
+    "close_view_hide_failure_retry": {
+      "calls": [
+        "window.hide",
+        "window.hide",
+        "bridge.notify_closed"
+      ],
+      "close_notified": true,
+      "hide_attempts": 2,
+      "notification_count": 1
+    },
+    "final_resource_state": {
+      "cleanup_events_processed": true,
+      "deferred_deletes_sent": true,
+      "engine_delete_scheduled": true,
+      "partial_sidecar_closed": true,
+      "primary_sidecar_closed": true,
+      "replacement_sidecar_closed": true,
+      "window_delete_scheduled": true
+    },
+    "open_close_reopen": true,
+    "partial_close_failure": "EXERCISED",
+    "partial_close_retry": true,
+    "pyside6_executed": true,
+    "repeated_successful_close_reopen": true,
+    "status": "PASS",
+    "terminal_dismissed": true
+  },
+  "repair_resilience_matrix": {
+    "enter_keyup_drain_timeout": {
+      "observed": {
+        "ownership_retained": true,
+        "retry_completed": true
+      },
+      "source": "input_boundary.enter_keyup_timeout_retains_ownership+retry_after_delayed_keyup",
+      "status": "PASS"
+    },
+    "failed_hook_thread_shutdown": {
+      "observed": "HOST_INPUT_HOOK_STOP_TIMEOUT",
+      "source": "input_boundary.failed_hook_thread_shutdown",
+      "status": "PASS"
+    },
+    "normal_activation_deactivation": {
+      "observed": true,
+      "source": "input_boundary.normal_activation_deactivation",
+      "status": "PASS"
+    },
+    "partial_activation_failure_cleanup": {
+      "observed": true,
+      "source": "input_boundary.partial_activation_failure_cleanup",
+      "status": "PASS"
+    },
+    "pending_delivery_during_teardown": {
+      "observed": true,
+      "source": "input_boundary.pending_delivery_teardown",
+      "status": "PASS"
+    },
+    "qt_close_view_hide_failure_retry": {
+      "observed": {
+        "calls": [
+          "window.hide",
+          "window.hide",
+          "bridge.notify_closed"
+        ],
+        "close_notified": true,
+        "hide_attempts": 2,
+        "notification_count": 1
+      },
+      "source": "qt_lifecycle.close_view_hide_failure_retry",
+      "status": "PASS"
+    },
+    "qt_partial_close_failure": {
+      "observed": "EXERCISED",
+      "source": "qt_lifecycle.partial_close_failure",
+      "status": "PASS"
+    },
+    "qt_partial_close_retry": {
+      "observed": true,
+      "source": "qt_lifecycle.partial_close_retry",
+      "status": "PASS"
+    },
+    "repeated_activation_deactivation": {
+      "observed": 2,
+      "source": "input_boundary.repeated_activation_deactivation",
+      "status": "PASS"
+    },
+    "repeated_successful_close_reopen": {
+      "observed": true,
+      "source": "qt_lifecycle.repeated_successful_close_reopen",
+      "status": "PASS"
+    },
+    "restart_after_failed_shutdown": {
+      "observed": "HOST_INPUT_HOOK_RESTART_BLOCKED",
+      "source": "input_boundary.restart_after_failed_shutdown",
+      "status": "PASS"
+    },
+    "shutdown_process_exit_cleanup": {
+      "observed": {
+        "cleanup_complete_marker": true,
+        "probe_mode": "portable",
+        "process_terminated": true,
+        "returncode": 0
+      },
+      "source": "process_exit.cleanup_complete_marker+process_terminated",
+      "status": "PASS"
+    },
+    "stale_queued_delivery_after_teardown": {
+      "observed": true,
+      "source": "input_boundary.stale_queued_delivery_inert",
+      "status": "PASS"
+    },
+    "stale_resource_callback_invalidation": {
+      "observed": {
+        "callback_paused_before_mutation": true,
+        "cancellation_cleanup_completed": true,
+        "current_delivery_event_preserved": true,
+        "current_delivery_state_preserved": true,
+        "destructive_clear_count": 1,
+        "envelope_count": 0,
+        "new_user_text_preserved": true,
+        "status": "PASS"
+      },
+      "source": "input_boundary.delivery_cancellation_race+stale_queued_delivery_inert",
+      "status": "PASS"
+    }
+  },
+  "runtime": {
+    "dependencies": {
+      "PySide6": "6.11.2",
+      "pytest": "9.0.3",
+      "pywin32": "312",
+      "pywinauto": "0.6.9"
+    },
+    "machine": "AMD64",
+    "platform": "Windows-10-10.0.22000-SP0",
+    "python_version": "3.11.9"
+  },
+  "schema_version": "r6o-h2-f2-lifecycle-resilience-human-override-repair-2",
+  "scope": {
+    "normal_codex_submit_gesture_used": false,
+    "qml_or_design_changed": false,
+    "r6o3_lease_implemented": false,
+    "semantic_workflow_exercised": false
+  },
+  "selectors": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O-h2-f3\\r6o\\host\\codex\\windows\\selectors.json",
+  "started_at_utc": "2026-08-27T07:24:35.037586Z",
+  "status": "H2_F2_LIFECYCLE_RESILIENCE_PASS",
+  "warnings": [
+    {
+      "classification": "NONBLOCKING_P2",
+      "effective_runtime_state": "No warning was emitted; no lifecycle failure, nondeterminism, or resource leak was observed.",
+      "id": "RPC_E_CHANGED_MODE",
+      "observed_in_current_run": false,
+      "prior_frozen_observation": true
+    },
+    {
+      "classification": "NONBLOCKING_P2",
+      "effective_runtime_state": "DPI-awareness denial was not emitted; configured runtime DPI and bounded placement/teardown remained valid.",
+      "id": "DPI_AWARENESS_ACCESS_DENIED",
+      "observed_in_current_run": false,
+      "prior_frozen_observation": true
+    }
+  ],
+  "windows_local_actual_codex": {
+    "reason": "portable mode or non-Windows host",
+    "status": "NOT_RUN"
+  }
+}

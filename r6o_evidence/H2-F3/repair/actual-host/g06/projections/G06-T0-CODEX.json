@@ -1,0 +1,67 @@
+{
+  "actions": [
+    {
+      "action_id": "confirm_prompt",
+      "canonical_review_text": "Yes, that is what I mean.",
+      "emphasis": "PRIMARY",
+      "enabled": true,
+      "kind": "SEMANTIC_MESSAGE",
+      "label": "Confirm prompt",
+      "ordinal": 1
+    },
+    {
+      "action_id": "change_task",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Change the task",
+      "ordinal": 2
+    },
+    {
+      "action_id": "change_approach",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Change approach",
+      "ordinal": 3
+    },
+    {
+      "action_id": "something_else",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Something else...",
+      "ordinal": 4
+    }
+  ],
+  "artifact": {
+    "artifact_kind": "prompt",
+    "artifact_ref": "prompt:I-bf0cba73ae-P1",
+    "artifact_revision": "75815f4d224f250e53e8d1c844eb32dadb68d15fddb43bc2dd88d1a3118c2017",
+    "body": "Explain the difference between optimistic locking and pessimistic locking for an audience of senior developers.",
+    "capabilities": {
+      "copy": true,
+      "open_external": true
+    },
+    "media_type": "text/plain",
+    "title": "Authoritative Prompt (PDL.md)"
+  },
+  "focus_kind": "PROMPT_REVIEW",
+  "interaction_state": "REVIEW_REQUIRED",
+  "lifecycle": {
+    "authorized_handoff_artifacts": [],
+    "close_allowed": true,
+    "handoff_ready": false,
+    "result_body": null,
+    "review_required": true,
+    "terminal": false,
+    "terminal_disposition": null
+  },
+  "model_response": "Prompt Pseudocode\n\nExplain the difference between optimistic locking and pessimistic locking for an audience of senior developers.\n\nConfirm or correct this interpretation.",
+  "model_revision": "82a42cec4a0ef2949ec494531301a7c42fb1ac0516488fe474790c992160e9f3",
+  "projection_id": "projection-7ac3b601f5403570c54cf5f9200700212c8a29451b4892f5dea2912221b1c8ea",
+  "schema_version": "r6o-focus-projection-1",
+  "session_id": "I-bf0cba73ae",
+  "stage": "PROMPT_REVIEW",
+  "workspace_id": "W-14e73ff3c6e3"
+}

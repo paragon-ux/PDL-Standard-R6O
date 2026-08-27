@@ -1,0 +1,36 @@
+{
+  "schema_version": "r6o-h2-b2-test-results-1",
+  "gate": "H2-B2",
+  "status": "MECHANICAL_PASS_PENDING_HUMAN",
+  "driver": "PUBLIC_PROCESS_STDIN_KEYBOARD_BOUNDARY",
+  "public_command": "python scripts\\run_r6o2_tui.py --recorded --case A02-FULL",
+  "free_response_source": "TUI_TEXT",
+  "free_response_submission_count": 1,
+  "observed_screens": [
+    "PROMPT REVIEW INITIAL",
+    "PROMPT REVIEW REVISED",
+    "PLAN REVIEW"
+  ],
+  "terminal_behavior": "RESTORE_AND_RETURN_WITHOUT_RELAUNCH",
+  "observed_operation_ids": [
+    "A02F:0001",
+    "A02F:0002",
+    "A02F:0003",
+    "A02F:0004",
+    "A02F:0005",
+    "A02F:0006",
+    "A02F:0007"
+  ],
+  "final_stage": "CLOSED_SUCCESS",
+  "artifact_body_sha256": {
+    "initial_prompt": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
+    "revised_prompt": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
+    "plan": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
+    "result": "79cd3ac621e54343d4cbef28229766f2c8ae4b5e694dc46b7d69b9375f7e35c4"
+  },
+  "oracle_commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+  "oracle_tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+  "oracle_inventory_unchanged": true,
+  "terminal_recording": "tui-a02-full.cast",
+  "state_transitions": "state-transitions.jsonl"
+}

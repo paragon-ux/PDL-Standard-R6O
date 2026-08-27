@@ -1,0 +1,385 @@
+{
+  "accepted_f2_repair_matrix": {
+    "enter_keyup_drain_timeout": {
+      "observed": {
+        "ownership_retained": true,
+        "retry_completed": true
+      },
+      "source": "input_boundary.enter_keyup_timeout_retains_ownership+retry_after_delayed_keyup",
+      "status": "PASS"
+    },
+    "failed_hook_thread_shutdown": {
+      "observed": "HOST_INPUT_HOOK_STOP_TIMEOUT",
+      "source": "input_boundary.failed_hook_thread_shutdown",
+      "status": "PASS"
+    },
+    "normal_activation_deactivation": {
+      "observed": true,
+      "source": "input_boundary.normal_activation_deactivation",
+      "status": "PASS"
+    },
+    "partial_activation_failure_cleanup": {
+      "observed": true,
+      "source": "input_boundary.partial_activation_failure_cleanup",
+      "status": "PASS"
+    },
+    "pending_delivery_during_teardown": {
+      "observed": true,
+      "source": "input_boundary.pending_delivery_teardown",
+      "status": "PASS"
+    },
+    "qt_close_view_hide_failure_retry": {
+      "observed": {
+        "calls": [
+          "window.hide",
+          "window.hide",
+          "bridge.notify_closed"
+        ],
+        "close_notified": true,
+        "hide_attempts": 2,
+        "notification_count": 1
+      },
+      "source": "qt_lifecycle.close_view_hide_failure_retry",
+      "status": "PASS"
+    },
+    "qt_partial_close_failure": {
+      "observed": "EXERCISED",
+      "source": "qt_lifecycle.partial_close_failure",
+      "status": "PASS"
+    },
+    "qt_partial_close_retry": {
+      "observed": true,
+      "source": "qt_lifecycle.partial_close_retry",
+      "status": "PASS"
+    },
+    "repeated_activation_deactivation": {
+      "observed": 2,
+      "source": "input_boundary.repeated_activation_deactivation",
+      "status": "PASS"
+    },
+    "repeated_successful_close_reopen": {
+      "observed": true,
+      "source": "qt_lifecycle.repeated_successful_close_reopen",
+      "status": "PASS"
+    },
+    "restart_after_failed_shutdown": {
+      "observed": "HOST_INPUT_HOOK_RESTART_BLOCKED",
+      "source": "input_boundary.restart_after_failed_shutdown",
+      "status": "PASS"
+    },
+    "shutdown_process_exit_cleanup": {
+      "observed": {
+        "cleanup_complete_marker": true,
+        "probe_mode": "actual-host",
+        "process_terminated": true,
+        "returncode": 0
+      },
+      "source": "process_exit.cleanup_complete_marker+process_terminated",
+      "status": "PASS"
+    },
+    "stale_queued_delivery_after_teardown": {
+      "observed": true,
+      "source": "input_boundary.stale_queued_delivery_inert",
+      "status": "PASS"
+    },
+    "stale_resource_callback_invalidation": {
+      "observed": {
+        "callback_paused_before_mutation": true,
+        "cancellation_cleanup_completed": true,
+        "current_delivery_event_preserved": true,
+        "current_delivery_state_preserved": true,
+        "destructive_clear_count": 1,
+        "envelope_count": 0,
+        "new_user_text_preserved": true,
+        "status": "PASS"
+      },
+      "source": "input_boundary.delivery_cancellation_race+stale_queued_delivery_inert",
+      "status": "PASS"
+    }
+  },
+  "actual_host": {
+    "composer_empty_after": {
+      "accessibility_name_matches": true,
+      "descendant_text_count": 0,
+      "descendant_text_lengths": [],
+      "empty": true,
+      "uia_value_matches": true
+    },
+    "composer_empty_before": {
+      "accessibility_name_matches": true,
+      "descendant_text_count": 0,
+      "descendant_text_lengths": [],
+      "empty": true,
+      "uia_value_matches": true
+    },
+    "expanded": {
+      "actual_rectangle": {
+        "bottom": 853,
+        "height": 806,
+        "left": 1165,
+        "right": 1577,
+        "top": 47,
+        "width": 412
+      },
+      "composer_selector_match_count": 1,
+      "dpi": 96,
+      "expected_owner_hwnd": 2758514,
+      "expected_rectangle": {
+        "bottom": 853,
+        "height": 806,
+        "left": 1165,
+        "right": 1577,
+        "top": 47,
+        "width": 412
+      },
+      "foreground_hwnd": 4917464,
+      "global_topmost": false,
+      "host_client_rectangle": {
+        "bottom": 899,
+        "height": 900,
+        "left": -1,
+        "right": 1601,
+        "top": -1,
+        "width": 1602
+      },
+      "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
+      "mode": "EXPANDED",
+      "owner_hwnd": 2758514,
+      "placement_matches": true,
+      "sidecar_above_host": true,
+      "sidecar_hwnd": 4917464,
+      "visible": true,
+      "work_area_rectangle": {
+        "bottom": 900,
+        "height": 900,
+        "left": 0,
+        "right": 1600,
+        "top": 0,
+        "width": 1600
+      },
+      "z_order_indices": {
+        "host": 34,
+        "sidecar": 32
+      }
+    },
+    "final_resource_state": {
+      "focus_router": {
+        "hook_removed": true,
+        "thread_absent": true
+      },
+      "input": {
+        "delivery_pending": false,
+        "dispatcher_released": true,
+        "hook_removed": true,
+        "hook_thread_absent": true,
+        "hook_thread_alive": false,
+        "teardown_pending": false
+      },
+      "sidecar": {
+        "cleanup_events_processed": true,
+        "closed": true,
+        "deferred_deletes_sent": true,
+        "engine_delete_scheduled": true,
+        "native_window_alive": false,
+        "window_delete_scheduled": true,
+        "window_hidden": true
+      }
+    },
+    "first_close": {
+      "composer_keyboard_focus": true,
+      "expected_foreground_hwnd": 2758514,
+      "foreground_hwnd": 2758514,
+      "sidecar_visible": false
+    },
+    "host": {
+      "hwnd": 2758514,
+      "record_sha256": "8ceaf31da367dc6efe938d8f129a9d125e4f6ba0b19a991643b69680d87748c7",
+      "selectors_sha256": "f45bc99891a8d6d07344519274baded3c601203e48ba612246bcdea6f4c34386"
+    },
+    "input_hook": {
+      "activation_cycles": 2,
+      "installed": true,
+      "partial_activation_failure_cleanup": true,
+      "removed": true
+    },
+    "open": {
+      "actual_rectangle": {
+        "bottom": 791,
+        "height": 300,
+        "left": 587,
+        "right": 1262,
+        "top": 491,
+        "width": 675
+      },
+      "composer_selector_match_count": 1,
+      "dpi": 96,
+      "expected_owner_hwnd": 2758514,
+      "expected_rectangle": {
+        "bottom": 791,
+        "height": 300,
+        "left": 587,
+        "right": 1262,
+        "top": 491,
+        "width": 675
+      },
+      "foreground_hwnd": 4917464,
+      "global_topmost": false,
+      "host_client_rectangle": {
+        "bottom": 899,
+        "height": 900,
+        "left": -1,
+        "right": 1601,
+        "top": -1,
+        "width": 1602
+      },
+      "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
+      "mode": "STANDARD",
+      "owner_hwnd": 2758514,
+      "placement_matches": true,
+      "sidecar_above_host": true,
+      "sidecar_hwnd": 4917464,
+      "visible": true,
+      "work_area_rectangle": {
+        "bottom": 900,
+        "height": 900,
+        "left": 0,
+        "right": 1600,
+        "top": 0,
+        "width": 1600
+      },
+      "z_order_indices": {
+        "host": 34,
+        "sidecar": 32
+      }
+    },
+    "reopen": {
+      "actual_rectangle": {
+        "bottom": 791,
+        "height": 300,
+        "left": 587,
+        "right": 1262,
+        "top": 491,
+        "width": 675
+      },
+      "composer_selector_match_count": 1,
+      "dpi": 96,
+      "expected_owner_hwnd": 2758514,
+      "expected_rectangle": {
+        "bottom": 791,
+        "height": 300,
+        "left": 587,
+        "right": 1262,
+        "top": 491,
+        "width": 675
+      },
+      "foreground_hwnd": 4917464,
+      "global_topmost": false,
+      "host_client_rectangle": {
+        "bottom": 899,
+        "height": 900,
+        "left": -1,
+        "right": 1601,
+        "top": -1,
+        "width": 1602
+      },
+      "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
+      "mode": "EXPANDED",
+      "owner_hwnd": 2758514,
+      "placement_matches": true,
+      "sidecar_above_host": true,
+      "sidecar_hwnd": 4917464,
+      "visible": true,
+      "work_area_rectangle": {
+        "bottom": 900,
+        "height": 900,
+        "left": 0,
+        "right": 1600,
+        "top": 0,
+        "width": 1600
+      },
+      "z_order_indices": {
+        "host": 33,
+        "sidecar": 32
+      }
+    },
+    "second_close": {
+      "composer_keyboard_focus": true,
+      "expected_foreground_hwnd": 2758514,
+      "foreground_hwnd": 2758514,
+      "sidecar_visible": false
+    },
+    "status": "PASS",
+    "terminal_close": {
+      "composer_keyboard_focus": true,
+      "expected_foreground_hwnd": 2758514,
+      "foreground_hwnd": 2758514,
+      "sidecar_visible": false
+    }
+  },
+  "d2_regression": {
+    "accepted_evidence": [
+      "r6o_evidence/H2-D2/attachment-result.json",
+      "r6o_evidence/H2-D1R/d2-actual-host/attachment-result.json"
+    ],
+    "status": "PASS"
+  },
+  "gate": "H2-F3",
+  "process_exit": {
+    "child_pid": 8816,
+    "cleanup_complete_marker": true,
+    "duration_seconds": 110.468,
+    "final_resource_state": {
+      "focus_router": {
+        "hook_removed": true,
+        "thread_absent": true
+      },
+      "input": {
+        "delivery_pending": false,
+        "dispatcher_released": true,
+        "hook_removed": true,
+        "hook_thread_absent": true,
+        "hook_thread_alive": false,
+        "teardown_pending": false
+      },
+      "sidecar": {
+        "cleanup_events_processed": true,
+        "closed": true,
+        "deferred_deletes_sent": true,
+        "engine_delete_scheduled": true,
+        "native_window_alive": false,
+        "window_delete_scheduled": true,
+        "window_hidden": true
+      }
+    },
+    "probe_mode": "actual-host",
+    "process_terminated": true,
+    "returncode": 0,
+    "status": "PASS",
+    "stderr_tail": "QWindowsContext: OleInitialize() failed:  \"COM error 0x80010106: Cannot change thread mode after it is set.\"\nqt.qpa.window: SetProcessDpiAwarenessContext() failed: Access is denied.\nQt's default DPI awareness context is DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2. If you know what you are doing, you can overwrite this default using qt.conf (https://doc.qt.io/qt-6/highdpi.html#configuring-windows).\n",
+    "timeout_seconds": 180.0
+  },
+  "r6o3_lease_implemented": false,
+  "schema_version": "r6o-h2-f3-current-lifecycle-1",
+  "source": {
+    "head": "3c5e38fd1ea7946bec7553b13477b478dd3805b4",
+    "status": "FROZEN",
+    "tree": "4864650e9726c5e14b0080171da94e619ff847f4"
+  },
+  "status": "H2_F3_CURRENT_LIFECYCLE_PASS",
+  "warnings": [
+    {
+      "classification": "NONBLOCKING_P2",
+      "effective_runtime_state": "No warning was emitted; no lifecycle failure, nondeterminism, or resource leak was observed.",
+      "id": "RPC_E_CHANGED_MODE",
+      "observed_in_current_run": false,
+      "prior_frozen_observation": true
+    },
+    {
+      "classification": "NONBLOCKING_P2",
+      "effective_runtime_state": "DPI-awareness denial was not emitted; configured runtime DPI and bounded placement/teardown remained valid.",
+      "id": "DPI_AWARENESS_ACCESS_DENIED",
+      "observed_in_current_run": false,
+      "prior_frozen_observation": true
+    }
+  ]
+}

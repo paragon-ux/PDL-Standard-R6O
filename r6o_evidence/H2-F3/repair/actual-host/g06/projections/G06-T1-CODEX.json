@@ -1,0 +1,67 @@
+{
+  "actions": [
+    {
+      "action_id": "confirm_plan",
+      "canonical_review_text": "Confirm the plan and execute.",
+      "emphasis": "PRIMARY",
+      "enabled": true,
+      "kind": "SEMANTIC_MESSAGE",
+      "label": "Confirm plan",
+      "ordinal": 1
+    },
+    {
+      "action_id": "change_task",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Change the task",
+      "ordinal": 2
+    },
+    {
+      "action_id": "change_approach",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Change approach",
+      "ordinal": 3
+    },
+    {
+      "action_id": "something_else",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Something else...",
+      "ordinal": 4
+    }
+  ],
+  "artifact": {
+    "artifact_kind": "plan",
+    "artifact_ref": "plan:I-bf0cba73ae-R1",
+    "artifact_revision": "c11dc2b2bf5a183c8b130a3bc315fee13b5a7643bff7eb7d3d8779ffaeb2a6c0",
+    "body": "IDENTIFY the target audience as senior developers\nINTRODUCE the subject of concurrency control\nDEFINE optimistic locking\nDEFINE pessimistic locking\nCOMPARE the two approaches\nSUMMARIZE the differences",
+    "capabilities": {
+      "copy": true,
+      "open_external": true
+    },
+    "media_type": "text/plain",
+    "title": "Authoritative Response Plan (PDL.md)"
+  },
+  "focus_kind": "PLAN_REVIEW",
+  "interaction_state": "REVIEW_REQUIRED",
+  "lifecycle": {
+    "authorized_handoff_artifacts": [],
+    "close_allowed": true,
+    "handoff_ready": false,
+    "result_body": null,
+    "review_required": true,
+    "terminal": false,
+    "terminal_disposition": null
+  },
+  "model_response": "Response Plan Pseudocode\n\nIDENTIFY the target audience as senior developers\nINTRODUCE the subject of concurrency control\nDEFINE optimistic locking\nDEFINE pessimistic locking\nCOMPARE the two approaches\nSUMMARIZE the differences\n\nConfirm or correct this response approach.",
+  "model_revision": "72e0e6d6deb20e35ac4d18405ae8711eec0f567d990ce7875e631559ee460b83",
+  "projection_id": "projection-9627cd6261d95238e0152614ff72a51e7b316e2c11e2f20857e6951b17cf8832",
+  "schema_version": "r6o-focus-projection-1",
+  "session_id": "I-bf0cba73ae",
+  "stage": "PLAN_REVIEW",
+  "workspace_id": "W-14e73ff3c6e3"
+}

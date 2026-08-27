@@ -1,0 +1,47 @@
+{
+  "actual_codex_host": {
+    "file_version": "151.0.7922.170",
+    "hwnd": 2758514,
+    "package_version": "26.818.5229.0",
+    "pid": 11512,
+    "product_name": "Codex",
+    "product_version": "151.0.7922.170",
+    "window_class": "Chrome_WidgetWin_1"
+  },
+  "attachment": {
+    "path": "actual-host/attachment/attachment-result.json",
+    "status": "PASS"
+  },
+  "attachment_status": "H2_D2_ATTACHMENT_PASS",
+  "dimensions": {
+    "actual_host_a02_full": "PASS",
+    "actual_host_g06": "PASS",
+    "e1_input_routing": "PASS",
+    "lifecycle_resilience": "PASS"
+  },
+  "f3_local_event_log": {
+    "path": "actual-host/attachment/win32-uia-events.jsonl",
+    "sha256": "88582209ef2e612d42b20b7862b119a304db8671125bf4394eca4a668275afa9"
+  },
+  "f3_attachment_provenance": "actual-host/attachment/f3-provenance.json",
+  "gate": "H2-F3",
+  "human_gesture_synthesized": false,
+  "known_findings": [
+    "F3-R3-ATTACHMENT-PROVENANCE-MISMATCH=OPEN_P2_OWNER_GATE",
+    "F3-R5-HUMAN-GATE-CANDIDATE-NOT-PINNED=OPEN_P2_F3"
+  ],
+  "r6o3_behavior_claimed": false,
+  "records": {
+    "a02_full": "actual-host/a02-full/qualification.json",
+    "e1": "actual-host/e1/qualification.json",
+    "g06": "actual-host/g06/qualification.json",
+    "lifecycle": "actual-host/lifecycle/qualification.json"
+  },
+  "schema_version": "r6o-h2-f3-current-actual-host-1",
+  "source": {
+    "head": "3c5e38fd1ea7946bec7553b13477b478dd3805b4",
+    "status": "FROZEN",
+    "tree": "4864650e9726c5e14b0080171da94e619ff847f4"
+  },
+  "status": "H2_F3_CURRENT_ACTUAL_HOST_INTEGRATION_PASS"
+}

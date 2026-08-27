@@ -1,0 +1,17 @@
+{
+  "attempt": "REPLACEMENT_NON_HUMAN_ATTACHMENT_FOCUS_FAILURES",
+  "candidate": {
+    "head": "3c5e38fd1ea7946bec7553b13477b478dd3805b4",
+    "tree": "4864650e9726c5e14b0080171da94e619ff847f4"
+  },
+  "failure": "COMPOSER_CLICK_FOCUS_UNVERIFIED",
+  "human_gesture_started": false,
+  "semantic_host_action_started": false,
+  "attempt_count": 3,
+  "status": "NON_HUMAN_QUALIFICATION_BLOCKED",
+  "preserved_attempt_paths": [
+    "actual-host/attachment/failed-attempts/replacement-focus-unverified-20260827T072533Z/attachment-result.json",
+    "actual-host/attachment/failed-attempts/replacement-focus-unverified-retry-20260827/attachment-result.json",
+    "actual-host/attachment/attachment-result.json"
+  ]
+}

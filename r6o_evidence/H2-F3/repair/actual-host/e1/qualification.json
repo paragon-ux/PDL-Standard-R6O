@@ -1,0 +1,75 @@
+{
+  "actual_codex_host": {
+    "file_version": "151.0.7922.170",
+    "hwnd": 2758514,
+    "package_version": "26.818.5229.0",
+    "pid": 11512,
+    "product_name": "Codex",
+    "product_version": "151.0.7922.170",
+    "window_class": "Chrome_WidgetWin_1"
+  },
+  "actual_composer_focus_restored": true,
+  "captured_text_normalized": "H2-F3-E1-LINE-1\nH2-F3-E1-LINE-2",
+  "captured_text_raw": "H2-F3-E1-LINE-1\nH2-F3-E1-LINE-2",
+  "composer_cleared": true,
+  "gate": "H2-F3",
+  "host_postflight": {
+    "composer": {
+      "accessibility_name_matches": true,
+      "descendant_text_count": 0,
+      "descendant_text_lengths": [],
+      "empty": true,
+      "uia_value_matches": true
+    },
+    "conversation": {
+      "fresh": true,
+      "fresh_home_surface_match_count": 1,
+      "visible_turn_group_count": 0
+    }
+  },
+  "host_preflight": {
+    "composer": {
+      "accessibility_name_matches": true,
+      "descendant_text_count": 0,
+      "descendant_text_lengths": [],
+      "empty": true,
+      "uia_value_matches": true
+    },
+    "conversation": {
+      "fresh": true,
+      "fresh_home_surface_match_count": 1,
+      "visible_turn_group_count": 0
+    }
+  },
+  "human_gesture_synthesized": false,
+  "native_codex_submission_observed": false,
+  "native_enter_keydown_suppressed": true,
+  "native_enter_keyup_suppressed": true,
+  "post_terminal_no_submission_ledger": [
+    {
+      "composer": {
+        "accessibility_name_matches": true,
+        "descendant_text_count": 0,
+        "descendant_text_lengths": [],
+        "empty": true,
+        "uia_value_matches": true
+      },
+      "conversation": {
+        "fresh": true,
+        "fresh_home_surface_match_count": 1,
+        "visible_turn_group_count": 0
+      },
+      "elapsed_ms": 4343
+    }
+  ],
+  "schema_version": "r6o-h2-f3-current-e1-1",
+  "shift_enter_preserved": true,
+  "sidecar_dismissed": true,
+  "source": {
+    "head": "3c5e38fd1ea7946bec7553b13477b478dd3805b4",
+    "status": "FROZEN",
+    "tree": "4864650e9726c5e14b0080171da94e619ff847f4"
+  },
+  "status": "H2_F3_CURRENT_E1_PASS",
+  "unmodified_enter_intercepted": true
+}
