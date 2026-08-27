@@ -1,0 +1,15 @@
+{
+  "schema_version": "r6o-h2-f2-human-override-repair-2-abandoned-freeze-1",
+  "head": "209472c74d820c46ca4333cf72551a75c5e34468",
+  "tree": "a0fc44c81c63fd9809d920401958654d0a5f16d8",
+  "local_actual_host_qualification": "PASS",
+  "qt_ci_run_id": 33033533670,
+  "qt_ci_status": "SUCCESS",
+  "r6o_ci_run_id": 33033533619,
+  "r6o_ci_status": "FAILURE",
+  "failure_scope": "R2_TEST_HARNESS_PORTABILITY",
+  "failure": "The general R6O workflow intentionally omitted optional PySide6, but the process-exit probe regression did not yet use the repository-standard optional-Qt skip guard.",
+  "disposition": "FREEZE_ABANDONED_AND_REPLACED",
+  "replacement_head": "27cbce651ccacd3dc18f90a2684bb87d19582534",
+  "replacement_tree": "ab7fc624679498d48310edde008ea001c13e9552"
+}
