@@ -752,3 +752,28 @@ Regeneration changes evidence hashes. The hashes in
 `r6o/host/codex/windows/selectors.json` must then be explicitly re-frozen and
 reviewed before the reset command or contract tests can pass. Do not overwrite
 the frozen evidence merely to run qualification.
+
+## H2-F3 final integration and human gate
+
+Run the final integration verifier only from the F3 worktree and branch after
+the accepted E1, E2, E3, F1, and F2 evidence is present:
+
+```powershell
+$env:PDL_R6S_BASELINE_REPO = 'C:\Users\USER\Desktop\Frameworks\PDL-Standard-REPL-Harness-quarantine-20260821-H1'
+python scripts\h2\verify_h2_final.py --baseline-repo $env:PDL_R6S_BASELINE_REPO
+```
+
+The expected terminal result is `H2_F3_FINAL_INTEGRATION_PASS`. The verifier
+checks the exact accepted predecessor heads/trees, protected-path and frozen
+oracle invariants, current-host attachment, accepted E1/G06/A02/F2 machine
+evidence, final Qt platform records, and exact-head CI attribution. It does
+not synthesize a human Enter, Send, callback, or approval gesture.
+
+Before `HUMAN-H2` records a disposition, inspect the Standard and Expanded Qt
+captures and confirm the Sidecar is attached to the Codex host, uses the locked
+675x300 and 412x806 logical sizes, keeps the composer untouched, and dismisses
+without a terminal View-close callback. The machine-qualified result remains
+review evidence; it is not a human approval. Keep
+`r6o_evidence/H2/H2-HUMAN-GATE-RECORD.json` at `human_disposition: null`,
+`promotion_authorized: false`, and `human_pass: NOT_CLAIMED` until the human
+explicitly decides.

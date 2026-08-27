@@ -1,0 +1,37 @@
+{
+  "schema_version": "r6o-h2-human-gate-1",
+  "gate": "H2",
+  "gate_id": "H2",
+  "stage_id": "H2-F3",
+  "agent": "LUNA-H2-F3-INTEGRATOR",
+  "human_authority": "HUMAN-H2",
+  "candidate": {
+    "branch": "codex/h2-f3-final-integration",
+    "status": "IMPLEMENTATION_COMPLETE_PENDING_HUMAN"
+  },
+  "machine_qualification": {
+    "protected_path_diff": "EMPTY",
+    "frozen_oracle": "UNCHANGED",
+    "tui_g06": "PASS",
+    "tui_a02_full": "PASS",
+    "qt_sidecar_q01_q24": "PASS",
+    "actual_codex_attachment": "PASS",
+    "e1_input_routing": "PASS",
+    "actual_host_g06": "PASS",
+    "actual_host_a02_full": "PASS",
+    "cross_view_parity": "PASS",
+    "lifecycle_resilience": "PASS",
+    "r6o3_behavior_claimed": "NO"
+  },
+  "human_only_review": [
+    "Inspect the final Standard and Expanded Qt captures against the approved fidelity reference.",
+    "Confirm the final integrated evidence and exact-head CI records are the artifacts being dispositioned.",
+    "Record an explicit H2 disposition only after the review is complete."
+  ],
+  "human_disposition": null,
+  "promotion_authorized": false,
+  "human_pass": "NOT_CLAIMED",
+  "state": "HUMAN_PENDING",
+  "next_authority": "HUMAN-H2",
+  "notes": "No human decision, approval, promotion, or gesture was inferred or recorded by F3."
+}
