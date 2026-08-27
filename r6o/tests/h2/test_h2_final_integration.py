@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 from typing import Any, Callable
 
@@ -13,6 +16,27 @@ from scripts.h2 import verify_h2_final as verifier
 
 ROOT = Path(__file__).resolve().parents[3]
 EVIDENCE = ROOT / "r6o_evidence"
+
+
+def test_direct_script_bootstraps_repository_imports_without_pythonpath() -> None:
+    env = os.environ.copy()
+    env.pop("PYTHONPATH", None)
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-I",
+            "scripts/h2/verify_h2_final.py",
+            "--probe-repository-import-bootstrap",
+        ],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert completed.stdout.strip() == "H2_F3_REPOSITORY_IMPORT_BOOTSTRAP_PASS"
 
 
 def _stage(tmp_path: Path, *relative_paths: str) -> Path:

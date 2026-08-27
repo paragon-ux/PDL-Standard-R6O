@@ -18,6 +18,9 @@ from typing import Any, Iterable, Sequence
 
 
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 EVIDENCE_ROOT = ROOT / "r6o_evidence"
 DEFAULT_OUTPUT = EVIDENCE_ROOT / "H2-F3"
 DEFAULT_BASE_RECORD = DEFAULT_OUTPUT / "base.json"
@@ -1648,12 +1651,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--allow-missing-actual-host", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--allow-pending-qt", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--allow-missing-local", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--probe-repository-import-bootstrap", action="store_true", help=argparse.SUPPRESS)
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     try:
+        if args.probe_repository_import_bootstrap:
+            from r6o.host.codex.windows.binding import CodexSidecarBinding
+
+            assert CodexSidecarBinding is not None
+            print("H2_F3_REPOSITORY_IMPORT_BOOTSTRAP_PASS", flush=True)
+            return 0
         baseline = args.baseline_repo or (Path(os.environ["PDL_R6S_BASELINE_REPO"]) if os.environ.get("PDL_R6S_BASELINE_REPO") else None)
         if args.collect_local:
             if baseline is None:
