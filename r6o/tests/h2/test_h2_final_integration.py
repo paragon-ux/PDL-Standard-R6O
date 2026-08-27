@@ -731,6 +731,13 @@ def _write_current_host_fixture(
         / "win32-uia-events.jsonl",
         event_log_target,
     )
+    attachment_document = json.loads(
+        attachment_target.read_text(encoding="utf-8")
+    )
+    attachment_document["event_log"]["sha256"] = hashlib.sha256(
+        event_log_target.read_bytes()
+    ).hexdigest()
+    _write_json(attachment_target, attachment_document)
     preflight_target = output / "actual-host" / "preflight-reset.json"
     shutil.copyfile(
         EVIDENCE / "H2-F3" / "repair" / "actual-host" / "preflight-reset.json",
