@@ -436,6 +436,7 @@ def test_lifecycle_verifier_help_is_portable() -> None:
 
 
 def test_lifecycle_process_exit_probe_cleans_resources_and_terminates() -> None:
+    pytest.importorskip("PySide6")
     environment = os.environ.copy()
     environment.setdefault("QT_QPA_PLATFORM", "offscreen")
     environment.setdefault("QT_QUICK_BACKEND", "software")
