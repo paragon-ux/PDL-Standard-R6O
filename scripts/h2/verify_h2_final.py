@@ -770,6 +770,180 @@ def _validate_human_record(*, repo: Path, evidence: Path) -> dict[str, Any]:
     return {"status": "HUMAN_PENDING", "human_disposition": None, "promotion_authorized": False, "human_pass": "NOT_CLAIMED"}
 
 
+def _validate_f3_attachment_provenance(
+    *,
+    repo: Path,
+    output: Path,
+    qualification: dict[str, Any],
+    freeze: dict[str, Any],
+    attachment_path: Path,
+    attachment_result: dict[str, Any],
+) -> dict[str, str]:
+    reference = qualification.get("f3_attachment_provenance")
+    expected_reference = "actual-host/attachment/f3-provenance.json"
+    _require(
+        reference == expected_reference,
+        "F3_ATTACHMENT_PROVENANCE_REFERENCE",
+        expected_reference,
+        reference,
+        (output / "actual-host" / "qualification.json").as_posix(),
+    )
+    provenance_path = output / expected_reference
+    _require(
+        _is_within(provenance_path, output),
+        "F3_ATTACHMENT_PROVENANCE_SCOPE",
+        "inside F3 repair output",
+        provenance_path.as_posix(),
+        expected_reference,
+    )
+    provenance = _read_json(
+        provenance_path,
+        gate="H2-F3",
+        dimension="F3_ATTACHMENT_PROVENANCE_RECORD",
+    )
+    _require(
+        provenance.get("schema_version")
+        == "r6o-h2-f3-attachment-provenance-1",
+        "F3_ATTACHMENT_PROVENANCE_SCHEMA",
+        "r6o-h2-f3-attachment-provenance-1",
+        provenance.get("schema_version"),
+        provenance_path.as_posix(),
+    )
+    _require(
+        provenance.get("gate") == "H2-F3",
+        "F3_ATTACHMENT_PROVENANCE_GATE",
+        "H2-F3",
+        provenance.get("gate"),
+        provenance_path.as_posix(),
+    )
+    for field in ("head", "tree"):
+        _require(
+            provenance.get(f"candidate_{field}") == freeze[field],
+            f"F3_ATTACHMENT_CANDIDATE_{field.upper()}",
+            freeze[field],
+            provenance.get(f"candidate_{field}"),
+            provenance_path.as_posix(),
+        )
+
+    artifact_paths = {
+        "attachment_result": attachment_path,
+        "event_log": output
+        / "actual-host"
+        / "attachment"
+        / "win32-uia-events.jsonl",
+        "host_record": repo
+        / "r6o_evidence"
+        / "H2-D1"
+        / "host-environment.json",
+        "selectors": repo
+        / "r6o"
+        / "host"
+        / "codex"
+        / "windows"
+        / "selectors.json",
+        "preflight_reset": output / "actual-host" / "preflight-reset.json",
+    }
+    artifact_hashes: dict[str, str] = {}
+    for name, artifact_path in artifact_paths.items():
+        relative_path = _repo_relative(repo, artifact_path)
+        _require(
+            relative_path is not None,
+            f"F3_ATTACHMENT_{name.upper()}_PATH_SCOPE",
+            "repository-relative path",
+            artifact_path.as_posix(),
+            provenance_path.as_posix(),
+        )
+        assert relative_path is not None
+        _require(
+            provenance.get(f"{name}_path") == relative_path,
+            f"F3_ATTACHMENT_{name.upper()}_PATH",
+            relative_path,
+            provenance.get(f"{name}_path"),
+            provenance_path.as_posix(),
+        )
+        actual_hash = _sha256_file(artifact_path)
+        artifact_hashes[name] = actual_hash
+        _require(
+            provenance.get(f"{name}_sha256") == actual_hash,
+            f"F3_ATTACHMENT_{name.upper()}_HASH",
+            actual_hash,
+            provenance.get(f"{name}_sha256"),
+            provenance_path.as_posix(),
+        )
+
+    preflight = _read_json(
+        artifact_paths["preflight_reset"],
+        gate="H2-F3",
+        dimension="F3_ATTACHMENT_PREFLIGHT_RESET",
+    )
+    _require(
+        provenance.get("preflight_status") == "CODEX_TEST_SESSION_READY"
+        and preflight.get("status") == "CODEX_TEST_SESSION_READY",
+        "F3_ATTACHMENT_PREFLIGHT_STATUS",
+        "CODEX_TEST_SESSION_READY",
+        {
+            "provenance": provenance.get("preflight_status"),
+            "record": preflight.get("status"),
+        },
+        provenance_path.as_posix(),
+    )
+    expected_state = {
+        "attachment_status": "H2_D2_ATTACHMENT_PASS",
+        "active_attachment": "PASS",
+        "real_codex_host_tested": True,
+        "synthetic_owner_used": False,
+        "reset_to_attachment_contiguous_machine_flow": True,
+        "historical_failures_preserved": True,
+    }
+    for field, expected in expected_state.items():
+        _require(
+            provenance.get(field) == expected,
+            f"F3_ATTACHMENT_{field.upper()}",
+            expected,
+            provenance.get(field),
+            provenance_path.as_posix(),
+        )
+    _require(
+        provenance.get("attachment_status") == attachment_result.get("status")
+        and provenance.get("real_codex_host_tested")
+        == attachment_result.get("real_codex_host_tested")
+        and provenance.get("synthetic_owner_used")
+        == attachment_result.get("synthetic_owner_used"),
+        "F3_ATTACHMENT_RESULT_BINDING",
+        {
+            "status": attachment_result.get("status"),
+            "real_codex_host_tested": attachment_result.get(
+                "real_codex_host_tested"
+            ),
+            "synthetic_owner_used": attachment_result.get(
+                "synthetic_owner_used"
+            ),
+        },
+        {
+            "status": provenance.get("attachment_status"),
+            "real_codex_host_tested": provenance.get(
+                "real_codex_host_tested"
+            ),
+            "synthetic_owner_used": provenance.get("synthetic_owner_used"),
+        },
+        provenance_path.as_posix(),
+    )
+    result_event_log = attachment_result.get("event_log")
+    result_event_log_hash = (
+        result_event_log.get("sha256")
+        if isinstance(result_event_log, dict)
+        else None
+    )
+    _require(
+        result_event_log_hash == artifact_hashes["event_log"],
+        "F3_ATTACHMENT_EVENT_LOG_RESULT_BINDING",
+        artifact_hashes["event_log"],
+        result_event_log_hash,
+        attachment_path.as_posix(),
+    )
+    return {"status": "PASS", "path": expected_reference}
+
+
 def _validate_current_host_evidence(*, repo: Path, output: Path, freeze: dict[str, Any]) -> dict[str, str]:
     path = output / "actual-host" / "qualification.json"
     document = _read_json(path, gate="H2-F3", dimension="ACTUAL_HOST_FINAL_EVIDENCE")
@@ -851,12 +1025,26 @@ def _validate_current_host_evidence(*, repo: Path, output: Path, freeze: dict[st
     _require(isinstance(matrix, dict) and matrix and all(isinstance(item, dict) and item.get("status") == "PASS" for item in matrix.values()), "CURRENT_LIFECYCLE_F2_REPAIRS", "all PASS", matrix, expected_records["lifecycle"])
 
     attachment = document.get("attachment", {})
+    _require(
+        isinstance(attachment, dict) and attachment.get("status") == "PASS",
+        "ACTUAL_HOST_ATTACHMENT_QUALIFICATION_STATUS",
+        "PASS",
+        attachment.get("status") if isinstance(attachment, dict) else attachment,
+        path.as_posix(),
+    )
     attachment_path_value = attachment.get("path")
     _require(isinstance(attachment_path_value, str), "ACTUAL_HOST_ATTACHMENT_PATH", "relative path", attachment_path_value, path.as_posix())
     attachment_path = output / Path(attachment_path_value)
     _require(_is_within(attachment_path, output), "ACTUAL_HOST_ATTACHMENT_PATH_SCOPE", "inside F3 output", attachment_path.as_posix(), path.as_posix())
     attachment_result = _read_json(attachment_path, gate="H2-F3", dimension="ACTUAL_HOST_ATTACHMENT_RESULT")
     _require(attachment_result.get("status") == "H2_D2_ATTACHMENT_PASS", "ACTUAL_HOST_ATTACHMENT_STATUS", "H2_D2_ATTACHMENT_PASS", attachment_result.get("status"), attachment_path.as_posix())
+    _require(
+        document.get("attachment_status") == attachment_result.get("status"),
+        "ACTUAL_HOST_ATTACHMENT_RESULT_STATUS_LINK",
+        attachment_result.get("status"),
+        document.get("attachment_status"),
+        path.as_posix(),
+    )
     _require(attachment_result.get("real_codex_host_tested") is True and attachment_result.get("synthetic_owner_used") is False, "ACTUAL_HOST_RUNTIME_IDENTITY", {"real_codex_host_tested": True, "synthetic_owner_used": False}, {"real_codex_host_tested": attachment_result.get("real_codex_host_tested"), "synthetic_owner_used": attachment_result.get("synthetic_owner_used")}, attachment_path.as_posix())
     host = attachment_result.get("host", {})
     for key, expected in CURRENT_HOST.items():
@@ -865,6 +1053,14 @@ def _validate_current_host_evidence(*, repo: Path, output: Path, freeze: dict[st
     selectors = repo / "r6o" / "host" / "codex" / "windows" / "selectors.json"
     _require(attachment_result.get("host_record_sha256") == _sha256_file(host_record), "ACTUAL_HOST_RECORD_HASH", _sha256_file(host_record), attachment_result.get("host_record_sha256"), attachment_path.as_posix())
     _require(attachment_result.get("selectors_sha256") == _sha256_file(selectors), "ACTUAL_HOST_SELECTOR_HASH", _sha256_file(selectors), attachment_result.get("selectors_sha256"), attachment_path.as_posix())
+    _validate_f3_attachment_provenance(
+        repo=repo,
+        output=output,
+        qualification=document,
+        freeze=freeze,
+        attachment_path=attachment_path,
+        attachment_result=attachment_result,
+    )
     dimensions = document.get("dimensions")
     expected_dimensions = {
         "e1_input_routing": "PASS",

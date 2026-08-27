@@ -630,6 +630,7 @@ def test_repository_verifier_accepts_safe_negative_current_attachment_records(
 
 
 def _write_current_host_fixture(
+    repo: Path,
     output: Path,
     freeze: dict[str, str],
 ) -> None:
@@ -716,10 +717,64 @@ def _write_current_host_fixture(
     }
     for name, value in records.items():
         _write_json(output / "actual-host" / name / "qualification.json", value)
-    attachment_source = EVIDENCE / "H2-F3" / "actual-host" / "attachment" / "attachment-result.json"
+    attachment_source = EVIDENCE / "H2-F3" / "repair" / "actual-host" / "attachment" / "attachment-result.json"
     attachment_target = output / "actual-host" / "attachment" / "attachment-result.json"
     attachment_target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(attachment_source, attachment_target)
+    event_log_target = output / "actual-host" / "attachment" / "win32-uia-events.jsonl"
+    shutil.copyfile(
+        EVIDENCE
+        / "H2-F3"
+        / "repair"
+        / "actual-host"
+        / "attachment"
+        / "win32-uia-events.jsonl",
+        event_log_target,
+    )
+    preflight_target = output / "actual-host" / "preflight-reset.json"
+    shutil.copyfile(
+        EVIDENCE / "H2-F3" / "repair" / "actual-host" / "preflight-reset.json",
+        preflight_target,
+    )
+    host_record_target = repo / "r6o_evidence" / "H2-D1" / "host-environment.json"
+    host_record_target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(
+        EVIDENCE / "H2-D1" / "host-environment.json",
+        host_record_target,
+    )
+    selectors_target = repo / "r6o" / "host" / "codex" / "windows" / "selectors.json"
+    selectors_target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(
+        ROOT / "r6o" / "host" / "codex" / "windows" / "selectors.json",
+        selectors_target,
+    )
+    provenance_target = output / "actual-host" / "attachment" / "f3-provenance.json"
+    _write_json(
+        provenance_target,
+        {
+            "schema_version": "r6o-h2-f3-attachment-provenance-1",
+            "gate": "H2-F3",
+            "candidate_head": freeze["head"],
+            "candidate_tree": freeze["tree"],
+            "attachment_result_path": attachment_target.relative_to(repo).as_posix(),
+            "attachment_result_sha256": hashlib.sha256(attachment_target.read_bytes()).hexdigest(),
+            "event_log_path": event_log_target.relative_to(repo).as_posix(),
+            "event_log_sha256": hashlib.sha256(event_log_target.read_bytes()).hexdigest(),
+            "host_record_path": host_record_target.relative_to(repo).as_posix(),
+            "host_record_sha256": hashlib.sha256(host_record_target.read_bytes()).hexdigest(),
+            "selectors_path": selectors_target.relative_to(repo).as_posix(),
+            "selectors_sha256": hashlib.sha256(selectors_target.read_bytes()).hexdigest(),
+            "preflight_reset_path": preflight_target.relative_to(repo).as_posix(),
+            "preflight_reset_sha256": hashlib.sha256(preflight_target.read_bytes()).hexdigest(),
+            "preflight_status": "CODEX_TEST_SESSION_READY",
+            "attachment_status": "H2_D2_ATTACHMENT_PASS",
+            "active_attachment": "PASS",
+            "real_codex_host_tested": True,
+            "synthetic_owner_used": False,
+            "reset_to_attachment_contiguous_machine_flow": True,
+            "historical_failures_preserved": True,
+        },
+    )
     _write_json(
         output / "actual-host" / "qualification.json",
         {
@@ -737,6 +792,8 @@ def _write_current_host_fixture(
                 "status": "PASS",
                 "path": "actual-host/attachment/attachment-result.json",
             },
+            "attachment_status": "H2_D2_ATTACHMENT_PASS",
+            "f3_attachment_provenance": "actual-host/attachment/f3-provenance.json",
             "dimensions": {
                 "e1_input_routing": "PASS",
                 "actual_host_g06": "PASS",
@@ -749,10 +806,11 @@ def _write_current_host_fixture(
 
 def test_current_actual_host_evidence_is_pinned_and_complete(tmp_path: Path) -> None:
     freeze = {"head": "1" * 40, "tree": "2" * 40}
-    output = tmp_path / "repair"
-    _write_current_host_fixture(output, freeze)
+    repo = tmp_path / "repo"
+    output = repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(repo, output, freeze)
     assert verifier._validate_current_host_evidence(
-        repo=ROOT,
+        repo=repo,
         output=output,
         freeze=freeze,
     )["status"] == "PASS"
@@ -760,17 +818,165 @@ def test_current_actual_host_evidence_is_pinned_and_complete(tmp_path: Path) -> 
 
 def test_current_actual_host_wrong_revision_fails_closed(tmp_path: Path) -> None:
     freeze = {"head": "1" * 40, "tree": "2" * 40}
-    output = tmp_path / "repair"
-    _write_current_host_fixture(output, freeze)
+    repo = tmp_path / "repo"
+    output = repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(repo, output, freeze)
     path = output / "actual-host" / "a02-full" / "qualification.json"
     a02 = json.loads(path.read_text(encoding="utf-8"))
     a02["input_envelopes"][1]["text"] = "wrong revision"
     _write_json(path, a02)
     with pytest.raises(verifier.FinalIntegrationError) as exc_info:
         verifier._validate_current_host_evidence(
-            repo=ROOT,
+            repo=repo,
             output=output,
             freeze=freeze,
         )
     _assert_diagnostic(exc_info)
     assert exc_info.value.dimension == "CURRENT_A02_REVISION"
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "dimension"),
+    [
+        ("candidate_head", "0" * 40, "F3_ATTACHMENT_CANDIDATE_HEAD"),
+        ("candidate_tree", "0" * 40, "F3_ATTACHMENT_CANDIDATE_TREE"),
+        (
+            "preflight_reset_sha256",
+            "0" * 64,
+            "F3_ATTACHMENT_PREFLIGHT_RESET_HASH",
+        ),
+        (
+            "attachment_result_sha256",
+            "0" * 64,
+            "F3_ATTACHMENT_ATTACHMENT_RESULT_HASH",
+        ),
+        ("event_log_sha256", "0" * 64, "F3_ATTACHMENT_EVENT_LOG_HASH"),
+        (
+            "attachment_status",
+            "FAIL",
+            "F3_ATTACHMENT_ATTACHMENT_STATUS",
+        ),
+        ("synthetic_owner_used", True, "F3_ATTACHMENT_SYNTHETIC_OWNER_USED"),
+    ],
+)
+def test_current_attachment_provenance_mutations_fail_closed(
+    tmp_path: Path,
+    field: str,
+    value: object,
+    dimension: str,
+) -> None:
+    freeze = {"head": "1" * 40, "tree": "2" * 40}
+    repo = tmp_path / "repo"
+    output = repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(repo, output, freeze)
+    provenance_path = (
+        output / "actual-host" / "attachment" / "f3-provenance.json"
+    )
+    provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
+    provenance[field] = value
+    _write_json(provenance_path, provenance)
+
+    with pytest.raises(verifier.FinalIntegrationError) as exc_info:
+        verifier._validate_current_host_evidence(
+            repo=repo,
+            output=output,
+            freeze=freeze,
+        )
+    _assert_diagnostic(exc_info)
+    assert exc_info.value.dimension == dimension
+
+
+def test_missing_current_attachment_provenance_fails_closed(
+    tmp_path: Path,
+) -> None:
+    freeze = {"head": "1" * 40, "tree": "2" * 40}
+    repo = tmp_path / "repo"
+    output = repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(repo, output, freeze)
+    (output / "actual-host" / "attachment" / "f3-provenance.json").unlink()
+
+    with pytest.raises(verifier.FinalIntegrationError) as exc_info:
+        verifier._validate_current_host_evidence(
+            repo=repo,
+            output=output,
+            freeze=freeze,
+        )
+    _assert_diagnostic(exc_info)
+    assert exc_info.value.dimension == "F3_ATTACHMENT_PROVENANCE_RECORD"
+
+
+@pytest.mark.parametrize(
+    "reference",
+    [None, "actual-host/attachment/not-current-provenance.json"],
+)
+def test_aggregate_current_qualification_must_reference_provenance(
+    tmp_path: Path,
+    reference: str | None,
+) -> None:
+    freeze = {"head": "1" * 40, "tree": "2" * 40}
+    repo = tmp_path / "repo"
+    output = repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(repo, output, freeze)
+    qualification_path = output / "actual-host" / "qualification.json"
+    qualification = json.loads(qualification_path.read_text(encoding="utf-8"))
+    if reference is None:
+        qualification.pop("f3_attachment_provenance")
+    else:
+        qualification["f3_attachment_provenance"] = reference
+    _write_json(qualification_path, qualification)
+
+    with pytest.raises(verifier.FinalIntegrationError) as exc_info:
+        verifier._validate_current_host_evidence(
+            repo=repo,
+            output=output,
+            freeze=freeze,
+        )
+    _assert_diagnostic(exc_info)
+    assert exc_info.value.dimension == "F3_ATTACHMENT_PROVENANCE_REFERENCE"
+
+
+def test_historical_failure_does_not_override_current_provenance_pass(
+    tmp_path: Path,
+) -> None:
+    freeze = {"head": "1" * 40, "tree": "2" * 40}
+    repo = tmp_path / "repo"
+    output = repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(repo, output, freeze)
+    _write_json(
+        output / "actual-host" / "attachment" / "history" / "failed.json",
+        {"attachment_status": "FAIL"},
+    )
+
+    assert verifier._validate_current_host_evidence(
+        repo=repo,
+        output=output,
+        freeze=freeze,
+    )["status"] == "PASS"
+
+
+def test_historical_pass_does_not_override_current_provenance_failure(
+    tmp_path: Path,
+) -> None:
+    freeze = {"head": "1" * 40, "tree": "2" * 40}
+    repo = tmp_path / "repo"
+    output = repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(repo, output, freeze)
+    _write_json(
+        output / "actual-host" / "attachment" / "history" / "passed.json",
+        {"attachment_status": "H2_D2_ATTACHMENT_PASS"},
+    )
+    provenance_path = (
+        output / "actual-host" / "attachment" / "f3-provenance.json"
+    )
+    provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
+    provenance["attachment_status"] = "FAIL"
+    _write_json(provenance_path, provenance)
+
+    with pytest.raises(verifier.FinalIntegrationError) as exc_info:
+        verifier._validate_current_host_evidence(
+            repo=repo,
+            output=output,
+            freeze=freeze,
+        )
+    _assert_diagnostic(exc_info)
+    assert exc_info.value.dimension == "F3_ATTACHMENT_ATTACHMENT_STATUS"
