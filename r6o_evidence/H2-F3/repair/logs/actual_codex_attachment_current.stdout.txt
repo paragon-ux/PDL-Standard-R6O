@@ -1,0 +1,4 @@
+PRESERVED_SUCCESSFUL_CURRENT_RUN
+H2_D2_ATTACHMENT_PASS
+attachment_result_sha256=ad03ee4ef983eab6ee8ad2dec5c729ecf79fa0a7c1f0dfa39e251450082f0877
+source_console_log=history/post-replay-machine-orchestration-failure-20260827T125612Z/console-log.txt

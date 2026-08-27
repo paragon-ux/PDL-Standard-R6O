@@ -1,10 +1,11 @@
 {
-  "agent": "SOL-H2-F3-HUMAN-DIRECTED-R4-REPAIR",
+  "agent": "SOL-H2-F3-ATTACHMENT-PROVENANCE-CLOSURE",
   "automatic_repair_budget_remaining": 0,
   "gate": "H2-F3",
-  "human_h2_exception_authorized": true,
+  "human_action_required": false,
   "human_pass": "NOT_CLAIMED",
-  "next_authority": "LUNA-H2-F3-REPAIR-DELTA-REVIEW",
+  "human_semantic_replay": "PASS",
+  "next_authority": "LUNA-H2-F3-ATTACHMENT-PROVENANCE-FINAL-AUDITOR",
   "production_behavior_changed": false,
   "r6o3_behavior_claimed": false,
   "repair_base": {
@@ -12,10 +13,13 @@
     "tree": "7c1f15aca91438695be54d5ea25ba6611e281fb3"
   },
   "repaired_code_freeze": {
-    "head": "2ff50bdf9399d99025606f66a4522bdc66a1939e",
+    "head": "dfbf9c32e72d3c148cb3c2267b808b08c8f9acf4",
     "status": "FROZEN",
-    "tree": "f43aee6df356ef50d96429f24d83b9069ed48369"
+    "tree": "dd7194db212daa24b235fdaae436d140d3faeb91"
   },
+  "role": "HUMAN_DIRECTED_BOUNDED_P1_REPAIR",
   "schema_version": "r6o-h2-f3-bounded-repair-authority-1",
-  "trigger": "LUNA_REPAIR_DELTA_REQUEST_CHANGES:F3-R4-ATTACHMENT-R6O3-SCAN-GAP"
+  "semantic_replay_required": false,
+  "target_finding_status": "CLOSED",
+  "trigger": "F3-R4-CURRENT-ATTACHMENT-PROVENANCE-MISMATCH"
 }

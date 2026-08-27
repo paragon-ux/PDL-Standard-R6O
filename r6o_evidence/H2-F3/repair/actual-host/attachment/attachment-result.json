@@ -20,7 +20,7 @@
   "event_log": {
     "event_count": 10,
     "path": "r6o_evidence/H2-D2/win32-uia-events.jsonl",
-    "sha256": "88582209ef2e612d42b20b7862b119a304db8671125bf4394eca4a668275afa9"
+    "sha256": "2528c38f181f272dd9b13624bb518689509427d8f48f82ab420dae9f10f14849"
   },
   "expanded": {
     "actual_rectangle": {
@@ -57,7 +57,7 @@
     "owner_hwnd": 2758514,
     "placement_matches": true,
     "sidecar_above_host": true,
-    "sidecar_hwnd": 13504062,
+    "sidecar_hwnd": 16913024,
     "visible": true,
     "work_area_rectangle": {
       "bottom": 900,
@@ -68,8 +68,8 @@
       "width": 1600
     },
     "z_order_indices": {
-      "host": 29,
-      "sidecar": 28
+      "host": 27,
+      "sidecar": 26
     }
   },
   "gate": "H2-D2",
@@ -135,11 +135,11 @@
       "frame_count": 9,
       "observer_ordering_mutation": false,
       "path": "r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-expanded.mp4",
-      "sha256": "27dc5fc35f1439bc8170d6f76591c2ac335a9037bfdc74377622e340f3c636e7"
+      "sha256": "4f4c49873838c851b70861f2bf76ec93e209e9da6f5924ef6c236549d7649063"
     },
-    "frame_count": 376,
+    "frame_count": 318,
     "mandatory": true,
-    "sha256": "cb4db92dcec87dc366f5b31d74a6884e23e3d021bc0e74c728d2ea595b372911",
+    "sha256": "ca0bf18f44d2a2ad290acf27193aa70a8a0807de097e4d907ca905ed34c32b26",
     "standard": {
       "crop_rectangle": {
         "bottom": 843,
@@ -150,10 +150,10 @@
         "width": 676
       },
       "fps": 8,
-      "frame_count": 367,
+      "frame_count": 309,
       "observer_ordering_mutation": false,
       "path": "r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-standard.mp4",
-      "sha256": "952f6f0d4f3cc4fec3b9a6ccf33b69f52159b1e15b0e30d6810332b2b08de88a"
+      "sha256": "2f33a5bb961cb834f2d3e1a006f844afcfe9de432e8c8a5f953c59ffce881fe7"
     }
   },
   "runtime": {
@@ -198,7 +198,7 @@
       "top": 491,
       "width": 675
     },
-    "foreground_hwnd": 13504062,
+    "foreground_hwnd": 16913024,
     "global_topmost": false,
     "host_client_rectangle": {
       "bottom": 899,
@@ -213,7 +213,7 @@
     "owner_hwnd": 2758514,
     "placement_matches": true,
     "sidecar_above_host": true,
-    "sidecar_hwnd": 13504062,
+    "sidecar_hwnd": 16913024,
     "visible": true,
     "work_area_rectangle": {
       "bottom": 900,
@@ -224,19 +224,19 @@
       "width": 1600
     },
     "z_order_indices": {
-      "host": 32,
-      "sidecar": 28
+      "host": 30,
+      "sidecar": 26
     }
   },
   "status": "H2_D2_ATTACHMENT_PASS",
   "synthetic_owner_used": false,
-  "timestamp_utc": "2026-08-27T08:30:11.547930Z",
+  "timestamp_utc": "2026-08-27T12:56:12.172231Z",
   "unrelated_window": {
     "host_focus_router_ignored_probe_click": true,
     "probe_above_sidecar": true,
     "probe_foreground": true,
     "probe_global_topmost": false,
-    "probe_hwnd": 1119930,
+    "probe_hwnd": 13241432,
     "probe_owner_hwnd": 0
   }
 }

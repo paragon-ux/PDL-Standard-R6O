@@ -15,17 +15,17 @@
       ],
       "projection": {
         "schema_version": "r6o-focus-projection-1",
-        "session_id": "I-c7832a5f77",
-        "workspace_id": "W-0a69bd77040e",
-        "model_revision": "0ad5ae22495bfb7e4decf700b50d1cf326560d23f1ad51278cc2152ad41711d7",
-        "projection_id": "projection-3101d01d90853aa62fe03342030e8129b8e1ee08ae9d8617919d959c52bf5866",
+        "session_id": "I-b7373bc702",
+        "workspace_id": "W-0e708fdf2095",
+        "model_revision": "480f3d7a6585856c2e9754bb2d7c92cc92c799610fcee036983a61f507924fec",
+        "projection_id": "projection-000921075d40a662417c5c57cae60bbe03831d6550b6de511c140469d4e1c008",
         "interaction_state": "REVIEW_REQUIRED",
         "model_response": "Prompt Pseudocode\n\nCOMPARE Kafka and RabbitMQ for event delivery.\n\nConfirm or correct this interpretation.",
         "stage": "PROMPT_REVIEW",
         "focus_kind": "PROMPT_REVIEW",
         "artifact": {
-          "artifact_ref": "prompt:I-c7832a5f77-P1",
-          "artifact_revision": "ce18d2888ac16f120bc73087014cae2a8c5cb61d1093672a08282cbec3cacab1",
+          "artifact_ref": "prompt:I-b7373bc702-P1",
+          "artifact_revision": "49290a8238dbbc2b97fb993a1a656b8093999143349edb851aaa73b26cd5d405",
           "artifact_kind": "prompt",
           "title": "Authoritative Prompt (PDL.md)",
           "body": "COMPARE Kafka and RabbitMQ for event delivery.",
@@ -120,7 +120,7 @@
         ],
         "artifact": {
           "artifact_kind": "prompt",
-          "artifact_revision": "ce18d2888ac16f120bc73087014cae2a8c5cb61d1093672a08282cbec3cacab1",
+          "artifact_revision": "49290a8238dbbc2b97fb993a1a656b8093999143349edb851aaa73b26cd5d405",
           "body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
           "media_type": "text/plain",
           "title": "Authoritative Prompt (PDL.md)",
@@ -139,9 +139,9 @@
           "authorized_handoff_artifacts": [],
           "result_body_sha256": null
         },
-        "session_id": "I-c7832a5f77",
-        "model_revision": "0ad5ae22495bfb7e4decf700b50d1cf326560d23f1ad51278cc2152ad41711d7",
-        "projection_id": "projection-3101d01d90853aa62fe03342030e8129b8e1ee08ae9d8617919d959c52bf5866"
+        "session_id": "I-b7373bc702",
+        "model_revision": "480f3d7a6585856c2e9754bb2d7c92cc92c799610fcee036983a61f507924fec",
+        "projection_id": "projection-000921075d40a662417c5c57cae60bbe03831d6550b6de511c140469d4e1c008"
       }
     },
     {
@@ -151,17 +151,17 @@
       "worker_operations": [],
       "projection": {
         "schema_version": "r6o-focus-projection-1",
-        "session_id": "I-c7832a5f77",
-        "workspace_id": "W-0a69bd77040e",
-        "model_revision": "0ad5ae22495bfb7e4decf700b50d1cf326560d23f1ad51278cc2152ad41711d7",
-        "projection_id": "projection-3101d01d90853aa62fe03342030e8129b8e1ee08ae9d8617919d959c52bf5866",
+        "session_id": "I-b7373bc702",
+        "workspace_id": "W-0e708fdf2095",
+        "model_revision": "480f3d7a6585856c2e9754bb2d7c92cc92c799610fcee036983a61f507924fec",
+        "projection_id": "projection-000921075d40a662417c5c57cae60bbe03831d6550b6de511c140469d4e1c008",
         "interaction_state": "REVIEW_REQUIRED",
         "model_response": "Prompt Pseudocode\n\nCOMPARE Kafka and RabbitMQ for event delivery.\n\nConfirm or correct this interpretation.",
         "stage": "PROMPT_REVIEW",
         "focus_kind": "PROMPT_REVIEW",
         "artifact": {
-          "artifact_ref": "prompt:I-c7832a5f77-P1",
-          "artifact_revision": "ce18d2888ac16f120bc73087014cae2a8c5cb61d1093672a08282cbec3cacab1",
+          "artifact_ref": "prompt:I-b7373bc702-P1",
+          "artifact_revision": "49290a8238dbbc2b97fb993a1a656b8093999143349edb851aaa73b26cd5d405",
           "artifact_kind": "prompt",
           "title": "Authoritative Prompt (PDL.md)",
           "body": "COMPARE Kafka and RabbitMQ for event delivery.",
@@ -256,7 +256,7 @@
         ],
         "artifact": {
           "artifact_kind": "prompt",
-          "artifact_revision": "ce18d2888ac16f120bc73087014cae2a8c5cb61d1093672a08282cbec3cacab1",
+          "artifact_revision": "49290a8238dbbc2b97fb993a1a656b8093999143349edb851aaa73b26cd5d405",
           "body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
           "media_type": "text/plain",
           "title": "Authoritative Prompt (PDL.md)",
@@ -275,9 +275,9 @@
           "authorized_handoff_artifacts": [],
           "result_body_sha256": null
         },
-        "session_id": "I-c7832a5f77",
-        "model_revision": "0ad5ae22495bfb7e4decf700b50d1cf326560d23f1ad51278cc2152ad41711d7",
-        "projection_id": "projection-3101d01d90853aa62fe03342030e8129b8e1ee08ae9d8617919d959c52bf5866"
+        "session_id": "I-b7373bc702",
+        "model_revision": "480f3d7a6585856c2e9754bb2d7c92cc92c799610fcee036983a61f507924fec",
+        "projection_id": "projection-000921075d40a662417c5c57cae60bbe03831d6550b6de511c140469d4e1c008"
       }
     },
     {
@@ -296,17 +296,17 @@
       ],
       "projection": {
         "schema_version": "r6o-focus-projection-1",
-        "session_id": "I-c7832a5f77",
-        "workspace_id": "W-0a69bd77040e",
-        "model_revision": "44bf5eebdeeb0d25ee97f24bfd9e9ecdce64d5546b303c965b1002d1a060cb9e",
-        "projection_id": "projection-d3fd0d6f780647a57bef3c7c75178c180df33a1741f35cdfd760957fea8d0eac",
+        "session_id": "I-b7373bc702",
+        "workspace_id": "W-0e708fdf2095",
+        "model_revision": "48e17c63a48a2c69c899ae96b9da4b4fa50075c9ca3758da1a81c3fa8a59cede",
+        "projection_id": "projection-bd743195a96a42a615e0dad819ca93dacf46e0e9e46813ca33295f7cef0e1a8a",
         "interaction_state": "REVIEW_REQUIRED",
         "model_response": "Prompt Pseudocode\n\nCOMPARE Kafka and RabbitMQ for event delivery for an audience of data engineers.\n\nConfirm or correct this interpretation.",
         "stage": "PROMPT_REVIEW",
         "focus_kind": "PROMPT_REVIEW",
         "artifact": {
-          "artifact_ref": "prompt:I-c7832a5f77-P2",
-          "artifact_revision": "1827e5103047f3c2d54395d7bfb9cfeab44ed062403beb011b315254054b5c02",
+          "artifact_ref": "prompt:I-b7373bc702-P2",
+          "artifact_revision": "0f1575f93cddbfb816b13486461a0681fcbc5e9bcb50c555fc9505199b1b219c",
           "artifact_kind": "prompt",
           "title": "Authoritative Prompt (PDL.md)",
           "body": "COMPARE Kafka and RabbitMQ for event delivery for an audience of data engineers.",
@@ -401,7 +401,7 @@
         ],
         "artifact": {
           "artifact_kind": "prompt",
-          "artifact_revision": "1827e5103047f3c2d54395d7bfb9cfeab44ed062403beb011b315254054b5c02",
+          "artifact_revision": "0f1575f93cddbfb816b13486461a0681fcbc5e9bcb50c555fc9505199b1b219c",
           "body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
           "media_type": "text/plain",
           "title": "Authoritative Prompt (PDL.md)",
@@ -420,9 +420,9 @@
           "authorized_handoff_artifacts": [],
           "result_body_sha256": null
         },
-        "session_id": "I-c7832a5f77",
-        "model_revision": "44bf5eebdeeb0d25ee97f24bfd9e9ecdce64d5546b303c965b1002d1a060cb9e",
-        "projection_id": "projection-d3fd0d6f780647a57bef3c7c75178c180df33a1741f35cdfd760957fea8d0eac"
+        "session_id": "I-b7373bc702",
+        "model_revision": "48e17c63a48a2c69c899ae96b9da4b4fa50075c9ca3758da1a81c3fa8a59cede",
+        "projection_id": "projection-bd743195a96a42a615e0dad819ca93dacf46e0e9e46813ca33295f7cef0e1a8a"
       }
     },
     {
@@ -441,17 +441,17 @@
       ],
       "projection": {
         "schema_version": "r6o-focus-projection-1",
-        "session_id": "I-c7832a5f77",
-        "workspace_id": "W-0a69bd77040e",
-        "model_revision": "c6ff27d1af565830838420a5d2b74b3ac0952b3c2b037d530fcc67c680805c93",
-        "projection_id": "projection-bbdf755320f8cccfdc9d82f45b54d8d3a90c43ecca5a9fec372acfdf07cc520a",
+        "session_id": "I-b7373bc702",
+        "workspace_id": "W-0e708fdf2095",
+        "model_revision": "1cec79c74b9054783c91703b1f18b61701758a7c6691a3146260134d6df4743b",
+        "projection_id": "projection-c73221c98eb9a1bad43570c85fbb9092c7b4648cc284455c7af1b5fb159696cf",
         "interaction_state": "REVIEW_REQUIRED",
         "model_response": "Response Plan Pseudocode\n\nIDENTIFY comparison criteria relevant to event delivery and data engineers.\nCOMPARE Kafka and RabbitMQ consistently across those criteria.\nSUMMARIZE the tradeoffs and the conditions that affect suitability.\n\nConfirm or correct this response approach.",
         "stage": "PLAN_REVIEW",
         "focus_kind": "PLAN_REVIEW",
         "artifact": {
-          "artifact_ref": "plan:I-c7832a5f77-R1",
-          "artifact_revision": "2040a4901e64a243d147d1d4a51e789b77c36c931d16af8717d026c541d16630",
+          "artifact_ref": "plan:I-b7373bc702-R1",
+          "artifact_revision": "f599634a8f7e1f174784c1d2b8ec07585d2f7dd2003c2ec5f293bd3e3503b2a2",
           "artifact_kind": "plan",
           "title": "Authoritative Response Plan (PDL.md)",
           "body": "IDENTIFY comparison criteria relevant to event delivery and data engineers.\nCOMPARE Kafka and RabbitMQ consistently across those criteria.\nSUMMARIZE the tradeoffs and the conditions that affect suitability.",
@@ -546,7 +546,7 @@
         ],
         "artifact": {
           "artifact_kind": "plan",
-          "artifact_revision": "2040a4901e64a243d147d1d4a51e789b77c36c931d16af8717d026c541d16630",
+          "artifact_revision": "f599634a8f7e1f174784c1d2b8ec07585d2f7dd2003c2ec5f293bd3e3503b2a2",
           "body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
           "media_type": "text/plain",
           "title": "Authoritative Response Plan (PDL.md)",
@@ -565,9 +565,9 @@
           "authorized_handoff_artifacts": [],
           "result_body_sha256": null
         },
-        "session_id": "I-c7832a5f77",
-        "model_revision": "c6ff27d1af565830838420a5d2b74b3ac0952b3c2b037d530fcc67c680805c93",
-        "projection_id": "projection-bbdf755320f8cccfdc9d82f45b54d8d3a90c43ecca5a9fec372acfdf07cc520a"
+        "session_id": "I-b7373bc702",
+        "model_revision": "1cec79c74b9054783c91703b1f18b61701758a7c6691a3146260134d6df4743b",
+        "projection_id": "projection-c73221c98eb9a1bad43570c85fbb9092c7b4648cc284455c7af1b5fb159696cf"
       }
     },
     {
@@ -586,10 +586,10 @@
       ],
       "projection": {
         "schema_version": "r6o-focus-projection-1",
-        "session_id": "I-c7832a5f77",
-        "workspace_id": "W-0a69bd77040e",
-        "model_revision": "bea90a01ac87a4dda9f2297d72379adf6ca4eabb05dd16363bc3e57d39f9d7e6",
-        "projection_id": "projection-39ee91ab25979f2159f36b681e6ae566af114cc2394fcd53bb09f7e79b1681b8",
+        "session_id": "I-b7373bc702",
+        "workspace_id": "W-0e708fdf2095",
+        "model_revision": "c8edadef131969644fa65c7e4f8b4121602f41aec75d0e3800d5cc35191d4618",
+        "projection_id": "projection-9f1082b16b248ec323e8edaed4691d9728b0c7212ea149c14a0052391fcf5752",
         "interaction_state": "TERMINAL",
         "model_response": "Kafka and RabbitMQ solve different event-delivery problems.\n\nKafka is a distributed event-streaming platform built around durable, partitioned logs. Consumers independently track offsets, so events can be retained and replayed. It is generally the stronger choice for data pipelines, stream processing, event sourcing, CDC, and high-throughput integration where multiple consumer groups need the same history.\n\nRabbitMQ is a message broker built around exchanges and queues. It supports flexible routing, acknowledgments, retries, priorities, and per-message delivery patterns. It is generally the stronger choice for task queues, commands, request/reply workflows, and operational messaging where messages should be routed to specific consumers and removed after successful processing.\n\nKey tradeoffs:\n\n- Delivery model: Kafka consumers pull from partitioned logs; RabbitMQ pushes or dispatches messages from queues.\n- Retention and replay: Kafka retains events according to time or size policies and supports straightforward replay. RabbitMQ normally removes acknowledged messages; replay requires additional design.\n- Ordering: Kafka guarantees ordering within a partition. RabbitMQ queues are ordered in principle, but redelivery, priorities, and multiple consumers can alter observed processing order.\n- Scaling: Kafka scales throughput through partitions and consumer groups, but partition count and key selection affect parallelism. RabbitMQ scales consumers easily for work distribution, while very large backlogs and extreme sustained throughput require more careful queue topology.\n- Routing: RabbitMQ provides rich exchange-based routing, including direct, topic, fanout, and header rules. Kafka routing is primarily topic-and-partition based.\n- Failure handling: RabbitMQ has native acknowledgment, dead-lettering, expiration, and retry-oriented features. Kafka typically implements retries and dead-letter topics through consumer or stream-processing logic.\n- Processing guarantees: Both commonly provide at-least-once delivery. Kafka can support effectively-once or transactional processing within compatible Kafka workflows, but end-to-end exactly-once behavior still depends on external systems and application design.\n- Operational fit: Kafka brings durable history and a broad data-streaming ecosystem but requires deliberate partition, retention, and consumer-lag management. RabbitMQ is often simpler for conventional messaging but requires careful handling of queue depth, acknowledgments, and poison messages.\n\nFor data engineers, choose Kafka when events are reusable data products, replay matters, throughput is high, or analytics and stream-processing systems need independent consumption. Choose RabbitMQ when the primary need is reliable work assignment, sophisticated routing, low-latency commands, or explicit per-message retry behavior. Many platforms use both: Kafka as the durable event backbone and RabbitMQ for operational task or command delivery.",
         "stage": "CLOSED_SUCCESS",
@@ -605,8 +605,8 @@
           "result_body": "Kafka and RabbitMQ solve different event-delivery problems.\n\nKafka is a distributed event-streaming platform built around durable, partitioned logs. Consumers independently track offsets, so events can be retained and replayed. It is generally the stronger choice for data pipelines, stream processing, event sourcing, CDC, and high-throughput integration where multiple consumer groups need the same history.\n\nRabbitMQ is a message broker built around exchanges and queues. It supports flexible routing, acknowledgments, retries, priorities, and per-message delivery patterns. It is generally the stronger choice for task queues, commands, request/reply workflows, and operational messaging where messages should be routed to specific consumers and removed after successful processing.\n\nKey tradeoffs:\n\n- Delivery model: Kafka consumers pull from partitioned logs; RabbitMQ pushes or dispatches messages from queues.\n- Retention and replay: Kafka retains events according to time or size policies and supports straightforward replay. RabbitMQ normally removes acknowledged messages; replay requires additional design.\n- Ordering: Kafka guarantees ordering within a partition. RabbitMQ queues are ordered in principle, but redelivery, priorities, and multiple consumers can alter observed processing order.\n- Scaling: Kafka scales throughput through partitions and consumer groups, but partition count and key selection affect parallelism. RabbitMQ scales consumers easily for work distribution, while very large backlogs and extreme sustained throughput require more careful queue topology.\n- Routing: RabbitMQ provides rich exchange-based routing, including direct, topic, fanout, and header rules. Kafka routing is primarily topic-and-partition based.\n- Failure handling: RabbitMQ has native acknowledgment, dead-lettering, expiration, and retry-oriented features. Kafka typically implements retries and dead-letter topics through consumer or stream-processing logic.\n- Processing guarantees: Both commonly provide at-least-once delivery. Kafka can support effectively-once or transactional processing within compatible Kafka workflows, but end-to-end exactly-once behavior still depends on external systems and application design.\n- Operational fit: Kafka brings durable history and a broad data-streaming ecosystem but requires deliberate partition, retention, and consumer-lag management. RabbitMQ is often simpler for conventional messaging but requires careful handling of queue depth, acknowledgments, and poison messages.\n\nFor data engineers, choose Kafka when events are reusable data products, replay matters, throughput is high, or analytics and stream-processing systems need independent consumption. Choose RabbitMQ when the primary need is reliable work assignment, sophisticated routing, low-latency commands, or explicit per-message retry behavior. Many platforms use both: Kafka as the durable event backbone and RabbitMQ for operational task or command delivery.",
           "authorized_handoff_artifacts": [
             {
-              "artifact_ref": "prompt:I-c7832a5f77-P2",
-              "artifact_revision": "97da7be087a023487fc7c146ce0a33c5713b5ce7a94070ebe50b255f0cda0adf",
+              "artifact_ref": "prompt:I-b7373bc702-P2",
+              "artifact_revision": "509b53f99ef102fa880fd77424a78b212b19f08af20b341a6a1504cd06f8b9c0",
               "artifact_kind": "prompt",
               "title": "Authoritative Prompt (PDL.md)",
               "body": "COMPARE Kafka and RabbitMQ for event delivery for an audience of data engineers.",
@@ -617,8 +617,8 @@
               }
             },
             {
-              "artifact_ref": "plan:I-c7832a5f77-R1",
-              "artifact_revision": "f7fe62574f4497b41ef99d2797c4a06bf8a457aefcfea623756642628b1a81b1",
+              "artifact_ref": "plan:I-b7373bc702-R1",
+              "artifact_revision": "ef1b9b5a674f2f705ad7aedaf51473ca1d76a9fbd1706d7cb7df0d563122ae32",
               "artifact_kind": "plan",
               "title": "Authoritative Response Plan (PDL.md)",
               "body": "IDENTIFY comparison criteria relevant to event delivery and data engineers.\nCOMPARE Kafka and RabbitMQ consistently across those criteria.\nSUMMARIZE the tradeoffs and the conditions that affect suitability.",
@@ -647,7 +647,7 @@
           "authorized_handoff_artifacts": [
             {
               "artifact_kind": "prompt",
-              "artifact_revision": "97da7be087a023487fc7c146ce0a33c5713b5ce7a94070ebe50b255f0cda0adf",
+              "artifact_revision": "509b53f99ef102fa880fd77424a78b212b19f08af20b341a6a1504cd06f8b9c0",
               "body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
               "media_type": "text/plain",
               "title": "Authoritative Prompt (PDL.md)",
@@ -658,7 +658,7 @@
             },
             {
               "artifact_kind": "plan",
-              "artifact_revision": "f7fe62574f4497b41ef99d2797c4a06bf8a457aefcfea623756642628b1a81b1",
+              "artifact_revision": "ef1b9b5a674f2f705ad7aedaf51473ca1d76a9fbd1706d7cb7df0d563122ae32",
               "body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
               "media_type": "text/plain",
               "title": "Authoritative Response Plan (PDL.md)",
@@ -670,9 +670,9 @@
           ],
           "result_body_sha256": "79cd3ac621e54343d4cbef28229766f2c8ae4b5e694dc46b7d69b9375f7e35c4"
         },
-        "session_id": "I-c7832a5f77",
-        "model_revision": "bea90a01ac87a4dda9f2297d72379adf6ca4eabb05dd16363bc3e57d39f9d7e6",
-        "projection_id": "projection-39ee91ab25979f2159f36b681e6ae566af114cc2394fcd53bb09f7e79b1681b8"
+        "session_id": "I-b7373bc702",
+        "model_revision": "c8edadef131969644fa65c7e4f8b4121602f41aec75d0e3800d5cc35191d4618",
+        "projection_id": "projection-9f1082b16b248ec323e8edaed4691d9728b0c7212ea149c14a0052391fcf5752"
       }
     }
   ],

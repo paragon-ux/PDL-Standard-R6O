@@ -19,9 +19,10 @@
     "e1_input_routing": "PASS",
     "lifecycle_resilience": "PASS"
   },
+  "f3_attachment_provenance": "actual-host/attachment/f3-provenance.json",
   "f3_local_event_log": {
     "path": "actual-host/attachment/win32-uia-events.jsonl",
-    "sha256": "88582209ef2e612d42b20b7862b119a304db8671125bf4394eca4a668275afa9"
+    "sha256": "2528c38f181f272dd9b13624bb518689509427d8f48f82ab420dae9f10f14849"
   },
   "gate": "H2-F3",
   "human_gesture_synthesized": false,
@@ -38,9 +39,9 @@
   },
   "schema_version": "r6o-h2-f3-current-actual-host-1",
   "source": {
-    "head": "2ff50bdf9399d99025606f66a4522bdc66a1939e",
+    "head": "dfbf9c32e72d3c148cb3c2267b808b08c8f9acf4",
     "status": "FROZEN",
-    "tree": "f43aee6df356ef50d96429f24d83b9069ed48369"
+    "tree": "dd7194db212daa24b235fdaae436d140d3faeb91"
   },
   "status": "H2_F3_CURRENT_ACTUAL_HOST_INTEGRATION_PASS"
 }
