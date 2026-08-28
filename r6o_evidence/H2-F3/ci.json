@@ -1,0 +1,62 @@
+{
+  "schema_version": "r6o-h2-f3-ci-1",
+  "gate": "H2-F3",
+  "candidate": {
+    "role": "F3_CODE_FREEZE",
+    "head": "d170fdee54e968190981acc8fb8945296ae7605b",
+    "tree": "934fd2043b561cddddc78be384bcb40fc28c23bc"
+  },
+  "recording_policy": "CI is attributed to the immutable F3 code-freeze candidate; subsequent changes are evidence-only and are checked against the freeze scope.",
+  "workflows": [
+    {
+      "workflow": "R6O-1 qualification",
+      "run_id": 33039165879,
+      "run_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33039165879",
+      "head_sha": "d170fdee54e968190981acc8fb8945296ae7605b",
+      "status": "SUCCESS",
+      "jobs": {
+        "github_ubuntu": {
+          "job_id": 98408617539,
+          "name": "qualify (ubuntu-latest)",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33039165879/job/98408617539"
+        },
+        "github_windows": {
+          "job_id": 98408617708,
+          "name": "qualify (windows-latest)",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33039165879/job/98408617708"
+        }
+      }
+    },
+    {
+      "workflow": "H2-C Qt Quick qualification",
+      "run_id": 33039165886,
+      "run_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33039165886",
+      "head_sha": "d170fdee54e968190981acc8fb8945296ae7605b",
+      "status": "SUCCESS",
+      "jobs": {
+        "windows_qt": {
+          "job_id": 98408617555,
+          "name": "windows",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33039165886/job/98408617555"
+        },
+        "linux_x11": {
+          "job_id": 98408617609,
+          "name": "linux-x11",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33039165886/job/98408617609"
+        },
+        "linux_wayland": {
+          "job_id": 98408617442,
+          "name": "linux-wayland",
+          "status": "SUCCESS",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33039165886/job/98408617442"
+        }
+      }
+    }
+  ],
+  "all_required_jobs_passed": true,
+  "recorded_at_utc": "2026-08-27T04:30:00Z"
+}

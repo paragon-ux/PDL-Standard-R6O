@@ -47,6 +47,22 @@ def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def repository_relative_path(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(ROOT.resolve()).as_posix()
+    except ValueError as exc:
+        raise CodexBindingError("EVIDENCE_PATH_OUTSIDE_REPOSITORY") from exc
+
+
+def event_log_record(evidence_dir: Path, *, event_count: int) -> dict[str, object]:
+    event_log_path = evidence_dir / "win32-uia-events.jsonl"
+    return {
+        "path": repository_relative_path(event_log_path),
+        "sha256": sha256_file(event_log_path),
+        "event_count": event_count,
+    }
+
+
 def implementation_hashes() -> dict[str, str]:
     return {path: sha256_file(ROOT / path) for path in IMPLEMENTATION_PATHS}
 
@@ -532,6 +548,7 @@ def write_failure(
 def main() -> int:
     args = parse_args()
     evidence_dir = args.evidence_dir.resolve()
+    repository_relative_path(evidence_dir)
     evidence_dir.mkdir(parents=True, exist_ok=True)
     ledger = EventLedger()
     binding: CodexSidecarBinding | None = None
@@ -658,11 +675,10 @@ def main() -> int:
                     (standard_recording["sha256"] + expanded_recording["sha256"]).encode("ascii")
                 ).hexdigest(),
             },
-            "event_log": {
-                "path": "r6o_evidence/H2-D2/win32-uia-events.jsonl",
-                "sha256": sha256_file(evidence_dir / "win32-uia-events.jsonl"),
-                "event_count": len(ledger.records),
-            },
+            "event_log": event_log_record(
+                evidence_dir,
+                event_count=len(ledger.records),
+            ),
             "scope": {
                 "semantic_workflow_exercised": False,
                 "normal_codex_submit_gesture_used": False,

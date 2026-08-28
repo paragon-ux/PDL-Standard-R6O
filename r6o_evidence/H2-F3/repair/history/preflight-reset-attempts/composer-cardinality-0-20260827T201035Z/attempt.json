@@ -1,0 +1,18 @@
+{
+  "schema_version": "r6o-h2-f3-preflight-reset-attempt-history-1",
+  "gate": "H2-F3",
+  "attempt_id": "composer-cardinality-0-20260827T201035Z",
+  "candidate_head": "94d56129893206db8899df74f5201144a64a1679",
+  "candidate_tree": "729d2e3c1f507ac01189e1fcc0e77cb80b8b3997",
+  "reset_result_path": "preflight-reset.json",
+  "reset_result_sha256": "a53850e5182e0f52f377429a8f40f62292e3c2637f3c95e5534b70a09188b3ee",
+  "preflight_reset": "FAIL",
+  "failure": "SELECTOR_CARDINALITY:composer:0",
+  "attachment_started": false,
+  "human_semantic_replay_started": false,
+  "history_only": true,
+  "active_current_qualification": false,
+  "product_behavior_failure": false,
+  "human_semantic_evidence_preserved": true,
+  "diagnosis": "After New Chat replaced the Chromium document, the reset observer could not resolve a visible composer before the fail-closed timeout. No attachment probe or HUMAN semantic gesture started."
+}

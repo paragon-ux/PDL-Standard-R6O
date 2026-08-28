@@ -1,0 +1,11 @@
+{
+  "abandoned_repair_freeze": {
+    "head": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+    "status": "ABANDONED_PRE_HUMAN",
+    "tree": "b333accaedadb2728276911e8798ac4fa248650e"
+  },
+  "abandonment_reason": "The documented direct-script invocation could not import the repository r6o package.",
+  "failure_record": "PRE_HUMAN_IMPORT_BOOTSTRAP_FAILURE.json",
+  "human_gesture_started": false,
+  "semantic_host_action_started": false
+}

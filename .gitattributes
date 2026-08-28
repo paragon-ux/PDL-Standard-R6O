@@ -15,6 +15,11 @@ r6o_evidence/H2-E1/*.json text eol=lf
 r6o_evidence/H2-E1/*.jsonl text eol=lf
 r6o_evidence/H2-E1/*.log text eol=lf
 r6o_evidence/H2-E1/repair-*.log binary -eol
+r6o_evidence/H2-F3/**/*.json text eol=lf
+r6o_evidence/H2-F3/**/*.jsonl text eol=lf
+r6o_evidence/H2-F3/**/*.txt text eol=lf
+r6o_evidence/H2-F3/**/*.cast text eol=lf
+r6o_evidence/H2-F3/**/*.log text eol=lf
 
 *.png binary
 *.mp4 binary

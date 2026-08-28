@@ -1,0 +1,323 @@
+{
+  "base": {
+    "head": "ca646bb26f2f31015c217fe621761a82e45c60ed",
+    "record": "C:/Users/USER/Desktop/Frameworks/PDL-Standard-R6O-h2-f3/r6o_evidence/H2-F3/base.json",
+    "tree": "59e10dc1eeca86c3c2393a63b02eae4cc8c1cd2a"
+  },
+  "code_freeze": {
+    "head": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+    "record": "C:/Users/USER/Desktop/Frameworks/PDL-Standard-R6O-h2-f3/r6o_evidence/H2-F3/repair/code-freeze.json",
+    "status": "FROZEN",
+    "tree": "b333accaedadb2728276911e8798ac4fa248650e"
+  },
+  "dimensions": {
+    "accepted_actual_host_a02_full": "PASS",
+    "accepted_actual_host_g06": "PASS",
+    "accepted_e1_input_routing": "PASS",
+    "accepted_lifecycle_resilience": "PASS",
+    "actual_codex_attachment": "HUMAN_PENDING",
+    "actual_host_a02_full": "HUMAN_PENDING",
+    "actual_host_g06": "HUMAN_PENDING",
+    "cross_view_parity": "PASS",
+    "e1_input_routing": "HUMAN_PENDING",
+    "f2_second_repair_provenance": "PASS",
+    "final_ci": {
+      "github_ubuntu": "PASS",
+      "github_windows": "PASS",
+      "linux_wayland": "PASS",
+      "linux_x11": "PASS",
+      "windows_qt": "PASS"
+    },
+    "frozen_oracle": {
+      "commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+      "path": "C:/Users/USER/Desktop/Frameworks/PDL-Standard-REPL-Harness-quarantine-20260821-H1",
+      "status": "UNCHANGED",
+      "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6"
+    },
+    "lifecycle_resilience": "HUMAN_PENDING",
+    "protected_r6o1": {
+      "changed_protected_paths": [],
+      "compared_to_f3_base": "ca646bb26f2f31015c217fe621761a82e45c60ed",
+      "historical_r6o1_authority": "5da375e81e0d0d194d79eadd7cf1ad8c269b066a",
+      "status": "EMPTY"
+    },
+    "qt_sidecar": {
+      "Q01_Q24": "PASS",
+      "Q25_Q26": "HUMAN_PENDING",
+      "status": "PASS"
+    },
+    "tui_a02_full": "PASS",
+    "tui_g06": "PASS"
+  },
+  "gate": "H2-F3",
+  "generated_at_utc": "2026-08-27T06:24:43.774912Z",
+  "human_gate": {
+    "human_disposition": null,
+    "human_pass": "NOT_CLAIMED",
+    "promotion_authorized": false,
+    "status": "HUMAN_PENDING"
+  },
+  "known_findings": [
+    "RPC_E_CHANGED_MODE=NONBLOCKING_P2",
+    "F3-R3-ATTACHMENT-PROVENANCE-MISMATCH=OPEN_P2_OWNER_GATE",
+    "F3-R5-HUMAN-GATE-CANDIDATE-NOT-PINNED=OPEN_P2_F3"
+  ],
+  "local_qualification": {
+    "actual_host": {
+      "attachment_status": "FAIL",
+      "evidence": "actual-host/qualification.json",
+      "status": "HUMAN_PENDING"
+    },
+    "commands": [
+      {
+        "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe -m pytest r6o/tests/h2/test_h2_final_integration.py -q -p no:cacheprovider",
+        "duration_seconds": 1.234,
+        "exit_code": 0,
+        "id": "f3_focused_tests",
+        "passed_count": 30,
+        "status": "PASS",
+        "stderr_path": "logs/f3_focused_tests.stderr.txt",
+        "stdout_path": "logs/f3_focused_tests.stdout.txt"
+      },
+      {
+        "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe -m pytest r6o/tests/h2/test_codex_input_binding_contract.py r6o/tests/h2/test_codex_h2_e2.py r6o/tests/h2/test_codex_h2_e3.py -q -p no:cacheprovider",
+        "duration_seconds": 26.719,
+        "exit_code": 0,
+        "id": "e1_e2_e3_regression",
+        "passed_count": 83,
+        "status": "PASS",
+        "stderr_path": "logs/e1_e2_e3_regression.stderr.txt",
+        "stdout_path": "logs/e1_e2_e3_regression.stdout.txt"
+      },
+      {
+        "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe -m pytest r6o/tests/h2/test_qt_sidecar_feasibility.py r6o/tests/h2/test_qt_sidecar_component.py -q -p no:cacheprovider",
+        "duration_seconds": 3.75,
+        "exit_code": 0,
+        "id": "qt_focused_tests",
+        "passed_count": 22,
+        "status": "PASS",
+        "stderr_path": "logs/qt_focused_tests.stderr.txt",
+        "stdout_path": "logs/qt_focused_tests.stdout.txt"
+      },
+      {
+        "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe -m pytest r6o/tests -q -p no:cacheprovider",
+        "duration_seconds": 82.109,
+        "exit_code": 0,
+        "id": "full_r6o",
+        "passed_count": 398,
+        "status": "PASS",
+        "stderr_path": "logs/full_r6o.stderr.txt",
+        "stdout_path": "logs/full_r6o.stdout.txt"
+      },
+      {
+        "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/verify_r6o1.py",
+        "duration_seconds": 126.641,
+        "exit_code": 0,
+        "id": "r6o1_verification",
+        "passed_count": 398,
+        "status": "PASS",
+        "stderr_path": "logs/r6o1_verification.stderr.txt",
+        "stdout_path": "logs/r6o1_verification.stdout.txt"
+      },
+      {
+        "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_tui_g06.py --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --evidence-dir r6o_evidence/H2-F3/repair/tui-g06",
+        "duration_seconds": 3.0,
+        "exit_code": 0,
+        "id": "tui_g06",
+        "passed_count": null,
+        "status": "PASS",
+        "stderr_path": "logs/tui_g06.stderr.txt",
+        "stdout_path": "logs/tui_g06.stdout.txt"
+      },
+      {
+        "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_tui_a02_full.py --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --evidence-dir r6o_evidence/H2-F3/repair/tui-a02-full",
+        "duration_seconds": 3.953,
+        "exit_code": 0,
+        "id": "tui_a02_full",
+        "passed_count": null,
+        "status": "PASS",
+        "stderr_path": "logs/tui_a02_full.stderr.txt",
+        "stdout_path": "logs/tui_a02_full.stdout.txt"
+      },
+      {
+        "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_cross_view_parity.py --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --output-dir r6o_evidence/H2-F3/repair/f1-parity-rerun",
+        "duration_seconds": 4.125,
+        "exit_code": 0,
+        "id": "f1_parity_verifier",
+        "passed_count": null,
+        "status": "PASS",
+        "stderr_path": "logs/f1_parity_verifier.stderr.txt",
+        "stdout_path": "logs/f1_parity_verifier.stdout.txt"
+      },
+      {
+        "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_h2_lifecycle_resilience.py --mode portable --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --evidence-dir r6o_evidence/H2-F3/repair/f2-portable",
+        "duration_seconds": 4.625,
+        "exit_code": 0,
+        "id": "f2_portable_verifier",
+        "passed_count": null,
+        "status": "PASS",
+        "stderr_path": "logs/f2_portable_verifier.stderr.txt",
+        "stdout_path": "logs/f2_portable_verifier.stdout.txt"
+      },
+      {
+        "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_qt_sidecar_component.py --platform windows --evidence-dir r6o_evidence/H2-F3/repair/qt",
+        "duration_seconds": 2.578,
+        "exit_code": 0,
+        "id": "qt_windows_qualification",
+        "passed_count": null,
+        "status": "PASS",
+        "stderr_path": "logs/qt_windows_qualification.stderr.txt",
+        "stdout_path": "logs/qt_windows_qualification.stdout.txt"
+      },
+      {
+        "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_codex_attachment.py --host-record r6o_evidence/H2-D1/host-environment.json --selectors r6o/host/codex/windows/selectors.json --evidence-dir r6o_evidence/H2-F3/repair/actual-host/attachment",
+        "duration_seconds": 137.8,
+        "exit_code": 0,
+        "id": "actual_codex_attachment",
+        "passed_count": null,
+        "status": "PASS",
+        "stderr_path": "logs/actual_codex_attachment_retry.stderr.txt",
+        "stdout_path": "actual-host/attachment/attachment-result.json"
+      }
+    ],
+    "counts": {
+      "f3_focused_tests": 30,
+      "full_r6o": 398,
+      "r6o1": 398
+    },
+    "failed_attempts": [
+      {
+        "classification": "ENVIRONMENTAL_HUMAN_MOUSE_INTERFERENCE",
+        "exit_code": 1,
+        "failure": "COMPOSER_CLICK_FOCUS_UNVERIFIED",
+        "id": "actual_codex_attachment",
+        "status": "FAIL",
+        "stderr_path": "logs/actual_codex_attachment.stderr.txt",
+        "stdout_path": "logs/actual_codex_attachment.stdout.txt",
+        "superseded_by": "successful retry recorded in commands"
+      }
+    ],
+    "gate": "H2-F3",
+    "human_gesture_synthesized": false,
+    "known_findings": [
+      "RPC_E_CHANGED_MODE=NONBLOCKING_P2",
+      "F3-R3-ATTACHMENT-PROVENANCE-MISMATCH=OPEN_P2_OWNER_GATE",
+      "F3-R5-HUMAN-GATE-CANDIDATE-NOT-PINNED=OPEN_P2_F3"
+    ],
+    "schema_version": "r6o-h2-f3-local-qualification-1",
+    "source": {
+      "head": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+      "status": "FROZEN",
+      "tree": "b333accaedadb2728276911e8798ac4fa248650e"
+    }
+  },
+  "platform_matrix": {
+    "github_ubuntu": "PASS",
+    "github_windows": "PASS",
+    "linux_wayland": "PASS",
+    "linux_x11": "PASS",
+    "windows_local_actual_codex": "HUMAN_PENDING",
+    "windows_qt": "PASS"
+  },
+  "predecessor_anchors": {
+    "H2-D1R": {
+      "accepted_head": "ab5282ab4adfa838e0a95980c7b395f8f8196623",
+      "tree": "8bd1dd8aff2148f4c738608f3d80ef4aeb28c374"
+    },
+    "H2-E1": {
+      "accepted_head": "8a85ac4214e7b3386c3c8079b0d45fb79a97e9ff",
+      "code_freeze": {
+        "head": "c488a8173d2bc5ca2251470c3cad24db7fcb4a95",
+        "tree": "dd65095aeef9ec406a14b4890346fbed92d13c1b"
+      },
+      "tree": "a8f13f6a33648ccb9483ff0ce916f0635a805b70"
+    },
+    "H2-E2": {
+      "accepted_head": "1b46da916aec20aa2a27e533ac5e8aff9f360791",
+      "code_freeze": {
+        "head": "8e8f325c31b8d96d31cd7fea901a0790d5086bf6",
+        "tree": "ca7530b0ece301c6783877ab049daac884062989"
+      },
+      "tree": "59a01a0e08c6d493ebd6d483c56c60fa6622e333"
+    },
+    "H2-E3": {
+      "accepted_head": "9bd10391a349225a5121736b06470fe978741e3a",
+      "code_freeze": {
+        "head": "d94a1aa0c99056ec81f10c6a41e73ed6ea438ae3",
+        "tree": "9fec4c41ed0228e3d4e71c9e19a846c92447c69e"
+      },
+      "tree": "1f82d59b67b1c09f30c99b3fe87b39457f8536f3"
+    },
+    "H2-F1": {
+      "accepted_head": "772f97227b70d673b6de624141353cc4ea59f653",
+      "tree": "0bb908f0999011beca581ffc7c5d66b80891dabd"
+    },
+    "H2-F2": {
+      "accepted_head": "63f04151a97cc8fb9fe8bec96d4562c548744fbb",
+      "code_freeze": {
+        "head": "27cbce651ccacd3dc18f90a2684bb87d19582534",
+        "tree": "ab7fc624679498d48310edde008ea001c13e9552"
+      },
+      "tree": "59e10dc1eeca86c3c2393a63b02eae4cc8c1cd2a"
+    }
+  },
+  "production_behavior_changed": false,
+  "r6o3_behavior_claimed": false,
+  "schema_version": "r6o-h2-f3-final-integration-1",
+  "source": {
+    "branch": "codex/h2-f3-final-integration",
+    "dirty_paths": [
+      "r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-expanded.mp4",
+      "r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-result.json",
+      "r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-standard.mp4",
+      "r6o_evidence/H2-F3/repair/actual-host/attachment/win32-uia-events.jsonl",
+      "r6o_evidence/H2-F3/repair/actual-host/qualification.json",
+      "r6o_evidence/H2-F3/repair/authority.json",
+      "r6o_evidence/H2-F3/repair/ci.json",
+      "r6o_evidence/H2-F3/repair/code-freeze.json",
+      "r6o_evidence/H2-F3/repair/f1-parity-rerun/parity-report.json",
+      "r6o_evidence/H2-F3/repair/f1-parity-rerun/tui-projections/A02_FULL.json",
+      "r6o_evidence/H2-F3/repair/f1-parity-rerun/tui-projections/G06.json",
+      "r6o_evidence/H2-F3/repair/f2-portable/qualification.json",
+      "r6o_evidence/H2-F3/repair/local-qualification.json",
+      "r6o_evidence/H2-F3/repair/logs/actual_codex_attachment.stderr.txt",
+      "r6o_evidence/H2-F3/repair/logs/actual_codex_attachment.stdout.txt",
+      "r6o_evidence/H2-F3/repair/logs/actual_codex_attachment_retry.stderr.txt",
+      "r6o_evidence/H2-F3/repair/logs/e1_e2_e3_regression.stderr.txt",
+      "r6o_evidence/H2-F3/repair/logs/e1_e2_e3_regression.stdout.txt",
+      "r6o_evidence/H2-F3/repair/logs/f1_parity_verifier.stderr.txt",
+      "r6o_evidence/H2-F3/repair/logs/f1_parity_verifier.stdout.txt",
+      "r6o_evidence/H2-F3/repair/logs/f2_portable_verifier.stderr.txt",
+      "r6o_evidence/H2-F3/repair/logs/f2_portable_verifier.stdout.txt",
+      "r6o_evidence/H2-F3/repair/logs/f3_focused_tests.stderr.txt",
+      "r6o_evidence/H2-F3/repair/logs/f3_focused_tests.stdout.txt",
+      "r6o_evidence/H2-F3/repair/logs/full_r6o.stderr.txt",
+      "r6o_evidence/H2-F3/repair/logs/full_r6o.stdout.txt",
+      "r6o_evidence/H2-F3/repair/logs/qt_focused_tests.stderr.txt",
+      "r6o_evidence/H2-F3/repair/logs/qt_focused_tests.stdout.txt",
+      "r6o_evidence/H2-F3/repair/logs/qt_windows_qualification.stderr.txt",
+      "r6o_evidence/H2-F3/repair/logs/qt_windows_qualification.stdout.txt",
+      "r6o_evidence/H2-F3/repair/logs/r6o1_verification.stderr.txt",
+      "r6o_evidence/H2-F3/repair/logs/r6o1_verification.stdout.txt",
+      "r6o_evidence/H2-F3/repair/logs/tui_a02_full.stderr.txt",
+      "r6o_evidence/H2-F3/repair/logs/tui_a02_full.stdout.txt",
+      "r6o_evidence/H2-F3/repair/logs/tui_g06.stderr.txt",
+      "r6o_evidence/H2-F3/repair/logs/tui_g06.stdout.txt",
+      "r6o_evidence/H2-F3/repair/qt-qualification.json",
+      "r6o_evidence/H2-F3/repair/qt/windows/H2-C-EXPANDED-SIDECAR.png",
+      "r6o_evidence/H2-F3/repair/qt/windows/H2-C-STANDARD-SIDECAR.png",
+      "r6o_evidence/H2-F3/repair/qt/windows/component-result.json",
+      "r6o_evidence/H2-F3/repair/qualification-summary.json",
+      "r6o_evidence/H2-F3/repair/review-findings.json",
+      "r6o_evidence/H2-F3/repair/tui-a02-full/state-transitions.jsonl",
+      "r6o_evidence/H2-F3/repair/tui-a02-full/test-results.json",
+      "r6o_evidence/H2-F3/repair/tui-a02-full/tui-a02-full.cast",
+      "r6o_evidence/H2-F3/repair/tui-g06/state-transitions.jsonl",
+      "r6o_evidence/H2-F3/repair/tui-g06/test-results.json",
+      "r6o_evidence/H2-F3/repair/tui-g06/tui-g06.cast"
+    ],
+    "head": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+    "tree": "b333accaedadb2728276911e8798ac4fa248650e"
+  },
+  "status": "H2_F3_CURRENT_ACTUAL_HOST_HUMAN_PENDING"
+}

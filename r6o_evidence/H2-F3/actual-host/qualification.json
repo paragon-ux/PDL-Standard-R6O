@@ -1,0 +1,21 @@
+{
+  "accepted_machine_evidence": {
+    "actual_host_a02_full": "PASS",
+    "actual_host_g06": "PASS",
+    "e1_input_routing": "PASS",
+    "lifecycle_resilience": "PASS"
+  },
+  "attachment": {
+    "path": "actual-host/attachment/attachment-result.json",
+    "status": "PASS"
+  },
+  "gate": "H2-F3",
+  "gesture_policy": "No human gesture was synthesized; E1/G06/A02 semantic evidence remains bound to accepted predecessor records and F2 integration evidence.",
+  "schema_version": "r6o-h2-f3-actual-host-1",
+  "source": {
+    "head": "d170fdee54e968190981acc8fb8945296ae7605b",
+    "status": "FROZEN",
+    "tree": "934fd2043b561cddddc78be384bcb40fc28c23bc"
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,888 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+Warning: PowerShell detected that you might be using a screen reader and has disabled PSReadLine for compatibility purposes. If you want to re-enable it, run 'Import-Module PSReadLine'.
+
+PS C:\Users\USER\Desktop\Frameworks\PDL-Standard-R6O-h2-f3> & {
+>> $ErrorActionPreference = 'Stop'
+>>
+>> $Repo = (Resolve-Path -LiteralPath 'C:\Users\USER\Desktop\Frameworks\PDL-Standard-R6O-h2-f3').Path
+>> $Baseline = (Resolve-Path -LiteralPath 'C:\Users\USER\Desktop\Frameworks\PDL-Standard-REPL-Harness-quarantine-20260821-H1').Path
+>>
+>> $Branch = 'codex/h2-f3-final-integration'
+>> $SemanticHead = 'dfbf9c32e72d3c148cb3c2267b808b08c8f9acf4'
+>> $SemanticTree = 'dd7194db212daa24b235fdaae436d140d3faeb91'
+>> $EvidenceHead = 'c1e3514fdd91897d033957acfaec5e6596113976'
+>> $EvidenceTree = '37ce0c1cb1b855b22e68f0a5ad19c5780b9a5a9e'
+>>
+>> $Output = 'r6o_evidence/H2-F3/repair'
+>> $FreezeRecord = "$Output/code-freeze.json"
+>> $ResetRecord = "$Output/actual-host/preflight-reset.json"
+>> $AttachmentDir = "$Output/actual-host/attachment"
+>> $FirstFailureClassification = "$Output/history/command-wrapper-failure-20260827T121847Z/classification.json"
+>>
+>> $HumanCollectorPassed = $false
+>> $AttachmentProvenancePassed = $false
+>> $TopologyTouched = $false
+>>
+>> Set-Location -LiteralPath $Repo
+>>
+>> & git fetch origin
+>> if ($LASTEXITCODE -ne 0) { throw 'git fetch failed' }
+>>
+>> if (([string](git branch --show-current)).Trim() -ne $Branch) {
+>>     throw 'Unexpected current branch'
+>> }
+>> if (([string](git rev-parse HEAD)).Trim() -ne $EvidenceHead) {
+>>     throw 'Local branch is not at the reviewed freeze-record head'
+>> }
+>> if (([string](git rev-parse 'HEAD^{tree}')).Trim() -ne $EvidenceTree) {
+>>     throw 'Local freeze-record tree mismatch'
+>> }
+>> if (([string](git rev-parse "origin/$Branch")).Trim() -ne $EvidenceHead) {
+>>     throw 'Remote branch advanced; stop for renewed inspection'
+>> }
+>> if (([string](git rev-parse "$SemanticHead^{tree}")).Trim() -ne $SemanticTree) {
+>>     throw 'Semantic freeze tree mismatch'
+>> }
+>>
+>> & git diff --cached --quiet
+>> if ($LASTEXITCODE -ne 0) {
+>>     throw 'The index contains staged changes'
+>> }
+>>
+>> $InitialDirtyPaths = @(
+>>     git status --porcelain=v1 --untracked-files=all |
+>>         ForEach-Object { $_.Substring(3).Replace('\', '/') }
+>> )
+>> if ($InitialDirtyPaths -notcontains $ResetRecord) {
+>>     throw 'Current failed-wrapper reset record is missing'
+>> }
+>> $InitialUnauthorized = @(
+>>     $InitialDirtyPaths |
+>>         Where-Object { -not $_.StartsWith("$Output/") }
+>> )
+>> if ($InitialUnauthorized.Count -ne 0) {
+>>     throw "Unauthorized initial dirty paths: $($InitialUnauthorized -join ', ')"
+>> }
+>>
+>> if (-not (Test-Path -LiteralPath $FirstFailureClassification)) {
+>>     throw 'First command-wrapper failure classification is missing'
+>> }
+>> $FirstFailure = Get-Content -Raw -LiteralPath $FirstFailureClassification |
+>>     ConvertFrom-Json
+>> if (
+>>     $FirstFailure.classification -ne 'COMMAND_WRAPPER_FAILURE' -or
+>>     $FirstFailure.history_only -ne $true -or
+>>     $FirstFailure.human_gestures_occurred -ne $false
+>> ) {
+>>     throw 'First wrapper-failure history classification is invalid'
+>> }
+>>
+>> $CurrentFailedReset = Get-Content -Raw -LiteralPath $ResetRecord |
+>>     ConvertFrom-Json
+>> if ($CurrentFailedReset.status -ne 'CODEX_TEST_SESSION_READY') {
+>>     throw 'Current failed-wrapper reset is not CODEX_TEST_SESSION_READY'
+>> }
+>>
+>> $TopologyDelta = @(git diff --name-only "$SemanticHead..$EvidenceHead")
+>> if (
+>>     $TopologyDelta.Count -ne 1 -or
+>>     $TopologyDelta[0].Replace('\', '/') -ne $FreezeRecord
+>> ) {
+>>     throw 'Semantic-freeze to freeze-record-head delta is not evidence-only'
+>> }
+>>
+>> $RecordedFreeze = (
+>>     git show "$($EvidenceHead):$FreezeRecord" | Out-String
+>> ) | ConvertFrom-Json
+>> if (
+>>     $RecordedFreeze.code_freeze.head -ne $SemanticHead -or
+>>     $RecordedFreeze.code_freeze.tree -ne $SemanticTree -or
+>>     $RecordedFreeze.code_freeze.status -ne 'FROZEN'
+>> ) {
+>>     throw 'Committed freeze record does not identify the semantic freeze'
+>> }
+>>
+>> # Preserve the second command-wrapper failure as history-only evidence.
+>> $SecondFailureStamp = (
+>>     [datetime]$CurrentFailedReset.timestamp_utc
+>> ).ToUniversalTime().ToString('yyyyMMddTHHmmssZ')
+>> $SecondFailureDir = "$Output/history/command-wrapper-failure-$SecondFailureStamp"
+>> $SecondFailureReset = "$SecondFailureDir/preflight-reset.json"
+>> $SecondFailureClassification = "$SecondFailureDir/classification.json"
+>>
+>> if (Test-Path -LiteralPath $SecondFailureDir) {
+>>     throw "Second wrapper-failure history directory already exists: $SecondFailureDir"
+>> }
+>>
+>> New-Item -ItemType Directory -Path $SecondFailureDir | Out-Null
+>> Copy-Item -LiteralPath $ResetRecord -Destination $SecondFailureReset
+>>
+>> $SecondFailureResetHash = (
+>>     Get-FileHash -Algorithm SHA256 -LiteralPath $SecondFailureReset
+>> ).Hash.ToLowerInvariant()
+>>
+>> $SecondFailureRecord = [ordered]@{
+>>     schema_version = 'r6o-h2-f3-command-wrapper-failure-1'
+>>     gate = 'H2-F3'
+>>     classification = 'COMMAND_WRAPPER_FAILURE'
+>>     failure_stage = 'POWERSHELL_NATIVE_STDERR_HANDLING'
+>>     failure = 'KNOWN_RPC_E_CHANGED_MODE_STDERR_TREATED_AS_TERMINATING'
+>>     history_only = $true
+>>     active_current_qualification = $false
+>>     human_gestures_occurred = $false
+>>     semantic_collector_process_started = $true
+>>     human_semantic_gesture_phase_started = $false
+>>     semantic_evidence_written = $false
+>>     semantic_replay_attempt_consumed = $false
+>>     product_behavior_failure = $false
+>>     known_nonblocking_warning = 'RPC_E_CHANGED_MODE'
+>>     reset_status = 'CODEX_TEST_SESSION_READY'
+>>     reset_record = "$SecondFailureDir/preflight-reset.json"
+>>     reset_sha256 = $SecondFailureResetHash
+>>     semantic_freeze = [ordered]@{
+>>         head = $SemanticHead
+>>         tree = $SemanticTree
+>>     }
+>>     branch_freeze_record_head = [ordered]@{
+>>         head = $EvidenceHead
+>>         tree = $EvidenceTree
+>>     }
+>> }
+>>
+>> $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+>> $SecondFailureJson = ($SecondFailureRecord | ConvertTo-Json -Depth 8) + "`n"
+>> [System.IO.File]::WriteAllText(
+>>     (Join-Path $Repo $SecondFailureClassification),
+>>     $SecondFailureJson,
+>>     $Utf8NoBom
+>> )
+>>
+>> try {
+>>     $TopologyTouched = $true
+>>
+>>     & git switch --detach $SemanticHead
+>>     if ($LASTEXITCODE -ne 0) {
+>>         throw 'Could not detach at the semantic freeze'
+>>     }
+>>
+>>     & git branch -f $Branch $SemanticHead
+>>     if ($LASTEXITCODE -ne 0) {
+>>         throw 'Could not temporarily move the local branch'
+>>     }
+>>
+>>     & git switch $Branch
+>>     if ($LASTEXITCODE -ne 0) {
+>>         throw 'Could not check out the temporary semantic branch'
+>>     }
+>>
+>>     & git restore --source=$EvidenceHead --worktree -- $FreezeRecord
+>>     if ($LASTEXITCODE -ne 0) {
+>>         throw 'Could not overlay the reviewed freeze record'
+>>     }
+>>
+>>     if (([string](git branch --show-current)).Trim() -ne $Branch) {
+>>         throw 'Collector branch identity mismatch'
+>>     }
+>>     if (([string](git rev-parse HEAD)).Trim() -ne $SemanticHead) {
+>>         throw 'Collector HEAD is not the semantic freeze'
+>>     }
+>>     if (([string](git rev-parse 'HEAD^{tree}')).Trim() -ne $SemanticTree) {
+>>         throw 'Collector tree is not the semantic freeze'
+>>     }
+>>
+>>     $LiveFreeze = Get-Content -Raw -LiteralPath $FreezeRecord |
+>>         ConvertFrom-Json
+>>     if (
+>>         $LiveFreeze.code_freeze.head -ne $SemanticHead -or
+>>         $LiveFreeze.code_freeze.tree -ne $SemanticTree -or
+>>         $LiveFreeze.code_freeze.status -ne 'FROZEN'
+>>     ) {
+>>         throw 'Working freeze record mismatch'
+>>     }
+>>
+>>     $PreReplayDirtyPaths = @(
+>>         git status --porcelain=v1 --untracked-files=all |
+>>             ForEach-Object { $_.Substring(3).Replace('\', '/') }
+>>     )
+>>     $PreReplayUnauthorized = @(
+>>         $PreReplayDirtyPaths |
+>>             Where-Object { -not $_.StartsWith("$Output/") }
+>>     )
+>>     if ($PreReplayUnauthorized.Count -ne 0) {
+>>         throw "Unauthorized dirty paths: $($PreReplayUnauthorized -join ', ')"
+>>     }
+>>     if ($PreReplayDirtyPaths -notcontains $FreezeRecord) {
+>>         throw 'Reviewed freeze-record overlay is missing'
+>>     }
+>>
+>>     # New reset for the actual HUMAN replay.
+>>     $SavedPreference = $ErrorActionPreference
+>>     try {
+>>         $ErrorActionPreference = 'Continue'
+>>         & python scripts\h2\reset_codex_test_session.py `
+>>             --selectors r6o\host\codex\windows\selectors.json `
+>>             --output $ResetRecord
+>>         $SemanticResetExit = $LASTEXITCODE
+>>     }
+>>     finally {
+>>         $ErrorActionPreference = $SavedPreference
+>>     }
+>>     if ($SemanticResetExit -ne 0) {
+>>         throw 'Semantic replay preflight reset failed'
+>>     }
+>>
+>>     $SemanticReset = Get-Content -Raw -LiteralPath $ResetRecord |
+>>         ConvertFrom-Json
+>>     if ($SemanticReset.status -ne 'CODEX_TEST_SESSION_READY') {
+>>         throw 'Semantic replay reset did not produce CODEX_TEST_SESSION_READY'
+>>     }
+>>
+>>     $env:F3_REPLAY_HEAD = $SemanticHead
+>>     $env:F3_REPLAY_TREE = $SemanticTree
+>>     $env:F3_REPLAY_BASELINE = $Baseline
+>>
+>>     $CollectorPython = @'
+>> import os
+>> from pathlib import Path
+>> from scripts.h2.verify_h2_final import collect_current_actual_host
+>>
+>> repo = Path.cwd().resolve()
+>> result = collect_current_actual_host(
+>>     repo=repo,
+>>     output=(repo / "r6o_evidence/H2-F3/repair").resolve(),
+>>     baseline=Path(os.environ["F3_REPLAY_BASELINE"]).resolve(),
+>>     expected_head=os.environ["F3_REPLAY_HEAD"],
+>>     expected_tree=os.environ["F3_REPLAY_TREE"],
+>>     timeout=900.0,
+>> )
+>> if result.get("status") != "H2_F3_CURRENT_ACTUAL_HOST_INTEGRATION_PASS":
+>>     raise RuntimeError(f"unexpected collector result: {result!r}")
+>> '@
+>>
+>>     $CollectorStream = @()
+>>     $SavedPreference = $ErrorActionPreference
+>>     try {
+>>         # Known Qt/COM warnings may use stderr. Do not merge stderr into stdout
+>>         # and do not treat warning text as a terminating PowerShell exception.
+>>         $ErrorActionPreference = 'Continue'
+>>         $CollectorPython |
+>>             & python - |
+>>             Tee-Object -Variable CollectorStream
+>>         $CollectorExit = $LASTEXITCODE
+>>     }
+>>     finally {
+>>         $ErrorActionPreference = $SavedPreference
+>>     }
+>>
+>>     if ($CollectorExit -ne 0) {
+>>         throw 'HUMAN semantic collector failed; preserve the actual attempt'
+>>     }
+>>
+>>     $CollectorText = $CollectorStream | Out-String
+>>     if (
+>>         $CollectorText -notmatch
+>>         'H2_F3_CURRENT_ACTUAL_HOST_INTEGRATION_PASS'
+>>     ) {
+>>         throw 'Required current-host integration token was not emitted'
+>>     }
+>>     $HumanCollectorPassed = $true
+>>
+>>     Write-Host 'BEGIN_CONTIGUOUS_MACHINE_ATTACHMENT_FLOW — DO NOT INTERACT'
+>>
+>>     # New reset immediately before the unchanged attachment verifier.
+>>     $SavedPreference = $ErrorActionPreference
+>>     try {
+>>         $ErrorActionPreference = 'Continue'
+>>         & python scripts\h2\reset_codex_test_session.py `
+>>             --selectors r6o\host\codex\windows\selectors.json `
+>>             --output $ResetRecord
+>>         $AttachmentResetExit = $LASTEXITCODE
+>>     }
+>>     finally {
+>>         $ErrorActionPreference = $SavedPreference
+>>     }
+>>     if ($AttachmentResetExit -ne 0) {
+>>         throw 'Attachment preflight reset failed'
+>>     }
+>>
+>>     $AttachmentReset = Get-Content -Raw -LiteralPath $ResetRecord |
+>>         ConvertFrom-Json
+>>     if ($AttachmentReset.status -ne 'CODEX_TEST_SESSION_READY') {
+>>         throw 'Attachment reset did not produce CODEX_TEST_SESSION_READY'
+>>     }
+>>
+>>     $env:QT_QUICK_BACKEND = 'software'
+>>     $env:QT_SCALE_FACTOR = '1'
+>>     $env:QT_FONT_DPI = '96'
+>>
+>>     $SavedPreference = $ErrorActionPreference
+>>     try {
+>>         $ErrorActionPreference = 'Continue'
+>>         & python scripts\h2\verify_codex_attachment.py `
+>>             --host-record r6o_evidence\H2-D1\host-environment.json `
+>>             --selectors r6o\host\codex\windows\selectors.json `
+>>             --evidence-dir $AttachmentDir
+>>         $AttachmentExit = $LASTEXITCODE
+>>     }
+>>     finally {
+>>         $ErrorActionPreference = $SavedPreference
+>>     }
+>>     if ($AttachmentExit -ne 0) {
+>>         throw 'Unchanged attachment verifier failed; preserve evidence and stop'
+>>     }
+>>
+>>     $ProvenancePython = @'
+>> import hashlib
+>> import json
+>> import os
+>> import re
+>> from datetime import datetime, timezone
+>> from pathlib import Path
+>>
+>> root = Path.cwd().resolve()
+>> head = os.environ["F3_REPLAY_HEAD"]
+>> tree = os.environ["F3_REPLAY_TREE"]
+>>
+>> paths = {
+>>     "attachment_result": "r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-result.json",
+>>     "event_log": "r6o_evidence/H2-F3/repair/actual-host/attachment/win32-uia-events.jsonl",
+>>     "host_record": "r6o_evidence/H2-D1/host-environment.json",
+>>     "selectors": "r6o/host/codex/windows/selectors.json",
+>>     "preflight_reset": "r6o_evidence/H2-F3/repair/actual-host/preflight-reset.json",
+>> }
+>> provenance_rel = (
+>>     "r6o_evidence/H2-F3/repair/actual-host/attachment/f3-provenance.json"
+>> )
+>> aggregate_rel = "r6o_evidence/H2-F3/repair/actual-host/qualification.json"
+>>
+>> def read_json(relative):
+>>     return json.loads((root / relative).read_text(encoding="utf-8"))
+>>
+>> def sha256(relative):
+>>     return hashlib.sha256((root / relative).read_bytes()).hexdigest()
+>>
+>> def write_json(relative, value):
+>>     with (root / relative).open(
+>>         "w", encoding="utf-8", newline="\n"
+>>     ) as stream:
+>>         json.dump(
+>>             value,
+>>             stream,
+>>             indent=2,
+>>             ensure_ascii=False,
+>>             sort_keys=True,
+>>         )
+>>         stream.write("\n")
+>>
+>> attachment = read_json(paths["attachment_result"])
+>> preflight = read_json(paths["preflight_reset"])
+>>
+>> if attachment.get("status") != "H2_D2_ATTACHMENT_PASS":
+>>     raise RuntimeError("attachment status is not PASS")
+>> if attachment.get("real_codex_host_tested") is not True:
+>>     raise RuntimeError("real Codex host was not tested")
+>> if attachment.get("synthetic_owner_used") is not False:
+>>     raise RuntimeError("synthetic owner was used")
+>> if preflight.get("status") != "CODEX_TEST_SESSION_READY":
+>>     raise RuntimeError("preflight status is not CODEX_TEST_SESSION_READY")
+>> if attachment.get("event_log", {}).get("sha256") != sha256("event_log"):
+>>     raise RuntimeError("attachment result event-log hash mismatch")
+>> if attachment.get("host_record_sha256") != sha256("host_record"):
+>>     raise RuntimeError("attachment result host-record hash mismatch")
+>> if attachment.get("selectors_sha256") != sha256("selectors"):
+>>     raise RuntimeError("attachment result selectors hash mismatch")
+>>
+>> timestamp = attachment.get("timestamp_utc", "")
+>> attempt_stamp = re.sub(r"[^0-9]", "", timestamp)[:14]
+>> if len(attempt_stamp) != 14:
+>>     attempt_stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+>>
+>> provenance = {
+>>     "schema_version": "r6o-h2-f3-attachment-provenance-1",
+>>     "gate": "H2-F3",
+>>     "active_attempt_id": f"f3-active-reset-attachment-{attempt_stamp}Z",
+>>     "candidate_head": head,
+>>     "candidate_tree": tree,
+>>     "attachment_result_path": paths["attachment_result"],
+>>     "attachment_result_sha256": sha256("attachment_result"),
+>>     "event_log_path": paths["event_log"],
+>>     "event_log_sha256": sha256("event_log"),
+>>     "host_record_path": paths["host_record"],
+>>     "host_record_sha256": sha256("host_record"),
+>>     "selectors_path": paths["selectors"],
+>>     "selectors_sha256": sha256("selectors"),
+>>     "preflight_reset_path": paths["preflight_reset"],
+>>     "preflight_reset_sha256": sha256("preflight_reset"),
+>>     "preflight_status": "CODEX_TEST_SESSION_READY",
+>>     "attachment_status": "H2_D2_ATTACHMENT_PASS",
+>>     "active_attachment": "PASS",
+>>     "real_codex_host_tested": True,
+>>     "synthetic_owner_used": False,
+>>     "reset_to_attachment_contiguous_machine_flow": True,
+>>     "human_semantic_replay_started": True,
+>>     "human_semantic_replay_completed": True,
+>>     "historical_failures_preserved": True,
+>>     "known_finding": (
+>>         "F3-R3-ATTACHMENT-PROVENANCE-MISMATCH=OPEN_P2_OWNER_GATE"
+>>     ),
+>> }
+>> write_json(provenance_rel, provenance)
+>>
+>> aggregate = read_json(aggregate_rel)
+>> source = aggregate.get("source", {})
+>> if source.get("head") != head or source.get("tree") != tree:
+>>     raise RuntimeError("aggregate semantic source is not the exact freeze")
+>>
+>> aggregate["f3_attachment_provenance"] = (
+>>     "actual-host/attachment/f3-provenance.json"
+>> )
+>> aggregate["attachment"] = {
+>>     "status": "PASS",
+>>     "path": "actual-host/attachment/attachment-result.json",
+>> }
+>> aggregate["attachment_status"] = attachment["status"]
+>> aggregate["f3_local_event_log"] = {
+>>     "path": "actual-host/attachment/win32-uia-events.jsonl",
+>>     "sha256": sha256("event_log"),
+>> }
+>> write_json(aggregate_rel, aggregate)
+>> '@
+>>
+>>     $SavedPreference = $ErrorActionPreference
+>>     try {
+>>         $ErrorActionPreference = 'Continue'
+>>         $ProvenancePython | & python -
+>>         $ProvenanceExit = $LASTEXITCODE
+>>     }
+>>     finally {
+>>         $ErrorActionPreference = $SavedPreference
+>>     }
+>>     if ($ProvenanceExit -ne 0) {
+>>         throw 'Provenance regeneration or aggregate reconciliation failed'
+>>     }
+>>
+>>     $ValidationPython = @'
+>> import os
+>> from pathlib import Path
+>> from scripts.h2.verify_h2_final import _validate_current_host_evidence
+>>
+>> repo = Path.cwd().resolve()
+>> freeze = {
+>>     "head": os.environ["F3_REPLAY_HEAD"],
+>>     "tree": os.environ["F3_REPLAY_TREE"],
+>> }
+>> result = _validate_current_host_evidence(
+>>     repo=repo,
+>>     output=(repo / "r6o_evidence/H2-F3/repair").resolve(),
+>>     freeze=freeze,
+>> )
+>> if result.get("status") != "PASS":
+>>     raise RuntimeError(f"current-host validation failed: {result!r}")
+>> print("H2_F3_CURRENT_ATTACHMENT_EXACT_PROVENANCE_PASS")
+>> '@
+>>
+>>     $ValidationStream = @()
+>>     $SavedPreference = $ErrorActionPreference
+>>     try {
+>>         $ErrorActionPreference = 'Continue'
+>>         $ValidationPython |
+>>             & python - |
+>>             Tee-Object -Variable ValidationStream
+>>         $ValidationExit = $LASTEXITCODE
+>>     }
+>>     finally {
+>>         $ErrorActionPreference = $SavedPreference
+>>     }
+>>
+>>     if ($ValidationExit -ne 0) {
+>>         throw 'Exact-current attachment provenance validation failed'
+>>     }
+>>
+>>     $ValidationText = $ValidationStream | Out-String
+>>     if (
+>>         $ValidationText -notmatch
+>>         'H2_F3_CURRENT_ATTACHMENT_EXACT_PROVENANCE_PASS'
+>>     ) {
+>>         throw 'Required exact-provenance token was not emitted'
+>>     }
+>>     $AttachmentProvenancePassed = $true
+>> }
+>> finally {
+>>     if ($TopologyTouched) {
+>>         $CurrentBranch = ([string](git branch --show-current)).Trim()
+>>
+>>         if ($CurrentBranch -eq $Branch) {
+>>             & git reset --mixed $EvidenceHead
+>>             if ($LASTEXITCODE -ne 0) {
+>>                 throw 'Failed to restore the freeze-record branch head'
+>>             }
+>>         }
+>>         else {
+>>             & git branch -f $Branch $EvidenceHead
+>>             if ($LASTEXITCODE -ne 0) {
+>>                 throw 'Failed to restore the local branch reference'
+>>             }
+>>
+>>             & git switch $Branch
+>>             if ($LASTEXITCODE -ne 0) {
+>>                 throw 'Failed to return to the reviewed branch'
+>>             }
+>>
+>>             & git reset --mixed $EvidenceHead
+>>             if ($LASTEXITCODE -ne 0) {
+>>                 throw 'Failed to restore the branch index'
+>>             }
+>>         }
+>>     }
+>> }
+>>
+>> if (-not $HumanCollectorPassed) {
+>>     throw 'HUMAN collector PASS was not established'
+>> }
+>> if (-not $AttachmentProvenancePassed) {
+>>     throw 'Exact-current attachment provenance PASS was not established'
+>> }
+>> if (([string](git branch --show-current)).Trim() -ne $Branch) {
+>>     throw 'Post-run branch restoration failed'
+>> }
+>> if (([string](git rev-parse HEAD)).Trim() -ne $EvidenceHead) {
+>>     throw 'Post-run branch head restoration failed'
+>> }
+>> if (([string](git rev-parse 'HEAD^{tree}')).Trim() -ne $EvidenceTree) {
+>>     throw 'Post-run branch tree restoration failed'
+>> }
+>>
+>> & git diff --cached --quiet
+>> if ($LASTEXITCODE -ne 0) {
+>>     throw 'Post-run index contains staged changes'
+>> }
+>>
+>> $PostRunDirtyPaths = @(
+>>     git status --porcelain=v1 --untracked-files=all |
+>>         ForEach-Object { $_.Substring(3).Replace('\', '/') }
+>> )
+>> $PostRunUnauthorized = @(
+>>     $PostRunDirtyPaths |
+>>         Where-Object { -not $_.StartsWith("$Output/") }
+>> )
+>> if ($PostRunUnauthorized.Count -ne 0) {
+>>     throw "Post-run unauthorized dirty paths: $($PostRunUnauthorized -join ', ')"
+>> }
+>>
+>> Write-Host 'HUMAN_H2_REPLAY_AND_ATTACHMENT_COLLECTION_COMPLETE'
+>> Write-Host "SEMANTIC_FREEZE=$SemanticHead/$SemanticTree"
+>> Write-Host "RESTORED_BRANCH_HEAD=$EvidenceHead/$EvidenceTree"
+>> git status --short
+>> }
+>>
+M       r6o_evidence/H2-F3/repair/actual-host/preflight-reset.json
+HEAD is now at dfbf9c3 H2-F3 normalize attachment provenance fixture hash
+M       r6o_evidence/H2-F3/repair/actual-host/preflight-reset.json
+Switched to branch 'codex/h2-f3-final-integration'
+Your branch is behind 'origin/codex/h2-f3-final-integration' by 1 commit, and can be fast-forwarded.
+  (use "git pull" to update your local branch)
+CODEX_TEST_SESSION_READY
+QWindowsContext: OleInitialize() failed:  "COM error 0x80010106: Cannot change thread mode after it is set."
+qt.qpa.window: SetProcessDpiAwarenessContext() failed: Access is denied.
+Qt's default DPI awareness context is DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2. If you know what you are doing, you can overwrite this default using qt.conf (https://doc.qt.io/qt-6/highdpi.html#configuring-windows).
+HUMAN_ACTION_REQUIRED E1: type H2-F3-E1-LINE-1, press Shift+Enter, type H2-F3-E1-LINE-2, then press one unmodified Enter. Do not use Send.
+HUMAN_ACTION_REQUIRED G06: review the displayed G06 Prompt, activate Confirm this prompt, then review the Plan and activate Confirm this plan.
+HUMAN_ACTION_REQUIRED A02-FULL: on the initial Prompt activate Something else; type exactly 'This is not confirmed. The audience should be data engineers, not backend engineers.'; press one unmodified Enter; then activate Confirm this prompt and Confirm this plan in order.
+LIFECYCLE_OBSERVATION: no human gestures are requested while the collector checks close/deactivate, hook cleanup, reopen, projection restoration, and process exit.
+H2_F3_CURRENT_ACTUAL_HOST_INTEGRATION_PASS
+BEGIN_CONTIGUOUS_MACHINE_ATTACHMENT_FLOW — DO NOT INTERACT
+CODEX_TEST_SESSION_READY
+QWindowsContext: OleInitialize() failed:  "COM error 0x80010106: Cannot change thread mode after it is set."
+qt.qpa.window: SetProcessDpiAwarenessContext() failed: Access is denied.
+Qt's default DPI awareness context is DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2. If you know what you are doing, you can overwrite this default using qt.conf (https://doc.qt.io/qt-6/highdpi.html#configuring-windows).
+{
+  "close_focus_return": {
+    "composer_keyboard_focus": true,
+    "expected_foreground_hwnd": 2758514,
+    "foreground_hwnd": 2758514,
+    "sidecar_visible": false
+  },
+  "composer_resolution": {
+    "actual_composer_rectangle": {
+      "bottom": 843,
+      "height": 44,
+      "left": 587,
+      "right": 1299,
+      "top": 799,
+      "width": 712
+    },
+    "qualifying_geometry_match_count": 1,
+    "selector_match_count": 1
+  },
+  "event_log": {
+    "event_count": 10,
+    "path": "r6o_evidence/H2-D2/win32-uia-events.jsonl",
+    "sha256": "2528c38f181f272dd9b13624bb518689509427d8f48f82ab420dae9f10f14849"
+  },
+  "expanded": {
+    "actual_rectangle": {
+      "bottom": 853,
+      "height": 806,
+      "left": 1165,
+      "right": 1577,
+      "top": 47,
+      "width": 412
+    },
+    "composer_selector_match_count": 1,
+    "dpi": 96,
+    "expected_owner_hwnd": 2758514,
+    "expected_rectangle": {
+      "bottom": 853,
+      "height": 806,
+      "left": 1165,
+      "right": 1577,
+      "top": 47,
+      "width": 412
+    },
+    "foreground_hwnd": 2758514,
+    "global_topmost": false,
+    "host_client_rectangle": {
+      "bottom": 899,
+      "height": 900,
+      "left": -1,
+      "right": 1601,
+      "top": -1,
+      "width": 1602
+    },
+    "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
+    "mode": "EXPANDED",
+    "owner_hwnd": 2758514,
+    "placement_matches": true,
+    "sidecar_above_host": true,
+    "sidecar_hwnd": 16913024,
+    "visible": true,
+    "work_area_rectangle": {
+      "bottom": 900,
+      "height": 900,
+      "left": 0,
+      "right": 1600,
+      "top": 0,
+      "width": 1600
+    },
+    "z_order_indices": {
+      "host": 27,
+      "sidecar": 26
+    }
+  },
+  "gate": "H2-D2",
+  "host": {
+    "client_rectangle": {
+      "bottom": 899,
+      "height": 900,
+      "left": -1,
+      "right": 1601,
+      "top": -1,
+      "width": 1602
+    },
+    "dpi": 96,
+    "file_version": "151.0.7922.170",
+    "geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
+    "hwnd": 2758514,
+    "package_version": "26.818.5229.0",
+    "pid": 11512,
+    "product_name": "Codex",
+    "product_version": "151.0.7922.170",
+    "work_area": {
+      "bottom": 900,
+      "height": 900,
+      "left": 0,
+      "right": 1600,
+      "top": 0,
+      "width": 1600
+    }
+  },
+  "host_record_sha256": "8ceaf31da367dc6efe938d8f129a9d125e4f6ba0b19a991643b69680d87748c7",
+  "implementation_sha256": {
+    "r6o/host/codex/windows/binding.py": "eed2c7db45ff56ebad2ccec542dc795ce86a02652ac6ed1d33e38e7ab295413c",
+    "r6o/host/codex/windows/placement.py": "8d01b1b2d2e6c77965decadcf2b34f27ee90728f72b8f0ce8ad770d0d1b43ddb",
+    "scripts/h2/verify_codex_attachment.py": "2c85a1f14e65021e3a2aaaf73276e47c1c165c34abb838620055db9218d3cbec"
+  },
+  "non_interference": {
+    "composer_clicked_outside_sidecar": true,
+    "composer_empty_before": true,
+    "composer_received_keyboard_focus": true,
+    "marker_removed": true,
+    "marker_submitted": false,
+    "marker_visible": true,
+    "normal_codex_dispatch_observed": false,
+    "placement_unchanged": true,
+    "sidecar_above_host_after": true,
+    "sidecar_visible_after": true,
+    "visible_turn_count_after": 0,
+    "visible_turn_count_before": 0
+  },
+  "observer_ordering_mutation": false,
+  "real_codex_host_tested": true,
+  "recording": {
+    "expanded": {
+      "crop_rectangle": {
+        "bottom": 853,
+        "height": 806,
+        "left": 1165,
+        "right": 1577,
+        "top": 47,
+        "width": 412
+      },
+      "fps": 8,
+      "frame_count": 9,
+      "observer_ordering_mutation": false,
+      "path": "r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-expanded.mp4",
+      "sha256": "4f4c49873838c851b70861f2bf76ec93e209e9da6f5924ef6c236549d7649063"
+    },
+    "frame_count": 318,
+    "mandatory": true,
+    "sha256": "ca0bf18f44d2a2ad290acf27193aa70a8a0807de097e4d907ca905ed34c32b26",
+    "standard": {
+      "crop_rectangle": {
+        "bottom": 843,
+        "height": 352,
+        "left": 586,
+        "right": 1262,
+        "top": 491,
+        "width": 676
+      },
+      "fps": 8,
+      "frame_count": 309,
+      "observer_ordering_mutation": false,
+      "path": "r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-standard.mp4",
+      "sha256": "2f33a5bb961cb834f2d3e1a006f844afcfe9de432e8c8a5f953c59ffce881fe7"
+    }
+  },
+  "runtime": {
+    "dependencies": {
+      "Pillow": "12.3.0",
+      "PySide6": "6.11.2",
+      "imageio-ffmpeg": "0.6.0",
+      "pywin32": "312",
+      "pywinauto": "0.6.9"
+    },
+    "machine": "AMD64",
+    "platform": "Windows-10-10.0.22000-SP0",
+    "python_version": "3.11.9",
+    "qt_platform": "windows",
+    "qt_quick_backend": "software",
+    "qt_version": "6.11.2"
+  },
+  "schema_version": "r6o-h2-d2-attachment-result-1",
+  "scope": {
+    "normal_codex_submit_gesture_used": false,
+    "r6o3_lease_implemented": false,
+    "semantic_workflow_exercised": false
+  },
+  "selectors_sha256": "f45bc99891a8d6d07344519274baded3c601203e48ba612246bcdea6f4c34386",
+  "standard": {
+    "actual_rectangle": {
+      "bottom": 791,
+      "height": 300,
+      "left": 587,
+      "right": 1262,
+      "top": 491,
+      "width": 675
+    },
+    "composer_selector_match_count": 1,
+    "dpi": 96,
+    "expected_owner_hwnd": 2758514,
+    "expected_rectangle": {
+      "bottom": 791,
+      "height": 300,
+      "left": 587,
+      "right": 1262,
+      "top": 491,
+      "width": 675
+    },
+    "foreground_hwnd": 16913024,
+    "global_topmost": false,
+    "host_client_rectangle": {
+      "bottom": 899,
+      "height": 900,
+      "left": -1,
+      "right": 1601,
+      "top": -1,
+      "width": 1602
+    },
+    "host_geometry_source": "LIVE_REMEASURED_EXACT_D1_HWND",
+    "mode": "STANDARD",
+    "owner_hwnd": 2758514,
+    "placement_matches": true,
+    "sidecar_above_host": true,
+    "sidecar_hwnd": 16913024,
+    "visible": true,
+    "work_area_rectangle": {
+      "bottom": 900,
+      "height": 900,
+      "left": 0,
+      "right": 1600,
+      "top": 0,
+      "width": 1600
+    },
+    "z_order_indices": {
+      "host": 30,
+      "sidecar": 26
+    }
+  },
+  "status": "H2_D2_ATTACHMENT_PASS",
+  "synthetic_owner_used": false,
+  "timestamp_utc": "2026-08-27T12:56:12.172231Z",
+  "unrelated_window": {
+    "host_focus_router_ignored_probe_click": true,
+    "probe_above_sidecar": true,
+    "probe_foreground": true,
+    "probe_global_topmost": false,
+    "probe_hwnd": 13241432,
+    "probe_owner_hwnd": 0
+  }
+}
+Traceback (most recent call last):
+  File "<stdin>", line 47, in <module>
+  File "<stdin>", line 24, in sha256
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python311\Lib\pathlib.py", line 1050, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python311\Lib\pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O-h2-f3\\event_log'
+Unstaged changes after reset:
+M       r6o_evidence/H2-F3/repair/actual-host/a02-full/captures/A02-T0-CODEX.png
+M       r6o_evidence/H2-F3/repair/actual-host/a02-full/captures/A02-T1-FOCUS-CODEX.png
+M       r6o_evidence/H2-F3/repair/actual-host/a02-full/captures/A02-T2-REVISE-CODEX.png
+M       r6o_evidence/H2-F3/repair/actual-host/a02-full/captures/A02-T3-CODEX.png
+M       r6o_evidence/H2-F3/repair/actual-host/a02-full/projections/A02-T0-CODEX.json
+M       r6o_evidence/H2-F3/repair/actual-host/a02-full/projections/A02-T1-FOCUS-CODEX.json
+M       r6o_evidence/H2-F3/repair/actual-host/a02-full/projections/A02-T2-REVISE-CODEX.json
+M       r6o_evidence/H2-F3/repair/actual-host/a02-full/projections/A02-T3-CODEX.json
+M       r6o_evidence/H2-F3/repair/actual-host/a02-full/projections/A02-T4-CODEX.json
+M       r6o_evidence/H2-F3/repair/actual-host/a02-full/qualification.json
+M       r6o_evidence/H2-F3/repair/actual-host/a02-full/transitions.json
+M       r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-expanded.mp4
+M       r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-result.json
+M       r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-standard.mp4
+M       r6o_evidence/H2-F3/repair/actual-host/attachment/win32-uia-events.jsonl
+M       r6o_evidence/H2-F3/repair/actual-host/e1/qualification.json
+M       r6o_evidence/H2-F3/repair/actual-host/g06/captures/G06-T0-CODEX.png
+M       r6o_evidence/H2-F3/repair/actual-host/g06/captures/G06-T1-CODEX.png
+M       r6o_evidence/H2-F3/repair/actual-host/g06/projections/G06-T0-CODEX.json
+M       r6o_evidence/H2-F3/repair/actual-host/g06/projections/G06-T1-CODEX.json
+M       r6o_evidence/H2-F3/repair/actual-host/g06/projections/G06-T2-CODEX.json
+M       r6o_evidence/H2-F3/repair/actual-host/g06/qualification.json
+M       r6o_evidence/H2-F3/repair/actual-host/g06/transitions.json
+M       r6o_evidence/H2-F3/repair/actual-host/lifecycle/qualification.json
+M       r6o_evidence/H2-F3/repair/actual-host/preflight-reset.json
+M       r6o_evidence/H2-F3/repair/actual-host/qualification.json
+Provenance regeneration or aggregate reconciliation failed
+At line:405 char:9
++         throw 'Provenance regeneration or aggregate reconciliation fa ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Provenance rege...iliation failed:String) [], RuntimeException
+    + FullyQualifiedErrorId : Provenance regeneration or aggregate reconciliation failed
+
+PS C:\Users\USER\Desktop\Frameworks\PDL-Standard-R6O-h2-f3>

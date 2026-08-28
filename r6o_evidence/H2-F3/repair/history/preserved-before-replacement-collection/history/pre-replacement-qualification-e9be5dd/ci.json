@@ -1,0 +1,77 @@
+{
+  "schema_version": "r6o-h2-f3-ci-1",
+  "gate": "H2-F3",
+  "candidate": {
+    "role": "REPAIRED_F3_CODE_FREEZE",
+    "head": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+    "tree": "b333accaedadb2728276911e8798ac4fa248650e"
+  },
+  "recording_policy": "Each required job is pinned to the exact repaired candidate and to its exact workflow run. Missing candidate, workflow, run, head, job, or SUCCESS provenance fails closed.",
+  "workflows": [
+    {
+      "workflow": "R6O-1 qualification",
+      "run_id": 33045203584,
+      "run_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33045203584",
+      "head_sha": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+      "status": "SUCCESS",
+      "jobs": {
+        "github_windows": {
+          "job_id": 98427483650,
+          "name": "qualify (windows-latest)",
+          "status": "SUCCESS",
+          "head_sha": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+          "workflow_run_id": 33045203584,
+          "workflow": "R6O-1 qualification",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33045203584/job/98427483650"
+        },
+        "github_ubuntu": {
+          "job_id": 98427483686,
+          "name": "qualify (ubuntu-latest)",
+          "status": "SUCCESS",
+          "head_sha": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+          "workflow_run_id": 33045203584,
+          "workflow": "R6O-1 qualification",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33045203584/job/98427483686"
+        }
+      }
+    },
+    {
+      "workflow": "H2-C Qt Quick qualification",
+      "run_id": 33045203618,
+      "run_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33045203618",
+      "head_sha": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+      "status": "SUCCESS",
+      "jobs": {
+        "windows_qt": {
+          "job_id": 98427483817,
+          "name": "windows",
+          "status": "SUCCESS",
+          "head_sha": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+          "workflow_run_id": 33045203618,
+          "workflow": "H2-C Qt Quick qualification",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33045203618/job/98427483817"
+        },
+        "linux_x11": {
+          "job_id": 98427484089,
+          "name": "linux-x11",
+          "status": "SUCCESS",
+          "head_sha": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+          "workflow_run_id": 33045203618,
+          "workflow": "H2-C Qt Quick qualification",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33045203618/job/98427484089"
+        },
+        "linux_wayland": {
+          "job_id": 98427484117,
+          "name": "linux-wayland",
+          "status": "SUCCESS",
+          "head_sha": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+          "workflow_run_id": 33045203618,
+          "workflow": "H2-C Qt Quick qualification",
+          "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33045203618/job/98427484117"
+        }
+      }
+    }
+  ],
+  "all_required_jobs_passed": true,
+  "recorded_at_utc": "2026-08-27T06:17:46Z"
+}

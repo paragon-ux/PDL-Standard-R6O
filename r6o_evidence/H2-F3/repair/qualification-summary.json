@@ -1,0 +1,27 @@
+{
+  "gate": "H2-F3",
+  "human_pass": "NOT_CLAIMED",
+  "implementation_complete": false,
+  "local_qualification": {
+    "counts": {
+      "f3_focused_tests": 49,
+      "full_r6o": 419,
+      "r6o1": 419
+    },
+    "status": "PASS"
+  },
+  "next_authority": "HUMAN-H2",
+  "production_behavior_changed": false,
+  "r1_qt_ci_job_provenance": "FIXED_PENDING_EXACT_HEAD_CI",
+  "r2_current_actual_host_integration": "HUMAN_ACTION_REQUIRED",
+  "r4_r6o3_fail_closed": "FIXED",
+  "r6o3_behavior_claimed": false,
+  "ready_for_luna_repair_delta_review": false,
+  "schema_version": "r6o-h2-f3-bounded-repair-summary-1",
+  "source": {
+    "head": "36179fc1d18a94b29996bedc8a53b1fb5a88f802",
+    "status": "FROZEN",
+    "tree": "5875f68725ef750f9176c0afcf2a0b1ea6002578"
+  },
+  "status": "HUMAN_ACTION_REQUIRED"
+}

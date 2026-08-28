@@ -1,0 +1,27 @@
+{
+    "schema_version":  "r6o-h2-f3-command-wrapper-failure-1",
+    "gate":  "H2-F3",
+    "classification":  "COMMAND_WRAPPER_FAILURE",
+    "failure_stage":  "POWERSHELL_NATIVE_STDERR_HANDLING",
+    "failure":  "KNOWN_RPC_E_CHANGED_MODE_STDERR_TREATED_AS_TERMINATING",
+    "history_only":  true,
+    "active_current_qualification":  false,
+    "human_gestures_occurred":  false,
+    "semantic_collector_process_started":  true,
+    "human_semantic_gesture_phase_started":  false,
+    "semantic_evidence_written":  false,
+    "semantic_replay_attempt_consumed":  false,
+    "product_behavior_failure":  false,
+    "known_nonblocking_warning":  "RPC_E_CHANGED_MODE",
+    "reset_status":  "CODEX_TEST_SESSION_READY",
+    "reset_record":  "r6o_evidence/H2-F3/repair/history/command-wrapper-failure-20260827T123536Z/preflight-reset.json",
+    "reset_sha256":  "cece69bb83072865169a7bbdf6438f3b0578f3fd6f712ff991f3f6da2dcbef99",
+    "semantic_freeze":  {
+                            "head":  "dfbf9c32e72d3c148cb3c2267b808b08c8f9acf4",
+                            "tree":  "dd7194db212daa24b235fdaae436d140d3faeb91"
+                        },
+    "branch_freeze_record_head":  {
+                                      "head":  "c1e3514fdd91897d033957acfaec5e6596113976",
+                                      "tree":  "37ce0c1cb1b855b22e68f0a5ad19c5780b9a5a9e"
+                                  }
+}

@@ -1,0 +1,13 @@
+........................................................................ [ 18%]
+........................................................................ [ 37%]
+........................................................................ [ 56%]
+........................................................................ [ 75%]
+........................................................................ [ 93%]
+........................                                                 [100%]
+============================== warnings summary ===============================
+r6o/tests/h2/test_codex_input_binding_contract.py::test_stop_reports_pending_delivery_failure_after_cleanup
+  C:\Users\USER\AppData\Local\Programs\Python\Python311\Lib\site-packages\pywinauto\__init__.py:80: UserWarning: Revert to STA COM threading mode
+    warnings.warn("Revert to STA COM threading mode", UserWarning)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+384 passed, 1 warning in 99.09s (0:01:39)

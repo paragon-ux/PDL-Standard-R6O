@@ -1,0 +1,35 @@
+{
+  "composer_after": {
+    "accessibility_name_matches": true,
+    "descendant_text_count": 0,
+    "descendant_text_lengths": [],
+    "empty": true,
+    "uia_value_matches": true
+  },
+  "composer_before": {
+    "accessibility_name_matches": true,
+    "descendant_text_count": 0,
+    "descendant_text_lengths": [],
+    "empty": true,
+    "uia_value_matches": true
+  },
+  "composer_focused_after_reset": true,
+  "fresh_chat": {
+    "fresh": true,
+    "fresh_home_surface_match_count": 1,
+    "visible_turn_group_count": 0
+  },
+  "host": {
+    "file_version": "151.0.7922.170",
+    "hwnd": 2758514,
+    "package_version": "26.818.5229.0",
+    "pid": 11512,
+    "product_name": "Codex",
+    "product_version": "151.0.7922.170"
+  },
+  "new_chat_action": "UIA_INVOKE_PATTERN",
+  "schema_version": "r6o-h2-d1-reset-log-1",
+  "selectors_sha256": "f45bc99891a8d6d07344519274baded3c601203e48ba612246bcdea6f4c34386",
+  "status": "CODEX_TEST_SESSION_READY",
+  "timestamp_utc": "2026-08-27T12:18:47.142835Z"
+}

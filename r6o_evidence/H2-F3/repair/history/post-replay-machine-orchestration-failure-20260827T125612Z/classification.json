@@ -1,0 +1,43 @@
+{
+  "active_current_qualification": false,
+  "attachment_machine_run": "PASS",
+  "attachment_status": "H2_D2_ATTACHMENT_PASS",
+  "branch_freeze_record_head": {
+    "head": "c1e3514fdd91897d033957acfaec5e6596113976",
+    "tree": "37ce0c1cb1b855b22e68f0a5ad19c5780b9a5a9e"
+  },
+  "classification": "POST_REPLAY_MACHINE_ORCHESTRATION_FAILURE",
+  "console_log": {
+    "path": "r6o_evidence/H2-F3/repair/history/post-replay-machine-orchestration-failure-20260827T125612Z/console-log.txt",
+    "sha256": "b091378cfd36e3e88d0121873ce9bb0187a9df601aac03756d101a366b7a2a4b"
+  },
+  "failure": "PATH_KEY_USED_AS_REPOSITORY_RELATIVE_PATH",
+  "failure_exception": "FileNotFoundError: <repo>\\event_log",
+  "failure_stage": "PROVENANCE_REGENERATION_HELPER",
+  "gate": "H2-F3",
+  "history_only": true,
+  "human_gestures_completed": true,
+  "human_semantic_replay": "PASS",
+  "product_behavior_failure": false,
+  "provenance_reconciliation": "FAIL",
+  "schema_version": "r6o-h2-f3-post-replay-machine-orchestration-failure-1",
+  "semantic_evidence_written": true,
+  "semantic_freeze": {
+    "head": "dfbf9c32e72d3c148cb3c2267b808b08c8f9acf4",
+    "tree": "dd7194db212daa24b235fdaae436d140d3faeb91"
+  },
+  "semantic_replay_attempt_consumed": true,
+  "semantic_replay_must_be_repeated": false,
+  "successful_evidence_sha256_before_recovery": {
+    "r6o/host/codex/windows/selectors.json": "f45bc99891a8d6d07344519274baded3c601203e48ba612246bcdea6f4c34386",
+    "r6o_evidence/H2-D1/host-environment.json": "8ceaf31da367dc6efe938d8f129a9d125e4f6ba0b19a991643b69680d87748c7",
+    "r6o_evidence/H2-F3/repair/actual-host/a02-full/qualification.json": "6554432def6bdad559d22800b9187a5ae5be456cce3a70a0a617e91168787fea",
+    "r6o_evidence/H2-F3/repair/actual-host/attachment/attachment-result.json": "ad03ee4ef983eab6ee8ad2dec5c729ecf79fa0a7c1f0dfa39e251450082f0877",
+    "r6o_evidence/H2-F3/repair/actual-host/attachment/win32-uia-events.jsonl": "2528c38f181f272dd9b13624bb518689509427d8f48f82ab420dae9f10f14849",
+    "r6o_evidence/H2-F3/repair/actual-host/e1/qualification.json": "8206fa9fc33e549b87a52d82348fe759617779a6d83818df2d9e4de8c433edf7",
+    "r6o_evidence/H2-F3/repair/actual-host/g06/qualification.json": "235f5adf8ff2d31c447c03641a5817dc749b862f5b3a260d39ab933b9d01a735",
+    "r6o_evidence/H2-F3/repair/actual-host/lifecycle/qualification.json": "cf1bf02bb2b8e9c2abaeb559997a0bb76c693e594026ebfafe244b0c494ad8b1",
+    "r6o_evidence/H2-F3/repair/actual-host/preflight-reset.json": "20e7f5eae7ab43c36d4c8ddc6a8a33bbc96d85a51d804e25e9811144021f3ffb",
+    "r6o_evidence/H2-F3/repair/actual-host/qualification.json": "a276c68d6471d8ada44de5e26a74d3f6e940739fb3b3c8ecf319eecd0970355f"
+  }
+}

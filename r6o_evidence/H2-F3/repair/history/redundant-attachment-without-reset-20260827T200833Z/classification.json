@@ -1,0 +1,53 @@
+{
+  "schema_version": "r6o-h2-f3-post-replay-machine-orchestration-failure-1",
+  "gate": "H2-F3",
+  "classification": "POST_REPLAY_MACHINE_ORCHESTRATION_FAILURE",
+  "failure_stage": "EXACT_FREEZE_LOCAL_COLLECTION_REDUNDANT_ATTACHMENT_WITHOUT_ACCEPTED_RESET",
+  "failure": "NORMAL_CODEX_DISPATCH_NOT_SUPPRESSED",
+  "history_only": true,
+  "active_current_qualification": false,
+  "human_gestures_completed": true,
+  "human_semantic_replay": "PASS",
+  "human_semantic_evidence_preserved": true,
+  "semantic_replay_attempt_consumed": false,
+  "semantic_replay_must_be_repeated": false,
+  "product_behavior_failure": false,
+  "attachment_precondition_satisfied": false,
+  "accepted_e3_reset_contiguous_with_attempt": false,
+  "attempt_status": "FAIL",
+  "attempt_exit_code": 1,
+  "semantic_freeze": {
+    "head": "94d56129893206db8899df74f5201144a64a1679",
+    "tree": "729d2e3c1f507ac01189e1fcc0e77cb80b8b3997"
+  },
+  "branch_freeze_record_head": {
+    "head": "9e52ed426777f6c205028d6a06962493e251a547",
+    "tree": "0fb011f916d26b37fe544c929edd234e5d00b2eb"
+  },
+  "artifacts": {
+    "attachment_result": {
+      "path": "r6o_evidence/H2-F3/repair/history/redundant-attachment-without-reset-20260827T200833Z/attachment-result.json",
+      "sha256": "57f9867b0a63972dbe82651ad1efd868a3a3acb3ebbea565522057da493900a7"
+    },
+    "event_log": {
+      "path": "r6o_evidence/H2-F3/repair/history/redundant-attachment-without-reset-20260827T200833Z/win32-uia-events.jsonl",
+      "sha256": "d2f1022bee8ff14bcc882bda92c425567eb54c3788dae2e2a4b3669bbe1e7408"
+    },
+    "standard_recording": {
+      "path": "r6o_evidence/H2-F3/repair/history/redundant-attachment-without-reset-20260827T200833Z/attachment-standard.mp4",
+      "sha256": "95295c6e95c58d3e3f89f24195ef3f2c0018c8aa81570227c1399b28b3f74bcc"
+    },
+    "stdout": {
+      "path": "r6o_evidence/H2-F3/repair/history/redundant-attachment-without-reset-20260827T200833Z/stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "r6o_evidence/H2-F3/repair/history/redundant-attachment-without-reset-20260827T200833Z/stderr.txt",
+      "sha256": "9ab7aa33645f31e309a0d2e817956ce219e9b442c2646e7d3cf54efae931f90e"
+    },
+    "local_qualification_snapshot": {
+      "path": "r6o_evidence/H2-F3/repair/history/redundant-attachment-without-reset-20260827T200833Z/local-qualification-failed-snapshot.json",
+      "sha256": "0d7aac67012cab52d905236a3b134f62354fa9dceea413156771d0f0f47abe4c"
+    }
+  }
+}

@@ -1,0 +1,565 @@
+{
+  "schema_version": "r6o-h2-f1-parity-report-1",
+  "gate": "H2-F1",
+  "status": "F1_PARITY_PASS",
+  "agent": "LUNA-H2-F1-IMPLEMENTER",
+  "repository": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O-h2-f3",
+  "base_commit": "36179fc1d18a94b29996bedc8a53b1fb5a88f802",
+  "base_tree": "5875f68725ef750f9176c0afcf2a0b1ea6002578",
+  "frozen_oracle": {
+    "commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+    "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+    "unchanged": true
+  },
+  "cases": {
+    "G06": {
+      "status": "PASS",
+      "sources": {
+        "tui": "TUI:G06:accepted-public-path",
+        "sidecar": "SIDECAR:C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O-h2-f3\\r6o_evidence\\H2-E2\\actual-host"
+      },
+      "dimensions": {
+        "stage_sequence": {
+          "status": "PASS",
+          "tui": [
+            "PROMPT_REVIEW",
+            "PLAN_REVIEW",
+            "CLOSED_SUCCESS"
+          ],
+          "sidecar": [
+            "PROMPT_REVIEW",
+            "PLAN_REVIEW",
+            "CLOSED_SUCCESS"
+          ]
+        },
+        "projected_action_ids_order": {
+          "status": "PASS",
+          "tui": [
+            [
+              "confirm_prompt",
+              "change_task",
+              "change_approach",
+              "something_else"
+            ],
+            [
+              "confirm_plan",
+              "change_task",
+              "change_approach",
+              "something_else"
+            ],
+            []
+          ],
+          "sidecar": [
+            [
+              "confirm_prompt",
+              "change_task",
+              "change_approach",
+              "something_else"
+            ],
+            [
+              "confirm_plan",
+              "change_task",
+              "change_approach",
+              "something_else"
+            ],
+            []
+          ]
+        },
+        "artifact_type_revision_content_hashes": {
+          "status": "PASS",
+          "tui": [
+            {
+              "artifact_kind": "prompt",
+              "artifact_revision": "abc2d94370918f88bd71753b499b5bea432a63e2ddc5fcc20a881b1a8c371c4d",
+              "body_sha256": "3b981f581b4f8ab151852f9214493c65accc72153f2f57c68dbc3c4c244911f2",
+              "media_type": "text/plain",
+              "title": "Authoritative Prompt (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            {
+              "artifact_kind": "plan",
+              "artifact_revision": "e21caa3ef3a1b26a79cd619d826231a487216213f59851a410c2ff14056eec41",
+              "body_sha256": "4763d12d6203ca03c4e8936f2dfb58a3d0d0e782d8990f7a5d12dbf8425bf7ce",
+              "media_type": "text/plain",
+              "title": "Authoritative Response Plan (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            null
+          ],
+          "sidecar": [
+            {
+              "artifact_kind": "prompt",
+              "artifact_revision": "840cfbd5d59da3f9cb38d7c6b791b9980e5e91d4dc196627f8f0d64e3d2f9028",
+              "body_sha256": "3b981f581b4f8ab151852f9214493c65accc72153f2f57c68dbc3c4c244911f2",
+              "media_type": "text/plain",
+              "title": "Authoritative Prompt (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            {
+              "artifact_kind": "plan",
+              "artifact_revision": "dc59ef99113453deae2c6896bc4c20261af52b125107dc585f20ea3ed48a9b37",
+              "body_sha256": "4763d12d6203ca03c4e8936f2dfb58a3d0d0e782d8990f7a5d12dbf8425bf7ce",
+              "media_type": "text/plain",
+              "title": "Authoritative Response Plan (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            null
+          ],
+          "revision_comparison": "opaque per-session values; transition identity pattern equal",
+          "tui_revision_pattern": [
+            "r1",
+            "r2",
+            null
+          ],
+          "sidecar_revision_pattern": [
+            "r1",
+            "r2",
+            null
+          ]
+        },
+        "structured_review_canonical_meaning": {
+          "status": "PASS"
+        },
+        "worker_operation_ids_order_count": {
+          "status": "PASS",
+          "tui": [
+            {
+              "operation_id": "G06:0001",
+              "operation": "DRAFT_PROMPT"
+            },
+            {
+              "operation_id": "G06:0002",
+              "operation": "INTERPRET_PROMPT_REVIEW"
+            },
+            {
+              "operation_id": "G06:0003",
+              "operation": "DRAFT_PLAN"
+            },
+            {
+              "operation_id": "G06:0004",
+              "operation": "INTERPRET_PLAN_REVIEW"
+            },
+            {
+              "operation_id": "G06:0005",
+              "operation": "EXECUTE"
+            }
+          ],
+          "sidecar": [
+            {
+              "operation": "DRAFT_PROMPT",
+              "operation_id": "G06:0001"
+            },
+            {
+              "operation": "INTERPRET_PROMPT_REVIEW",
+              "operation_id": "G06:0002"
+            },
+            {
+              "operation": "DRAFT_PLAN",
+              "operation_id": "G06:0003"
+            },
+            {
+              "operation": "INTERPRET_PLAN_REVIEW",
+              "operation_id": "G06:0004"
+            },
+            {
+              "operation": "EXECUTE",
+              "operation_id": "G06:0005"
+            }
+          ]
+        },
+        "free_response_focus_behavior": {
+          "status": "N/A — NOT EXERCISED BY G06",
+          "tui": null,
+          "sidecar": null
+        },
+        "revised_prompt_equality": {
+          "status": "N/A — NOT EXERCISED BY G06",
+          "tui": null,
+          "sidecar": null
+        },
+        "plan_equality": {
+          "status": "PASS",
+          "tui": {
+            "artifact_kind": "plan",
+            "artifact_revision": "e21caa3ef3a1b26a79cd619d826231a487216213f59851a410c2ff14056eec41",
+            "body_sha256": "4763d12d6203ca03c4e8936f2dfb58a3d0d0e782d8990f7a5d12dbf8425bf7ce",
+            "media_type": "text/plain",
+            "title": "Authoritative Response Plan (PDL.md)",
+            "capabilities": {
+              "copy": true,
+              "open_external": true
+            }
+          },
+          "sidecar": {
+            "artifact_kind": "plan",
+            "artifact_revision": "dc59ef99113453deae2c6896bc4c20261af52b125107dc585f20ea3ed48a9b37",
+            "body_sha256": "4763d12d6203ca03c4e8936f2dfb58a3d0d0e782d8990f7a5d12dbf8425bf7ce",
+            "media_type": "text/plain",
+            "title": "Authoritative Response Plan (PDL.md)",
+            "capabilities": {
+              "copy": true,
+              "open_external": true
+            }
+          }
+        },
+        "terminal_disposition": {
+          "status": "PASS",
+          "tui": "HOST_HANDOFF",
+          "sidecar": "HOST_HANDOFF"
+        },
+        "stale_fail_closed_behavior": {
+          "status": "PASS",
+          "detail": "Envelope session/model/projection identities were validated fail-closed; mutation negatives are covered by the F1 focused tests."
+        }
+      }
+    },
+    "A02-FULL": {
+      "status": "PASS",
+      "sources": {
+        "tui": "TUI:A02-FULL:accepted-public-path",
+        "sidecar": "SIDECAR:C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O-h2-f3\\r6o_evidence\\H2-E3\\actual-host\\attempt-0012"
+      },
+      "dimensions": {
+        "stage_sequence": {
+          "status": "PASS",
+          "tui": [
+            "PROMPT_REVIEW",
+            "PROMPT_REVIEW",
+            "PROMPT_REVIEW",
+            "PLAN_REVIEW",
+            "CLOSED_SUCCESS"
+          ],
+          "sidecar": [
+            "PROMPT_REVIEW",
+            "PROMPT_REVIEW",
+            "PROMPT_REVIEW",
+            "PLAN_REVIEW",
+            "CLOSED_SUCCESS"
+          ]
+        },
+        "projected_action_ids_order": {
+          "status": "PASS",
+          "tui": [
+            [
+              "confirm_prompt",
+              "change_task",
+              "change_approach",
+              "something_else"
+            ],
+            [
+              "confirm_prompt",
+              "change_task",
+              "change_approach",
+              "something_else"
+            ],
+            [
+              "confirm_prompt",
+              "change_task",
+              "change_approach",
+              "something_else"
+            ],
+            [
+              "confirm_plan",
+              "change_task",
+              "change_approach",
+              "something_else"
+            ],
+            []
+          ],
+          "sidecar": [
+            [
+              "confirm_prompt",
+              "change_task",
+              "change_approach",
+              "something_else"
+            ],
+            [
+              "confirm_prompt",
+              "change_task",
+              "change_approach",
+              "something_else"
+            ],
+            [
+              "confirm_prompt",
+              "change_task",
+              "change_approach",
+              "something_else"
+            ],
+            [
+              "confirm_plan",
+              "change_task",
+              "change_approach",
+              "something_else"
+            ],
+            []
+          ]
+        },
+        "artifact_type_revision_content_hashes": {
+          "status": "PASS",
+          "tui": [
+            {
+              "artifact_kind": "prompt",
+              "artifact_revision": "67ca05fe2c3dd1ebc6df27d583925ed154b1913a6558f783d354c259ea7acb24",
+              "body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
+              "media_type": "text/plain",
+              "title": "Authoritative Prompt (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            {
+              "artifact_kind": "prompt",
+              "artifact_revision": "67ca05fe2c3dd1ebc6df27d583925ed154b1913a6558f783d354c259ea7acb24",
+              "body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
+              "media_type": "text/plain",
+              "title": "Authoritative Prompt (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            {
+              "artifact_kind": "prompt",
+              "artifact_revision": "719db7143dd53622694746905e1884638c560ce2967dee5ba9aca812d762bb38",
+              "body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
+              "media_type": "text/plain",
+              "title": "Authoritative Prompt (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            {
+              "artifact_kind": "plan",
+              "artifact_revision": "e7f4f8e88e77587d038418deaa9dad8de0d5f7365e818acc1bddd1d53903af99",
+              "body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
+              "media_type": "text/plain",
+              "title": "Authoritative Response Plan (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            null
+          ],
+          "sidecar": [
+            {
+              "artifact_kind": "prompt",
+              "artifact_revision": "0c4a173ba8abd8c0718093f275266f5049ec2a15ad6c1e73c4a8371df88baf6d",
+              "body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
+              "media_type": "text/plain",
+              "title": "Authoritative Prompt (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            {
+              "artifact_kind": "prompt",
+              "artifact_revision": "0c4a173ba8abd8c0718093f275266f5049ec2a15ad6c1e73c4a8371df88baf6d",
+              "body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
+              "media_type": "text/plain",
+              "title": "Authoritative Prompt (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            {
+              "artifact_kind": "prompt",
+              "artifact_revision": "5d3bf7fc3dcbb9d1809a62dc230922524fadcad77f9389070fcf05650e64505a",
+              "body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
+              "media_type": "text/plain",
+              "title": "Authoritative Prompt (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            {
+              "artifact_kind": "plan",
+              "artifact_revision": "cb5ba15890e5a4025eb52deecc8d95d9a7630a24d9a81b1808b618c765867d2c",
+              "body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
+              "media_type": "text/plain",
+              "title": "Authoritative Response Plan (PDL.md)",
+              "capabilities": {
+                "copy": true,
+                "open_external": true
+              }
+            },
+            null
+          ],
+          "revision_comparison": "opaque per-session values; transition identity pattern equal",
+          "tui_revision_pattern": [
+            "r1",
+            "r1",
+            "r2",
+            "r3",
+            null
+          ],
+          "sidecar_revision_pattern": [
+            "r1",
+            "r1",
+            "r2",
+            "r3",
+            null
+          ]
+        },
+        "structured_review_canonical_meaning": {
+          "status": "PASS"
+        },
+        "worker_operation_ids_order_count": {
+          "status": "PASS",
+          "tui": [
+            {
+              "operation_id": "A02F:0001",
+              "operation": "DRAFT_PROMPT"
+            },
+            {
+              "operation_id": "A02F:0002",
+              "operation": "INTERPRET_PROMPT_REVIEW"
+            },
+            {
+              "operation_id": "A02F:0003",
+              "operation": "REVISE_PROMPT"
+            },
+            {
+              "operation_id": "A02F:0004",
+              "operation": "INTERPRET_PROMPT_REVIEW"
+            },
+            {
+              "operation_id": "A02F:0005",
+              "operation": "DRAFT_PLAN"
+            },
+            {
+              "operation_id": "A02F:0006",
+              "operation": "INTERPRET_PLAN_REVIEW"
+            },
+            {
+              "operation_id": "A02F:0007",
+              "operation": "EXECUTE"
+            }
+          ],
+          "sidecar": [
+            {
+              "operation": "DRAFT_PROMPT",
+              "operation_id": "A02F:0001"
+            },
+            {
+              "operation": "INTERPRET_PROMPT_REVIEW",
+              "operation_id": "A02F:0002"
+            },
+            {
+              "operation": "REVISE_PROMPT",
+              "operation_id": "A02F:0003"
+            },
+            {
+              "operation": "INTERPRET_PROMPT_REVIEW",
+              "operation_id": "A02F:0004"
+            },
+            {
+              "operation": "DRAFT_PLAN",
+              "operation_id": "A02F:0005"
+            },
+            {
+              "operation": "INTERPRET_PLAN_REVIEW",
+              "operation_id": "A02F:0006"
+            },
+            {
+              "operation": "EXECUTE",
+              "operation_id": "A02F:0007"
+            }
+          ]
+        },
+        "free_response_focus_behavior": {
+          "status": "PASS",
+          "tui": {
+            "source": "TUI_TEXT",
+            "focus_projection_unchanged": true
+          },
+          "sidecar": {
+            "source": "HOST_COMPOSER_TEXT",
+            "focus_owner": "ACTUAL_CODEX_COMPOSER"
+          }
+        },
+        "revised_prompt_equality": {
+          "status": "PASS",
+          "tui": {
+            "artifact_kind": "prompt",
+            "artifact_revision": "719db7143dd53622694746905e1884638c560ce2967dee5ba9aca812d762bb38",
+            "body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
+            "media_type": "text/plain",
+            "title": "Authoritative Prompt (PDL.md)",
+            "capabilities": {
+              "copy": true,
+              "open_external": true
+            }
+          },
+          "sidecar": {
+            "artifact_kind": "prompt",
+            "artifact_revision": "5d3bf7fc3dcbb9d1809a62dc230922524fadcad77f9389070fcf05650e64505a",
+            "body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
+            "media_type": "text/plain",
+            "title": "Authoritative Prompt (PDL.md)",
+            "capabilities": {
+              "copy": true,
+              "open_external": true
+            }
+          }
+        },
+        "plan_equality": {
+          "status": "PASS",
+          "tui": {
+            "artifact_kind": "plan",
+            "artifact_revision": "e7f4f8e88e77587d038418deaa9dad8de0d5f7365e818acc1bddd1d53903af99",
+            "body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
+            "media_type": "text/plain",
+            "title": "Authoritative Response Plan (PDL.md)",
+            "capabilities": {
+              "copy": true,
+              "open_external": true
+            }
+          },
+          "sidecar": {
+            "artifact_kind": "plan",
+            "artifact_revision": "cb5ba15890e5a4025eb52deecc8d95d9a7630a24d9a81b1808b618c765867d2c",
+            "body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
+            "media_type": "text/plain",
+            "title": "Authoritative Response Plan (PDL.md)",
+            "capabilities": {
+              "copy": true,
+              "open_external": true
+            }
+          }
+        },
+        "terminal_disposition": {
+          "status": "PASS",
+          "tui": "HOST_HANDOFF",
+          "sidecar": "HOST_HANDOFF"
+        },
+        "stale_fail_closed_behavior": {
+          "status": "PASS",
+          "detail": "Envelope session/model/projection identities were validated fail-closed; mutation negatives are covered by the F1 focused tests."
+        }
+      }
+    }
+  },
+  "regressions": {
+    "tui_b1_b2_evidence": "PASS",
+    "e2_e3_actual_host_evidence": "PASS"
+  },
+  "production_behavior_changed": false
+}

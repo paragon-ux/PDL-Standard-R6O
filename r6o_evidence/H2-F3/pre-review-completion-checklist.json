@@ -1,0 +1,56 @@
+{
+  "schema_version": "r6o-h2-f3-completion-1",
+  "gate": "H2-F3",
+  "agent": "LUNA-H2-F3-INTEGRATOR",
+  "checks": {
+    "scope_closure": "PASS",
+    "no_production_behavior_change": "PASS",
+    "no_r6o3_behavior_added_or_claimed": "PASS",
+    "protected_path_diff": "EMPTY",
+    "frozen_oracle": "UNCHANGED",
+    "accepted_predecessor_ancestry": "PASS",
+    "tui_g06": "PASS",
+    "tui_a02_full": "PASS",
+    "qt_sidecar_q01_q24": "PASS",
+    "actual_codex_attachment": "PASS",
+    "accepted_e1_input_routing": "PASS",
+    "accepted_actual_host_g06": "PASS",
+    "accepted_actual_host_a02_full": "PASS",
+    "accepted_f2_lifecycle_resilience": "PASS",
+    "f3_negative_tests": "PASS",
+    "relevant_predecessor_regressions": "PASS",
+    "full_r6o_tests": "PASS",
+    "r6o1_verification": "PASS",
+    "github_windows": "PASS",
+    "github_ubuntu": "PASS",
+    "windows_qt": "PASS",
+    "linux_x11": "PASS",
+    "linux_wayland_forced": "PASS",
+    "evidence_exact_code_freeze": "PASS",
+    "post_freeze_scope": "EVIDENCE_ONLY",
+    "human_approval_claimed": "NO"
+  },
+  "current_counts": {
+    "f3_focused_tests": 16,
+    "full_r6o": 384,
+    "r6o1": 384
+  },
+  "code_freeze": {
+    "head": "d170fdee54e968190981acc8fb8945296ae7605b",
+    "tree": "934fd2043b561cddddc78be384bcb40fc28c23bc"
+  },
+  "known_implementer_findings": [],
+  "known_nonblocking_findings": [
+    {
+      "id": "RPC_E_CHANGED_MODE",
+      "classification": "NONBLOCKING_P2"
+    }
+  ],
+  "state": "IMPLEMENTATION_COMPLETE",
+  "stop_code": "NONE",
+  "implementation_complete": true,
+  "ready_for_sol_review": true,
+  "sol_review_pass": "NOT_CLAIMED",
+  "human_pass": "NOT_CLAIMED",
+  "next_authority": "HUMAN-H2"
+}

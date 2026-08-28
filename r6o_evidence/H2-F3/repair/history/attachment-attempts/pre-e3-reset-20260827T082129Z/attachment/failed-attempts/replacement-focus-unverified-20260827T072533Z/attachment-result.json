@@ -1,0 +1,10 @@
+{
+  "code": "COMPOSER_CLICK_FOCUS_UNVERIFIED",
+  "host_record": "C:/Users/USER/Desktop/Frameworks/PDL-Standard-R6O-h2-f3/r6o_evidence/H2-D1/host-environment.json",
+  "real_codex_host_tested": true,
+  "schema_version": "r6o-h2-d2-attachment-result-1",
+  "selectors": "C:/Users/USER/Desktop/Frameworks/PDL-Standard-R6O-h2-f3/r6o/host/codex/windows/selectors.json",
+  "status": "FAIL",
+  "synthetic_owner_used": false,
+  "timestamp_utc": "2026-08-27T07:25:33.088870Z"
+}

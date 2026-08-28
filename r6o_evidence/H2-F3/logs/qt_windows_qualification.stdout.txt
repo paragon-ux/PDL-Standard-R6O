@@ -1,0 +1,122 @@
+{
+  "schema_version": "r6o-h2-c-qt-component-1",
+  "gate": "H2-C-QUALIFICATION",
+  "status": "MECHANICAL_PASS_PENDING_FINAL_REVIEW",
+  "human_visual_approval": "CONDITIONALLY_DELEGATED_TO_SOL_REVIEW",
+  "overall_h2_pass_authorized": false,
+  "real_codex_host_tested": false,
+  "d2_implemented": false,
+  "target": "windows",
+  "runtime": {
+    "os": "Windows-10-10.0.22000-SP0",
+    "python": "3.11.9",
+    "pyside6": "6.11.2",
+    "qt": "6.11.2",
+    "qpa_platform": "windows",
+    "logical_dpi": 96.0,
+    "device_pixel_ratio": 1.0
+  },
+  "source": {
+    "branch": "codex/h2-f3-final-integration",
+    "head": "d170fdee54e968190981acc8fb8945296ae7605b",
+    "tree": "934fd2043b561cddddc78be384bcb40fc28c23bc"
+  },
+  "proof": {
+    "production_framework": "PySide6 + Qt Quick/QML",
+    "same_qml_all_platforms": true,
+    "qml_and_token_hashes": {
+      "r6o/views/sidecar/qml/ArtifactCard.qml": "41dfa4e8aee17dc23fa8b0bf1f87759bed6edddc80145177c4184dc2b097a627",
+      "r6o/views/sidecar/qml/DesignTokens.qml": "dfcc187387d115080bd006d07e86dd7ef429295fa3dfdd3d73e76c15458f4d69",
+      "r6o/views/sidecar/qml/ReviewAction.qml": "7580bfa19fc7d561bc47dcc44ae7406e52e3c5967aeb52105e2c8b061441bbd3",
+      "r6o/views/sidecar/qml/ReviewOptions.qml": "4a400594d1e65ed8d68ea0f443a3bd18397f8a6c5afdcc8fbd9df1e0cff8c246",
+      "r6o/views/sidecar/qml/Sidecar.qml": "b8d021f22ff26d68db7bb9cd1819cc3e944fddd5b89351839c0082409a591499",
+      "r6o/views/sidecar/qml/SidecarChrome.qml": "5d666e2aea017f35891b3149a94738d4f0d00898a1f4b782c3db50c0b2db8ab7",
+      "docs/h2/sidecar-qt/sidecar-qml-design-tokens-v2.json": "b01fe4a58ff08fe0dd99fb5676033dbdaa1a43568a8ff5734a2b0d0978817422"
+    },
+    "asset_hashes": {
+      "fonts/Inter-Regular.ttf": "40d692fce188e4471e2b3cba937be967878f631ad3ebbbdcd587687c7ebe0c82",
+      "fonts/Inter-SemiBold.ttf": "78a843fade9d4612a5567302fb595b56976eb5fcebf4fea5a5912d638bafcde3",
+      "fonts/Inter-Bold.ttf": "288316099b1e0a47a4716d159098005eef7c0066921f34e3200393dbdb01947f",
+      "fonts/INTER-LICENSE.txt": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a",
+      "fonts/JetBrainsMono-Regular.ttf": "a0bf60ef0f83c5ed4d7a75d45838548b1f6873372dfac88f71804491898d138f",
+      "fonts/JETBRAINS-MONO-OFL.txt": "30f0c136e3c88e422d0791acd97238870f9054a9729bc34cf2ff0d4ed8cac4ad",
+      "icons/expand.svg": "7eb3d607dea4a8cb9a53df9e34315f9c991a07eec756f7b2f00997e0cf0d2834",
+      "icons/close.svg": "eb66d8d7c5809d9eb55483906046b563301de1128d7e006ae492f0ba01ee2513",
+      "icons/external-link.svg": "b26c3ddf2d3fdd81f8c0accebeaef60feeffe21efd1616d2cdb2a3599de579ec"
+    },
+    "protected_boundary": {
+      "comparison_base": "4928e73612048fac4b7486b24b7785a79d287e20",
+      "protected_changed": [],
+      "forbidden_imports": []
+    },
+    "keyboard_action_ids": [
+      "confirm_prompt"
+    ],
+    "open_callback_refs": [
+      "prompt:h2-c-opaque"
+    ],
+    "copy_callback_count": 1,
+    "terminal_dismissal_view_close_count": 0,
+    "close_callback_count": 2,
+    "q01_q24": {
+      "Q01": true,
+      "Q02": true,
+      "Q03": true,
+      "Q04": true,
+      "Q05": true,
+      "Q06": true,
+      "Q07": true,
+      "Q08": true,
+      "Q09": true,
+      "Q10": true,
+      "Q11": true,
+      "Q12": true,
+      "Q13": true,
+      "Q14": true,
+      "Q15": true,
+      "Q16": true,
+      "Q17": true,
+      "Q18": true,
+      "Q19": true,
+      "Q20": true,
+      "Q21": true,
+      "Q22": true,
+      "Q23": "QUALIFIED_BY_X11_JOB",
+      "Q24": "QUALIFIED_BY_WAYLAND_JOB"
+    },
+    "q25_standard_human_comparison": "PENDING_SOL_SUBSTITUTE_REVIEW",
+    "q26_expanded_human_comparison": "PENDING_SOL_SUBSTITUTE_REVIEW"
+  },
+  "modes": {
+    "STANDARD": {
+      "size": [
+        675,
+        300
+      ],
+      "corner_alpha": {
+        "top_left": 0,
+        "top_right": 0,
+        "bottom_left": 0,
+        "bottom_right": 0
+      },
+      "center_alpha": 255,
+      "capture": "H2-C-STANDARD-SIDECAR.png",
+      "capture_sha256": "ae514a4750069183b4e9be440756064bdb9e7179d865f437d0ca97ab11e4be4e"
+    },
+    "EXPANDED": {
+      "size": [
+        412,
+        806
+      ],
+      "corner_alpha": {
+        "top_left": 0,
+        "top_right": 0,
+        "bottom_left": 0,
+        "bottom_right": 0
+      },
+      "center_alpha": 255,
+      "capture": "H2-C-EXPANDED-SIDECAR.png",
+      "capture_sha256": "9dcecbfd089692499dffa299c799f9ce2b09a2cbbbebb00d29967efaca5235ea"
+    }
+  }
+}

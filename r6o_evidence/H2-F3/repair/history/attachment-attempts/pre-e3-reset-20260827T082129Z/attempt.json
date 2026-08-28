@@ -1,0 +1,17 @@
+{
+  "schema_version": "r6o-h2-f3-attachment-attempt-history-1",
+  "gate": "H2-F3",
+  "attempt_id": "pre-e3-reset-20260827T082129Z",
+  "candidate_head": "3c5e38fd1ea7946bec7553b13477b478dd3805b4",
+  "candidate_tree": "4864650e9726c5e14b0080171da94e619ff847f4",
+  "history_role": "immutable_pre_retry_snapshot",
+  "active_result_at_snapshot": {
+    "path": "attachment/attachment-result.json",
+    "sha256": "c779f2d5b0eaecca5a3715024699124b7d6ed88008006cadbeb5524f5d936764",
+    "status": "FAIL",
+    "code": "COMPOSER_CLICK_FOCUS_UNVERIFIED"
+  },
+  "preserved_attachment_file_count": 7,
+  "human_semantic_replay_started": false,
+  "note": "Preserves the canonical failure plus both previously archived replacement-focus failures before applying the accepted H2-E3 reset precedent. Historical failures remain negative attempt evidence and do not define a later active result."
+}

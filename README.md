@@ -752,3 +752,99 @@ Regeneration changes evidence hashes. The hashes in
 `r6o/host/codex/windows/selectors.json` must then be explicitly re-frozen and
 reviewed before the reset command or contract tests can pass. Do not overwrite
 the frozen evidence merely to run qualification.
+
+## H2-F3 final integration and human gate
+
+The bounded F3 repair adds one current-candidate, human-operated actual-host
+qualification. Run it only from the published repaired freeze on
+`codex/h2-f3-final-integration`. The repair handoff supplies the literal
+`<REPAIRED_F3_CODE_FREEZE_HEAD>` and `<REPAIRED_F3_CODE_FREEZE_TREE>` values;
+do not derive or substitute another candidate.
+
+Preconditions:
+
+1. Use `C:\Users\USER\Desktop\Frameworks\PDL-Standard-R6O-h2-f3` on
+   `codex/h2-f3-final-integration` at the exact repaired head/tree.
+2. Use Codex package `26.818.5229.0`, product/file version
+   `151.0.7922.170`, with the accepted D1 selectors.
+3. Open a fresh/new Codex chat. The composer must be empty and no native
+   request may be pending.
+4. Do not use native Send and do not substitute automated key or click input
+   for any action identified below as a HUMAN action.
+
+Start the qualification with the exact pinned values from the repair handoff:
+
+```powershell
+$Baseline = 'C:\Users\USER\Desktop\Frameworks\PDL-Standard-REPL-Harness-quarantine-20260821-H1'
+$RepairHead = '<REPAIRED_F3_CODE_FREEZE_HEAD>'
+$RepairTree = '<REPAIRED_F3_CODE_FREEZE_TREE>'
+if ((git branch --show-current) -ne 'codex/h2-f3-final-integration') { throw 'Wrong branch' }
+if ((git rev-parse HEAD) -ne $RepairHead) { throw 'Wrong repaired freeze head' }
+if ((git rev-parse 'HEAD^{tree}') -ne $RepairTree) { throw 'Wrong repaired freeze tree' }
+python scripts\h2\verify_h2_final.py --baseline-repo $Baseline --output-dir r6o_evidence\H2-F3\repair --collect-current-actual-host --repair-freeze-head $RepairHead --repair-freeze-tree $RepairTree
+```
+
+Perform only the requested HUMAN actions as each stage appears:
+
+1. E1: type `H2-F3-E1-LINE-1`, press HUMAN Shift+Enter, type
+   `H2-F3-E1-LINE-2`, then press one HUMAN unmodified Enter. Expect the newline
+   to remain in the captured text, the final Enter keydown/keyup pair to be
+   intercepted once, the composer to clear, and no native Codex submission.
+2. G06: for `Use $confirm-with-pseudocode to explain the difference between
+   optimistic and pessimistic locking for senior developers.`, activate
+   `Confirm this prompt`, then `Confirm this plan`. Expect the exact five G06
+   worker operations, two structured actions, terminal Sidecar dismissal, and
+   focus return without native submission.
+3. A02-FULL: expect the initial Prompt `COMPARE Kafka and RabbitMQ for event
+   delivery.` Activate `Something else...`, type exactly `This is not
+   confirmed. The audience should be data engineers, not backend engineers.`,
+   and press one HUMAN unmodified Enter. Expect the revised Prompt `COMPARE
+   Kafka and RabbitMQ for event delivery for an audience of data engineers.`
+   Activate `Confirm this prompt`. Expect this exact Plan:
+
+   ```text
+   IDENTIFY comparison criteria relevant to event delivery and data engineers.
+   COMPARE Kafka and RabbitMQ consistently across those criteria.
+   SUMMARIZE the tradeoffs and the conditions that affect suitability.
+   ```
+
+   Activate `Confirm this plan`. Expect all seven A02-FULL operations, one
+   `HOST_COMPOSER_TEXT` revision, exact Prompt/Plan equality, Enter suppression,
+   composer clear ownership, terminal dismissal, and focus return without
+   native submission.
+4. Lifecycle: make no semantic input. Observe the automated close/deactivate,
+   hook cleanup, reopen/current-projection restoration, terminal close, and
+   process/resource cleanup checks.
+
+The stable success token is
+`H2_F3_CURRENT_ACTUAL_HOST_INTEGRATION_PASS`. Passing output is written beneath:
+
+```text
+r6o_evidence/H2-F3/repair/actual-host/e1/
+r6o_evidence/H2-F3/repair/actual-host/g06/
+r6o_evidence/H2-F3/repair/actual-host/a02-full/
+r6o_evidence/H2-F3/repair/actual-host/lifecycle/
+r6o_evidence/H2-F3/repair/actual-host/qualification.json
+```
+
+After the command succeeds, verify the generated evidence without performing
+another human gesture:
+
+```powershell
+python scripts\h2\verify_h2_final.py --baseline-repo $Baseline --output-dir r6o_evidence\H2-F3\repair
+```
+
+The final verifier checks the exact repaired freeze, accepted predecessors,
+protected paths, frozen oracle, current E1/G06/A02-FULL/lifecycle proof, Qt
+platform records, and exact workflow/run/job CI attribution. Any missing or
+mismatched candidate/run/job provenance, live evidence, host identity, gesture
+result, cleanup result, or positive R6O-3 claim fails closed.
+
+Before `HUMAN-H2` records a disposition, inspect the Standard and Expanded Qt
+captures and confirm the Sidecar is attached to the Codex host, uses the locked
+675x300 and 412x806 logical sizes, keeps the composer untouched, and dismisses
+without a terminal View-close callback. The machine-qualified result remains
+review evidence; it is not a human approval. Keep
+`r6o_evidence/H2/H2-HUMAN-GATE-RECORD.json` at `human_disposition: null`,
+`promotion_authorized: false`, and `human_pass: NOT_CLAIMED` until the human
+explicitly decides.

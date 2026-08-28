@@ -1,0 +1,10 @@
+{
+  "abandoned_freeze_head": "e9be5dd8eab80dde245a3b98f573309a48e9ecb1",
+  "abandoned_freeze_tree": "b333accaedadb2728276911e8798ac4fa248650e",
+  "attempt": "PRE_HUMAN_IMPORT_BOOTSTRAP_FAILURE",
+  "failure": "ModuleNotFoundError: No module named 'r6o'",
+  "human_gesture_started": false,
+  "semantic_host_action_started": false,
+  "status": "FAIL_PRE_HUMAN",
+  "truthfulness_note": "The documented direct-script invocation failed during repository package import before any HUMAN-H2 gesture or semantic host action."
+}

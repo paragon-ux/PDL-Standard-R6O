@@ -1,0 +1,67 @@
+{
+  "actions": [
+    {
+      "action_id": "confirm_prompt",
+      "canonical_review_text": "Yes, that is what I mean.",
+      "emphasis": "PRIMARY",
+      "enabled": true,
+      "kind": "SEMANTIC_MESSAGE",
+      "label": "Confirm prompt",
+      "ordinal": 1
+    },
+    {
+      "action_id": "change_task",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Change the task",
+      "ordinal": 2
+    },
+    {
+      "action_id": "change_approach",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Change approach",
+      "ordinal": 3
+    },
+    {
+      "action_id": "something_else",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Something else...",
+      "ordinal": 4
+    }
+  ],
+  "artifact": {
+    "artifact_kind": "prompt",
+    "artifact_ref": "prompt:I-7f9c2020b2-P1",
+    "artifact_revision": "c52d7bf57011473fe496d0b2f2c143af08126f80af4bae1cf6499e6bbbafd979",
+    "body": "COMPARE Kafka and RabbitMQ for event delivery.",
+    "capabilities": {
+      "copy": true,
+      "open_external": true
+    },
+    "media_type": "text/plain",
+    "title": "Authoritative Prompt (PDL.md)"
+  },
+  "focus_kind": "PROMPT_REVIEW",
+  "interaction_state": "REVIEW_REQUIRED",
+  "lifecycle": {
+    "authorized_handoff_artifacts": [],
+    "close_allowed": true,
+    "handoff_ready": false,
+    "result_body": null,
+    "review_required": true,
+    "terminal": false,
+    "terminal_disposition": null
+  },
+  "model_response": "Prompt Pseudocode\n\nCOMPARE Kafka and RabbitMQ for event delivery.\n\nConfirm or correct this interpretation.",
+  "model_revision": "46c47bb9f9fb651c57c79abde264547f62b10305ba9db3c56f5d6f2f9a7bcfb7",
+  "projection_id": "projection-5ac225f63ff0860e2cdffeafc1e7f9f32c5d0e6fae888a528767203cf01cc4d1",
+  "schema_version": "r6o-focus-projection-1",
+  "session_id": "I-7f9c2020b2",
+  "stage": "PROMPT_REVIEW",
+  "workspace_id": "W-7cf5e2d2c9b1"
+}

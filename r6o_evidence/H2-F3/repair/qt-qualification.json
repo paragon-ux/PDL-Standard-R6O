@@ -1,0 +1,40 @@
+{
+  "gate": "H2-F3",
+  "human_visual_approval": "PENDING_HUMAN_H2",
+  "platforms": {
+    "linux_wayland": {
+      "ci_job": {
+        "head_sha": "36179fc1d18a94b29996bedc8a53b1fb5a88f802",
+        "job_id": 98726157788,
+        "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33132876973/job/98726157788",
+        "name": "linux-wayland",
+        "status": "SUCCESS",
+        "workflow": "H2-C Qt Quick qualification",
+        "workflow_run_id": 33132876973
+      },
+      "status": "PASS"
+    },
+    "linux_x11": {
+      "ci_job": {
+        "head_sha": "36179fc1d18a94b29996bedc8a53b1fb5a88f802",
+        "job_id": 98726157652,
+        "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33132876973/job/98726157652",
+        "name": "linux-x11",
+        "status": "SUCCESS",
+        "workflow": "H2-C Qt Quick qualification",
+        "workflow_run_id": 33132876973
+      },
+      "status": "PASS"
+    },
+    "windows": {
+      "result_path": "qt/windows/component-result.json",
+      "status": "PASS"
+    }
+  },
+  "schema_version": "r6o-h2-f3-qt-qualification-1",
+  "source": {
+    "head": "36179fc1d18a94b29996bedc8a53b1fb5a88f802",
+    "status": "FROZEN",
+    "tree": "5875f68725ef750f9176c0afcf2a0b1ea6002578"
+  }
+}

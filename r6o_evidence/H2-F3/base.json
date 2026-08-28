@@ -1,0 +1,22 @@
+{
+  "schema_version": "r6o-h2-f3-base-1",
+  "gate": "H2-F3",
+  "recorded_before_edit": true,
+  "recording_note": "Dynamically recorded from the freshly fetched accepted main checkout before F3 implementation edits.",
+  "base": {
+    "branch": "main",
+    "head": "ca646bb26f2f31015c217fe621761a82e45c60ed",
+    "tree": "59e10dc1eeca86c3c2393a63b02eae4cc8c1cd2a",
+    "remote": "origin/main"
+  },
+  "accepted_f2": {
+    "final_evidence_head": "63f04151a97cc8fb9fe8bec96d4562c548744fbb",
+    "final_evidence_tree": "59e10dc1eeca86c3c2393a63b02eae4cc8c1cd2a",
+    "second_repaired_code_freeze_head": "27cbce651ccacd3dc18f90a2684bb87d19582534",
+    "second_repaired_code_freeze_tree": "ab7fc624679498d48310edde008ea001c13e9552"
+  },
+  "frozen_r6s": {
+    "commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+    "tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6"
+  }
+}

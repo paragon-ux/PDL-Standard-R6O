@@ -1,0 +1,33 @@
+{
+  "schema_version": "r6o-h2-b1-test-results-1",
+  "gate": "H2-B1",
+  "status": "MECHANICAL_PASS_PENDING_HUMAN",
+  "driver": "PUBLIC_PROCESS_STDIN_KEYBOARD_BOUNDARY",
+  "public_command": "python scripts\\run_r6o2_tui.py --recorded --case G06",
+  "exit_code": 0,
+  "observed_screens": [
+    "PROMPT REVIEW",
+    "PLAN REVIEW"
+  ],
+  "terminal_behavior": "RESTORE_AND_RETURN_WITHOUT_TERMINAL_REVIEW_SCREEN",
+  "presentation_reference": {
+    "path": "docs/h2/TUI-REFERENCE-v4-2026-08-22.md",
+    "normalized_text_sha256": "af74ce9fa9b09b8f7e4e555e9213c9e6a0574897718749c872f015da51c331b5"
+  },
+  "observed_operation_ids": [
+    "G06:0001",
+    "G06:0002",
+    "G06:0003",
+    "G06:0004",
+    "G06:0005"
+  ],
+  "final_stage": "CLOSED_SUCCESS",
+  "prompt_body_sha256": "3b981f581b4f8ab151852f9214493c65accc72153f2f57c68dbc3c4c244911f2",
+  "plan_body_sha256": "4763d12d6203ca03c4e8936f2dfb58a3d0d0e782d8990f7a5d12dbf8425bf7ce",
+  "result_body_sha256": "47106d2d4689ef07820e0537511d0cbabdb50701ca0bef83d52dc1b617ea279b",
+  "oracle_commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
+  "oracle_tree": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6",
+  "oracle_inventory_unchanged": true,
+  "terminal_recording": "tui-g06.cast",
+  "state_transitions": "state-transitions.jsonl"
+}

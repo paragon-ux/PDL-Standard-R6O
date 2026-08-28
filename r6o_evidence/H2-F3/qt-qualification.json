@@ -1,0 +1,34 @@
+{
+  "gate": "H2-F3",
+  "human_visual_approval": "PENDING_HUMAN_H2",
+  "platforms": {
+    "linux_wayland": {
+      "ci_job": {
+        "job_id": 98408617442,
+        "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33039165886/job/98408617442",
+        "name": "linux-wayland",
+        "status": "SUCCESS"
+      },
+      "status": "PASS"
+    },
+    "linux_x11": {
+      "ci_job": {
+        "job_id": 98408617609,
+        "job_url": "https://github.com/paragon-ux/PDL-Standard-R6O/actions/runs/33039165886/job/98408617609",
+        "name": "linux-x11",
+        "status": "SUCCESS"
+      },
+      "status": "PASS"
+    },
+    "windows": {
+      "result_path": "qt/windows/component-result.json",
+      "status": "PASS"
+    }
+  },
+  "schema_version": "r6o-h2-f3-qt-qualification-1",
+  "source": {
+    "head": "d170fdee54e968190981acc8fb8945296ae7605b",
+    "status": "FROZEN",
+    "tree": "934fd2043b561cddddc78be384bcb40fc28c23bc"
+  }
+}

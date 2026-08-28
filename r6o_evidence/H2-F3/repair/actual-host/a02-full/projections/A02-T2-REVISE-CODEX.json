@@ -1,0 +1,67 @@
+{
+  "actions": [
+    {
+      "action_id": "confirm_prompt",
+      "canonical_review_text": "Yes, that is what I mean.",
+      "emphasis": "PRIMARY",
+      "enabled": true,
+      "kind": "SEMANTIC_MESSAGE",
+      "label": "Confirm prompt",
+      "ordinal": 1
+    },
+    {
+      "action_id": "change_task",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Change the task",
+      "ordinal": 2
+    },
+    {
+      "action_id": "change_approach",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Change approach",
+      "ordinal": 3
+    },
+    {
+      "action_id": "something_else",
+      "emphasis": "NORMAL",
+      "enabled": true,
+      "kind": "FREE_RESPONSE_FOCUS",
+      "label": "Something else...",
+      "ordinal": 4
+    }
+  ],
+  "artifact": {
+    "artifact_kind": "prompt",
+    "artifact_ref": "prompt:I-7f9c2020b2-P2",
+    "artifact_revision": "fceae3ff15a339e9b75e5222418c8663e970438fa7735cf6f4bdb2e16e952b80",
+    "body": "COMPARE Kafka and RabbitMQ for event delivery for an audience of data engineers.",
+    "capabilities": {
+      "copy": true,
+      "open_external": true
+    },
+    "media_type": "text/plain",
+    "title": "Authoritative Prompt (PDL.md)"
+  },
+  "focus_kind": "PROMPT_REVIEW",
+  "interaction_state": "REVIEW_REQUIRED",
+  "lifecycle": {
+    "authorized_handoff_artifacts": [],
+    "close_allowed": true,
+    "handoff_ready": false,
+    "result_body": null,
+    "review_required": true,
+    "terminal": false,
+    "terminal_disposition": null
+  },
+  "model_response": "Prompt Pseudocode\n\nCOMPARE Kafka and RabbitMQ for event delivery for an audience of data engineers.\n\nConfirm or correct this interpretation.",
+  "model_revision": "788871f0baa10c018d51f7e9229e116ed6ca5c4483d73fcbe9297b351e99420e",
+  "projection_id": "projection-5ad09f54c005597f1d042e59abb8e24f7db9993d128f3108be2b42a3097a5aa7",
+  "schema_version": "r6o-focus-projection-1",
+  "session_id": "I-7f9c2020b2",
+  "stage": "PROMPT_REVIEW",
+  "workspace_id": "W-7cf5e2d2c9b1"
+}

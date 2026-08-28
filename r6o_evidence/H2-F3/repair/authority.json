@@ -1,0 +1,20 @@
+{
+  "agent": "SOL-H2-F3-BOUNDED-REPAIR",
+  "automatic_repair_budget_remaining": 0,
+  "gate": "H2-F3",
+  "human_pass": "NOT_CLAIMED",
+  "next_authority": "HUMAN-H2",
+  "production_behavior_changed": false,
+  "r6o3_behavior_claimed": false,
+  "repair_base": {
+    "head": "ac1a0a465a38a5f86e28cab940c281a53705f052",
+    "tree": "7c1f15aca91438695be54d5ea25ba6611e281fb3"
+  },
+  "repaired_code_freeze": {
+    "head": "36179fc1d18a94b29996bedc8a53b1fb5a88f802",
+    "status": "FROZEN",
+    "tree": "5875f68725ef750f9176c0afcf2a0b1ea6002578"
+  },
+  "schema_version": "r6o-h2-f3-bounded-repair-authority-1",
+  "trigger": "SOL_F3_REVIEW_REQUEST_CHANGES"
+}
