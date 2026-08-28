@@ -984,6 +984,48 @@ def test_canonical_transaction_produces_only_a_complete_active_chain(
     assert "f3_attachment_provenance" not in unlinked
     assert unlinked["status"] == "HUMAN_COLLECTION_COMPLETE"
 
+    for field, reference, dimension in (
+        (
+            "host_record_path",
+            transaction.HOST_RECORD_REFERENCE,
+            "HOST_RECORD_CANONICAL_PATH",
+        ),
+        (
+            "selectors_path",
+            transaction.SELECTORS_REFERENCE,
+            "SELECTORS_CANONICAL_PATH",
+        ),
+    ):
+        alias_repo = tmp_path / f"alias-{field}" / "repo"
+        alias_output = alias_repo / "r6o_evidence" / "H2-F3" / "repair"
+        _write_transaction_inputs(alias_repo, alias_output)
+        alias_path = alias_repo / "aliases" / Path(reference).name
+        alias_path.parent.mkdir(parents=True, exist_ok=True)
+        alias_path.write_bytes((alias_repo / reference).read_bytes())
+        alias_calls: list[str] = []
+        monkeypatch.setattr(
+            transaction,
+            "_run_command",
+            _fake_transaction_command(alias_repo, alias_calls),
+        )
+        with pytest.raises(transaction.F3AttachmentTransactionError) as exc_info:
+            transaction.run_canonical_transaction(
+                repo=alias_repo,
+                output=alias_output,
+                **{field: alias_path},
+            )
+        assert exc_info.value.dimension == dimension
+        assert exc_info.value.expected == reference
+        assert exc_info.value.actual == alias_path.relative_to(alias_repo).as_posix()
+        assert alias_calls == []
+        assert not (alias_output / transaction.PROVENANCE_REFERENCE).exists()
+        alias_aggregate = json.loads(
+            (alias_output / "actual-host" / "qualification.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        assert "f3_attachment_provenance" not in alias_aggregate
+
     failed_repo = tmp_path / "fail" / "repo"
     failed_output = failed_repo / "r6o_evidence" / "H2-F3" / "repair"
     _write_transaction_inputs(failed_repo, failed_output)

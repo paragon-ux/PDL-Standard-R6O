@@ -366,11 +366,23 @@ def run_canonical_transaction(
 
     repo = repo.resolve()
     output = output.resolve()
-    host_record = (host_record_path or (repo / HOST_RECORD_REFERENCE)).resolve()
-    selectors = (selectors_path or (repo / SELECTORS_REFERENCE)).resolve()
+    canonical_host_record = (repo / HOST_RECORD_REFERENCE).resolve()
+    canonical_selectors = (repo / SELECTORS_REFERENCE).resolve()
+    host_record = (host_record_path or canonical_host_record).resolve()
+    selectors = (selectors_path or canonical_selectors).resolve()
     _repo_relative(repo, output, dimension="OUTPUT_PATH_SCOPE")
-    _repo_relative(repo, host_record, dimension="HOST_RECORD_PATH_SCOPE")
-    _repo_relative(repo, selectors, dimension="SELECTORS_PATH_SCOPE")
+    _require(
+        host_record == canonical_host_record,
+        "HOST_RECORD_CANONICAL_PATH",
+        HOST_RECORD_REFERENCE,
+        _repo_relative(repo, host_record, dimension="HOST_RECORD_PATH_SCOPE"),
+    )
+    _require(
+        selectors == canonical_selectors,
+        "SELECTORS_CANONICAL_PATH",
+        SELECTORS_REFERENCE,
+        _repo_relative(repo, selectors, dimension="SELECTORS_PATH_SCOPE"),
+    )
     candidate = _candidate_identity(repo)
 
     actual_host = output / "actual-host"
