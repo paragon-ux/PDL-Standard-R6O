@@ -971,6 +971,18 @@ def test_canonical_transaction_produces_only_a_complete_active_chain(
     relinked = transaction.link_existing_provenance(repo=repo, output=output)
     assert relinked["status"] == "HUMAN_COLLECTION_COMPLETE"
     assert relinked["f3_attachment_provenance"] == transaction.PROVENANCE_REFERENCE
+    relinked.pop("f3_attachment_provenance")
+    _write_json(output / "actual-host" / "qualification.json", relinked)
+    provenance["event_log_sha256"] = "0" * 64
+    _write_json(output / transaction.PROVENANCE_REFERENCE, provenance)
+    with pytest.raises(transaction.F3AttachmentTransactionError) as exc_info:
+        transaction.link_existing_provenance(repo=repo, output=output)
+    assert exc_info.value.dimension == "EXISTING_PROVENANCE_COMPLETE_CHAIN"
+    unlinked = json.loads(
+        (output / "actual-host" / "qualification.json").read_text(encoding="utf-8")
+    )
+    assert "f3_attachment_provenance" not in unlinked
+    assert unlinked["status"] == "HUMAN_COLLECTION_COMPLETE"
 
     failed_repo = tmp_path / "fail" / "repo"
     failed_output = failed_repo / "r6o_evidence" / "H2-F3" / "repair"
@@ -1038,6 +1050,48 @@ def _assert_current_chain_fails(
     assert exc_info.value.dimension == dimension
 
 
+def _assert_preflight_contract_tamper_fails(
+    *,
+    root: Path,
+    freeze: dict[str, str],
+    scenario: str,
+    dimension: str,
+) -> None:
+    repo = root / "repo"
+    output = repo / "r6o_evidence" / "H2-F3" / "repair"
+    _write_current_host_fixture(repo, output, freeze)
+    reset_path = output / "actual-host" / "preflight-reset.json"
+    reset = json.loads(reset_path.read_text(encoding="utf-8"))
+    provenance_path = output / transaction.PROVENANCE_REFERENCE
+    provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
+
+    if scenario == "path":
+        provenance["preflight_reset_path"] = "r6o_evidence/H2-D1/reset-session.log"
+    elif scenario == "hash":
+        provenance["preflight_reset_sha256"] = "0" * 64
+    elif scenario == "schema":
+        reset["schema_version"] = "wrong-reset-schema"
+    elif scenario == "selectors":
+        reset["selectors_sha256"] = "0" * 64
+    elif scenario == "status":
+        reset["status"] = "FAIL"
+    else:  # pragma: no cover - the explicit contract cases are exhaustive
+        raise AssertionError(scenario)
+
+    if scenario in {"schema", "selectors", "status"}:
+        _write_json(reset_path, reset)
+        provenance["preflight_reset_sha256"] = hashlib.sha256(
+            reset_path.read_bytes()
+        ).hexdigest()
+    _write_json(provenance_path, provenance)
+    _assert_current_chain_fails(
+        repo=repo,
+        output=output,
+        freeze=freeze,
+        dimension=dimension,
+    )
+
+
 @pytest.mark.parametrize(
     ("scenario", "dimension"),
     [
@@ -1046,7 +1100,7 @@ def _assert_current_chain_fails(
         ("candidate_identity", "F3_ATTACHMENT_CANDIDATE_HEAD"),
         ("attachment_artifact_binding", "F3_ATTACHMENT_ATTACHMENT_RESULT_PATH"),
         ("nested_event_log_binding", "F3_ATTACHMENT_EVENT_LOG_RESULT_PATH_BINDING"),
-        ("preflight_binding", "F3_ATTACHMENT_PREFLIGHT_RESET_PATH"),
+        ("preflight_contract", "F3_ATTACHMENT_PREFLIGHT_SCHEMA"),
         ("producer_input_binding", "F3_ATTACHMENT_HOST_RECORD_PATH"),
         ("attachment_status", "ACTUAL_HOST_ATTACHMENT_STATUS"),
         ("real_host_flag", "ACTUAL_HOST_RUNTIME_IDENTITY"),
@@ -1061,6 +1115,39 @@ def test_contract_tampering_matrix_fails_closed(
     dimension: str,
 ) -> None:
     freeze = {"head": "1" * 40, "tree": "2" * 40}
+    if scenario == "preflight_contract":
+        _assert_preflight_contract_tamper_fails(
+            root=tmp_path / "path",
+            freeze=freeze,
+            scenario="path",
+            dimension="F3_ATTACHMENT_PREFLIGHT_RESET_PATH",
+        )
+        _assert_preflight_contract_tamper_fails(
+            root=tmp_path / "hash",
+            freeze=freeze,
+            scenario="hash",
+            dimension="F3_ATTACHMENT_PREFLIGHT_RESET_HASH",
+        )
+        _assert_preflight_contract_tamper_fails(
+            root=tmp_path / "schema",
+            freeze=freeze,
+            scenario="schema",
+            dimension="F3_ATTACHMENT_PREFLIGHT_SCHEMA",
+        )
+        _assert_preflight_contract_tamper_fails(
+            root=tmp_path / "selectors",
+            freeze=freeze,
+            scenario="selectors",
+            dimension="F3_ATTACHMENT_PREFLIGHT_SELECTORS_HASH",
+        )
+        _assert_preflight_contract_tamper_fails(
+            root=tmp_path / "status",
+            freeze=freeze,
+            scenario="status",
+            dimension="F3_ATTACHMENT_PREFLIGHT_STATUS",
+        )
+        return
+
     repo = tmp_path / "repo"
     output = repo / "r6o_evidence" / "H2-F3" / "repair"
     _write_current_host_fixture(repo, output, freeze)
@@ -1081,10 +1168,6 @@ def test_contract_tampering_matrix_fails_closed(
             "path": "r6o_evidence/H2-D2/win32-uia-events.jsonl",
             "sha256": "0" * 64,
         }
-    elif scenario == "preflight_binding":
-        provenance["preflight_reset_path"] = "r6o_evidence/H2-D1/reset-session.log"
-        provenance["preflight_reset_sha256"] = "0" * 64
-        provenance["preflight_status"] = "FAIL"
     elif scenario == "producer_input_binding":
         provenance["host_record_path"] = "r6o_evidence/H2-D1/wrong-host.json"
         provenance["host_record_sha256"] = "0" * 64

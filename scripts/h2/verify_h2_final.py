@@ -892,6 +892,13 @@ def _validate_f3_attachment_provenance(
         dimension="F3_ATTACHMENT_PREFLIGHT_RESET",
     )
     _require(
+        preflight.get("schema_version") == "r6o-h2-d1-reset-log-1",
+        "F3_ATTACHMENT_PREFLIGHT_SCHEMA",
+        "r6o-h2-d1-reset-log-1",
+        preflight.get("schema_version"),
+        artifact_paths["preflight_reset"].as_posix(),
+    )
+    _require(
         provenance.get("preflight_status") == "CODEX_TEST_SESSION_READY"
         and preflight.get("status") == "CODEX_TEST_SESSION_READY",
         "F3_ATTACHMENT_PREFLIGHT_STATUS",
@@ -901,6 +908,13 @@ def _validate_f3_attachment_provenance(
             "record": preflight.get("status"),
         },
         provenance_path.as_posix(),
+    )
+    _require(
+        preflight.get("selectors_sha256") == artifact_hashes["selectors"],
+        "F3_ATTACHMENT_PREFLIGHT_SELECTORS_HASH",
+        artifact_hashes["selectors"],
+        preflight.get("selectors_sha256"),
+        artifact_paths["preflight_reset"].as_posix(),
     )
     expected_state = {
         "attachment_status": "H2_D2_ATTACHMENT_PASS",

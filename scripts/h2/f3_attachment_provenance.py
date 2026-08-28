@@ -225,7 +225,7 @@ def validate_attachment_result(
     return attachment
 
 
-def _write_provenance_and_link(
+def _expected_provenance(
     *,
     repo: Path,
     output: Path,
@@ -238,15 +238,11 @@ def _write_provenance_and_link(
     preflight_path = actual_host / "preflight-reset.json"
     host_record_path = repo / HOST_RECORD_REFERENCE
     selectors_path = repo / SELECTORS_REFERENCE
-    provenance_path = output / PROVENANCE_REFERENCE
-    aggregate_path = actual_host / "qualification.json"
-    aggregate = _read_json(aggregate_path, dimension="AGGREGATE_QUALIFICATION")
-
     producer_identity = {
         relative_path: _sha256_file(repo / relative_path)
         for relative_path in PRODUCER_IMPLEMENTATION_PATHS
     }
-    provenance = {
+    return {
         "schema_version": PROVENANCE_SCHEMA,
         "gate": PROVENANCE_GATE,
         "candidate_head": candidate["head"],
@@ -271,6 +267,25 @@ def _write_provenance_and_link(
         "historical_failures_preserved": True,
     }
 
+
+def _write_provenance_and_link(
+    *,
+    repo: Path,
+    output: Path,
+    candidate: dict[str, str],
+    attachment: dict[str, Any],
+) -> dict[str, Any]:
+    actual_host = output / "actual-host"
+    provenance_path = output / PROVENANCE_REFERENCE
+    aggregate_path = actual_host / "qualification.json"
+    aggregate = _read_json(aggregate_path, dimension="AGGREGATE_QUALIFICATION")
+    provenance = _expected_provenance(
+        repo=repo,
+        output=output,
+        candidate=candidate,
+        attachment=attachment,
+    )
+
     # Provenance is committed before the aggregate link. Until the final atomic
     # aggregate write succeeds, no newly produced chain is advertised as active.
     _write_json_atomic(provenance_path, provenance)
@@ -282,7 +297,7 @@ def _write_provenance_and_link(
     aggregate["f3_attachment_provenance"] = PROVENANCE_REFERENCE
     aggregate["f3_local_event_log"] = {
         "path": EVENT_LOG_REFERENCE,
-        "sha256": _sha256_file(event_log_path),
+        "sha256": provenance["event_log_sha256"],
     }
     _write_json_atomic(aggregate_path, aggregate)
     return provenance
@@ -306,26 +321,6 @@ def link_existing_provenance(
     selectors_path = repo / SELECTORS_REFERENCE
     provenance_path = output / PROVENANCE_REFERENCE
     provenance = _read_json(provenance_path, dimension="EXISTING_PROVENANCE")
-    _require(
-        provenance.get("schema_version") == PROVENANCE_SCHEMA
-        and provenance.get("gate") == PROVENANCE_GATE,
-        "EXISTING_PROVENANCE_CONTRACT",
-        {"schema_version": PROVENANCE_SCHEMA, "gate": PROVENANCE_GATE},
-        {
-            "schema_version": provenance.get("schema_version"),
-            "gate": provenance.get("gate"),
-        },
-    )
-    _require(
-        provenance.get("candidate_head") == candidate["head"]
-        and provenance.get("candidate_tree") == candidate["tree"],
-        "EXISTING_PROVENANCE_CANDIDATE",
-        candidate,
-        {
-            "head": provenance.get("candidate_head"),
-            "tree": provenance.get("candidate_tree"),
-        },
-    )
     attachment = validate_attachment_result(
         repo=repo,
         attachment_path=attachment_path,
@@ -334,18 +329,17 @@ def link_existing_provenance(
         selectors_path=selectors_path,
     )
     _validate_reset(reset_path=preflight_path, selectors_path=selectors_path)
+    expected_provenance = _expected_provenance(
+        repo=repo,
+        output=output,
+        candidate=candidate,
+        attachment=attachment,
+    )
     _require(
-        provenance.get("attachment_result_path")
-        == _repo_relative(repo, attachment_path, dimension="ATTACHMENT_RESULT_PATH_SCOPE")
-        and provenance.get("attachment_result_sha256") == _sha256_file(attachment_path)
-        and provenance.get("reset_to_attachment_contiguous_machine_flow") is True,
-        "EXISTING_PROVENANCE_ACTIVE_CHAIN",
-        "current attachment path/hash and observed continuity",
-        {
-            "path": provenance.get("attachment_result_path"),
-            "sha256": provenance.get("attachment_result_sha256"),
-            "contiguous": provenance.get("reset_to_attachment_contiguous_machine_flow"),
-        },
+        provenance == expected_provenance,
+        "EXISTING_PROVENANCE_COMPLETE_CHAIN",
+        expected_provenance,
+        provenance,
     )
 
     aggregate_path = actual_host / "qualification.json"
@@ -355,7 +349,7 @@ def link_existing_provenance(
     aggregate["f3_attachment_provenance"] = PROVENANCE_REFERENCE
     aggregate["f3_local_event_log"] = {
         "path": EVENT_LOG_REFERENCE,
-        "sha256": _sha256_file(event_log_path),
+        "sha256": expected_provenance["event_log_sha256"],
     }
     _write_json_atomic(aggregate_path, aggregate)
     return aggregate
