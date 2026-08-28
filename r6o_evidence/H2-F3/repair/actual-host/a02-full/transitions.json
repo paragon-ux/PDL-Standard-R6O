@@ -2,7 +2,7 @@
   {
     "artifact_body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
     "artifact_kind": "prompt",
-    "artifact_ref": "prompt:I-7f8744c58d-P1",
+    "artifact_ref": "prompt:I-7f9c2020b2-P1",
     "capture_path": "r6o_evidence/H2-F3/repair/actual-host/a02-full/captures/A02-T0-CODEX.png",
     "host_session_observation": {
       "composer": {
@@ -47,7 +47,7 @@
           "top": 491,
           "width": 675
         },
-        "foreground_hwnd": 2954322,
+        "foreground_hwnd": 9310962,
         "global_topmost": false,
         "host_client_rectangle": {
           "bottom": 899,
@@ -62,7 +62,7 @@
         "owner_hwnd": 2758514,
         "placement_matches": true,
         "sidecar_above_host": true,
-        "sidecar_hwnd": 2954322,
+        "sidecar_hwnd": 9310962,
         "visible": true,
         "work_area_rectangle": {
           "bottom": 900,
@@ -73,16 +73,16 @@
           "width": 1600
         },
         "z_order_indices": {
-          "host": 27,
-          "sidecar": 26
+          "host": 29,
+          "sidecar": 28
         }
       },
       "focus_owner": "SIDECAR_ACTION_CONFIRM_PROMPT",
       "sidecar_visibility": "VISIBLE_STANDARD"
     },
-    "projection_id": "projection-7ad9b952e9378ec6334e6154b47738a28340224983ac38d2ed37f6b98a27d613",
+    "projection_id": "projection-5ac225f63ff0860e2cdffeafc1e7f9f32c5d0e6fae888a528767203cf01cc4d1",
     "projection_path": "r6o_evidence/H2-F3/repair/actual-host/a02-full/projections/A02-T0-CODEX.json",
-    "projection_sha256": "50011430c017671d203f0fb8fe90684ab9889fb23eb10ef1983c57c3a0521724",
+    "projection_sha256": "eecc1d6248912d7bb19fdc414711e9b3dc5189e1129f8edfc2fe8d2384e1753e",
     "result_body_sha256": null,
     "schema_version": "r6o-h2-e3-transition-1",
     "stage": "PROMPT_REVIEW",
@@ -98,7 +98,7 @@
   {
     "artifact_body_sha256": "dba4f08e0a47d995ac2a76439c1f4a7d2da61a50a8f3147f08b558944446af9c",
     "artifact_kind": "prompt",
-    "artifact_ref": "prompt:I-7f8744c58d-P1",
+    "artifact_ref": "prompt:I-7f9c2020b2-P1",
     "capture_path": "r6o_evidence/H2-F3/repair/actual-host/a02-full/captures/A02-T1-FOCUS-CODEX.png",
     "host_session_observation": {
       "composer": {
@@ -123,10 +123,10 @@
     },
     "input_envelope": {
       "action_id": "something_else",
-      "model_revision": "62a12af4d09975b8545124d23fa54a0aea98279675494e80e901f78d94f3adb4",
-      "projection_id": "projection-7ad9b952e9378ec6334e6154b47738a28340224983ac38d2ed37f6b98a27d613",
+      "model_revision": "46c47bb9f9fb651c57c79abde264547f62b10305ba9db3c56f5d6f2f9a7bcfb7",
+      "projection_id": "projection-5ac225f63ff0860e2cdffeafc1e7f9f32c5d0e6fae888a528767203cf01cc4d1",
       "schema_version": "r6o-input-envelope-1",
-      "session_id": "I-7f8744c58d",
+      "session_id": "I-7f9c2020b2",
       "source": "STRUCTURED_ACTION",
       "text": null
     },
@@ -166,7 +166,7 @@
         "owner_hwnd": 2758514,
         "placement_matches": true,
         "sidecar_above_host": true,
-        "sidecar_hwnd": 2954322,
+        "sidecar_hwnd": 9310962,
         "visible": true,
         "work_area_rectangle": {
           "bottom": 900,
@@ -177,16 +177,16 @@
           "width": 1600
         },
         "z_order_indices": {
-          "host": 27,
-          "sidecar": 26
+          "host": 29,
+          "sidecar": 28
         }
       },
       "focus_owner": "ACTUAL_CODEX_COMPOSER",
       "sidecar_visibility": "VISIBLE_STANDARD"
     },
-    "projection_id": "projection-7ad9b952e9378ec6334e6154b47738a28340224983ac38d2ed37f6b98a27d613",
+    "projection_id": "projection-5ac225f63ff0860e2cdffeafc1e7f9f32c5d0e6fae888a528767203cf01cc4d1",
     "projection_path": "r6o_evidence/H2-F3/repair/actual-host/a02-full/projections/A02-T1-FOCUS-CODEX.json",
-    "projection_sha256": "50011430c017671d203f0fb8fe90684ab9889fb23eb10ef1983c57c3a0521724",
+    "projection_sha256": "eecc1d6248912d7bb19fdc414711e9b3dc5189e1129f8edfc2fe8d2384e1753e",
     "result_body_sha256": null,
     "schema_version": "r6o-h2-e3-transition-1",
     "stage": "PROMPT_REVIEW",
@@ -197,7 +197,7 @@
   {
     "artifact_body_sha256": "03a174f24f155f0b171b7cb922db60342b040022c329a0693f65bfd97da62e4a",
     "artifact_kind": "prompt",
-    "artifact_ref": "prompt:I-7f8744c58d-P2",
+    "artifact_ref": "prompt:I-7f9c2020b2-P2",
     "capture_path": "r6o_evidence/H2-F3/repair/actual-host/a02-full/captures/A02-T2-REVISE-CODEX.png",
     "host_session_observation": {
       "composer": {
@@ -222,10 +222,10 @@
     },
     "input_envelope": {
       "action_id": null,
-      "model_revision": "62a12af4d09975b8545124d23fa54a0aea98279675494e80e901f78d94f3adb4",
+      "model_revision": "46c47bb9f9fb651c57c79abde264547f62b10305ba9db3c56f5d6f2f9a7bcfb7",
       "projection_id": null,
       "schema_version": "r6o-input-envelope-1",
-      "session_id": "I-7f8744c58d",
+      "session_id": "I-7f9c2020b2",
       "source": "HOST_COMPOSER_TEXT",
       "text": "This is not confirmed. The audience should be data engineers, not backend engineers."
     },
@@ -250,7 +250,7 @@
           "top": 491,
           "width": 675
         },
-        "foreground_hwnd": 2954322,
+        "foreground_hwnd": 9310962,
         "global_topmost": false,
         "host_client_rectangle": {
           "bottom": 899,
@@ -265,7 +265,7 @@
         "owner_hwnd": 2758514,
         "placement_matches": true,
         "sidecar_above_host": true,
-        "sidecar_hwnd": 2954322,
+        "sidecar_hwnd": 9310962,
         "visible": true,
         "work_area_rectangle": {
           "bottom": 900,
@@ -276,16 +276,16 @@
           "width": 1600
         },
         "z_order_indices": {
-          "host": 27,
-          "sidecar": 26
+          "host": 29,
+          "sidecar": 28
         }
       },
       "focus_owner": "SIDECAR_ACTION_CONFIRM_PROMPT",
       "sidecar_visibility": "VISIBLE_STANDARD"
     },
-    "projection_id": "projection-fa9814e8084b2219043130014555058cf930daffc87447c1582d160d5f9e6ac3",
+    "projection_id": "projection-5ad09f54c005597f1d042e59abb8e24f7db9993d128f3108be2b42a3097a5aa7",
     "projection_path": "r6o_evidence/H2-F3/repair/actual-host/a02-full/projections/A02-T2-REVISE-CODEX.json",
-    "projection_sha256": "c085ddc5918f2c5ef0cb483c8703770a4a5782629a59cf0d7183c103c2d6c4bb",
+    "projection_sha256": "3da6df50b338ee20ecbf4f19933e99d945174c5f2740d2a6a3886e1e4989fb00",
     "result_body_sha256": null,
     "schema_version": "r6o-h2-e3-transition-1",
     "stage": "PROMPT_REVIEW",
@@ -305,7 +305,7 @@
   {
     "artifact_body_sha256": "0598f12fb2ac853b161f0690913dd90ae1ce041803e71f4133661fb276443a68",
     "artifact_kind": "plan",
-    "artifact_ref": "plan:I-7f8744c58d-R1",
+    "artifact_ref": "plan:I-7f9c2020b2-R1",
     "capture_path": "r6o_evidence/H2-F3/repair/actual-host/a02-full/captures/A02-T3-CODEX.png",
     "host_session_observation": {
       "composer": {
@@ -330,10 +330,10 @@
     },
     "input_envelope": {
       "action_id": "confirm_prompt",
-      "model_revision": "3761bde341c58346611a4d308273000d6ed6bba7d12b9d481f71bc721270185c",
-      "projection_id": "projection-fa9814e8084b2219043130014555058cf930daffc87447c1582d160d5f9e6ac3",
+      "model_revision": "788871f0baa10c018d51f7e9229e116ed6ca5c4483d73fcbe9297b351e99420e",
+      "projection_id": "projection-5ad09f54c005597f1d042e59abb8e24f7db9993d128f3108be2b42a3097a5aa7",
       "schema_version": "r6o-input-envelope-1",
-      "session_id": "I-7f8744c58d",
+      "session_id": "I-7f9c2020b2",
       "source": "STRUCTURED_ACTION",
       "text": null
     },
@@ -358,7 +358,7 @@
           "top": 491,
           "width": 675
         },
-        "foreground_hwnd": 2954322,
+        "foreground_hwnd": 9310962,
         "global_topmost": false,
         "host_client_rectangle": {
           "bottom": 899,
@@ -373,7 +373,7 @@
         "owner_hwnd": 2758514,
         "placement_matches": true,
         "sidecar_above_host": true,
-        "sidecar_hwnd": 2954322,
+        "sidecar_hwnd": 9310962,
         "visible": true,
         "work_area_rectangle": {
           "bottom": 900,
@@ -384,16 +384,16 @@
           "width": 1600
         },
         "z_order_indices": {
-          "host": 27,
-          "sidecar": 26
+          "host": 29,
+          "sidecar": 28
         }
       },
       "focus_owner": "SIDECAR_ACTION_CONFIRM_PLAN",
       "sidecar_visibility": "VISIBLE_STANDARD"
     },
-    "projection_id": "projection-e0eded4d3349bcb38de4f3f1488ce327e5ce93c8885f5761c49b5cb2ad5913ff",
+    "projection_id": "projection-db9543203e80c4a17d383d739bb30d1296dc44dcdca2cd69685ca588c5a9fb2f",
     "projection_path": "r6o_evidence/H2-F3/repair/actual-host/a02-full/projections/A02-T3-CODEX.json",
-    "projection_sha256": "264a51d9b22ac6170777196b7c92bee750fdf56c1213221d0fc11199b174f185",
+    "projection_sha256": "7af8b88aa47555a744c6ae56fe755309e13f48ddfd1302c2a4d4d26bbf79116e",
     "result_body_sha256": null,
     "schema_version": "r6o-h2-e3-transition-1",
     "stage": "PLAN_REVIEW",
@@ -438,10 +438,10 @@
     },
     "input_envelope": {
       "action_id": "confirm_plan",
-      "model_revision": "480cdddc1ee46ce8d9f847f41397dd0515c28e1b4c8677af242cdc8ec3cedc05",
-      "projection_id": "projection-e0eded4d3349bcb38de4f3f1488ce327e5ce93c8885f5761c49b5cb2ad5913ff",
+      "model_revision": "37cf850a3d1064ee1dab18e768f8bca762c23329b52313fd9d06a5696c508259",
+      "projection_id": "projection-db9543203e80c4a17d383d739bb30d1296dc44dcdca2cd69685ca588c5a9fb2f",
       "schema_version": "r6o-input-envelope-1",
-      "session_id": "I-7f8744c58d",
+      "session_id": "I-7f9c2020b2",
       "source": "STRUCTURED_ACTION",
       "text": null
     },
@@ -455,9 +455,9 @@
       },
       "sidecar_visibility": "DISMISSED"
     },
-    "projection_id": "projection-7880dc4295f271f9815a22aa0cf1c81aeffca13eeb62c050db212f0e842062d4",
+    "projection_id": "projection-d3fb606700bb6a5f4566d895427ba585703f39a7d43b0b2e33648a162729d4b8",
     "projection_path": "r6o_evidence/H2-F3/repair/actual-host/a02-full/projections/A02-T4-CODEX.json",
-    "projection_sha256": "e7783b4d35091c08b6e283d0a5a41c6a7cf609e6f20189968a57d9fd87b5e85e",
+    "projection_sha256": "5f13977e4efe21631c9e2275d494f445a0b5f08af607a39358bea869e119aa39",
     "result_body_sha256": "79cd3ac621e54343d4cbef28229766f2c8ae4b5e694dc46b7d69b9375f7e35c4",
     "schema_version": "r6o-h2-e3-transition-1",
     "stage": "CLOSED_SUCCESS",

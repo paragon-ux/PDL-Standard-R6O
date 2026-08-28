@@ -14,7 +14,7 @@ REPL BASELINE VERIFICATION PASS
 exit=0
 --- baseline_pytest ---
 .........                                                                [100%]
-9 passed in 53.15s
+9 passed in 48.58s
 exit=0
 --- r6o1_pytest ---
 ........................................................................ [ 34%]
@@ -28,6 +28,6 @@ r6o/tests/h2/test_codex_input_binding_contract.py::test_stop_reports_pending_del
     warnings.warn("Revert to STA COM threading mode", UserWarning)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-419 passed, 1 warning in 96.73s (0:01:36)
+419 passed, 1 warning in 93.90s (0:01:33)
 exit=0
 R6O-1 VERIFICATION PASS

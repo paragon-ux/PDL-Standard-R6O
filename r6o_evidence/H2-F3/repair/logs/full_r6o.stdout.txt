@@ -10,4 +10,4 @@ r6o/tests/h2/test_codex_input_binding_contract.py::test_stop_reports_pending_del
     warnings.warn("Revert to STA COM threading mode", UserWarning)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-419 passed, 1 warning in 101.40s (0:01:41)
+419 passed, 1 warning in 94.27s (0:01:34)

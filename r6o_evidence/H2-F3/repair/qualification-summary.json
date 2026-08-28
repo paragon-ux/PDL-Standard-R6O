@@ -1,20 +1,7 @@
 {
-  "active_attachment_artifact": "PASS",
-  "active_attachment_exact_candidate_provenance": "PASS",
-  "active_attachment_f3_qualification": "PASS",
-  "attachment_machine_run": "PASS",
-  "current_actual_host_a02_full": "PASS",
-  "current_actual_host_g06": "PASS",
-  "current_e1_input_routing": "PASS",
-  "current_lifecycle_resilience": "PASS",
-  "current_verification_history_separation": "PASS",
-  "final_evidence_head_ci": "PENDING_POST_COMMIT",
-  "frozen_oracle": "UNCHANGED",
   "gate": "H2-F3",
-  "human_action_required": false,
   "human_pass": "NOT_CLAIMED",
-  "human_semantic_replay": "PASS",
-  "implementation_complete": true,
+  "implementation_complete": false,
   "local_qualification": {
     "counts": {
       "f3_focused_tests": 49,
@@ -23,24 +10,18 @@
     },
     "status": "PASS"
   },
-  "next_authority": "LUNA-H2-F3-ATTACHMENT-PROVENANCE-FINAL-AUDITOR",
+  "next_authority": "HUMAN-H2",
   "production_behavior_changed": false,
-  "protected_path_diff": "EMPTY",
-  "provenance_recovery_self_test": "PASS",
-  "r1_qt_ci_job_provenance": "PASS",
-  "r2_current_actual_host_integration": "PASS",
-  "r4_attachment_r6o3_scan": "FIXED",
+  "r1_qt_ci_job_provenance": "FIXED_PENDING_EXACT_HEAD_CI",
+  "r2_current_actual_host_integration": "HUMAN_ACTION_REQUIRED",
   "r4_r6o3_fail_closed": "FIXED",
   "r6o3_behavior_claimed": false,
-  "ready_for_luna_final_audit": true,
+  "ready_for_luna_repair_delta_review": false,
   "schema_version": "r6o-h2-f3-bounded-repair-summary-1",
-  "semantic_replay_required": false,
   "source": {
-    "head": "94d56129893206db8899df74f5201144a64a1679",
+    "head": "36179fc1d18a94b29996bedc8a53b1fb5a88f802",
     "status": "FROZEN",
-    "tree": "729d2e3c1f507ac01189e1fcc0e77cb80b8b3997"
+    "tree": "5875f68725ef750f9176c0afcf2a0b1ea6002578"
   },
-  "status": "H2_F3_FINAL_INTEGRATION_PASS",
-  "target_finding": "F3-R4-CURRENT-ATTACHMENT-PROVENANCE-MISMATCH",
-  "target_finding_status": "CLOSED"
+  "status": "HUMAN_ACTION_REQUIRED"
 }

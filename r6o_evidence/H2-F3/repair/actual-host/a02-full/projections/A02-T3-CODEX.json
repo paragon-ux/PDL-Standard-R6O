@@ -36,8 +36,8 @@
   ],
   "artifact": {
     "artifact_kind": "plan",
-    "artifact_ref": "plan:I-7f8744c58d-R1",
-    "artifact_revision": "1c1a546577500991b707b905b4e5ec8f94ea69a2d73c0cde83ab7770c23f80f1",
+    "artifact_ref": "plan:I-7f9c2020b2-R1",
+    "artifact_revision": "97d8e3652dabc7ae99ceed80eff6852905ffe970b1c92296dd8ee1841c23ecc7",
     "body": "IDENTIFY comparison criteria relevant to event delivery and data engineers.\nCOMPARE Kafka and RabbitMQ consistently across those criteria.\nSUMMARIZE the tradeoffs and the conditions that affect suitability.",
     "capabilities": {
       "copy": true,
@@ -58,10 +58,10 @@
     "terminal_disposition": null
   },
   "model_response": "Response Plan Pseudocode\n\nIDENTIFY comparison criteria relevant to event delivery and data engineers.\nCOMPARE Kafka and RabbitMQ consistently across those criteria.\nSUMMARIZE the tradeoffs and the conditions that affect suitability.\n\nConfirm or correct this response approach.",
-  "model_revision": "480cdddc1ee46ce8d9f847f41397dd0515c28e1b4c8677af242cdc8ec3cedc05",
-  "projection_id": "projection-e0eded4d3349bcb38de4f3f1488ce327e5ce93c8885f5761c49b5cb2ad5913ff",
+  "model_revision": "37cf850a3d1064ee1dab18e768f8bca762c23329b52313fd9d06a5696c508259",
+  "projection_id": "projection-db9543203e80c4a17d383d739bb30d1296dc44dcdca2cd69685ca588c5a9fb2f",
   "schema_version": "r6o-focus-projection-1",
-  "session_id": "I-7f8744c58d",
+  "session_id": "I-7f9c2020b2",
   "stage": "PLAN_REVIEW",
-  "workspace_id": "W-171e48fa6cbd"
+  "workspace_id": "W-7cf5e2d2c9b1"
 }

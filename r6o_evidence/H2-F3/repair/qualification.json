@@ -5,10 +5,10 @@
     "tree": "59e10dc1eeca86c3c2393a63b02eae4cc8c1cd2a"
   },
   "code_freeze": {
-    "head": "94d56129893206db8899df74f5201144a64a1679",
+    "head": "36179fc1d18a94b29996bedc8a53b1fb5a88f802",
     "record": "C:/Users/USER/Desktop/Frameworks/PDL-Standard-R6O-h2-f3/r6o_evidence/H2-F3/repair/code-freeze.json",
     "status": "FROZEN",
-    "tree": "729d2e3c1f507ac01189e1fcc0e77cb80b8b3997"
+    "tree": "5875f68725ef750f9176c0afcf2a0b1ea6002578"
   },
   "dimensions": {
     "accepted_actual_host_a02_full": "PASS",
@@ -50,7 +50,7 @@
     "tui_g06": "PASS"
   },
   "gate": "H2-F3",
-  "generated_at_utc": "2026-08-27T20:16:28.176129Z",
+  "generated_at_utc": "2026-08-28T06:40:09.560388Z",
   "human_gate": {
     "human_disposition": null,
     "human_pass": "NOT_CLAIMED",
@@ -64,14 +64,14 @@
   ],
   "local_qualification": {
     "actual_host": {
-      "attachment_status": "H2_D2_ATTACHMENT_PASS",
+      "attachment_status": "PASS",
       "evidence": "actual-host/qualification.json",
-      "status": "PASS"
+      "status": "HUMAN_PENDING"
     },
     "commands": [
       {
         "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe -m pytest r6o/tests/h2/test_h2_final_integration.py -q -p no:cacheprovider",
-        "duration_seconds": 7.921,
+        "duration_seconds": 7.812,
         "exit_code": 0,
         "id": "f3_focused_tests",
         "passed_count": 49,
@@ -81,7 +81,7 @@
       },
       {
         "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe -m pytest r6o/tests/h2/test_codex_input_binding_contract.py r6o/tests/h2/test_codex_h2_e2.py r6o/tests/h2/test_codex_h2_e3.py -q -p no:cacheprovider",
-        "duration_seconds": 33.704,
+        "duration_seconds": 26.079,
         "exit_code": 0,
         "id": "e1_e2_e3_regression",
         "passed_count": 83,
@@ -91,7 +91,7 @@
       },
       {
         "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe -m pytest r6o/tests/h2/test_qt_sidecar_feasibility.py r6o/tests/h2/test_qt_sidecar_component.py -q -p no:cacheprovider",
-        "duration_seconds": 3.593,
+        "duration_seconds": 2.671,
         "exit_code": 0,
         "id": "qt_focused_tests",
         "passed_count": 22,
@@ -101,7 +101,7 @@
       },
       {
         "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe -m pytest r6o/tests -q -p no:cacheprovider",
-        "duration_seconds": 105.766,
+        "duration_seconds": 95.844,
         "exit_code": 0,
         "id": "full_r6o",
         "passed_count": 419,
@@ -111,7 +111,7 @@
       },
       {
         "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/verify_r6o1.py",
-        "duration_seconds": 162.359,
+        "duration_seconds": 151.875,
         "exit_code": 0,
         "id": "r6o1_verification",
         "passed_count": 419,
@@ -121,7 +121,7 @@
       },
       {
         "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_tui_g06.py --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --evidence-dir r6o_evidence/H2-F3/repair/tui-g06",
-        "duration_seconds": 3.782,
+        "duration_seconds": 3.938,
         "exit_code": 0,
         "id": "tui_g06",
         "passed_count": null,
@@ -131,7 +131,7 @@
       },
       {
         "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_tui_a02_full.py --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --evidence-dir r6o_evidence/H2-F3/repair/tui-a02-full",
-        "duration_seconds": 4.312,
+        "duration_seconds": 4.343,
         "exit_code": 0,
         "id": "tui_a02_full",
         "passed_count": null,
@@ -141,7 +141,7 @@
       },
       {
         "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_cross_view_parity.py --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --output-dir r6o_evidence/H2-F3/repair/f1-parity-rerun",
-        "duration_seconds": 4.563,
+        "duration_seconds": 4.719,
         "exit_code": 0,
         "id": "f1_parity_verifier",
         "passed_count": null,
@@ -151,7 +151,7 @@
       },
       {
         "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_h2_lifecycle_resilience.py --mode portable --baseline-repo C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1 --evidence-dir r6o_evidence/H2-F3/repair/f2-portable",
-        "duration_seconds": 4.734,
+        "duration_seconds": 3.531,
         "exit_code": 0,
         "id": "f2_portable_verifier",
         "passed_count": null,
@@ -161,7 +161,7 @@
       },
       {
         "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_qt_sidecar_component.py --platform windows --evidence-dir r6o_evidence/H2-F3/repair/qt",
-        "duration_seconds": 2.328,
+        "duration_seconds": 1.563,
         "exit_code": 0,
         "id": "qt_windows_qualification",
         "passed_count": null,
@@ -170,8 +170,8 @@
         "stdout_path": "logs/qt_windows_qualification.stdout.txt"
       },
       {
-        "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/verify_codex_attachment.py --host-record r6o_evidence/H2-D1/host-environment.json --selectors r6o/host/codex/windows/selectors.json --evidence-dir r6o_evidence/H2-F3/repair/actual-host/attachment",
-        "duration_seconds": 79.852,
+        "command": "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python311\\python.exe scripts/h2/f3_attachment_provenance.py --output-dir r6o_evidence/H2-F3/repair",
+        "duration_seconds": 96.281,
         "exit_code": 0,
         "id": "actual_codex_attachment",
         "passed_count": null,
@@ -194,9 +194,9 @@
     ],
     "schema_version": "r6o-h2-f3-local-qualification-1",
     "source": {
-      "head": "94d56129893206db8899df74f5201144a64a1679",
+      "head": "36179fc1d18a94b29996bedc8a53b1fb5a88f802",
       "status": "FROZEN",
-      "tree": "729d2e3c1f507ac01189e1fcc0e77cb80b8b3997"
+      "tree": "5875f68725ef750f9176c0afcf2a0b1ea6002578"
     }
   },
   "platform_matrix": {
@@ -284,21 +284,12 @@
       "r6o_evidence/H2-F3/repair/actual-host/qualification.json",
       "r6o_evidence/H2-F3/repair/authority.json",
       "r6o_evidence/H2-F3/repair/ci.json",
+      "r6o_evidence/H2-F3/repair/code-freeze.json",
       "r6o_evidence/H2-F3/repair/f1-parity-rerun/parity-report.json",
       "r6o_evidence/H2-F3/repair/f1-parity-rerun/tui-projections/A02_FULL.json",
       "r6o_evidence/H2-F3/repair/f1-parity-rerun/tui-projections/G06.json",
       "r6o_evidence/H2-F3/repair/f2-portable/qualification.json",
-      "r6o_evidence/H2-F3/repair/history/preflight-reset-attempts/composer-cardinality-0-20260827T201035Z/attempt.json",
-      "r6o_evidence/H2-F3/repair/history/preflight-reset-attempts/composer-cardinality-0-20260827T201035Z/preflight-reset.json",
-      "r6o_evidence/H2-F3/repair/history/redundant-attachment-without-reset-20260827T200833Z/attachment-result.json",
-      "r6o_evidence/H2-F3/repair/history/redundant-attachment-without-reset-20260827T200833Z/attachment-standard.mp4",
-      "r6o_evidence/H2-F3/repair/history/redundant-attachment-without-reset-20260827T200833Z/classification.json",
-      "r6o_evidence/H2-F3/repair/history/redundant-attachment-without-reset-20260827T200833Z/local-qualification-failed-snapshot.json",
-      "r6o_evidence/H2-F3/repair/history/redundant-attachment-without-reset-20260827T200833Z/stderr.txt",
-      "r6o_evidence/H2-F3/repair/history/redundant-attachment-without-reset-20260827T200833Z/stdout.txt",
-      "r6o_evidence/H2-F3/repair/history/redundant-attachment-without-reset-20260827T200833Z/win32-uia-events.jsonl",
       "r6o_evidence/H2-F3/repair/local-qualification.json",
-      "r6o_evidence/H2-F3/repair/logs/actual_codex_attachment.stderr.txt",
       "r6o_evidence/H2-F3/repair/logs/actual_codex_attachment.stdout.txt",
       "r6o_evidence/H2-F3/repair/logs/e1_e2_e3_regression.stdout.txt",
       "r6o_evidence/H2-F3/repair/logs/f1_parity_verifier.stdout.txt",
@@ -312,11 +303,12 @@
       "r6o_evidence/H2-F3/repair/qt/windows/component-result.json",
       "r6o_evidence/H2-F3/repair/qualification-summary.json",
       "r6o_evidence/H2-F3/repair/qualification.json",
+      "r6o_evidence/H2-F3/repair/review-findings.json",
       "r6o_evidence/H2-F3/repair/tui-a02-full/tui-a02-full.cast",
       "r6o_evidence/H2-F3/repair/tui-g06/tui-g06.cast"
     ],
-    "head": "9e52ed426777f6c205028d6a06962493e251a547",
-    "tree": "0fb011f916d26b37fe544c929edd234e5d00b2eb"
+    "head": "36179fc1d18a94b29996bedc8a53b1fb5a88f802",
+    "tree": "5875f68725ef750f9176c0afcf2a0b1ea6002578"
   },
   "status": "H2_F3_FINAL_INTEGRATION_PASS"
 }

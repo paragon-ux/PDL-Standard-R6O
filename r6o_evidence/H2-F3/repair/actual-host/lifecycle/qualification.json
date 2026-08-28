@@ -132,7 +132,7 @@
         "top": 47,
         "width": 412
       },
-      "foreground_hwnd": 3150930,
+      "foreground_hwnd": 9507570,
       "global_topmost": false,
       "host_client_rectangle": {
         "bottom": 899,
@@ -147,7 +147,7 @@
       "owner_hwnd": 2758514,
       "placement_matches": true,
       "sidecar_above_host": true,
-      "sidecar_hwnd": 3150930,
+      "sidecar_hwnd": 9507570,
       "visible": true,
       "work_area_rectangle": {
         "bottom": 900,
@@ -158,8 +158,8 @@
         "width": 1600
       },
       "z_order_indices": {
-        "host": 28,
-        "sidecar": 26
+        "host": 30,
+        "sidecar": 28
       }
     },
     "final_resource_state": {
@@ -222,7 +222,7 @@
         "top": 491,
         "width": 675
       },
-      "foreground_hwnd": 3150930,
+      "foreground_hwnd": 9507570,
       "global_topmost": false,
       "host_client_rectangle": {
         "bottom": 899,
@@ -237,7 +237,7 @@
       "owner_hwnd": 2758514,
       "placement_matches": true,
       "sidecar_above_host": true,
-      "sidecar_hwnd": 3150930,
+      "sidecar_hwnd": 9507570,
       "visible": true,
       "work_area_rectangle": {
         "bottom": 900,
@@ -248,8 +248,8 @@
         "width": 1600
       },
       "z_order_indices": {
-        "host": 28,
-        "sidecar": 26
+        "host": 30,
+        "sidecar": 28
       }
     },
     "reopen": {
@@ -272,7 +272,7 @@
         "top": 491,
         "width": 675
       },
-      "foreground_hwnd": 3150930,
+      "foreground_hwnd": 9507570,
       "global_topmost": false,
       "host_client_rectangle": {
         "bottom": 899,
@@ -287,7 +287,7 @@
       "owner_hwnd": 2758514,
       "placement_matches": true,
       "sidecar_above_host": true,
-      "sidecar_hwnd": 3150930,
+      "sidecar_hwnd": 9507570,
       "visible": true,
       "work_area_rectangle": {
         "bottom": 900,
@@ -298,8 +298,8 @@
         "width": 1600
       },
       "z_order_indices": {
-        "host": 27,
-        "sidecar": 26
+        "host": 29,
+        "sidecar": 28
       }
     },
     "second_close": {
@@ -325,9 +325,9 @@
   },
   "gate": "H2-F3",
   "process_exit": {
-    "child_pid": 14864,
+    "child_pid": 11188,
     "cleanup_complete_marker": true,
-    "duration_seconds": 96.984,
+    "duration_seconds": 95.031,
     "final_resource_state": {
       "focus_router": {
         "hook_removed": true,
@@ -361,9 +361,9 @@
   "r6o3_lease_implemented": false,
   "schema_version": "r6o-h2-f3-current-lifecycle-1",
   "source": {
-    "head": "94d56129893206db8899df74f5201144a64a1679",
+    "head": "36179fc1d18a94b29996bedc8a53b1fb5a88f802",
     "status": "FROZEN",
-    "tree": "729d2e3c1f507ac01189e1fcc0e77cb80b8b3997"
+    "tree": "5875f68725ef750f9176c0afcf2a0b1ea6002578"
   },
   "status": "H2_F3_CURRENT_LIFECYCLE_PASS",
   "warnings": [

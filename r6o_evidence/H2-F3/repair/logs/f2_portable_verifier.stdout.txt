@@ -2,8 +2,8 @@
   "checkout": {
     "branch": "codex/h2-f3-final-integration",
     "dirty": true,
-    "head": "94d56129893206db8899df74f5201144a64a1679",
-    "tree": "729d2e3c1f507ac01189e1fcc0e77cb80b8b3997"
+    "head": "36179fc1d18a94b29996bedc8a53b1fb5a88f802",
+    "tree": "5875f68725ef750f9176c0afcf2a0b1ea6002578"
   },
   "d2_regression": {
     "accepted_evidence": [
@@ -12,7 +12,7 @@
     ],
     "status": "PASS"
   },
-  "finished_at_utc": "2026-08-27T20:03:08.842076Z",
+  "finished_at_utc": "2026-08-28T06:25:22.927560Z",
   "frozen_oracle": {
     "commit": "60d982f3328b45a351879d67dc4bb525172b65fd",
     "path": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-REPL-Harness-quarantine-20260821-H1",
@@ -67,9 +67,9 @@
   },
   "mode": "portable",
   "process_exit_qualification": {
-    "child_pid": 24732,
+    "child_pid": 8688,
     "cleanup_complete_marker": true,
-    "duration_seconds": 1.672,
+    "duration_seconds": 1.11,
     "final_resource_state": {
       "input": {
         "orphaned_dispatcher_released": true,
@@ -241,7 +241,7 @@
     "semantic_workflow_exercised": false
   },
   "selectors": "C:\\Users\\USER\\Desktop\\Frameworks\\PDL-Standard-R6O-h2-f3\\r6o\\host\\codex\\windows\\selectors.json",
-  "started_at_utc": "2026-08-27T20:03:04.591266Z",
+  "started_at_utc": "2026-08-28T06:25:19.834088Z",
   "status": "H2_F2_LIFECYCLE_RESILIENCE_PASS",
   "warnings": [
     {

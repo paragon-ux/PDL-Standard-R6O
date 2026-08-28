@@ -15,17 +15,17 @@
       ],
       "projection": {
         "schema_version": "r6o-focus-projection-1",
-        "session_id": "I-589f07f739",
-        "workspace_id": "W-9d8561d3cd43",
-        "model_revision": "e3b8574420ffba58c54771a79ab11f526421a76eece641e3e9d02f9656c9af50",
-        "projection_id": "projection-d8476bd724a8f1929b90ce032193a1714fc633815f99d84e9822aa0f5f56d323",
+        "session_id": "I-cfca447147",
+        "workspace_id": "W-da11dda2afeb",
+        "model_revision": "1419f8c80259a977dc2c90ba3fddcfc03f77e688d9c5eb91223132e57d824f4b",
+        "projection_id": "projection-27b123c72dd1c2ced6b7688b7eb160acf0f02f407236195e6192452a006d26fa",
         "interaction_state": "REVIEW_REQUIRED",
         "model_response": "Prompt Pseudocode\n\nExplain the difference between optimistic locking and pessimistic locking for an audience of senior developers.\n\nConfirm or correct this interpretation.",
         "stage": "PROMPT_REVIEW",
         "focus_kind": "PROMPT_REVIEW",
         "artifact": {
-          "artifact_ref": "prompt:I-589f07f739-P1",
-          "artifact_revision": "40e418e5e7215a1da60aded05847fc657d99c2724464527a497a65c66c98b553",
+          "artifact_ref": "prompt:I-cfca447147-P1",
+          "artifact_revision": "abc2d94370918f88bd71753b499b5bea432a63e2ddc5fcc20a881b1a8c371c4d",
           "artifact_kind": "prompt",
           "title": "Authoritative Prompt (PDL.md)",
           "body": "Explain the difference between optimistic locking and pessimistic locking for an audience of senior developers.",
@@ -120,7 +120,7 @@
         ],
         "artifact": {
           "artifact_kind": "prompt",
-          "artifact_revision": "40e418e5e7215a1da60aded05847fc657d99c2724464527a497a65c66c98b553",
+          "artifact_revision": "abc2d94370918f88bd71753b499b5bea432a63e2ddc5fcc20a881b1a8c371c4d",
           "body_sha256": "3b981f581b4f8ab151852f9214493c65accc72153f2f57c68dbc3c4c244911f2",
           "media_type": "text/plain",
           "title": "Authoritative Prompt (PDL.md)",
@@ -139,9 +139,9 @@
           "authorized_handoff_artifacts": [],
           "result_body_sha256": null
         },
-        "session_id": "I-589f07f739",
-        "model_revision": "e3b8574420ffba58c54771a79ab11f526421a76eece641e3e9d02f9656c9af50",
-        "projection_id": "projection-d8476bd724a8f1929b90ce032193a1714fc633815f99d84e9822aa0f5f56d323"
+        "session_id": "I-cfca447147",
+        "model_revision": "1419f8c80259a977dc2c90ba3fddcfc03f77e688d9c5eb91223132e57d824f4b",
+        "projection_id": "projection-27b123c72dd1c2ced6b7688b7eb160acf0f02f407236195e6192452a006d26fa"
       }
     },
     {
@@ -160,17 +160,17 @@
       ],
       "projection": {
         "schema_version": "r6o-focus-projection-1",
-        "session_id": "I-589f07f739",
-        "workspace_id": "W-9d8561d3cd43",
-        "model_revision": "cfa54752e186616862e856938cefbc57f789dd2909b699b1f281bba082cc5d04",
-        "projection_id": "projection-5ffde7ff292c6318fad8acdb8ed0ffd2c5297f08a18df8a6e780e4281aff8294",
+        "session_id": "I-cfca447147",
+        "workspace_id": "W-da11dda2afeb",
+        "model_revision": "c9394889ed4661ac8f6c6f5441e852fd6c92548d64b906ab6422cb4ef5158606",
+        "projection_id": "projection-173ba3a4ea704f5c9f4803bcf948743fb679b5bbf8a9d6f4ce924c83d52681a9",
         "interaction_state": "REVIEW_REQUIRED",
         "model_response": "Response Plan Pseudocode\n\nIDENTIFY the target audience as senior developers\nINTRODUCE the subject of concurrency control\nDEFINE optimistic locking\nDEFINE pessimistic locking\nCOMPARE the two approaches\nSUMMARIZE the differences\n\nConfirm or correct this response approach.",
         "stage": "PLAN_REVIEW",
         "focus_kind": "PLAN_REVIEW",
         "artifact": {
-          "artifact_ref": "plan:I-589f07f739-R1",
-          "artifact_revision": "d38b50b1faa5598c9aad8bec21828e807c9dc2b3fef96ffe113d2f464f7719dd",
+          "artifact_ref": "plan:I-cfca447147-R1",
+          "artifact_revision": "e21caa3ef3a1b26a79cd619d826231a487216213f59851a410c2ff14056eec41",
           "artifact_kind": "plan",
           "title": "Authoritative Response Plan (PDL.md)",
           "body": "IDENTIFY the target audience as senior developers\nINTRODUCE the subject of concurrency control\nDEFINE optimistic locking\nDEFINE pessimistic locking\nCOMPARE the two approaches\nSUMMARIZE the differences",
@@ -265,7 +265,7 @@
         ],
         "artifact": {
           "artifact_kind": "plan",
-          "artifact_revision": "d38b50b1faa5598c9aad8bec21828e807c9dc2b3fef96ffe113d2f464f7719dd",
+          "artifact_revision": "e21caa3ef3a1b26a79cd619d826231a487216213f59851a410c2ff14056eec41",
           "body_sha256": "4763d12d6203ca03c4e8936f2dfb58a3d0d0e782d8990f7a5d12dbf8425bf7ce",
           "media_type": "text/plain",
           "title": "Authoritative Response Plan (PDL.md)",
@@ -284,9 +284,9 @@
           "authorized_handoff_artifacts": [],
           "result_body_sha256": null
         },
-        "session_id": "I-589f07f739",
-        "model_revision": "cfa54752e186616862e856938cefbc57f789dd2909b699b1f281bba082cc5d04",
-        "projection_id": "projection-5ffde7ff292c6318fad8acdb8ed0ffd2c5297f08a18df8a6e780e4281aff8294"
+        "session_id": "I-cfca447147",
+        "model_revision": "c9394889ed4661ac8f6c6f5441e852fd6c92548d64b906ab6422cb4ef5158606",
+        "projection_id": "projection-173ba3a4ea704f5c9f4803bcf948743fb679b5bbf8a9d6f4ce924c83d52681a9"
       }
     },
     {
@@ -305,10 +305,10 @@
       ],
       "projection": {
         "schema_version": "r6o-focus-projection-1",
-        "session_id": "I-589f07f739",
-        "workspace_id": "W-9d8561d3cd43",
-        "model_revision": "c1538cea675f521f164518ce7d0e1b51c50f7412d0c516e5932f1b39eb4349f9",
-        "projection_id": "projection-c66ffcdef3fe258ab495bafb37483ed325f500217d020c773e5243f829dc0c65",
+        "session_id": "I-cfca447147",
+        "workspace_id": "W-da11dda2afeb",
+        "model_revision": "d5e2b96a0d294adaf254e1f2824785ce51b3b516560f1784d814c4fa455d94e5",
+        "projection_id": "projection-f0a44597946c1009af1fb3dbb9f080826463322bfa53c50ed1897624ff31603f",
         "interaction_state": "TERMINAL",
         "model_response": "For senior developers: Optimistic and pessimistic locking are two strategies for managing concurrent access to shared data. Pessimistic locking assumes conflicts are likely and locks data before reading or writing, preventing other transactions from accessing it until the lock is released. This is typically implemented with database row-level locks (e.g., SELECT ... FOR UPDATE) or application-level mutexes. It guarantees strong consistency but can reduce concurrency and risk deadlocks. Optimistic locking assumes conflicts are rare and does not lock during reads; instead, it validates at write time by checking a version number or timestamp. If the version has changed since the read, the update is rejected (often with a retry). This approach maximizes concurrency and avoids lock overhead, but requires handling conflicts and may be unsuitable for high-contention scenarios. Key differences: locking timing (before vs. after), concurrency impact, conflict handling, and suitability for read-heavy vs. write-heavy workloads. Choose pessimistic when data consistency is critical and contention is high; choose optimistic when read/write ratios are high and retries are acceptable.",
         "stage": "CLOSED_SUCCESS",
@@ -324,8 +324,8 @@
           "result_body": "For senior developers: Optimistic and pessimistic locking are two strategies for managing concurrent access to shared data. Pessimistic locking assumes conflicts are likely and locks data before reading or writing, preventing other transactions from accessing it until the lock is released. This is typically implemented with database row-level locks (e.g., SELECT ... FOR UPDATE) or application-level mutexes. It guarantees strong consistency but can reduce concurrency and risk deadlocks. Optimistic locking assumes conflicts are rare and does not lock during reads; instead, it validates at write time by checking a version number or timestamp. If the version has changed since the read, the update is rejected (often with a retry). This approach maximizes concurrency and avoids lock overhead, but requires handling conflicts and may be unsuitable for high-contention scenarios. Key differences: locking timing (before vs. after), concurrency impact, conflict handling, and suitability for read-heavy vs. write-heavy workloads. Choose pessimistic when data consistency is critical and contention is high; choose optimistic when read/write ratios are high and retries are acceptable.",
           "authorized_handoff_artifacts": [
             {
-              "artifact_ref": "prompt:I-589f07f739-P1",
-              "artifact_revision": "f00c827aa6baa57141b3358b41dd08afdf63c60f376bca89d9bf6829f207f38f",
+              "artifact_ref": "prompt:I-cfca447147-P1",
+              "artifact_revision": "72523b4a74680e642ed1631dbc9a45368405a8bc2d7af30b19a06b69d85467a3",
               "artifact_kind": "prompt",
               "title": "Authoritative Prompt (PDL.md)",
               "body": "Explain the difference between optimistic locking and pessimistic locking for an audience of senior developers.",
@@ -336,8 +336,8 @@
               }
             },
             {
-              "artifact_ref": "plan:I-589f07f739-R1",
-              "artifact_revision": "3425eb777da49cf0fa95fb5f627b47d58695e94a36407a1539cb8addda2368c3",
+              "artifact_ref": "plan:I-cfca447147-R1",
+              "artifact_revision": "10f64218a55919bace6f4ac451859e89838d6016ff2de2dcef824f531a254948",
               "artifact_kind": "plan",
               "title": "Authoritative Response Plan (PDL.md)",
               "body": "IDENTIFY the target audience as senior developers\nINTRODUCE the subject of concurrency control\nDEFINE optimistic locking\nDEFINE pessimistic locking\nCOMPARE the two approaches\nSUMMARIZE the differences",
@@ -366,7 +366,7 @@
           "authorized_handoff_artifacts": [
             {
               "artifact_kind": "prompt",
-              "artifact_revision": "f00c827aa6baa57141b3358b41dd08afdf63c60f376bca89d9bf6829f207f38f",
+              "artifact_revision": "72523b4a74680e642ed1631dbc9a45368405a8bc2d7af30b19a06b69d85467a3",
               "body_sha256": "3b981f581b4f8ab151852f9214493c65accc72153f2f57c68dbc3c4c244911f2",
               "media_type": "text/plain",
               "title": "Authoritative Prompt (PDL.md)",
@@ -377,7 +377,7 @@
             },
             {
               "artifact_kind": "plan",
-              "artifact_revision": "3425eb777da49cf0fa95fb5f627b47d58695e94a36407a1539cb8addda2368c3",
+              "artifact_revision": "10f64218a55919bace6f4ac451859e89838d6016ff2de2dcef824f531a254948",
               "body_sha256": "4763d12d6203ca03c4e8936f2dfb58a3d0d0e782d8990f7a5d12dbf8425bf7ce",
               "media_type": "text/plain",
               "title": "Authoritative Response Plan (PDL.md)",
@@ -389,9 +389,9 @@
           ],
           "result_body_sha256": "47106d2d4689ef07820e0537511d0cbabdb50701ca0bef83d52dc1b617ea279b"
         },
-        "session_id": "I-589f07f739",
-        "model_revision": "c1538cea675f521f164518ce7d0e1b51c50f7412d0c516e5932f1b39eb4349f9",
-        "projection_id": "projection-c66ffcdef3fe258ab495bafb37483ed325f500217d020c773e5243f829dc0c65"
+        "session_id": "I-cfca447147",
+        "model_revision": "d5e2b96a0d294adaf254e1f2824785ce51b3b516560f1784d814c4fa455d94e5",
+        "projection_id": "projection-f0a44597946c1009af1fb3dbb9f080826463322bfa53c50ed1897624ff31603f"
       }
     }
   ],
