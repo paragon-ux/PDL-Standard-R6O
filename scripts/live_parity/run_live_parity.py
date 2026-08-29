@@ -100,7 +100,7 @@ def _child_main(args: argparse.Namespace) -> int:
     except Exception as exc:
         name = type(exc).__name__
         module = type(exc).__module__
-        environment = name in {"TransportError", "FileNotFoundError", "TimeoutExpired", "TimeoutError", "ConnectionError", "AuthenticationError", "AuthError", "ProviderError", "ServiceUnavailableError", "ExecutableNotFoundError"} or module == "subprocess" or any(token in str(exc).lower() for token in ("authentication", "unauthorized", "timed out", "connection refused", "service unavailable", "executable not found"))
+        environment = name in {"TransportError", "FileNotFoundError", "TimeoutExpired", "TimeoutError", "ConnectionError", "AuthenticationError", "AuthError", "ProviderError", "ServiceUnavailableError", "ExecutableNotFoundError"} or module == "subprocess" or any(token in str(exc).lower() for token in ("transporterror", "invalid_request_error", "model is not supported", "authentication", "unauthorized", "timed out", "connection refused", "service unavailable", "executable not found"))
         disposition = "STOP_DEPENDENCY" if isinstance(exc, ImportError) else ("INCONCLUSIVE_ENVIRONMENT" if environment else "FAIL_INTEGRITY")
         rec.write_canonical_json(paths["side"] / "child-result.json", {
             "ok": False,
