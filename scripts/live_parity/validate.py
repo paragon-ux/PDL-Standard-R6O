@@ -8,29 +8,11 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from .record import (
-        R6O_COMMIT,
-        R6O_TREE,
-        R6S_COMMIT,
-        R6S_TREE,
-        sha256_bytes,
-        sha256_file,
-        sha256_json,
-        sha256_text,
-        required_subsequence,
-    )
+    from .record import R6O_COMMIT, R6O_TREE, R6S_COMMIT, R6S_TREE, sha256_bytes, sha256_file, sha256_json, sha256_text, required_subsequence
+    from .inspect_live_modules import validate_external_artifacts
 except ImportError:  # Direct execution: python scripts/live_parity/validate.py
-    from record import (
-        R6O_COMMIT,
-        R6O_TREE,
-        R6S_COMMIT,
-        R6S_TREE,
-        sha256_bytes,
-        sha256_file,
-        sha256_json,
-        sha256_text,
-        required_subsequence,
-    )
+    from record import R6O_COMMIT, R6O_TREE, R6S_COMMIT, R6S_TREE, sha256_bytes, sha256_file, sha256_json, sha256_text, required_subsequence
+    from inspect_live_modules import validate_external_artifacts
 
 
 SCHEMA_PATH = Path(__file__).resolve().parent / "schema" / "live-functional-parity-record.schema.json"
@@ -136,19 +118,25 @@ def _input_findings(record: dict[str, Any], run_root: Path, findings: list[str])
         findings.append("input_attestation: missing object")
         return False
     valid = True
+    expected_paths = {
+        "task_evidence_path": "private-inputs/task.txt",
+        "prompt_correction_evidence_path": "private-inputs/prompt-correction.txt",
+        "plan_correction_evidence_path": "private-inputs/plan-correction.txt",
+    }
     for hash_field, path_field in (
         ("task_sha256", "task_evidence_path"),
         ("prompt_correction_sha256", "prompt_correction_evidence_path"),
         ("plan_correction_sha256", "plan_correction_evidence_path"),
     ):
         relative = attestation.get(path_field)
-        if not isinstance(relative, str) or not relative.startswith("private-inputs/"):
-            findings.append(f"{path_field}: must resolve under private-inputs/")
+        if relative != expected_paths[path_field]:
+            findings.append(f"{path_field}: must equal canonical {expected_paths[path_field]!r}")
             valid = False
             continue
         candidate = (run_root / relative).resolve()
-        if candidate == run_root or not candidate.is_relative_to(run_root) or not candidate.is_file():
-            findings.append(f"{path_field}: retained input is missing or escapes run root")
+        private_root = (run_root / "private-inputs").resolve()
+        if candidate == private_root or not candidate.is_relative_to(private_root) or not candidate.is_file():
+            findings.append(f"{path_field}: retained input is missing or escapes private-inputs")
             valid = False
             continue
         actual = sha256_file(candidate)
@@ -339,7 +327,9 @@ def _continuation_findings(label: str, side: dict[str, Any], operations: list[st
             "subsequent_execute_observed": True,
             "result_reached": True,
         }
-        valid = request_index is not None and interpret_index is not None and has_later_execute
+        valid = request_index is not None and interpret_index is not None and request_index < interpret_index and has_later_execute
+        if request_index is not None and interpret_index is not None and request_index >= interpret_index:
+            findings.append(f"{label}.execution_continuation requires REQUEST_INPUT before INTERPRET_EXECUTION_INPUT")
     else:
         expected = {}
         valid = False
@@ -476,9 +466,30 @@ def semantic_findings(record: dict[str, Any], run_root: str | Path) -> list[str]
     return findings
 
 
-def validate_record(record: dict[str, Any], run_root: str | Path, schema_path: str | Path = SCHEMA_PATH) -> tuple[list[str], list[str]]:
+def validate_record(
+    record: dict[str, Any],
+    run_root: str | Path,
+    schema_path: str | Path = SCHEMA_PATH,
+    *,
+    execution_metadata: dict[str, Any] | None = None,
+    r6o_control: str | Path | None = None,
+    r6s_source: str | Path | None = None,
+    gate_root: str | Path | None = None,
+    code_freeze_head: str | None = None,
+    code_freeze_tree: str | None = None,
+) -> tuple[list[str], list[str]]:
     structural = structural_findings(record, schema_path)
     semantic = semantic_findings(record, run_root)
+    context = (execution_metadata, r6o_control, r6s_source, gate_root, code_freeze_head, code_freeze_tree)
+    if any(value is not None for value in context):
+        if not all(value is not None for value in context):
+            semantic.append("INTEGRITY: external validation context is incomplete")
+        else:
+            semantic.extend(validate_external_artifacts(
+                record, run_root, execution_metadata,
+                r6o_control=r6o_control, r6s_source=r6s_source, gate_root=gate_root,
+                code_freeze_head=code_freeze_head, code_freeze_tree=code_freeze_tree,
+            ))
     return structural, semantic
 
 
@@ -486,10 +497,25 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Validate one frozen live-parity run record")
     parser.add_argument("--record", type=Path, required=True)
     parser.add_argument("--run-root", type=Path, required=True)
-    parser.add_argument("--schema", type=Path, default=SCHEMA_PATH)
+    parser.add_argument("--execution-metadata", type=Path, required=True)
+    parser.add_argument("--r6o-control", type=Path, required=True)
+    parser.add_argument("--r6s", type=Path, required=True)
+    parser.add_argument("--gate-root", type=Path, required=True)
+    parser.add_argument("--code-freeze-head", required=True)
+    parser.add_argument("--code-freeze-tree", required=True)
+    parser.add_argument("--schema", type=Path, required=True)
     args = parser.parse_args()
-    record = json.loads(args.record.read_text(encoding="utf-8"))
-    structural, semantic = validate_record(record, args.run_root, args.schema)
+    try:
+        record = json.loads(args.record.read_bytes().decode("utf-8"))
+        metadata = json.loads(args.execution_metadata.read_bytes().decode("utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        print(f"STRUCTURAL: external artifact load failed: {exc}")
+        return 1
+    structural, semantic = validate_record(
+        record, args.run_root, args.schema, execution_metadata=metadata,
+        r6o_control=args.r6o_control, r6s_source=args.r6s, gate_root=args.gate_root,
+        code_freeze_head=args.code_freeze_head, code_freeze_tree=args.code_freeze_tree,
+    )
     for finding in structural:
         print(f"STRUCTURAL: {finding}")
     for finding in semantic:

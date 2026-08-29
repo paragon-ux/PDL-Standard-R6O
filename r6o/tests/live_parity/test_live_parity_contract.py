@@ -9,7 +9,7 @@ from typing import Any, Callable
 
 import pytest
 
-from scripts.live_parity.inspect_live_modules import import_containment, should_scan
+from scripts.live_parity.inspect_live_modules import import_containment, should_scan, verify_imported_module_evidence
 from scripts.live_parity.record import (
     R6O_COMMIT,
     R6O_TREE,
@@ -21,6 +21,7 @@ from scripts.live_parity.record import (
     sha256_bytes,
     sha256_json,
     sha256_text,
+    read_utf8_bytes,
 )
 from scripts.live_parity.validate import validate_record
 
@@ -279,6 +280,22 @@ def test_input_alias_is_rejected_by_schema_and_semantic_validator(tmp_path: Path
     assert any("task_evidence_path" in finding for finding in structural + semantic)
 
 
+@pytest.mark.parametrize("alias", ["private-inputs/../task.txt", r"private-inputs\\task.txt", "C:/task.txt"])
+def test_initial_input_aliases_are_rejected(alias: str, tmp_path: Path) -> None:
+    record = _valid_record(tmp_path)
+    record["input_attestation"]["task_evidence_path"] = alias
+    structural, semantic = validate_record(record, tmp_path)
+    assert any("task_evidence_path" in finding for finding in structural + semantic)
+
+
+def test_exact_input_bytes_are_hashed_without_newline_normalization(tmp_path: Path) -> None:
+    source = tmp_path / "crlf.txt"
+    source.write_bytes(b"line one\r\nline two")
+    retained = read_utf8_bytes(source)
+    assert retained == b"line one\r\nline two"
+    assert sha256_bytes(retained) == sha256_bytes(source.read_bytes())
+
+
 def test_requested_continuation_cannot_claim_incomplete_pass(tmp_path: Path) -> None:
     record = _valid_record(tmp_path)
     record["r6s"]["execution_continuation"] = {
@@ -288,6 +305,34 @@ def test_requested_continuation_cannot_claim_incomplete_pass(tmp_path: Path) -> 
     }
     structural, semantic = validate_record(record, tmp_path)
     assert structural or semantic
+
+
+def test_requested_continuation_requires_causal_order(tmp_path: Path) -> None:
+    record = _valid_record(tmp_path)
+    record["r6s"]["operations"] = [
+        "DRAFT_PROMPT", "INTERPRET_PROMPT_REVIEW", "REVISE_PROMPT", "DRAFT_PLAN",
+        "INTERPRET_PLAN_REVIEW", "REVISE_PLAN", "INTERPRET_EXECUTION_INPUT", "REQUEST_INPUT", "EXECUTE",
+    ]
+    record["r6s"]["execution_continuation"] = {
+        "disposition": "REQUESTED_COMPLETED", "request_input_observed": True,
+        "input_supplied": True, "interpret_execution_input_observed": True,
+        "subsequent_execute_observed": True, "result_reached": True,
+    }
+    structural, semantic = validate_record(record, tmp_path)
+    assert structural or semantic
+
+
+def test_imported_module_evidence_rejects_escape_and_duplicate(tmp_path: Path) -> None:
+    source = tmp_path / "src"
+    source.mkdir()
+    (source / "module.py").write_text("value = 1\n", encoding="utf-8")
+    evidence = {"modules": [
+        {"root": "r6s", "relative_path": "module.py", "qualified_path": "r6s/module.py", "sha256": sha256_bytes(b"value = 1\n")},
+        {"root": "r6s", "relative_path": "../outside.py", "qualified_path": "r6s/../outside.py", "sha256": sha256_text("x")},
+        {"root": "r6s", "relative_path": "module.py", "qualified_path": "r6s/module.py", "sha256": sha256_bytes(b"value = 1\n")},
+    ]}
+    _, errors = verify_imported_module_evidence({"r6s": source}, evidence)
+    assert errors
 
 
 def test_containment_rejects_production_module_from_gate(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

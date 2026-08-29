@@ -12,15 +12,22 @@ import subprocess
 from typing import Any
 
 try:
-    from .inspect_live_modules import import_containment, scan_imported_modules
+    from .inspect_live_modules import (
+        child_inputs as _child_inputs, import_containment, imported_module_evidence, request_execution_input as _request_execution_input,
+        scan_imported_modules, write_child_evidence as _write_child_evidence,
+    )
 except ImportError:  # Direct execution: python scripts/live_parity/run_live_parity.py
-    from inspect_live_modules import import_containment, scan_imported_modules
+    from inspect_live_modules import (
+        child_inputs as _child_inputs, import_containment, imported_module_evidence, request_execution_input as _request_execution_input,
+        scan_imported_modules, write_child_evidence as _write_child_evidence,
+    )
 
 
 R6S_COMMIT = "60d982f3328b45a351879d67dc4bb525172b65fd"
 R6S_TREE = "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6"
 R6O_COMMIT = "fa88c92786fa518c154d099aba2a0433334cc3a9"
 R6O_TREE = "d4cf90047b2b6f92b954e353142d72206925f59f"
+GATE_BRANCH = "codex/live-functional-parity-v1"
 REQUIRED_OPERATIONS = (
     "DRAFT_PROMPT",
     "INTERPRET_PROMPT_REVIEW",
@@ -58,6 +65,15 @@ def sha256_file(path: str | Path) -> str:
     return digest.hexdigest()
 
 
+def read_utf8_bytes(path: str | Path) -> bytes:
+    """Read exact input bytes and validate strict UTF-8 without newline conversion."""
+    data = Path(path).read_bytes()
+    data.decode("utf-8")
+    if not data.strip():
+        raise ValueError(f"input is empty or whitespace-only: {path}")
+    return data
+
+
 def write_json(path: str | Path, value: Any, *, pretty: bool = True) -> None:
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -66,6 +82,13 @@ def write_json(path: str | Path, value: Any, *, pretty: bool = True) -> None:
     else:
         payload = canonical_json_bytes(value)
     target.write_bytes(payload)
+
+
+def write_canonical_json(path: str | Path, value: Any) -> None:
+    """Write a deterministic machine artifact whose raw bytes are hashable."""
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(canonical_json_bytes(value))
 
 
 def utc_run_id() -> str:
@@ -124,6 +147,32 @@ def git_identity(root: str | Path, expected_repository: str) -> dict[str, Any]:
     }
 
 
+def gate_identity(root: str | Path) -> dict[str, Any]:
+    """Capture the immutable gate branch/commit/tree/cleanliness contract."""
+    base = str(Path(root).resolve())
+
+    def run(*args: str) -> str:
+        return subprocess.run(
+            ["git", "-C", base, *args], check=True, capture_output=True, text=True, encoding="utf-8"
+        ).stdout.strip()
+
+    status = run("status", "--porcelain=v1", "--untracked-files=all")
+    diff = subprocess.run(
+        ["git", "-C", base, "diff", "--check"], capture_output=True, text=True, encoding="utf-8"
+    )
+    return {
+        "root": str(Path(root).resolve()),
+        "branch": run("branch", "--show-current"),
+        "head": run("rev-parse", "HEAD"),
+        "tree": run("rev-parse", "HEAD^{tree}"),
+        "git_clean": not bool(status),
+        "untracked_files": sum(1 for line in status.splitlines() if line.startswith("?? ")),
+        "status": status,
+        "diff_check_pass": diff.returncode == 0,
+        "diff_check_output": diff.stdout.strip(),
+    }
+
+
 def outside(path: str | Path, roots: list[str | Path]) -> Path:
     resolved = Path(path).resolve()
     for root in roots:
@@ -159,6 +208,33 @@ def _resume_point(workspace: Path, state: dict[str, Any]) -> dict[str, Any]:
         "pending_change_sha256": sha256_json(state["pending_change"]) if state.get("pending_change") else None,
         "pending_input_sha256": sha256_json(state["pending_input"]) if state.get("pending_input") else None,
         "in_flight_action_sha256": sha256_json(state["in_flight_action"]) if state.get("in_flight_action") else None,
+    }
+
+
+def state_evidence(
+    workspace: Path,
+    state: dict[str, Any],
+    *,
+    session_id: str | None = None,
+    public_state: Any = None,
+    point: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Retain raw controller facts alongside the schema's derived resume hashes."""
+    point = point or _resume_point(workspace, state)
+    return {
+        "workspace_path": str(workspace.resolve()),
+        "workspace_path_sha256": point["workspace_path_sha256"],
+        "workspace_id": point["workspace_id"],
+        "session_or_instance_id": point["session_or_instance_id"],
+        "session_id": session_id or point["session_or_instance_id"],
+        "controller_state_sha256": point["controller_state_sha256"],
+        "controller_state": state,
+        "prompt": point["prompt"],
+        "plan": point["plan"],
+        "pending_change_sha256": point["pending_change_sha256"],
+        "pending_input_sha256": point["pending_input_sha256"],
+        "in_flight_action_sha256": point["in_flight_action_sha256"],
+        "public_semantic_state": public_state,
     }
 
 
@@ -272,29 +348,42 @@ def _new_worker(config: dict[str, Any], workdir: Path, progress_path: Path) -> A
 def _r6s_child(args: Any, config: dict[str, Any], paths: dict[str, Path]) -> dict[str, Any]:
     from host.app import PDLtHost
 
+    inputs, input_hashes = _child_inputs(paths)
     worker = _new_worker(config, paths["worker_workdir"], paths["side"] / "worker-progress.log")
     host = PDLtHost(paths["r6s_source"], worker=worker, workspace_root=paths["workspace_root"], run_id=args.run_id).start()
-    host.handle(paths["task"].read_text(encoding="utf-8"))
+    host.handle(inputs["task"])
     status = host.status()
     workspace, session_id = Path(status["workspace_path"]).resolve(), str(status["controller_state"]["instance_id"])
-    prompt_before = _resume_point(workspace, status["controller_state"])
+    prompt_before_state = status["controller_state"]
+    prompt_before = _resume_point(workspace, prompt_before_state)
     call_count = len(host.observed.calls)
-    host.handle(paths["prompt"].read_text(encoding="utf-8"))
-    prompt_after, prompt_calls = _resume_point(workspace, host.status()["controller_state"]), host.observed.calls[call_count:]
+    host.handle(inputs["prompt_correction"])
+    prompt_after_state = host.status()["controller_state"]
+    prompt_after, prompt_calls = _resume_point(workspace, prompt_after_state), host.observed.calls[call_count:]
     host.handle("Yes, that is what I mean.")
-    plan_before = _resume_point(workspace, host.status()["controller_state"])
+    plan_before_state = host.status()["controller_state"]
+    plan_before = _resume_point(workspace, plan_before_state)
     call_count = len(host.observed.calls)
-    host.handle(paths["plan"].read_text(encoding="utf-8"))
-    plan_after, plan_calls = _resume_point(workspace, host.status()["controller_state"]), host.observed.calls[call_count:]
-    resume_before, bridge, calls = _resume_point(workspace, host.status()["controller_state"]), host.engine.bridge, list(host.observed.calls)
+    host.handle(inputs["plan_correction"])
+    plan_after_state = host.status()["controller_state"]
+    plan_after, plan_calls = _resume_point(workspace, plan_after_state), host.observed.calls[call_count:]
+    resume_before_state = host.status()["controller_state"]
+    resume_before, bridge, calls = _resume_point(workspace, resume_before_state), host.engine.bridge, list(host.observed.calls)
     host.close()
     del host
     gc.collect()
     restored = PDLtHost(paths["r6s_source"], worker=_new_worker(config, paths["worker_workdir"], paths["side"] / "worker-progress-restore.log"), workspace_root=paths["workspace_root"], restore_path=workspace, run_id=args.run_id).start()
-    resume_after = _resume_point(workspace, restored.status()["controller_state"])
+    resume_after_state = restored.status()["controller_state"]
+    resume_after = _resume_point(workspace, resume_after_state)
     restored.handle("Confirm the current plan and execute.")
-    if restored.status()["controller_state"].get("stage") == "WAITING_INPUT" and args.execution_input_file:
-        restored.handle(Path(args.execution_input_file).read_text(encoding="utf-8"))
+    execution_input = {
+        "request_observed": False, "request_evidence_path": None, "request_evidence_sha256": None,
+        "input_supplied": False, "input_path": None, "input_sha256": None, "child_decoded_sha256": None,
+    }
+    if restored.status()["controller_state"].get("stage") == "WAITING_INPUT":
+        execution_text, execution_input = _request_execution_input(args, paths, restored.status()["controller_state"].get("pending_input"))
+        if execution_text is not None:
+            restored.handle(execution_text)
     calls.extend(restored.observed.calls)
     final_state = restored.status()["controller_state"]
     result, result_ok = _result_observation(workspace)
@@ -306,8 +395,23 @@ def _r6s_child(args: Any, config: dict[str, Any], paths: dict[str, Path]) -> dic
     prompt = _correction(prompt_before, prompt_after, prompt_calls, bridge, "INTERPRET_PROMPT_REVIEW", "REVISE_PROMPT")
     plan = _correction(plan_before, plan_after, plan_calls, bridge, "INTERPRET_PLAN_REVIEW", "REVISE_PLAN")
     resume = _resume_record(resume_before, resume_after, None)
-    continuation = _continuation(operations, args.execution_input_file, result_ok)
-    return _side_observation(session_id, workspace.name, worker, config, calls, operations, prompt, plan, resume, continuation, result, final_state, scan_imported_modules({"r6s": paths["r6s_source"]}))
+    continuation = _continuation(operations, execution_input, result_ok)
+    imported = scan_imported_modules({"r6s": paths["r6s_source"]})
+    _write_child_evidence(
+        args, paths, input_hashes, config, operations,
+        {
+            "prompt_before": state_evidence(workspace, prompt_before_state, session_id=session_id, point=prompt_before),
+            "prompt_after": state_evidence(workspace, prompt_after_state, session_id=session_id, point=prompt_after),
+            "plan_before": state_evidence(workspace, plan_before_state, session_id=session_id, point=plan_before),
+            "plan_after": state_evidence(workspace, plan_after_state, session_id=session_id, point=plan_after),
+            "resume_before": state_evidence(workspace, resume_before_state, session_id=session_id, point=resume_before),
+            "resume_after": state_evidence(workspace, resume_after_state, session_id=session_id, point=resume_after),
+            "terminal": state_evidence(workspace, final_state, session_id=session_id),
+        }, execution_input, None, imported_module_evidence({"r6s": paths["r6s_source"]}),
+    )
+    observation = _side_observation(session_id, workspace.name, worker, config, calls, operations, prompt, plan, resume, continuation, result, final_state, imported)
+    observation["_execution_input"] = execution_input
+    return observation
 
 
 def _r6o_submit(binding: Any, session_id: str, text: str, handle_input: Any, projection_builder: Any) -> None:
@@ -328,21 +432,27 @@ def _r6o_child(args: Any, config: dict[str, Any], paths: dict[str, Path]) -> dic
     from r6o.viewmodel.dispatcher import handle_input
     from r6o.viewmodel.projection import build_focus_projection_from_port
 
+    inputs, input_hashes = _child_inputs(paths)
     worker = _new_worker(config, paths["worker_workdir"], paths["side"] / "worker-progress.log")
     binding = LocalRuntimeModelBinding(paths["r6s_source"], worker=worker, workspace_root=paths["workspace_root"], run_id=args.run_id)
-    started = binding.start_or_resume(ModelSessionRequest(request_id="new", task_text=paths["task"].read_text(encoding="utf-8")))
+    started = binding.start_or_resume(ModelSessionRequest(request_id="new", task_text=inputs["task"]))
     session_id, host = started.session_id, binding._host
     workspace = Path(host.status()["workspace_path"]).resolve()
-    prompt_before = _resume_point(workspace, host.status()["controller_state"])
+    prompt_before_state = host.status()["controller_state"]
+    prompt_before = _resume_point(workspace, prompt_before_state)
     call_count = len(host.observed.calls)
-    _r6o_submit(binding, session_id, paths["prompt"].read_text(encoding="utf-8"), handle_input, build_focus_projection_from_port)
-    prompt_after, prompt_calls = _resume_point(workspace, host.status()["controller_state"]), host.observed.calls[call_count:]
+    _r6o_submit(binding, session_id, inputs["prompt_correction"], handle_input, build_focus_projection_from_port)
+    prompt_after_state = host.status()["controller_state"]
+    prompt_after, prompt_calls = _resume_point(workspace, prompt_after_state), host.observed.calls[call_count:]
     _r6o_submit(binding, session_id, "Yes, that is what I mean.", handle_input, build_focus_projection_from_port)
-    plan_before = _resume_point(workspace, host.status()["controller_state"])
+    plan_before_state = host.status()["controller_state"]
+    plan_before = _resume_point(workspace, plan_before_state)
     call_count = len(host.observed.calls)
-    _r6o_submit(binding, session_id, paths["plan"].read_text(encoding="utf-8"), handle_input, build_focus_projection_from_port)
-    plan_after, plan_calls = _resume_point(workspace, host.status()["controller_state"]), host.observed.calls[call_count:]
-    resume_before, public_before = _resume_point(workspace, host.status()["controller_state"]), build_focus_projection_from_port(binding, session_id)
+    _r6o_submit(binding, session_id, inputs["plan_correction"], handle_input, build_focus_projection_from_port)
+    plan_after_state = host.status()["controller_state"]
+    plan_after, plan_calls = _resume_point(workspace, plan_after_state), host.observed.calls[call_count:]
+    resume_before_state = host.status()["controller_state"]
+    resume_before, public_before = _resume_point(workspace, resume_before_state), build_focus_projection_from_port(binding, session_id)
     bridge, calls = host.engine.bridge, list(host.observed.calls)
     binding.close()
     del binding
@@ -350,11 +460,18 @@ def _r6o_child(args: Any, config: dict[str, Any], paths: dict[str, Path]) -> dic
     restored = LocalRuntimeModelBinding(paths["r6s_source"], worker=_new_worker(config, paths["worker_workdir"], paths["side"] / "worker-progress-restore.log"), workspace_root=paths["workspace_root"], run_id=args.run_id)
     restored_snapshot = restored.start_or_resume(ModelSessionRequest(request_id="resume", resume_session_id=session_id))
     restored_host = restored._host
-    resume_after, public_after = _resume_point(workspace, restored_host.status()["controller_state"]), build_focus_projection_from_port(restored, session_id)
+    resume_after_state = restored_host.status()["controller_state"]
+    resume_after, public_after = _resume_point(workspace, resume_after_state), build_focus_projection_from_port(restored, session_id)
     public_equal = sha256_json(public_before) == sha256_json(public_after)
     _r6o_submit(restored, session_id, "Confirm the current plan and execute.", handle_input, build_focus_projection_from_port)
-    if restored_host.status()["controller_state"].get("stage") == "WAITING_INPUT" and args.execution_input_file:
-        _r6o_submit(restored, session_id, Path(args.execution_input_file).read_text(encoding="utf-8"), handle_input, build_focus_projection_from_port)
+    execution_input = {
+        "request_observed": False, "request_evidence_path": None, "request_evidence_sha256": None,
+        "input_supplied": False, "input_path": None, "input_sha256": None, "child_decoded_sha256": None,
+    }
+    if restored_host.status()["controller_state"].get("stage") == "WAITING_INPUT":
+        execution_text, execution_input = _request_execution_input(args, paths, restored_host.status()["controller_state"].get("pending_input"))
+        if execution_text is not None:
+            _r6o_submit(restored, session_id, execution_text, handle_input, build_focus_projection_from_port)
     calls.extend(restored_host.observed.calls)
     final_state, lifecycle_body = restored_host.status()["controller_state"], restored.read_state(session_id).lifecycle.result_body
     result, result_ok = _result_observation(workspace, lifecycle_body)
@@ -366,19 +483,39 @@ def _r6o_child(args: Any, config: dict[str, Any], paths: dict[str, Path]) -> dic
     prompt = _correction(prompt_before, prompt_after, prompt_calls, bridge, "INTERPRET_PROMPT_REVIEW", "REVISE_PROMPT")
     plan = _correction(plan_before, plan_after, plan_calls, bridge, "INTERPRET_PLAN_REVIEW", "REVISE_PLAN")
     resume = _resume_record(resume_before, resume_after, public_equal)
-    continuation = _continuation(operations, args.execution_input_file, result_ok)
-    return _side_observation(session_id, restored_snapshot.workspace_id or workspace.name, worker, config, calls, operations, prompt, plan, resume, continuation, result, final_state, scan_imported_modules({"r6o": paths["r6o_control"], "r6s": paths["r6s_source"]}))
+    continuation = _continuation(operations, execution_input, result_ok)
+    imported = scan_imported_modules({"r6o": paths["r6o_control"], "r6s": paths["r6s_source"]})
+    _write_child_evidence(
+        args, paths, input_hashes, config, operations,
+        {
+            "prompt_before": state_evidence(workspace, prompt_before_state, session_id=session_id, point=prompt_before),
+            "prompt_after": state_evidence(workspace, prompt_after_state, session_id=session_id, point=prompt_after),
+            "plan_before": state_evidence(workspace, plan_before_state, session_id=session_id, point=plan_before),
+            "plan_after": state_evidence(workspace, plan_after_state, session_id=session_id, point=plan_after),
+            "resume_before": state_evidence(workspace, resume_before_state, session_id=session_id, public_state=public_before, point=resume_before),
+            "resume_after": state_evidence(workspace, resume_after_state, session_id=session_id, public_state=public_after, point=resume_after),
+            "terminal": state_evidence(workspace, final_state, session_id=session_id),
+        }, execution_input, sha256_text(lifecycle_body) if lifecycle_body is not None else None,
+        imported_module_evidence({"r6o": paths["r6o_control"], "r6s": paths["r6s_source"]}),
+    )
+    observation = _side_observation(session_id, restored_snapshot.workspace_id or workspace.name, worker, config, calls, operations, prompt, plan, resume, continuation, result, final_state, imported)
+    observation["_execution_input"] = execution_input
+    return observation
 
 
-def _continuation(operations: list[str], execution_input_file: str | None, result_ok: bool) -> dict[str, Any]:
-    requested, interpreted = "REQUEST_INPUT" in operations, "INTERPRET_EXECUTION_INPUT" in operations
-    later_execute = False
-    if interpreted:
-        index = max(i for i, value in enumerate(operations) if value == "INTERPRET_EXECUTION_INPUT")
-        later_execute = "EXECUTE" in operations[index + 1:]
+def _continuation(operations: list[str], execution_input: dict[str, Any], result_ok: bool) -> dict[str, Any]:
+    request_index = next((i for i, value in enumerate(operations) if value == "REQUEST_INPUT"), None)
+    interpret_index = next((i for i, value in enumerate(operations) if value == "INTERPRET_EXECUTION_INPUT"), None)
+    requested = request_index is not None
+    interpreted = interpret_index is not None
+    later_execute = bool(
+        request_index is not None and interpret_index is not None and request_index < interpret_index
+        and "EXECUTE" in operations[interpret_index + 1:]
+    )
     if not requested:
         return {"disposition": "NOT_REQUESTED", "request_input_observed": False, "input_supplied": False, "interpret_execution_input_observed": False, "subsequent_execute_observed": False, "result_reached": result_ok}
-    supplied, complete = bool(execution_input_file), bool(execution_input_file) and interpreted and later_execute and result_ok
+    supplied = bool(execution_input.get("input_supplied"))
+    complete = supplied and interpreted and later_execute and result_ok
     return {"disposition": "REQUESTED_COMPLETED" if complete else "REQUESTED_INCOMPLETE", "request_input_observed": True, "input_supplied": supplied, "interpret_execution_input_observed": interpreted, "subsequent_execute_observed": later_execute, "result_reached": result_ok}
 
 
