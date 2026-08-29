@@ -310,8 +310,6 @@ def _write_failure_status(args: argparse.Namespace, disposition: str, stage: str
 
 
 def _run_main(args: argparse.Namespace) -> int:
-    if args.model != "deepseek-v4-flash" or args.sandbox_mode != "read-only" or args.no_token_telemetry or float(args.worker_timeout) != 600.0:
-        raise RunFailure("FAIL_INTEGRITY", "configuration_preflight", "E6 workers require deepseek-v4-flash, read-only, telemetry, and a 600 second timeout")
     gate = Path(args.gate_root).resolve()
     expected_gate = Path(__file__).resolve().parents[2]
     try:
@@ -329,6 +327,8 @@ def _run_main(args: argparse.Namespace) -> int:
     if run_dir.exists():
         raise RunFailure("FAIL_INTEGRITY", "run_preflight", f"run directory already exists; current output must be fresh: {run_dir}")
     run_dir.mkdir(parents=True)
+    if args.model != "deepseek-v4-flash" or args.sandbox_mode != "read-only" or args.no_token_telemetry or float(args.worker_timeout) != 600.0:
+        raise RunFailure("FAIL_INTEGRITY", "configuration_preflight", "E6 workers require deepseek-v4-flash, read-only, telemetry, and a 600 second timeout")
     if gate != expected_gate:
         raise RunFailure("FAIL_INTEGRITY", "gate_preflight", f"--gate-root must equal runner root {expected_gate}")
     private = run_dir / "private-inputs"
