@@ -52,6 +52,12 @@ def _preimage(args: argparse.Namespace) -> dict[str, Any]:
     return {
         "implementation": IMPLEMENTATION,
         "requested_model": args.model,
+        # The user config defines DeepSeek as a separate provider while the
+        # active desktop default remains OpenAI.  Retain the explicit route
+        # in the worker preimage so a model name cannot silently select the
+        # ChatGPT provider.
+        "model_provider": "deepseek" if args.model == "deepseek-v4-flash" else None,
+        "model_reasoning_effort": "max" if args.model == "deepseek-v4-flash" else None,
         "sandbox_mode": args.sandbox_mode,
         "approval_policy": "never",
         "dangerous_bypass": False,
@@ -113,13 +119,44 @@ def _child_main(args: argparse.Namespace) -> int:
 
 
 def _detach_provider_stdin() -> None:
-    """Keep the child's control pipe away from the nested Codex CLI."""
+    """Keep the control pipe away and route DeepSeek workers explicitly."""
     original = subprocess.Popen
     def wrapped(*call_args: Any, **call_kwargs: Any) -> Any:
         command = call_kwargs.get("args", call_args[0] if call_args else None)
-        first = str(command[0]).lower() if isinstance(command, (list, tuple)) and command else ""
-        if first == "codex" and "stdin" not in call_kwargs:
+        if not isinstance(command, (list, tuple)) or not command:
+            return original(*call_args, **call_kwargs)
+        first = Path(str(command[0])).name.lower()
+        if first not in {"codex", "codex.exe"}:
+            return original(*call_args, **call_kwargs)
+        if "stdin" not in call_kwargs:
             call_kwargs["stdin"] = subprocess.DEVNULL
+        routed = list(command)
+        model = None
+        for flag in ("-m", "--model"):
+            try:
+                model = str(routed[routed.index(flag) + 1])
+                break
+            except (ValueError, IndexError):
+                continue
+        if model == "deepseek-v4-flash" and not any(
+            str(value).strip() == 'model_provider="deepseek"' for value in routed
+        ):
+            # Codex accepts options before the positional prompt.  The worker
+            # always appends that prompt as the final argument.
+            prompt_index = len(routed)
+            if routed and not str(routed[-1]).startswith("-"):
+                prompt_index -= 1
+            routed[prompt_index:prompt_index] = ["-c", 'model_provider="deepseek"', "-c", 'model_reasoning_effort="max"']
+        if isinstance(command, tuple):
+            command = tuple(routed)
+        else:
+            command = routed
+        if call_args:
+            call_args = (command, *call_args[1:])
+        else:
+            call_kwargs["args"] = command
+        if call_args and "args" in call_kwargs:
+            call_kwargs.pop("args")
         return original(*call_args, **call_kwargs)
     subprocess.Popen = wrapped
 
