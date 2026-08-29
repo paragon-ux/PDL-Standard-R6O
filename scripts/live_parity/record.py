@@ -325,7 +325,7 @@ def _worker_metadata(worker: Any, configuration_sha256: str, calls: list[dict[st
         "implementation": "providers.codex_worker.CodexWorker",
         "requested_model": str(worker.model),
         "observed_model": observed,
-        "provider": "codex",
+        "provider": str(config.get("model_provider") or "codex"),
         "runtime_version": str(getattr(worker, "codex_cli_version", "unknown")),
         "configuration_sha256": configuration_sha256,
         "live_worker": True,

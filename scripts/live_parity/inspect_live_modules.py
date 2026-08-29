@@ -82,7 +82,7 @@ def request_execution_input(args: Any, paths: dict[str, Path], pending_input: An
 
 
 def write_child_evidence(args: Any, paths: dict[str, Path], input_hashes: dict[str, str], config: dict[str, Any], operations: list[str], snapshots: dict[str, Any], execution_input: dict[str, Any], lifecycle_result_body_sha256: str | None, imported: dict[str, Any]) -> None:
-    payload = {"schema_version": "pdl-live-functional-parity-semantic-evidence-1", "side": args.side, "input_hashes": input_hashes, "worker": {"implementation": "providers.codex_worker.CodexWorker", "requested_model": config["requested_model"], "configuration_sha256": config["configuration_sha256"], "workdir": str(paths["worker_workdir"].resolve()), "workdir_sha256": hashlib.sha256(str(paths["worker_workdir"].resolve()).encode("utf-8")).hexdigest()}, "operations": operations, "snapshots": snapshots, "execution_input": execution_input, "lifecycle_result_body_sha256": lifecycle_result_body_sha256}
+    payload = {"schema_version": "pdl-live-functional-parity-semantic-evidence-1", "side": args.side, "input_hashes": input_hashes, "worker": {"implementation": "providers.codex_worker.CodexWorker", "requested_model": config["requested_model"], "model_provider": config.get("model_provider"), "configuration_sha256": config["configuration_sha256"], "workdir": str(paths["worker_workdir"].resolve()), "workdir_sha256": hashlib.sha256(str(paths["worker_workdir"].resolve()).encode("utf-8")).hexdigest()}, "operations": operations, "snapshots": snapshots, "execution_input": execution_input, "lifecycle_result_body_sha256": lifecycle_result_body_sha256}
     paths["side"].mkdir(parents=True, exist_ok=True)
     (paths["side"] / "semantic-evidence.json").write_bytes(_canonical_json(payload)); (paths["side"] / "imported-modules.json").write_bytes(_canonical_json(imported))
 
@@ -255,6 +255,10 @@ def validate_external_artifacts(record: dict[str, Any], run_root: str | Path, me
     for name, field in (("task", "task_sha256"), ("prompt-correction", "prompt_correction_sha256"), ("plan-correction", "plan_correction_sha256")):
         path = private / f"{name}.txt"
         if not path.is_file() or _sha256_file(path) != attestation.get(field): bad(f"retained {name} bytes do not match the top-level attestation")
+    worker_config = load(private / "worker-config.json", "private-inputs/worker-config.json")
+    expected_worker = {"requested_model": "deepseek-v4-flash", "model_provider": "deepseek", "model_reasoning_effort": "max", "sandbox_mode": "read-only", "approval_policy": "never", "dangerous_bypass": False, "timeout_seconds": 600.0, "capture_tokens": True, "json_mode": True}
+    if not isinstance(worker_config, dict) or any(worker_config.get(key) != value for key, value in expected_worker.items()): bad("worker preimage does not match the fixed E6 worker configuration")
+    if not isinstance(record.get("worker_configuration"), dict) or record["worker_configuration"].get("requested_model") != "deepseek-v4-flash": bad("record worker configuration does not bind the fixed E6 model")
 
     expected_sources = {"r6s": (source, "paragon-ux/PDL-Standard-REPL-Harness", R6S_COMMIT, R6S_TREE), "r6o": (control, "paragon-ux/PDL-Standard-R6O", R6O_COMMIT, R6O_TREE)}; inventories: dict[str, dict[str, Any]] = {}
     for label, (source_root, repository, commit, tree) in expected_sources.items():
@@ -293,7 +297,7 @@ def validate_external_artifacts(record: dict[str, Any], run_root: str | Path, me
         expected_hashes = {"task": attestation.get("task_sha256"), "prompt_correction": attestation.get("prompt_correction_sha256"), "plan_correction": attestation.get("plan_correction_sha256")}
         if evidence.get("input_hashes") != expected_hashes: bad(f"{label} child-decoded input hashes differ from retained input hashes")
         worker = evidence.get("worker") if isinstance(evidence.get("worker"), dict) else {}; expected_workdir = (root / label / "worker-workdir").resolve(); workdirs.append(worker.get("workdir"))
-        if worker.get("workdir") != str(expected_workdir) or worker.get("workdir_sha256") != sha256_text(str(expected_workdir)) or worker.get("configuration_sha256") != record.get("worker_configuration", {}).get("configuration_sha256"): bad(f"{label} worker binding is invalid")
+        if worker.get("workdir") != str(expected_workdir) or worker.get("workdir_sha256") != sha256_text(str(expected_workdir)) or worker.get("configuration_sha256") != record.get("worker_configuration", {}).get("configuration_sha256") or worker.get("requested_model") != "deepseek-v4-flash" or worker.get("model_provider") != "deepseek": bad(f"{label} worker binding is invalid")
         sessions.append(side.get("session_id")); workspaces.append(side.get("workspace_id")); snapshots = evidence.get("snapshots") if isinstance(evidence.get("snapshots"), dict) else {}
         required_snapshots = {"prompt_before", "prompt_after", "plan_before", "plan_after", "resume_before", "resume_after", "terminal"}
         if set(snapshots) != required_snapshots: bad(f"{label} semantic evidence must retain exactly the required controller snapshots")
