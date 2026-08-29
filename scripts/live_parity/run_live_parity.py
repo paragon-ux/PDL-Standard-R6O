@@ -92,6 +92,7 @@ def _child_main(args: argparse.Namespace) -> int:
     roots = [paths["r6s_source"]] if args.side == "r6s" else [paths["r6o_control"], paths["r6s_source"]]
     gate = paths["gate_root"]
     sys.path[:] = [str(root) for root in roots] + [entry for entry in sys.path if not entry or not _inside(Path(entry), gate)]
+    _detach_provider_stdin()
     try:
         runner = rec._r6s_child if args.side == "r6s" else rec._r6o_child
         rec.write_json(paths["side"] / "child-result.json", {"ok": True, "observation": runner(args, config, paths)})
@@ -109,6 +110,18 @@ def _child_main(args: argparse.Namespace) -> int:
             "error": f"{name}: {exc}",
         })
         return 1
+
+
+def _detach_provider_stdin() -> None:
+    """Keep the child's control pipe away from the nested Codex CLI."""
+    original = subprocess.Popen
+    def wrapped(*call_args: Any, **call_kwargs: Any) -> Any:
+        command = call_kwargs.get("args", call_args[0] if call_args else None)
+        first = str(command[0]).lower() if isinstance(command, (list, tuple)) and command else ""
+        if first == "codex" and "stdin" not in call_kwargs:
+            call_kwargs["stdin"] = subprocess.DEVNULL
+        return original(*call_args, **call_kwargs)
+    subprocess.Popen = wrapped
 
 
 def _child_output_queue(stream: Any) -> queue.Queue[str | None]:
