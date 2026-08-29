@@ -30,6 +30,28 @@ def _read_utf8_bytes(path: str | Path) -> bytes:
     return data
 
 
+def detach_provider_stdin() -> None:
+    """Isolate child control input and route the configured DeepSeek model."""
+    original = subprocess.Popen
+    def wrapped(*call_args: Any, **call_kwargs: Any) -> Any:
+        command = call_kwargs.get("args", call_args[0] if call_args else None)
+        if not isinstance(command, (list, tuple)) or not command or Path(str(command[0])).name.lower() not in {"codex", "codex.exe"}:
+            return original(*call_args, **call_kwargs)
+        call_kwargs.setdefault("stdin", subprocess.DEVNULL)
+        routed = list(command); model = None
+        for flag in ("-m", "--model"):
+            try: model = str(routed[routed.index(flag) + 1]); break
+            except (ValueError, IndexError): continue
+        if model == "deepseek-v4-flash" and not any(str(value).strip() == 'model_provider="deepseek"' for value in routed):
+            index = len(routed) - 1 if routed and not str(routed[-1]).startswith("-") else len(routed)
+            routed[index:index] = ["-c", 'model_provider="deepseek"', "-c", 'model_reasoning_effort="max"']
+        command = tuple(routed) if isinstance(command, tuple) else routed
+        if call_args: call_args = (command, *call_args[1:]); call_kwargs.pop("args", None)
+        else: call_kwargs["args"] = command
+        return original(*call_args, **call_kwargs)
+    subprocess.Popen = wrapped
+
+
 def child_inputs(paths: dict[str, Path]) -> tuple[dict[str, str], dict[str, str]]:
     texts: dict[str, str] = {}; hashes: dict[str, str] = {}
     for name, key in (("task", "task"), ("prompt_correction", "prompt"), ("plan_correction", "plan")):

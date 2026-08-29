@@ -15,9 +15,11 @@ from typing import Any
 
 try:
     from . import record as rec
+    from .inspect_live_modules import detach_provider_stdin
     from .validate import validate_record
 except ImportError:  # Direct execution: python scripts/live_parity/run_live_parity.py
     import record as rec
+    from inspect_live_modules import detach_provider_stdin
     from validate import validate_record
 
 
@@ -98,7 +100,7 @@ def _child_main(args: argparse.Namespace) -> int:
     roots = [paths["r6s_source"]] if args.side == "r6s" else [paths["r6o_control"], paths["r6s_source"]]
     gate = paths["gate_root"]
     sys.path[:] = [str(root) for root in roots] + [entry for entry in sys.path if not entry or not _inside(Path(entry), gate)]
-    _detach_provider_stdin()
+    detach_provider_stdin()
     try:
         runner = rec._r6s_child if args.side == "r6s" else rec._r6o_child
         rec.write_json(paths["side"] / "child-result.json", {"ok": True, "observation": runner(args, config, paths)})
@@ -116,49 +118,6 @@ def _child_main(args: argparse.Namespace) -> int:
             "error": f"{name}: {exc}",
         })
         return 1
-
-
-def _detach_provider_stdin() -> None:
-    """Keep the control pipe away and route DeepSeek workers explicitly."""
-    original = subprocess.Popen
-    def wrapped(*call_args: Any, **call_kwargs: Any) -> Any:
-        command = call_kwargs.get("args", call_args[0] if call_args else None)
-        if not isinstance(command, (list, tuple)) or not command:
-            return original(*call_args, **call_kwargs)
-        first = Path(str(command[0])).name.lower()
-        if first not in {"codex", "codex.exe"}:
-            return original(*call_args, **call_kwargs)
-        if "stdin" not in call_kwargs:
-            call_kwargs["stdin"] = subprocess.DEVNULL
-        routed = list(command)
-        model = None
-        for flag in ("-m", "--model"):
-            try:
-                model = str(routed[routed.index(flag) + 1])
-                break
-            except (ValueError, IndexError):
-                continue
-        if model == "deepseek-v4-flash" and not any(
-            str(value).strip() == 'model_provider="deepseek"' for value in routed
-        ):
-            # Codex accepts options before the positional prompt.  The worker
-            # always appends that prompt as the final argument.
-            prompt_index = len(routed)
-            if routed and not str(routed[-1]).startswith("-"):
-                prompt_index -= 1
-            routed[prompt_index:prompt_index] = ["-c", 'model_provider="deepseek"', "-c", 'model_reasoning_effort="max"']
-        if isinstance(command, tuple):
-            command = tuple(routed)
-        else:
-            command = routed
-        if call_args:
-            call_args = (command, *call_args[1:])
-        else:
-            call_kwargs["args"] = command
-        if call_args and "args" in call_kwargs:
-            call_kwargs.pop("args")
-        return original(*call_args, **call_kwargs)
-    subprocess.Popen = wrapped
 
 
 def _child_output_queue(stream: Any) -> queue.Queue[str | None]:
