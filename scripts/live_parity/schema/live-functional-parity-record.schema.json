@@ -1,0 +1,1363 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pdl-live-functional-parity-record-2",
+  "title": "PDLt R6O Live Functional Parity Run Record v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "baselines",
+    "input_attestation",
+    "worker_configuration",
+    "anti_hardcode",
+    "r6s",
+    "r6o",
+    "parity",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "pdl-live-functional-parity-record-2"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "baselines": {
+      "$ref": "#/$defs/baselines"
+    },
+    "input_attestation": {
+      "$ref": "#/$defs/inputAttestation"
+    },
+    "worker_configuration": {
+      "$ref": "#/$defs/workerConfiguration"
+    },
+    "anti_hardcode": {
+      "$ref": "#/$defs/antiHardcode"
+    },
+    "r6s": {
+      "$ref": "#/$defs/side"
+    },
+    "r6o": {
+      "$ref": "#/$defs/side"
+    },
+    "parity": {
+      "$ref": "#/$defs/parity"
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INCONCLUSIVE"
+      ]
+    }
+  },
+  "$defs": {
+    "sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "baselineSide": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "commit",
+        "tree",
+        "git_clean_before",
+        "git_clean_after",
+        "physical_inventory_before_sha256",
+        "physical_inventory_after_sha256",
+        "physical_inventory_equal"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "tree": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "git_clean_before": {
+          "type": "boolean"
+        },
+        "git_clean_after": {
+          "type": "boolean"
+        },
+        "physical_inventory_before_sha256": {
+          "$ref": "#/$defs/sha"
+        },
+        "physical_inventory_after_sha256": {
+          "$ref": "#/$defs/sha"
+        },
+        "physical_inventory_equal": {
+          "type": "boolean"
+        }
+      }
+    },
+    "baselines": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "r6s",
+        "r6o"
+      ],
+      "properties": {
+        "r6s": {
+          "$ref": "#/$defs/baselineSide"
+        },
+        "r6o": {
+          "$ref": "#/$defs/baselineSide"
+        }
+      }
+    },
+    "inputAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_sha256",
+        "prompt_correction_sha256",
+        "plan_correction_sha256",
+        "task_evidence_path",
+        "prompt_correction_evidence_path",
+        "plan_correction_evidence_path",
+        "private_input_evidence_retained",
+        "prompt_correction_class",
+        "plan_correction_class",
+        "runtime_supplied",
+        "same_inputs_both_sides",
+        "historical_case_id_supplied",
+        "historical_evidence_supplied",
+        "expected_output_supplied",
+        "recorded_worker_supplied"
+      ],
+      "properties": {
+        "task_sha256": {
+          "$ref": "#/$defs/sha"
+        },
+        "prompt_correction_sha256": {
+          "$ref": "#/$defs/sha"
+        },
+        "plan_correction_sha256": {
+          "$ref": "#/$defs/sha"
+        },
+        "task_evidence_path": {
+          "type": "string",
+          "pattern": "^private-inputs/[^\\r\\n]+$"
+        },
+        "prompt_correction_evidence_path": {
+          "type": "string",
+          "pattern": "^private-inputs/[^\\r\\n]+$"
+        },
+        "plan_correction_evidence_path": {
+          "type": "string",
+          "pattern": "^private-inputs/[^\\r\\n]+$"
+        },
+        "private_input_evidence_retained": {
+          "type": "boolean"
+        },
+        "prompt_correction_class": {
+          "const": "TASK_CHANGE"
+        },
+        "plan_correction_class": {
+          "const": "APPROACH_ONLY"
+        },
+        "runtime_supplied": {
+          "type": "boolean"
+        },
+        "same_inputs_both_sides": {
+          "type": "boolean"
+        },
+        "historical_case_id_supplied": {
+          "type": "boolean"
+        },
+        "historical_evidence_supplied": {
+          "type": "boolean"
+        },
+        "expected_output_supplied": {
+          "type": "boolean"
+        },
+        "recorded_worker_supplied": {
+          "type": "boolean"
+        }
+      }
+    },
+    "workerConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implementation",
+        "requested_model",
+        "configuration_sha256",
+        "same_configuration_both_sides",
+        "real_live_worker",
+        "recorded_or_stub_worker",
+        "bypass_state",
+        "bypass_exception_rationale"
+      ],
+      "properties": {
+        "implementation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requested_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "configuration_sha256": {
+          "$ref": "#/$defs/sha"
+        },
+        "same_configuration_both_sides": {
+          "type": "boolean"
+        },
+        "real_live_worker": {
+          "type": "boolean"
+        },
+        "recorded_or_stub_worker": {
+          "type": "boolean"
+        },
+        "bypass_state": {
+          "enum": [
+            "disabled",
+            "explicit_external_hardening_exception"
+          ]
+        },
+        "bypass_exception_rationale": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "bypass_state": {
+                "const": "disabled"
+              }
+            },
+            "required": [
+              "bypass_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "bypass_exception_rationale": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "bypass_state": {
+                "const": "explicit_external_hardening_exception"
+              }
+            },
+            "required": [
+              "bypass_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "bypass_exception_rationale": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "workerMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implementation",
+        "requested_model",
+        "runtime_version",
+        "configuration_sha256",
+        "live_worker",
+        "recorded_or_stub"
+      ],
+      "properties": {
+        "implementation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requested_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed_model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "provider": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "runtime_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "configuration_sha256": {
+          "$ref": "#/$defs/sha"
+        },
+        "live_worker": {
+          "type": "boolean"
+        },
+        "recorded_or_stub": {
+          "type": "boolean"
+        }
+      }
+    },
+    "correction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observed_intent",
+        "observed_next_action",
+        "artifact_id_before",
+        "artifact_id_after",
+        "body_sha256_before",
+        "body_sha256_after",
+        "body_changed",
+        "persisted",
+        "route_valid"
+      ],
+      "properties": {
+        "observed_intent": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed_next_action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact_id_before": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact_id_after": {
+          "type": "string",
+          "minLength": 1
+        },
+        "body_sha256_before": {
+          "$ref": "#/$defs/sha"
+        },
+        "body_sha256_after": {
+          "$ref": "#/$defs/sha"
+        },
+        "body_changed": {
+          "type": "boolean"
+        },
+        "persisted": {
+          "type": "boolean"
+        },
+        "route_valid": {
+          "type": "boolean"
+        }
+      }
+    },
+    "semanticArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "body_sha256",
+        "confirmed"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "body_sha256": {
+          "$ref": "#/$defs/sha"
+        },
+        "confirmed": {
+          "type": "boolean"
+        },
+        "source_prompt_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "planSemanticArtifact": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/semanticArtifact"
+        },
+        {
+          "required": [
+            "source_prompt_id"
+          ],
+          "properties": {
+            "source_prompt_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "resumePoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workspace_path_sha256",
+        "workspace_id",
+        "session_or_instance_id",
+        "controller_state_sha256",
+        "prompt",
+        "plan",
+        "pending_change_sha256",
+        "pending_input_sha256",
+        "in_flight_action_sha256"
+      ],
+      "properties": {
+        "workspace_path_sha256": {
+          "$ref": "#/$defs/sha"
+        },
+        "workspace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "session_or_instance_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "controller_state_sha256": {
+          "$ref": "#/$defs/sha"
+        },
+        "prompt": {
+          "$ref": "#/$defs/semanticArtifact"
+        },
+        "plan": {
+          "$ref": "#/$defs/planSemanticArtifact"
+        },
+        "pending_change_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "pending_input_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "in_flight_action_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "resume": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "before",
+        "after",
+        "same_workspace_path",
+        "same_workspace_id",
+        "same_session_or_instance",
+        "controller_state_equal",
+        "prompt_equal",
+        "plan_equal",
+        "pending_state_equal",
+        "replacement_workspace_created",
+        "public_semantic_state_equivalent"
+      ],
+      "properties": {
+        "before": {
+          "$ref": "#/$defs/resumePoint"
+        },
+        "after": {
+          "$ref": "#/$defs/resumePoint"
+        },
+        "same_workspace_path": {
+          "type": "boolean"
+        },
+        "same_workspace_id": {
+          "type": "boolean"
+        },
+        "same_session_or_instance": {
+          "type": "boolean"
+        },
+        "controller_state_equal": {
+          "type": "boolean"
+        },
+        "prompt_equal": {
+          "type": "boolean"
+        },
+        "plan_equal": {
+          "type": "boolean"
+        },
+        "pending_state_equal": {
+          "type": "boolean"
+        },
+        "replacement_workspace_created": {
+          "type": "boolean"
+        },
+        "public_semantic_state_equivalent": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      }
+    },
+    "continuation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "disposition",
+        "request_input_observed",
+        "input_supplied",
+        "interpret_execution_input_observed",
+        "subsequent_execute_observed",
+        "result_reached"
+      ],
+      "properties": {
+        "disposition": {
+          "enum": [
+            "NOT_REQUESTED",
+            "REQUESTED_COMPLETED",
+            "REQUESTED_INCOMPLETE"
+          ]
+        },
+        "request_input_observed": {
+          "type": "boolean"
+        },
+        "input_supplied": {
+          "type": "boolean"
+        },
+        "interpret_execution_input_observed": {
+          "type": "boolean"
+        },
+        "subsequent_execute_observed": {
+          "type": "boolean"
+        },
+        "result_reached": {
+          "type": "boolean"
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "execution_kind",
+        "current_json_exists",
+        "current_md_exists",
+        "body_nonempty",
+        "body_sha256",
+        "lifecycle_result_matches_persisted"
+      ],
+      "properties": {
+        "execution_kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "current_json_exists": {
+          "type": "boolean"
+        },
+        "current_md_exists": {
+          "type": "boolean"
+        },
+        "body_nonempty": {
+          "type": "boolean"
+        },
+        "body_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "lifecycle_result_matches_persisted": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fresh_session_created",
+        "fresh_workspace_created",
+        "live_worker_observed",
+        "prompt_review_reached",
+        "prompt_task_change_classified",
+        "prompt_revision_route_observed",
+        "prompt_correction_persisted",
+        "prompt_confirmation_progressed",
+        "plan_review_reached",
+        "plan_approach_change_classified",
+        "plan_revision_route_observed",
+        "plan_correction_persisted",
+        "resume_checkpoint_preserved",
+        "plan_confirmation_progressed",
+        "execute_reached",
+        "execution_continuation_supported_if_requested",
+        "result_persisted",
+        "terminal_success",
+        "historical_case_dependency_absent",
+        "historical_evidence_dependency_absent",
+        "recorded_worker_dependency_absent",
+        "source_repo_unchanged",
+        "host_crash_absent"
+      ],
+      "properties": {
+        "fresh_session_created": {
+          "type": "boolean"
+        },
+        "fresh_workspace_created": {
+          "type": "boolean"
+        },
+        "live_worker_observed": {
+          "type": "boolean"
+        },
+        "prompt_review_reached": {
+          "type": "boolean"
+        },
+        "prompt_task_change_classified": {
+          "type": "boolean"
+        },
+        "prompt_revision_route_observed": {
+          "type": "boolean"
+        },
+        "prompt_correction_persisted": {
+          "type": "boolean"
+        },
+        "prompt_confirmation_progressed": {
+          "type": "boolean"
+        },
+        "plan_review_reached": {
+          "type": "boolean"
+        },
+        "plan_approach_change_classified": {
+          "type": "boolean"
+        },
+        "plan_revision_route_observed": {
+          "type": "boolean"
+        },
+        "plan_correction_persisted": {
+          "type": "boolean"
+        },
+        "resume_checkpoint_preserved": {
+          "type": "boolean"
+        },
+        "plan_confirmation_progressed": {
+          "type": "boolean"
+        },
+        "execute_reached": {
+          "type": "boolean"
+        },
+        "execution_continuation_supported_if_requested": {
+          "type": "boolean"
+        },
+        "result_persisted": {
+          "type": "boolean"
+        },
+        "terminal_success": {
+          "type": "boolean"
+        },
+        "historical_case_dependency_absent": {
+          "type": "boolean"
+        },
+        "historical_evidence_dependency_absent": {
+          "type": "boolean"
+        },
+        "recorded_worker_dependency_absent": {
+          "type": "boolean"
+        },
+        "source_repo_unchanged": {
+          "type": "boolean"
+        },
+        "host_crash_absent": {
+          "type": "boolean"
+        }
+      }
+    },
+    "side": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_id",
+        "workspace_id",
+        "worker_metadata",
+        "operations",
+        "required_operation_subsequence_observed",
+        "prompt_correction",
+        "plan_correction",
+        "resume",
+        "execution_continuation",
+        "result",
+        "capabilities",
+        "source_git_clean_after",
+        "source_physical_inventory_equal"
+      ],
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "workspace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "worker_metadata": {
+          "$ref": "#/$defs/workerMetadata"
+        },
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required_operation_subsequence_observed": {
+          "type": "boolean"
+        },
+        "prompt_correction": {
+          "$ref": "#/$defs/correction"
+        },
+        "plan_correction": {
+          "$ref": "#/$defs/correction"
+        },
+        "resume": {
+          "$ref": "#/$defs/resume"
+        },
+        "execution_continuation": {
+          "$ref": "#/$defs/continuation"
+        },
+        "result": {
+          "$ref": "#/$defs/result"
+        },
+        "capabilities": {
+          "$ref": "#/$defs/capabilities"
+        },
+        "source_git_clean_after": {
+          "type": "boolean"
+        },
+        "source_physical_inventory_equal": {
+          "type": "boolean"
+        }
+      }
+    },
+    "antiHardcodeSide": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scanned_module_count",
+        "scanned_paths",
+        "g06_matches",
+        "a02_matches",
+        "rdx_case_matches",
+        "recorded_fixture_path_matches",
+        "historical_evidence_path_matches",
+        "expected_output_routing_matches",
+        "recorded_provider_live_import_matches",
+        "matched_locations"
+      ],
+      "properties": {
+        "scanned_module_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "scanned_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "g06_matches": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "a02_matches": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rdx_case_matches": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recorded_fixture_path_matches": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "historical_evidence_path_matches": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expected_output_routing_matches": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recorded_provider_live_import_matches": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "matched_locations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "antiHardcode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "r6s",
+        "r6o"
+      ],
+      "properties": {
+        "r6s": {
+          "$ref": "#/$defs/antiHardcodeSide"
+        },
+        "r6o": {
+          "$ref": "#/$defs/antiHardcodeSide"
+        }
+      }
+    },
+    "parity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_capabilities_pass_both",
+        "same_input_hashes",
+        "same_worker_configuration",
+        "anti_hardcode_pass_both",
+        "source_read_only_pass_both",
+        "generated_text_equality_required"
+      ],
+      "properties": {
+        "required_capabilities_pass_both": {
+          "type": "boolean"
+        },
+        "same_input_hashes": {
+          "type": "boolean"
+        },
+        "same_worker_configuration": {
+          "type": "boolean"
+        },
+        "anti_hardcode_pass_both": {
+          "type": "boolean"
+        },
+        "source_read_only_pass_both": {
+          "type": "boolean"
+        },
+        "generated_text_equality_required": {
+          "const": false
+        }
+      }
+    },
+    "passSide": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/side"
+        },
+        {
+          "properties": {
+            "worker_metadata": {
+              "properties": {
+                "live_worker": {
+                  "const": true
+                },
+                "recorded_or_stub": {
+                  "const": false
+                }
+              }
+            },
+            "required_operation_subsequence_observed": {
+              "const": true
+            },
+            "prompt_correction": {
+              "properties": {
+                "observed_intent": {
+                  "const": "REVISE_TASK"
+                },
+                "observed_next_action": {
+                  "const": "REVISE_PROMPT"
+                },
+                "body_changed": {
+                  "const": true
+                },
+                "persisted": {
+                  "const": true
+                },
+                "route_valid": {
+                  "const": true
+                }
+              }
+            },
+            "plan_correction": {
+              "properties": {
+                "observed_intent": {
+                  "const": "REVISE_APPROACH"
+                },
+                "observed_next_action": {
+                  "const": "REVISE_PLAN"
+                },
+                "body_changed": {
+                  "const": true
+                },
+                "persisted": {
+                  "const": true
+                },
+                "route_valid": {
+                  "const": true
+                }
+              }
+            },
+            "resume": {
+              "properties": {
+                "same_workspace_path": {
+                  "const": true
+                },
+                "same_workspace_id": {
+                  "const": true
+                },
+                "same_session_or_instance": {
+                  "const": true
+                },
+                "controller_state_equal": {
+                  "const": true
+                },
+                "prompt_equal": {
+                  "const": true
+                },
+                "plan_equal": {
+                  "const": true
+                },
+                "pending_state_equal": {
+                  "const": true
+                },
+                "replacement_workspace_created": {
+                  "const": false
+                }
+              }
+            },
+            "execution_continuation": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "disposition": {
+                      "const": "NOT_REQUESTED"
+                    },
+                    "request_input_observed": {
+                      "const": false
+                    },
+                    "input_supplied": {
+                      "const": false
+                    },
+                    "interpret_execution_input_observed": {
+                      "const": false
+                    },
+                    "subsequent_execute_observed": {
+                      "const": false
+                    },
+                    "result_reached": {
+                      "const": true
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "disposition": {
+                      "const": "REQUESTED_COMPLETED"
+                    },
+                    "request_input_observed": {
+                      "const": true
+                    },
+                    "input_supplied": {
+                      "const": true
+                    },
+                    "interpret_execution_input_observed": {
+                      "const": true
+                    },
+                    "subsequent_execute_observed": {
+                      "const": true
+                    },
+                    "result_reached": {
+                      "const": true
+                    }
+                  }
+                }
+              ]
+            },
+            "result": {
+              "properties": {
+                "execution_kind": {
+                  "const": "RESULT"
+                },
+                "current_json_exists": {
+                  "const": true
+                },
+                "current_md_exists": {
+                  "const": true
+                },
+                "body_nonempty": {
+                  "const": true
+                },
+                "body_sha256": {
+                  "$ref": "#/$defs/sha"
+                }
+              }
+            },
+            "capabilities": {
+              "properties": {
+                "fresh_session_created": {
+                  "const": true
+                },
+                "fresh_workspace_created": {
+                  "const": true
+                },
+                "live_worker_observed": {
+                  "const": true
+                },
+                "prompt_review_reached": {
+                  "const": true
+                },
+                "prompt_task_change_classified": {
+                  "const": true
+                },
+                "prompt_revision_route_observed": {
+                  "const": true
+                },
+                "prompt_correction_persisted": {
+                  "const": true
+                },
+                "prompt_confirmation_progressed": {
+                  "const": true
+                },
+                "plan_review_reached": {
+                  "const": true
+                },
+                "plan_approach_change_classified": {
+                  "const": true
+                },
+                "plan_revision_route_observed": {
+                  "const": true
+                },
+                "plan_correction_persisted": {
+                  "const": true
+                },
+                "resume_checkpoint_preserved": {
+                  "const": true
+                },
+                "plan_confirmation_progressed": {
+                  "const": true
+                },
+                "execute_reached": {
+                  "const": true
+                },
+                "execution_continuation_supported_if_requested": {
+                  "const": true
+                },
+                "result_persisted": {
+                  "const": true
+                },
+                "terminal_success": {
+                  "const": true
+                },
+                "historical_case_dependency_absent": {
+                  "const": true
+                },
+                "historical_evidence_dependency_absent": {
+                  "const": true
+                },
+                "recorded_worker_dependency_absent": {
+                  "const": true
+                },
+                "source_repo_unchanged": {
+                  "const": true
+                },
+                "host_crash_absent": {
+                  "const": true
+                }
+              }
+            },
+            "source_git_clean_after": {
+              "const": true
+            },
+            "source_physical_inventory_equal": {
+              "const": true
+            }
+          }
+        }
+      ]
+    },
+    "passAntiHardcodeSide": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/antiHardcodeSide"
+        },
+        {
+          "properties": {
+            "scanned_module_count": {
+              "minimum": 1
+            },
+            "scanned_paths": {
+              "minItems": 1
+            },
+            "g06_matches": {
+              "const": 0
+            },
+            "a02_matches": {
+              "const": 0
+            },
+            "rdx_case_matches": {
+              "const": 0
+            },
+            "recorded_fixture_path_matches": {
+              "const": 0
+            },
+            "historical_evidence_path_matches": {
+              "const": 0
+            },
+            "expected_output_routing_matches": {
+              "const": 0
+            },
+            "recorded_provider_live_import_matches": {
+              "const": 0
+            },
+            "matched_locations": {
+              "maxItems": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "PASS"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "baselines": {
+            "properties": {
+              "r6s": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/baselineSide"
+                  },
+                  {
+                    "properties": {
+                      "repository": {
+                        "const": "paragon-ux/PDL-Standard-REPL-Harness"
+                      },
+                      "commit": {
+                        "const": "60d982f3328b45a351879d67dc4bb525172b65fd"
+                      },
+                      "tree": {
+                        "const": "b7689fbe8b9c9838438cbba6f6e0e5c1ce5b5ed6"
+                      },
+                      "git_clean_before": {
+                        "const": true
+                      },
+                      "git_clean_after": {
+                        "const": true
+                      },
+                      "physical_inventory_equal": {
+                        "const": true
+                      }
+                    }
+                  }
+                ]
+              },
+              "r6o": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/baselineSide"
+                  },
+                  {
+                    "properties": {
+                      "repository": {
+                        "const": "paragon-ux/PDL-Standard-R6O"
+                      },
+                      "commit": {
+                        "const": "fa88c92786fa518c154d099aba2a0433334cc3a9"
+                      },
+                      "tree": {
+                        "const": "d4cf90047b2b6f92b954e353142d72206925f59f"
+                      },
+                      "git_clean_before": {
+                        "const": true
+                      },
+                      "git_clean_after": {
+                        "const": true
+                      },
+                      "physical_inventory_equal": {
+                        "const": true
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "input_attestation": {
+            "properties": {
+              "runtime_supplied": {
+                "const": true
+              },
+              "same_inputs_both_sides": {
+                "const": true
+              },
+              "historical_case_id_supplied": {
+                "const": false
+              },
+              "historical_evidence_supplied": {
+                "const": false
+              },
+              "expected_output_supplied": {
+                "const": false
+              },
+              "recorded_worker_supplied": {
+                "const": false
+              },
+              "private_input_evidence_retained": {
+                "const": true
+              }
+            }
+          },
+          "worker_configuration": {
+            "properties": {
+              "same_configuration_both_sides": {
+                "const": true
+              },
+              "real_live_worker": {
+                "const": true
+              },
+              "recorded_or_stub_worker": {
+                "const": false
+              }
+            }
+          },
+          "anti_hardcode": {
+            "properties": {
+              "r6s": {
+                "$ref": "#/$defs/passAntiHardcodeSide"
+              },
+              "r6o": {
+                "$ref": "#/$defs/passAntiHardcodeSide"
+              }
+            }
+          },
+          "r6s": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/passSide"
+              },
+              {
+                "properties": {
+                  "resume": {
+                    "properties": {
+                      "public_semantic_state_equivalent": {
+                        "type": "null"
+                      }
+                    }
+                  },
+                  "result": {
+                    "properties": {
+                      "lifecycle_result_matches_persisted": {
+                        "type": "null"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "r6o": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/passSide"
+              },
+              {
+                "properties": {
+                  "resume": {
+                    "properties": {
+                      "public_semantic_state_equivalent": {
+                        "const": true
+                      }
+                    }
+                  },
+                  "result": {
+                    "properties": {
+                      "lifecycle_result_matches_persisted": {
+                        "const": true
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "parity": {
+            "properties": {
+              "required_capabilities_pass_both": {
+                "const": true
+              },
+              "same_input_hashes": {
+                "const": true
+              },
+              "same_worker_configuration": {
+                "const": true
+              },
+              "anti_hardcode_pass_both": {
+                "const": true
+              },
+              "source_read_only_pass_both": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
