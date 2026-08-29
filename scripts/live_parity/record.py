@@ -319,13 +319,13 @@ def _result_observation(workspace: Path, lifecycle_body: str | None = None) -> t
     return result, bool(metadata.get("kind") == "RESULT" and body)
 
 
-def _worker_metadata(worker: Any, configuration_sha256: str, calls: list[dict[str, Any]]) -> dict[str, Any]:
+def _worker_metadata(worker: Any, configuration_sha256: str, calls: list[dict[str, Any]], model_provider: str | None = None) -> dict[str, Any]:
     observed = next((call.get("observed_model") for call in calls if call.get("observed_model")), None)
     return {
         "implementation": "providers.codex_worker.CodexWorker",
         "requested_model": str(worker.model),
         "observed_model": observed,
-        "provider": str(config.get("model_provider") or "codex"),
+        "provider": str(model_provider or "codex"),
         "runtime_version": str(getattr(worker, "codex_cli_version", "unknown")),
         "configuration_sha256": configuration_sha256,
         "live_worker": True,
@@ -534,7 +534,7 @@ def _side_observation(session_id: str, workspace_id: str, worker: Any, config: d
     capabilities = _capabilities(operations, prompt, plan, resume, continuation, result, final_state, True)
     return {
         "session_id": session_id, "workspace_id": workspace_id,
-        "worker_metadata": _worker_metadata(worker, config["configuration_sha256"], calls),
+        "worker_metadata": _worker_metadata(worker, config["configuration_sha256"], calls, config.get("model_provider")),
         "operations": operations, "required_operation_subsequence_observed": required_subsequence(operations),
         "prompt_correction": prompt, "plan_correction": plan, "resume": resume,
         "execution_continuation": continuation, "result": result, "capabilities": capabilities,
